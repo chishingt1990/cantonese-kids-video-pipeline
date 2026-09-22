@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
+  <!-- Levi: Older Twin Brother (哥哥) -->
+  <!-- Proportions: 1-2 year old toddler, chubby round cheeks, bold red polo, straight bangs fringe -->
+  <defs>
+    <radialGradient id="leviCheek" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f43f5e" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softShadowLevi" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Shadow -->
+  <ellipse cx="150" cy="375" rx="55" ry="12" fill="#0f172a" opacity="0.12"/>
+
+  <!-- Legs & Shoes -->
+  <g id="legs">
+    <!-- Left Leg -->
+    <rect x="118" y="295" width="24" height="45" rx="10" fill="#fed7aa" stroke="#1e293b" stroke-width="3"/>
+    <!-- Left Sock & Shoe -->
+    <rect x="116" y="335" width="28" height="12" rx="4" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+    <path d="M 110 347 Q 130 342 146 347 L 146 362 Q 128 365 110 362 Z" fill="#1e3a8a" stroke="#1e293b" stroke-width="3"/>
+    <ellipse cx="120" cy="355" rx="6" ry="3" fill="#ffffff"/>
+
+    <!-- Right Leg -->
+    <rect x="158" y="295" width="24" height="45" rx="10" fill="#fed7aa" stroke="#1e293b" stroke-width="3"/>
+    <!-- Right Sock & Shoe -->
+    <rect x="156" y="335" width="28" height="12" rx="4" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+    <path d="M 154 347 Q 170 342 190 347 L 190 362 Q 172 365 154 362 Z" fill="#1e3a8a" stroke="#1e293b" stroke-width="3"/>
+    <ellipse cx="180" cy="355" rx="6" ry="3" fill="#ffffff"/>
+  </g>
+
+  <!-- Blue Toddler Shorts -->
+  <path d="M 105 255 L 195 255 L 190 305 L 155 305 L 150 280 L 145 305 L 110 305 Z" fill="#3b82f6" stroke="#1e293b" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Shorts pockets / stitching -->
+  <path d="M 115 270 Q 125 285 135 270" fill="none" stroke="#2563eb" stroke-width="2"/>
+  <path d="M 165 270 Q 175 285 185 270" fill="none" stroke="#2563eb" stroke-width="2"/>
+
+  <!-- Arms -->
+  <g id="arms">
+    <!-- Left Arm -->
+    <path d="M 98 190 Q 75 220 95 245" fill="none" stroke="#fed7aa" stroke-width="22" stroke-linecap="round"/>
+    <circle cx="95" cy="245" r="12" fill="#fed7aa" stroke="#1e293b" stroke-width="3"/>
+
+    <!-- Right Arm -->
+    <path d="M 202 190 Q 225 215 210 245" fill="none" stroke="#fed7aa" stroke-width="22" stroke-linecap="round"/>
+    <circle cx="210" cy="245" r="12" fill="#fed7aa" stroke="#1e293b" stroke-width="3"/>
+  </g>
+
+  <!-- Torso & Bold Red Polo Shirt -->
+  <g id="torso" filter="url(#softShadowLevi)">
+    <path d="M 98 175 Q 85 260 102 265 L 198 265 Q 215 260 202 175 Z" fill="#ef4444" stroke="#1e293b" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Red Sleeves -->
+    <path d="M 98 175 L 82 205 L 108 215 L 115 182 Z" fill="#dc2626" stroke="#1e293b" stroke-width="3"/>
+    <path d="M 202 175 L 218 205 L 192 215 L 185 182 Z" fill="#dc2626" stroke="#1e293b" stroke-width="3"/>
+    <!-- White Collar & Placket -->
+    <path d="M 125 175 L 150 200 L 175 175 Z" fill="#ffffff" stroke="#1e293b" stroke-width="3"/>
+    <line x1="150" y1="200" x2="150" y2="230" stroke="#1e293b" stroke-width="3"/>
+    <circle cx="150" cy="210" r="2.5" fill="#1e293b"/>
+    <circle cx="150" cy="222" r="2.5" fill="#1e293b"/>
+  </g>
+
+  <!-- Head Assembly -->
+  <g id="head" filter="url(#softShadowLevi)">
+    <!-- Ears -->
+    <circle cx="85" cy="115" r="14" fill="#fed7aa" stroke="#1e293b" stroke-width="3"/>
+    <circle cx="85" cy="115" r="7" fill="#fca5a5" opacity="0.6"/>
+    <circle cx="215" cy="115" r="14" fill="#fed7aa" stroke="#1e293b" stroke-width="3"/>
+    <circle cx="215" cy="115" r="7" fill="#fca5a5" opacity="0.6"/>
+
+    <!-- Chubby Baby Face Base -->
+    <path d="M 95 105 C 80 150 115 175 150 175 C 185 175 220 150 205 105 C 200 65 100 65 95 105 Z" fill="#fed7aa" stroke="#1e293b" stroke-width="3.5"/>
+
+    <!-- Rosy Cheeks -->
+    <circle cx="112" cy="132" r="16" fill="url(#leviCheek)"/>
+    <circle cx="188" cy="132" r="16" fill="url(#leviCheek)"/>
+
+    <!-- Eyes (Big Sparkling Anime-Preschool Eyes) -->
+    <g id="eyes">
+      <ellipse cx="125" cy="115" rx="10" ry="12" fill="#1e293b"/>
+      <circle cx="122" cy="111" r="4.5" fill="#ffffff"/>
+      <circle cx="127" cy="120" r="2" fill="#ffffff"/>
+      <ellipse cx="175" cy="115" rx="10" ry="12" fill="#1e293b"/>
+      <circle cx="172" cy="111" r="4.5" fill="#ffffff"/>
+      <circle cx="177" cy="120" r="2" fill="#ffffff"/>
+      <path d="M 115 95 Q 125 90 135 95" fill="none" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+      <path d="M 165 95 Q 175 90 185 95" fill="none" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+    </g>
+
+    <!-- Button Nose -->
+    <ellipse cx="150" cy="125" rx="3.5" ry="2.5" fill="#f87171"/>
+
+    <!-- Sweet Focused Toddler Smile -->
+    <path d="M 136 138 Q 150 154 164 138" fill="none" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M 138 139 Q 150 150 162 139 Z" fill="#fb7185"/>
+
+    <!-- Distinctive Hair: Straight Bangs Fringe Across Forehead (Levi's Signature) -->
+    <g id="hair">
+      <path d="M 94 95 Q 88 50 150 46 Q 212 50 206 95 C 195 82 175 80 150 80 C 125 80 105 82 94 95 Z" fill="#292524" stroke="#1e293b" stroke-width="3.5" stroke-linejoin="round"/>
+      <path d="M 95 86 L 105 98 L 115 86 L 125 98 L 135 86 L 145 98 L 155 86 L 165 98 L 175 86 L 185 98 L 195 86 L 205 90 L 205 78 Q 150 72 95 78 Z" fill="#292524" stroke="#1e293b" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M 115 62 Q 150 56 185 62" fill="none" stroke="#57534e" stroke-width="3.5" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

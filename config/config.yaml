@@ -1,0 +1,74 @@
+# Configuration for Personalized Kids Educational Video Pipeline
+project:
+  name: "Cantonese & Mandarin Kids Video Pipeline"
+  version: "1.0.0"
+  target_audience: "Twin Toddler Boys (1-2 years)"
+  default_locale: "yue-Hant-HK" # Cantonese (Hong Kong)
+  supported_locales:
+    - "yue-Hant-HK"
+    - "cmn-Hans-CN"             # Mandarin (Simplified)
+    - "cmn-Hant-TW"             # Mandarin (Traditional)
+
+paths:
+  client_secret: "config/client_secret.json"
+  token_path: "config/google_token.json"
+  raw_photos_dir: "assets/raw_photos"
+  audio_samples_dir: "assets/audio_samples"
+  characters_dir: "assets/characters"
+  backgrounds_dir: "assets/backgrounds"
+  output_dir: "assets/outputs"
+
+oauth:
+  scopes:
+    - "https://www.googleapis.com/auth/photospicker.mediaitems.readonly"
+    - "https://www.googleapis.com/auth/photoslibrary.readonly"
+    - "https://www.googleapis.com/auth/youtube.readonly"
+    - "https://www.googleapis.com/auth/youtube.upload"
+
+voice:
+  provider: "elevenlabs" # or custom
+  model_id: "eleven_multilingual_v2"
+  clones:
+    dad_cantonese:
+      voice_id: ""
+      sample_path: "assets/audio_samples/dad_cantonese.wav"
+    mom_cantonese:
+      voice_id: ""
+      sample_path: "assets/audio_samples/mom_cantonese.wav"
+    dad_mandarin:
+      voice_id: ""
+      sample_path: "assets/audio_samples/dad_mandarin.wav"
+    mom_mandarin:
+      voice_id: ""
+      sample_path: "assets/audio_samples/mom_mandarin.wav"
+  voice_settings:
+    stability: 0.55
+    similarity_boost: 0.85
+    style: 0.35 # animated infant-directed speech
+    use_speaker_boost: true
+
+visual_styles:
+  selected_style: "style_a_bluey" # default style
+  available_styles:
+    - id: "style_a_bluey"
+      name: "Soft Vector Storybook"
+      reference: "Bluey"
+    - id: "style_b_peppa"
+      name: "Minimalist Cutout"
+      reference: "Peppa Pig"
+    - id: "style_c_storybook"
+      name: "Illustrated Gouache"
+      reference: "Oliver Jeffers"
+    - id: "style_d_chibi"
+      name: "Chibi Sticker / DimDim"
+      reference: "點點話 (DimDim), BaoBao"
+    - id: "style_e_clay"
+      name: "Tactile Soft-Felt / Clay"
+      reference: "BabyBus, Lucas the Spider"
+
+video_export:
+  width: 1920
+  height: 1080
+  fps: 30
+  privacy_status: "unlisted" # "unlisted", "private", or "public"
+  made_for_kids: true

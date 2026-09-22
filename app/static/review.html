@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asset Review & Scene Stager — Kids Video Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; }
+    .tc-font { font-family: 'Noto Sans TC', sans-serif; }
+    
+    /* Transparency Checkerboards */
+    .bg-checker {
+      background-color: #ffffff;
+      background-image: linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    }
+    .bg-checker-dark {
+      background-color: #1e293b;
+      background-image: linear-gradient(45deg, #0f172a 25%, transparent 25%), 
+                        linear-gradient(-45deg, #0f172a 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #0f172a 75%), 
+                        linear-gradient(-45deg, transparent 75%, #0f172a 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    }
+    .bg-warm-cream { background-color: #fdfbf7; }
+    .bg-pure-white { background-color: #ffffff; }
+
+    /* Smooth transitions */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Custom range sliders */
+    input[type=range] {
+      accent-color: #f59e0b;
+    }
+  </style>
+</head>
+<body class="bg-stone-100 text-stone-800 min-h-screen flex flex-col">
+
+  <!-- TOP NAVIGATION & HEADER -->
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Back Button -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="px-3 py-1.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-stone-600 font-bold text-xs flex items-center gap-1.5 transition">
+          <span>←</span> Back to Studio
+        </a>
+        <div class="h-5 w-px bg-stone-200"></div>
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-400 to-rose-400 flex items-center justify-center text-base shadow-sm">
+          🎨
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base text-stone-900 leading-tight">Visual Asset Inspector & Stager</h1>
+          <p class="text-[11px] text-stone-400 font-medium">Review Sprites, 1080p Master Scenes & Stage Sandbox</p>
+        </div>
+      </div>
+
+      <!-- Backdrop Pattern Switcher -->
+      <div class="flex items-center gap-2 bg-stone-50 border border-stone-200 rounded-2xl p-1 text-xs">
+        <span class="text-[10px] uppercase tracking-wider font-extrabold text-stone-400 px-2">Sprite BG:</span>
+        <button onclick="setGlobalBg('bg-checker', this)" class="bg-toggle-btn px-2.5 py-1 rounded-xl bg-white text-stone-800 font-bold shadow-xs border border-stone-200 text-xs">
+          🏁 Checker
+        </button>
+        <button onclick="setGlobalBg('bg-warm-cream', this)" class="bg-toggle-btn px-2.5 py-1 rounded-xl text-stone-500 font-medium hover:text-stone-800 text-xs">
+          🍦 Warm Cream
+        </button>
+        <button onclick="setGlobalBg('bg-pure-white', this)" class="bg-toggle-btn px-2.5 py-1 rounded-xl text-stone-500 font-medium hover:text-stone-800 text-xs">
+          ⚪ White
+        </button>
+        <button onclick="setGlobalBg('bg-checker-dark', this)" class="bg-toggle-btn px-2.5 py-1 rounded-xl text-stone-500 font-medium hover:text-stone-800 text-xs">
+          🌑 Dark
+        </button>
+      </div>
+
+      <!-- Quick Metrics Summary -->
+      <div class="hidden lg:flex items-center gap-4 text-xs font-bold text-stone-600">
+        <span class="flex items-center gap-1.5 bg-amber-50 text-amber-900 border border-amber-200/80 px-2.5 py-1 rounded-xl">
+          <span>👥</span> <span id="metric-chars">8 Characters</span>
+        </span>
+        <span class="flex items-center gap-1.5 bg-rose-50 text-rose-900 border border-rose-200/80 px-2.5 py-1 rounded-xl">
+          <span>🧍</span> <span id="metric-sprites">18 Poses</span>
+        </span>
+        <span class="flex items-center gap-1.5 bg-sky-50 text-sky-900 border border-sky-200/80 px-2.5 py-1 rounded-xl">
+          <span>🏞️</span> <span id="metric-scenes">10 Master Scenes</span>
+        </span>
+        <span class="flex items-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-200/80 px-2.5 py-1 rounded-xl">
+          <span>🏷️</span> <span id="metric-stickers">22 Stickers</span>
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex border-t border-stone-100 gap-2">
+      <button onclick="switchTab('tab-sprites')" id="tab-btn-sprites" class="tab-btn py-3 px-4 text-sm font-bold text-amber-600 border-b-2 border-amber-500 flex items-center gap-2 transition">
+        <span>🧍</span> Character Sprites & Poses
+      </button>
+      <button onclick="switchTab('tab-scenes')" id="tab-btn-scenes" class="tab-btn py-3 px-4 text-sm font-semibold text-stone-500 hover:text-stone-800 border-b-2 border-transparent flex items-center gap-2 transition">
+        <span>🏞️</span> Master Scenes (1080p HD)
+      </button>
+      <button onclick="switchTab('tab-sandbox')" id="tab-btn-sandbox" class="tab-btn py-3 px-4 text-sm font-semibold text-stone-500 hover:text-stone-800 border-b-2 border-transparent flex items-center gap-2 transition">
+        <span>🎭</span> Live Staging Sandbox
+      </button>
+      <button onclick="switchTab('tab-stickers')" id="tab-btn-stickers" class="tab-btn py-3 px-4 text-sm font-semibold text-stone-500 hover:text-stone-800 border-b-2 border-transparent flex items-center gap-2 transition">
+        <span>🏷️</span> Educational Word Badges
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- TAB 1: CHARACTER SPRITES & POSES -->
+    <section id="tab-sprites" class="tab-content active space-y-6">
+      <!-- Search & Filters -->
+      <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+          <span class="text-stone-400">🔍</span>
+          <input type="text" id="sprite-search" oninput="filterSprites()" placeholder="Filter by character (Levi, Luca, Dog...) or pose..." class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400">
+        </div>
+        <div id="char-filter-pills" class="flex flex-wrap gap-1.5 text-xs font-bold">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Character Groups Container -->
+      <div id="characters-container" class="space-y-8">
+        <div class="py-12 text-center text-stone-400 font-medium">Loading character sprites...</div>
+      </div>
+    </section>
+
+    <!-- TAB 2: MASTER SCENES (1080p HD) -->
+    <section id="tab-scenes" class="tab-content space-y-6">
+      <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-0.5">
+          <h2 class="font-extrabold text-base text-stone-900">14 Master Watercolor Scenes (1920x1080)</h2>
+          <p class="text-xs text-stone-500">Curated high-resolution storybook environments calibrated for gentle preschool viewing.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="filterScenes('all', this)" class="scene-filter-btn px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-xs">
+            All (14)
+          </button>
+          <button onclick="filterScenes('indoor', this)" class="scene-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
+            🏠 Indoor (7)
+          </button>
+          <button onclick="filterScenes('outdoor', this)" class="scene-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
+            🌳 Outdoor (7)
+          </button>
+        </div>
+      </div>
+
+      <div id="scenes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- TAB 3: LIVE STAGING SANDBOX -->
+    <section id="tab-sandbox" class="tab-content space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Viewport (8 Cols) -->
+        <div class="lg:col-span-8 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="font-extrabold text-sm text-stone-900">Live 16:9 Composition Preview</span>
+              <span class="text-[10px] bg-stone-200 text-stone-600 px-2 py-0.5 rounded font-bold">1920x1080 Frame</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <button onclick="resetSandbox()" class="text-stone-500 hover:text-stone-800 font-semibold px-2 py-1">
+                ↺ Reset
+              </button>
+              <button onclick="exportSandboxImage()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold flex items-center gap-1 shadow-xs transition">
+                <span>📸</span> Save Snapshot
+              </button>
+            </div>
+          </div>
+
+          <!-- The 16:9 Stage Frame -->
+          <div class="relative w-full aspect-video rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-stone-900 select-none">
+            <img id="stage-bg-img" src="/api/characters/background/bg_living_room.png" alt="Stage Background" class="absolute inset-0 w-full h-full object-cover transition-all duration-300 pointer-events-none">
+
+            <!-- Slot 1: Left Character -->
+            <div id="stage-char-left" class="absolute transition-transform duration-75 cursor-move" style="left: 20%; bottom: 6%; transform: translate(-50%, 0) scale(1);">
+              <img id="stage-char-left-img" src="/api/characters/sprite/levi_waving.png" alt="Left Character" class="max-h-[380px] drop-shadow-md pointer-events-none">
+            </div>
+
+            <!-- Slot 2: Right Character -->
+            <div id="stage-char-right" class="absolute transition-transform duration-75 cursor-move" style="left: 72%; bottom: 6%; transform: translate(-50%, 0) scale(1);">
+              <img id="stage-char-right-img" src="/api/characters/sprite/luca_waving.png" alt="Right Character" class="max-h-[380px] drop-shadow-md pointer-events-none">
+            </div>
+
+            <!-- Slot 3: Center / Pet -->
+            <div id="stage-char-pet" class="absolute transition-transform duration-75 cursor-move" style="left: 46%; bottom: 4%; transform: translate(-50%, 0) scale(1);">
+              <img id="stage-char-pet-img" src="/api/characters/sprite/dog_default.png" alt="Pet / Props" class="max-h-[220px] drop-shadow-md pointer-events-none">
+            </div>
+
+            <!-- Slot 4: Educational Word Badge -->
+            <div id="stage-sticker" class="absolute transition-transform duration-75 cursor-move" style="left: 50%; top: 12%; transform: translate(-50%, 0) scale(1);">
+              <img id="stage-sticker-img" src="/api/scene-director/stickers/render/badge_good_morning" alt="Sticker" class="max-h-[90px] drop-shadow-lg pointer-events-none">
+            </div>
+
+            <!-- Watermark / Label -->
+            <div class="absolute bottom-3 left-4 text-[10px] font-bold text-white/80 drop-shadow bg-black/30 px-2 py-0.5 rounded-full backdrop-blur-xs pointer-events-none">
+              <span id="stage-active-bg-label">🛋️ Living Room Play Mat</span>
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs space-y-2">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">1-Click Storybook Presets</span>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="applyPreset('morning')" class="px-3 py-1.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50 text-xs font-bold text-stone-700 transition">
+                ☀️ Morning Greeting
+              </button>
+              <button onclick="applyPreset('breakfast')" class="px-3 py-1.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50 text-xs font-bold text-stone-700 transition">
+                🥣 Breakfast Oatmeal
+              </button>
+              <button onclick="applyPreset('park')" class="px-3 py-1.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50 text-xs font-bold text-stone-700 transition">
+                🌳 Sunny Park Stroll
+              </button>
+              <button onclick="applyPreset('beach')" class="px-3 py-1.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50 text-xs font-bold text-stone-700 transition">
+                🏖️ Beach Fun
+              </button>
+              <button onclick="applyPreset('dimsum')" class="px-3 py-1.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50 text-xs font-bold text-stone-700 transition">
+                🥟 Family Dim Sum
+              </button>
+              <button onclick="applyPreset('bedtime')" class="px-3 py-1.5 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50 text-xs font-bold text-stone-700 transition">
+                🌙 Bedtime Dreams
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls Column (4 Cols) -->
+        <div class="lg:col-span-4 space-y-4">
+          
+          <!-- Background Selector -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs space-y-2">
+            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider">Select Background</label>
+            <select id="sandbox-bg-select" onchange="setSandboxBg(this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 font-bold text-xs text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-400">
+            </select>
+          </div>
+
+          <!-- Slot 1: Left Actor Controls -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-stone-800">Actor 1 (Left)</span>
+              <label class="flex items-center gap-1.5 text-xs font-bold text-stone-600 cursor-pointer">
+                <input type="checkbox" id="left-flip" onchange="updateStageLayout()" class="rounded text-amber-500 focus:ring-amber-400">
+                <span>Flip (Face Right)</span>
+              </label>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-stone-400 font-bold uppercase">Character</label>
+                <select id="left-char-select" onchange="onLeftCharChange(this.value)" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold">
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-400 font-bold uppercase">Pose</label>
+                <select id="left-pose-select" onchange="updateStageLayout()" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold">
+                </select>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-bold text-stone-400">
+                <span>Position X</span>
+                <span id="left-x-val">20%</span>
+              </div>
+              <input type="range" id="left-x" min="5" max="95" value="20" oninput="updateStageLayout()" class="w-full h-1.5 bg-stone-200 rounded-lg cursor-pointer">
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-bold text-stone-400">
+                <span>Scale</span>
+                <span id="left-scale-val">100%</span>
+              </div>
+              <input type="range" id="left-scale" min="50" max="150" value="100" oninput="updateStageLayout()" class="w-full h-1.5 bg-stone-200 rounded-lg cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Slot 2: Right Actor Controls -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-stone-800">Actor 2 (Right)</span>
+              <label class="flex items-center gap-1.5 text-xs font-bold text-stone-600 cursor-pointer">
+                <input type="checkbox" id="right-flip" onchange="updateStageLayout()" checked class="rounded text-amber-500 focus:ring-amber-400">
+                <span>Flip (Face Left)</span>
+              </label>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-stone-400 font-bold uppercase">Character</label>
+                <select id="right-char-select" onchange="onRightCharChange(this.value)" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold">
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-400 font-bold uppercase">Pose</label>
+                <select id="right-pose-select" onchange="updateStageLayout()" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold">
+                </select>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-bold text-stone-400">
+                <span>Position X</span>
+                <span id="right-x-val">72%</span>
+              </div>
+              <input type="range" id="right-x" min="5" max="95" value="72" oninput="updateStageLayout()" class="w-full h-1.5 bg-stone-200 rounded-lg cursor-pointer">
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-bold text-stone-400">
+                <span>Scale</span>
+                <span id="right-scale-val">100%</span>
+              </div>
+              <input type="range" id="right-scale" min="50" max="150" value="100" oninput="updateStageLayout()" class="w-full h-1.5 bg-stone-200 rounded-lg cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Slot 3: Pet / Extra Actor Controls -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-stone-800">Pet / Prop Actor</span>
+              <label class="flex items-center gap-1.5 text-xs font-bold text-stone-600 cursor-pointer">
+                <input type="checkbox" id="pet-flip" onchange="updateStageLayout()" class="rounded text-amber-500 focus:ring-amber-400">
+                <span>Flip</span>
+              </label>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] text-stone-400 font-bold uppercase">Character</label>
+                <select id="pet-char-select" onchange="onPetCharChange(this.value)" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold">
+                  <option value="none">None (Hidden)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] text-stone-400 font-bold uppercase">Pose</label>
+                <select id="pet-pose-select" onchange="updateStageLayout()" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold">
+                </select>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-bold text-stone-400">
+                <span>Position X</span>
+                <span id="pet-x-val">46%</span>
+              </div>
+              <input type="range" id="pet-x" min="5" max="95" value="46" oninput="updateStageLayout()" class="w-full h-1.5 bg-stone-200 rounded-lg cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Slot 4: Word Badge / Sticker Controls -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-stone-800">Educational Word Badge</span>
+              <span class="text-[10px] text-stone-400 font-semibold">Snug Pill Badge</span>
+            </div>
+            
+            <select id="sticker-select" onchange="updateStageLayout()" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold">
+              <option value="none">None (No Badge)</option>
+            </select>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-[10px] font-bold text-stone-400">
+                <span>Vertical Position Y</span>
+                <span id="sticker-y-val">12%</span>
+              </div>
+              <input type="range" id="sticker-y" min="5" max="85" value="12" oninput="updateStageLayout()" class="w-full h-1.5 bg-stone-200 rounded-lg cursor-pointer">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: EDUCATIONAL WORD BADGES & STICKERS -->
+    <section id="tab-stickers" class="tab-content space-y-6">
+      <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-0.5">
+          <h2 class="font-extrabold text-base text-stone-900">Snug Educational Badges & Phonics Props</h2>
+          <p class="text-xs text-stone-500">Snug centered pill badges with Traditional Cantonese Chinese, Jyutping, and English subtitles.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="filterStickers('all', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-xs">
+            All (22)
+          </button>
+          <button onclick="filterStickers('word', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
+            💬 Word Badges (12)
+          </button>
+          <button onclick="filterStickers('block', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
+            🧱 Phonics Blocks (6)
+          </button>
+          <button onclick="filterStickers('prop', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
+            🍎 Props & Food (4)
+          </button>
+        </div>
+      </div>
+
+      <div id="stickers-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      </div>
+    </section>
+
+  </main>
+
+  <!-- LIGHTBOX MODAL -->
+  <div id="lightbox-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-white/20">
+      <div class="p-4 border-b border-stone-200 flex items-center justify-between">
+        <div>
+          <h3 id="lightbox-title" class="font-extrabold text-base text-stone-900">Asset Inspector</h3>
+          <p id="lightbox-subtitle" class="text-xs text-stone-500">File Name & Info</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="lightbox-download" href="#" download class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200 transition">
+            💾 Download File
+          </a>
+          <button onclick="closeLightbox()" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center font-bold text-sm transition">
+            ✕
+          </button>
+        </div>
+      </div>
+      <div id="lightbox-preview-container" class="flex-1 p-6 flex items-center justify-center bg-checker overflow-auto">
+        <img id="lightbox-img" src="" alt="Asset" class="max-h-[60vh] max-w-full object-contain rounded-lg drop-shadow-md">
+      </div>
+      <div id="lightbox-details" class="p-4 bg-stone-50 border-t border-stone-200 text-xs text-stone-600 flex flex-wrap gap-4 items-center justify-between">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let charactersData = [];
+    let backgroundsData = [];
+    let stickersData = [];
+    let currentGlobalBg = 'bg-checker';
+    let activeCharFilter = 'all';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await Promise.all([
+        loadCharacters(),
+        loadBackgrounds(),
+        loadStickers()
+      ]);
+      populateSandboxControls();
+    });
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('text-amber-600', 'border-amber-500');
+        btn.classList.add('text-stone-500', 'border-transparent');
+      });
+
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) targetTab.classList.add('active');
+
+      const activeBtn = document.getElementById('tab-btn-' + tabId.replace('tab-', ''));
+      if (activeBtn) {
+        activeBtn.classList.remove('text-stone-500', 'border-transparent');
+        activeBtn.classList.add('text-amber-600', 'border-amber-500');
+      }
+    }
+
+    function setGlobalBg(bgClass, btn) {
+      currentGlobalBg = bgClass;
+      document.querySelectorAll('.bg-toggle-btn').forEach(b => {
+        b.className = 'bg-toggle-btn px-2.5 py-1 rounded-xl text-stone-500 font-medium hover:text-stone-800 text-xs';
+      });
+      btn.className = 'bg-toggle-btn px-2.5 py-1 rounded-xl bg-white text-stone-800 font-bold shadow-xs border border-stone-200 text-xs';
+
+      document.querySelectorAll('.sprite-preview-box').forEach(el => {
+        el.className = `sprite-preview-box h-48 w-full rounded-2xl flex items-center justify-center p-3 relative overflow-hidden transition-colors ${bgClass}`;
+      });
+
+      const lightboxBox = document.getElementById('lightbox-preview-container');
+      if (lightboxBox) {
+        lightboxBox.className = `flex-1 p-6 flex items-center justify-center overflow-auto ${bgClass}`;
+      }
+    }
+
+    async function loadCharacters() {
+      try {
+        const res = await fetch('/api/characters/all');
+        const data = await res.json();
+        charactersData = data.characters || [];
+        
+        let totalPoses = 0;
+        charactersData.forEach(c => totalPoses += (c.poses || []).length);
+        document.getElementById('metric-chars').textContent = `${charactersData.length} Characters`;
+        document.getElementById('metric-sprites').textContent = `${totalPoses} Poses`;
+
+        renderCharFilterPills();
+        renderCharacters();
+      } catch (err) {
+        console.error('Failed to load characters:', err);
+      }
+    }
+
+    function renderCharFilterPills() {
+      const container = document.getElementById('char-filter-pills');
+      let html = `<button onclick="filterCharBy('all', this)" class="char-pill px-3 py-1.5 rounded-xl bg-amber-500 text-white shadow-xs">All Characters</button>`;
+      charactersData.forEach(c => {
+        html += `<button onclick="filterCharBy('${c.id}', this)" class="char-pill px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700">
+          ${c.name.split(' ')[0]} (${(c.poses || []).length})
+        </button>`;
+      });
+      container.innerHTML = html;
+    }
+
+    function filterCharBy(charId, btn) {
+      activeCharFilter = charId;
+      document.querySelectorAll('.char-pill').forEach(b => {
+        b.className = 'char-pill px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700';
+      });
+      btn.className = 'char-pill px-3 py-1.5 rounded-xl bg-amber-500 text-white shadow-xs';
+      renderCharacters();
+    }
+
+    function filterSprites() {
+      const query = document.getElementById('sprite-search').value.toLowerCase().trim();
+      renderCharacters(query);
+    }
+
+    function renderCharacters(query = '') {
+      const container = document.getElementById('characters-container');
+      container.innerHTML = '';
+
+      const filtered = charactersData.filter(c => {
+        if (activeCharFilter !== 'all' && c.id !== activeCharFilter) return false;
+        if (!query) return true;
+        const matchesName = c.name.toLowerCase().includes(query) || c.role.toLowerCase().includes(query);
+        const matchesPose = (c.poses || []).some(p => p.label.toLowerCase().includes(query) || p.sprite.toLowerCase().includes(query));
+        return matchesName || matchesPose;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="py-12 text-center text-stone-400 font-medium">No character sprites match your filter.</div>`;
+        return;
+      }
+
+      filtered.forEach(char => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl p-6 border border-stone-200 shadow-sm space-y-5';
+
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-100">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-xl overflow-hidden border border-amber-200">
+                <img src="${char.sprite_url}" alt="${char.name}" class="w-full h-full object-contain p-1">
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-extrabold text-lg text-stone-900">${char.name}</h3>
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">${char.role}</span>
+                </div>
+                <p class="text-xs text-stone-500 font-medium mt-0.5">
+                  <span class="font-bold text-stone-700">Canon Outfit:</span> ${char.outfit} · 
+                  <span class="font-bold text-stone-700">Hair:</span> ${char.hair}
+                </p>
+              </div>
+            </div>
+            <div class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl flex items-center gap-1.5">
+              <span>✓</span> Canon Compliant
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="poses-${char.id}">
+          </div>
+        `;
+
+        container.appendChild(card);
+
+        const posesContainer = card.querySelector(`#poses-${char.id}`);
+        (char.poses || []).forEach(pose => {
+          if (query && !pose.label.toLowerCase().includes(query) && !pose.sprite.toLowerCase().includes(query) && !char.name.toLowerCase().includes(query)) {
+            return;
+          }
+
+          const spriteUrl = `/api/characters/sprite/${pose.sprite}`;
+          const poseEl = document.createElement('div');
+          poseEl.className = 'bg-stone-50 rounded-2xl border border-stone-200/80 p-3 space-y-2 hover:border-amber-300 transition-all group flex flex-col justify-between';
+          
+          poseEl.innerHTML = `
+            <div>
+              <div class="sprite-preview-box h-48 w-full rounded-2xl flex items-center justify-center p-3 relative overflow-hidden transition-colors ${currentGlobalBg} cursor-pointer" onclick="openLightbox('${char.name} — ${pose.label}', '${pose.sprite}', '${spriteUrl}')">
+                <img src="${spriteUrl}" alt="${pose.label}" class="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
+                <span class="absolute bottom-2 right-2 text-[10px] bg-black/40 text-white px-1.5 py-0.5 rounded backdrop-blur-xs font-mono opacity-0 group-hover:opacity-100 transition">Inspect</span>
+              </div>
+              <div class="mt-2.5">
+                <div class="font-bold text-xs text-stone-800 leading-tight">${pose.label}</div>
+                <div class="text-[10px] text-stone-400 font-mono mt-0.5 truncate">${pose.sprite}</div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-stone-200/60 flex items-center gap-1.5">
+              <button onclick="stageSpriteInSandbox('${char.id}', '${pose.id}')" class="flex-1 py-1.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] text-center transition shadow-xs flex items-center justify-center gap-1">
+                <span>🎭</span> Stage
+              </button>
+              <button onclick="openLightbox('${char.name} — ${pose.label}', '${pose.sprite}', '${spriteUrl}')" class="p-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Inspect Full Size">
+                🔍
+              </button>
+              <a href="${spriteUrl}" download="${pose.sprite}" class="p-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Download PNG">
+                💾
+              </a>
+            </div>
+          `;
+          posesContainer.appendChild(poseEl);
+        });
+      });
+    }
+
+    async function loadBackgrounds() {
+      try {
+        const res = await fetch('/api/characters/backgrounds');
+        const data = await res.json();
+        backgroundsData = data.backgrounds || [];
+        document.getElementById('metric-scenes').textContent = `${backgroundsData.length} Master Scenes`;
+        renderScenes('all');
+      } catch (err) {
+        console.error('Failed to load backgrounds:', err);
+      }
+    }
+
+    function filterScenes(category, btn) {
+      if (btn) {
+        document.querySelectorAll('.scene-filter-btn').forEach(b => {
+          b.className = 'scene-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs';
+        });
+        btn.className = 'scene-filter-btn px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-xs';
+      }
+      renderScenes(category);
+    }
+
+    function renderScenes(category = 'all') {
+      const container = document.getElementById('scenes-container');
+      container.innerHTML = '';
+
+      const outdoorIds = new Set(['beach', 'park', 'mountains', 'playground', 'farm_field', 'duck_pond', 'backyard_garden']);
+      const filtered = backgroundsData.filter(bg => {
+        if (category === 'outdoor') return outdoorIds.has(bg.id);
+        if (category === 'indoor') return !outdoorIds.has(bg.id);
+        return true;
+      });
+
+      filtered.forEach(bg => {
+        const isOutdoor = outdoorIds.has(bg.id);
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-3xl p-4 border border-stone-200 shadow-sm space-y-3 hover:border-amber-300 transition-all flex flex-col justify-between group';
+        
+        card.innerHTML = `
+          <div>
+            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-stone-100 border border-stone-100 cursor-pointer" onclick="openLightbox('${bg.name}', '${bg.filename} — 1920x1080 HD', '${bg.url}')">
+              <img src="${bg.url}" alt="${bg.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${isOutdoor ? 'bg-emerald-600/90 text-white' : 'bg-amber-600/90 text-white'} backdrop-blur-xs">
+                ${isOutdoor ? '🌳 Outdoor' : '🏠 Indoor'}
+              </span>
+              <span class="absolute bottom-2 right-2 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded font-mono font-bold backdrop-blur-xs">
+                1080p HD
+              </span>
+            </div>
+
+            <div class="mt-3">
+              <h3 class="font-extrabold text-sm text-stone-900 leading-snug">${bg.name}</h3>
+              <p class="text-[11px] text-stone-400 font-mono mt-0.5">${bg.filename}</p>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
+            <button onclick="stageBackgroundInSandbox('${bg.filename}', '${bg.name}')" class="flex-1 py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs text-center transition shadow-xs flex items-center justify-center gap-1.5">
+              <span>🎭</span> Stage in Sandbox
+            </button>
+            <button onclick="openLightbox('${bg.name}', '${bg.filename} — 1920x1080 HD', '${bg.url}')" class="p-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Inspect Fullscreen">
+              🔍
+            </button>
+            <a href="${bg.url}" download="${bg.filename}" class="p-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Download HD 1080p">
+              💾
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function loadStickers() {
+      try {
+        const res = await fetch('/api/scene-director/stickers/catalog');
+        const data = await res.json();
+        stickersData = data.stickers || [];
+        document.getElementById('metric-stickers').textContent = `${stickersData.length} Stickers`;
+        renderStickers('all');
+      } catch (err) {
+        console.error('Failed to load stickers:', err);
+      }
+    }
+
+    function filterStickers(type, btn) {
+      if (btn) {
+        document.querySelectorAll('.sticker-filter-btn').forEach(b => {
+          b.className = 'sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs';
+        });
+        btn.className = 'sticker-filter-btn px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-xs';
+      }
+      renderStickers(type);
+    }
+
+    function renderStickers(type = 'all') {
+      const container = document.getElementById('stickers-container');
+      container.innerHTML = '';
+
+      const filtered = stickersData.filter(s => {
+        if (type === 'all') return true;
+        return s.type === type;
+      });
+
+      filtered.forEach(stk => {
+        const imgUrl = `/api/scene-director/stickers/render/${stk.id}`;
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl p-3 border border-stone-200 shadow-xs flex flex-col justify-between space-y-2 hover:border-amber-300 transition-all group';
+        
+        card.innerHTML = `
+          <div>
+            <div class="sprite-preview-box h-28 w-full rounded-xl flex items-center justify-center p-2 relative overflow-hidden transition-colors ${currentGlobalBg} cursor-pointer" onclick="openLightbox('${stk.label || stk.id}', '${stk.id}.png — Educational Sticker', '${imgUrl}')">
+              <img src="${imgUrl}" alt="${stk.label || stk.id}" class="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
+            </div>
+            <div class="mt-2 text-center">
+              <div class="font-bold text-xs text-stone-800 truncate tc-font">${stk.label || stk.id}</div>
+              <div class="text-[10px] text-stone-400 capitalize">${stk.type} · ${stk.color_theme || 'standard'}</div>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-stone-100 flex items-center gap-1.5">
+            <button onclick="stageStickerInSandbox('${stk.id}')" class="flex-1 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[10px] text-center transition border border-amber-200">
+              Stage
+            </button>
+            <a href="${imgUrl}" download="${stk.id}.png" class="p-1 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition">
+              💾
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function populateSandboxControls() {
+      const bgSelect = document.getElementById('sandbox-bg-select');
+      bgSelect.innerHTML = '';
+      backgroundsData.forEach(bg => {
+        const opt = document.createElement('option');
+        opt.value = bg.filename;
+        opt.textContent = bg.name;
+        bgSelect.appendChild(opt);
+      });
+
+      const leftCharSelect = document.getElementById('left-char-select');
+      const rightCharSelect = document.getElementById('right-char-select');
+      const petCharSelect = document.getElementById('pet-char-select');
+
+      leftCharSelect.innerHTML = '';
+      rightCharSelect.innerHTML = '';
+      petCharSelect.innerHTML = '<option value="none">None (Hidden)</option>';
+
+      charactersData.forEach(c => {
+        const o1 = document.createElement('option');
+        o1.value = c.id;
+        o1.textContent = c.name;
+        leftCharSelect.appendChild(o1);
+
+        const o2 = document.createElement('option');
+        o2.value = c.id;
+        o2.textContent = c.name;
+        rightCharSelect.appendChild(o2);
+
+        const o3 = document.createElement('option');
+        o3.value = c.id;
+        o3.textContent = c.name;
+        petCharSelect.appendChild(o3);
+      });
+
+      leftCharSelect.value = 'levi';
+      rightCharSelect.value = 'luca';
+      petCharSelect.value = 'dog';
+
+      onLeftCharChange('levi');
+      onRightCharChange('luca');
+      onPetCharChange('dog');
+
+      const stkSelect = document.getElementById('sticker-select');
+      stkSelect.innerHTML = '<option value="none">None (No Badge)</option>';
+      stickersData.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.label || s.id;
+        stkSelect.appendChild(opt);
+      });
+      stkSelect.value = 'badge_good_morning';
+
+      updateStageLayout();
+    }
+
+    function onLeftCharChange(charId) {
+      const char = charactersData.find(c => c.id === charId);
+      const poseSelect = document.getElementById('left-pose-select');
+      poseSelect.innerHTML = '';
+      if (char && char.poses) {
+        char.poses.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.sprite;
+          opt.textContent = p.label;
+          poseSelect.appendChild(opt);
+        });
+      }
+      updateStageLayout();
+    }
+
+    function onRightCharChange(charId) {
+      const char = charactersData.find(c => c.id === charId);
+      const poseSelect = document.getElementById('right-pose-select');
+      poseSelect.innerHTML = '';
+      if (char && char.poses) {
+        char.poses.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.sprite;
+          opt.textContent = p.label;
+          poseSelect.appendChild(opt);
+        });
+      }
+      updateStageLayout();
+    }
+
+    function onPetCharChange(charId) {
+      const poseSelect = document.getElementById('pet-pose-select');
+      poseSelect.innerHTML = '';
+      if (charId === 'none') {
+        poseSelect.innerHTML = '<option value="none">None</option>';
+        updateStageLayout();
+        return;
+      }
+      const char = charactersData.find(c => c.id === charId);
+      if (char && char.poses) {
+        char.poses.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.sprite;
+          opt.textContent = p.label;
+          poseSelect.appendChild(opt);
+        });
+      }
+      updateStageLayout();
+    }
+
+    function setSandboxBg(bgFilename) {
+      const bgImg = document.getElementById('stage-bg-img');
+      bgImg.src = `/api/characters/background/${bgFilename}`;
+      const found = backgroundsData.find(b => b.filename === bgFilename);
+      if (found) {
+        document.getElementById('stage-active-bg-label').textContent = found.name;
+      }
+    }
+
+    function updateStageLayout() {
+      const leftPose = document.getElementById('left-pose-select').value;
+      const leftCharBox = document.getElementById('stage-char-left');
+      const leftCharImg = document.getElementById('stage-char-left-img');
+      const leftX = document.getElementById('left-x').value;
+      const leftScale = document.getElementById('left-scale').value / 100;
+      const leftFlip = document.getElementById('left-flip').checked;
+      document.getElementById('left-x-val').textContent = `${leftX}%`;
+      document.getElementById('left-scale-val').textContent = `${Math.round(leftScale*100)}%`;
+
+      if (leftPose && leftPose !== 'none') {
+        leftCharBox.style.display = 'block';
+        leftCharImg.src = `/api/characters/sprite/${leftPose}`;
+        leftCharBox.style.left = `${leftX}%`;
+        leftCharBox.style.transform = `translate(-50%, 0) scale(${leftScale}) scaleX(${leftFlip ? -1 : 1})`;
+      } else {
+        leftCharBox.style.display = 'none';
+      }
+
+      const rightPose = document.getElementById('right-pose-select').value;
+      const rightCharBox = document.getElementById('stage-char-right');
+      const rightCharImg = document.getElementById('stage-char-right-img');
+      const rightX = document.getElementById('right-x').value;
+      const rightScale = document.getElementById('right-scale').value / 100;
+      const rightFlip = document.getElementById('right-flip').checked;
+      document.getElementById('right-x-val').textContent = `${rightX}%`;
+      document.getElementById('right-scale-val').textContent = `${Math.round(rightScale*100)}%`;
+
+      if (rightPose && rightPose !== 'none') {
+        rightCharBox.style.display = 'block';
+        rightCharImg.src = `/api/characters/sprite/${rightPose}`;
+        rightCharBox.style.left = `${rightX}%`;
+        rightCharBox.style.transform = `translate(-50%, 0) scale(${rightScale}) scaleX(${rightFlip ? -1 : 1})`;
+      } else {
+        rightCharBox.style.display = 'none';
+      }
+
+      const petCharId = document.getElementById('pet-char-select').value;
+      const petPose = document.getElementById('pet-pose-select').value;
+      const petBox = document.getElementById('stage-char-pet');
+      const petImg = document.getElementById('stage-char-pet-img');
+      const petX = document.getElementById('pet-x').value;
+      const petFlip = document.getElementById('pet-flip').checked;
+      document.getElementById('pet-x-val').textContent = `${petX}%`;
+
+      if (petCharId !== 'none' && petPose && petPose !== 'none') {
+        petBox.style.display = 'block';
+        petImg.src = `/api/characters/sprite/${petPose}`;
+        petBox.style.left = `${petX}%`;
+        petBox.style.transform = `translate(-50%, 0) scale(1) scaleX(${petFlip ? -1 : 1})`;
+      } else {
+        petBox.style.display = 'none';
+      }
+
+      const stickerId = document.getElementById('sticker-select').value;
+      const stickerBox = document.getElementById('stage-sticker');
+      const stickerImg = document.getElementById('stage-sticker-img');
+      const stickerY = document.getElementById('sticker-y').value;
+      document.getElementById('sticker-y-val').textContent = `${stickerY}%`;
+
+      if (stickerId && stickerId !== 'none') {
+        stickerBox.style.display = 'block';
+        stickerImg.src = `/api/scene-director/stickers/render/${stickerId}`;
+        stickerBox.style.top = `${stickerY}%`;
+      } else {
+        stickerBox.style.display = 'none';
+      }
+    }
+
+    function stageSpriteInSandbox(charId, poseId) {
+      switchTab('tab-sandbox');
+      const leftCharSelect = document.getElementById('left-char-select');
+      leftCharSelect.value = charId;
+      onLeftCharChange(charId);
+      
+      const char = charactersData.find(c => c.id === charId);
+      const poseObj = char ? char.poses.find(p => p.id === poseId) : null;
+      if (poseObj) {
+        document.getElementById('left-pose-select').value = poseObj.sprite;
+      }
+      updateStageLayout();
+    }
+
+    function stageBackgroundInSandbox(bgFilename, bgName) {
+      switchTab('tab-sandbox');
+      document.getElementById('sandbox-bg-select').value = bgFilename;
+      setSandboxBg(bgFilename);
+    }
+
+    function stageStickerInSandbox(stickerId) {
+      switchTab('tab-sandbox');
+      document.getElementById('sticker-select').value = stickerId;
+      updateStageLayout();
+    }
+
+    function resetSandbox() {
+      document.getElementById('left-x').value = 20;
+      document.getElementById('left-scale').value = 100;
+      document.getElementById('left-flip').checked = false;
+      document.getElementById('right-x').value = 72;
+      document.getElementById('right-scale').value = 100;
+      document.getElementById('right-flip').checked = true;
+      document.getElementById('pet-x').value = 46;
+      document.getElementById('pet-flip').checked = false;
+      document.getElementById('sticker-y').value = 12;
+      updateStageLayout();
+    }
+
+    function applyPreset(presetKey) {
+      if (presetKey === 'morning') {
+        setSandboxBg('bg_nursery.png');
+        document.getElementById('sandbox-bg-select').value = 'bg_nursery.png';
+        
+        document.getElementById('left-char-select').value = 'levi';
+        onLeftCharChange('levi');
+        document.getElementById('left-pose-select').value = 'levi_waving.png';
+        document.getElementById('left-x').value = 22;
+        document.getElementById('left-flip').checked = false;
+
+        document.getElementById('right-char-select').value = 'luca';
+        onRightCharChange('luca');
+        document.getElementById('right-pose-select').value = 'luca_waving.png';
+        document.getElementById('right-x').value = 75;
+        document.getElementById('right-flip').checked = true;
+
+        document.getElementById('pet-char-select').value = 'dog';
+        onPetCharChange('dog');
+        document.getElementById('pet-pose-select').value = 'dog_default.png';
+        document.getElementById('pet-x').value = 48;
+
+        document.getElementById('sticker-select').value = 'badge_good_morning';
+      } else if (presetKey === 'breakfast') {
+        setSandboxBg('bg_kitchen.png');
+        document.getElementById('sandbox-bg-select').value = 'bg_kitchen.png';
+
+        document.getElementById('left-char-select').value = 'levi';
+        onLeftCharChange('levi');
+        document.getElementById('left-pose-select').value = 'levi_eating.png';
+        document.getElementById('left-x').value = 25;
+        document.getElementById('left-flip').checked = false;
+
+        document.getElementById('right-char-select').value = 'luca';
+        onRightCharChange('luca');
+        document.getElementById('right-pose-select').value = 'luca_eating.png';
+        document.getElementById('right-x').value = 72;
+        document.getElementById('right-flip').checked = true;
+
+        document.getElementById('pet-char-select').value = 'dog';
+        onPetCharChange('dog');
+        document.getElementById('pet-pose-select').value = 'dog_eating_banana.png';
+        document.getElementById('pet-x').value = 48;
+
+        document.getElementById('sticker-select').value = 'badge_thank_you';
+      } else if (presetKey === 'beach') {
+        setSandboxBg('bg_beach.png');
+        document.getElementById('sandbox-bg-select').value = 'bg_beach.png';
+
+        document.getElementById('left-char-select').value = 'levi';
+        onLeftCharChange('levi');
+        document.getElementById('left-pose-select').value = 'levi_default.png';
+        document.getElementById('left-x').value = 28;
+
+        document.getElementById('right-char-select').value = 'luca';
+        onRightCharChange('luca');
+        document.getElementById('right-pose-select').value = 'luca_waving.png';
+        document.getElementById('right-x').value = 68;
+
+        document.getElementById('pet-char-select').value = 'dog';
+        onPetCharChange('dog');
+        document.getElementById('pet-pose-select').value = 'dog_default.png';
+        document.getElementById('pet-x').value = 46;
+
+        document.getElementById('sticker-select').value = 'prop_star';
+      } else if (presetKey === 'dimsum') {
+        setSandboxBg('bg_dining.png');
+        document.getElementById('sandbox-bg-select').value = 'bg_dining.png';
+
+        document.getElementById('left-char-select').value = 'dad';
+        onLeftCharChange('dad');
+        document.getElementById('left-pose-select').value = 'dad_default.png';
+        document.getElementById('left-x').value = 20;
+
+        document.getElementById('right-char-select').value = 'grandparents_maternal';
+        onRightCharChange('grandparents_maternal');
+        document.getElementById('right-pose-select').value = 'grandparents_maternal_default.png';
+        document.getElementById('right-x').value = 75;
+
+        document.getElementById('pet-char-select').value = 'mom';
+        onPetCharChange('mom');
+        document.getElementById('pet-pose-select').value = 'mom_default.png';
+        document.getElementById('pet-x').value = 48;
+
+        document.getElementById('sticker-select').value = 'badge_family';
+      } else if (presetKey === 'bedtime') {
+        setSandboxBg('bg_nursery.png');
+        document.getElementById('sandbox-bg-select').value = 'bg_nursery.png';
+
+        document.getElementById('left-char-select').value = 'levi';
+        onLeftCharChange('levi');
+        document.getElementById('left-pose-select').value = 'levi_sleeping.png';
+        document.getElementById('left-x').value = 28;
+
+        document.getElementById('right-char-select').value = 'luca';
+        onRightCharChange('luca');
+        document.getElementById('right-pose-select').value = 'luca_sleeping.png';
+        document.getElementById('right-x').value = 70;
+
+        document.getElementById('pet-char-select').value = 'dog';
+        onPetCharChange('dog');
+        document.getElementById('pet-pose-select').value = 'dog_default.png';
+        document.getElementById('pet-x').value = 50;
+
+        document.getElementById('sticker-select').value = 'badge_good_job';
+      }
+      updateStageLayout();
+    }
+
+    function openLightbox(title, subtitle, url) {
+      document.getElementById('lightbox-title').textContent = title;
+      document.getElementById('lightbox-subtitle').textContent = subtitle;
+      document.getElementById('lightbox-img').src = url;
+      document.getElementById('lightbox-download').href = url;
+      document.getElementById('lightbox-download').download = subtitle.split(' ')[0] || 'asset.png';
+
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        document.getElementById('lightbox-details').innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-stone-900">Dimensions:</span> 
+            <span>${img.naturalWidth} × ${img.naturalHeight} px</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-stone-900">Format:</span> 
+            <span>PNG Alpha Transparency</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-stone-900">Aspect Ratio:</span> 
+            <span>${(img.naturalWidth / img.naturalHeight).toFixed(2)} : 1</span>
+          </div>
+        `;
+      };
+
+      document.getElementById('lightbox-modal').classList.remove('hidden');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox-modal').classList.add('hidden');
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    async function exportSandboxImage() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1920;
+      canvas.height = 1080;
+      const ctx = canvas.getContext('2d');
+
+      const bgImg = document.getElementById('stage-bg-img');
+      const leftBox = document.getElementById('stage-char-left');
+      const rightBox = document.getElementById('stage-char-right');
+      const petBox = document.getElementById('stage-char-pet');
+      const stickerBox = document.getElementById('stage-sticker');
+
+      const loadImage = (src) => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+
+      try {
+        const loadedBg = await loadImage(bgImg.src);
+        ctx.drawImage(loadedBg, 0, 0, 1920, 1080);
+
+        if (leftBox.style.display !== 'none') {
+          const leftImg = document.getElementById('stage-char-left-img');
+          const loadedLeft = await loadImage(leftImg.src);
+          const leftX = parseInt(document.getElementById('left-x').value) / 100 * 1920;
+          const leftScale = parseInt(document.getElementById('left-scale').value) / 100;
+          const leftFlip = document.getElementById('left-flip').checked;
+          const h = 540 * leftScale;
+          const w = (loadedLeft.width / loadedLeft.height) * h;
+          const y = 1080 - h - 65;
+
+          ctx.save();
+          ctx.translate(leftX, y);
+          if (leftFlip) {
+            ctx.scale(-1, 1);
+            ctx.drawImage(loadedLeft, -w/2, 0, w, h);
+          } else {
+            ctx.drawImage(loadedLeft, -w/2, 0, w, h);
+          }
+          ctx.restore();
+        }
+
+        if (rightBox.style.display !== 'none') {
+          const rightImg = document.getElementById('stage-char-right-img');
+          const loadedRight = await loadImage(rightImg.src);
+          const rightX = parseInt(document.getElementById('right-x').value) / 100 * 1920;
+          const rightScale = parseInt(document.getElementById('right-scale').value) / 100;
+          const rightFlip = document.getElementById('right-flip').checked;
+          const h = 540 * rightScale;
+          const w = (loadedRight.width / loadedRight.height) * h;
+          const y = 1080 - h - 65;
+
+          ctx.save();
+          ctx.translate(rightX, y);
+          if (rightFlip) {
+            ctx.scale(-1, 1);
+            ctx.drawImage(loadedRight, -w/2, 0, w, h);
+          } else {
+            ctx.drawImage(loadedRight, -w/2, 0, w, h);
+          }
+          ctx.restore();
+        }
+
+        if (petBox.style.display !== 'none') {
+          const petImg = document.getElementById('stage-char-pet-img');
+          const loadedPet = await loadImage(petImg.src);
+          const petX = parseInt(document.getElementById('pet-x').value) / 100 * 1920;
+          const petFlip = document.getElementById('pet-flip').checked;
+          const h = 330;
+          const w = (loadedPet.width / loadedPet.height) * h;
+          const y = 1080 - h - 45;
+
+          ctx.save();
+          ctx.translate(petX, y);
+          if (petFlip) {
+            ctx.scale(-1, 1);
+            ctx.drawImage(loadedPet, -w/2, 0, w, h);
+          } else {
+            ctx.drawImage(loadedPet, -w/2, 0, w, h);
+          }
+          ctx.restore();
+        }
+
+        if (stickerBox.style.display !== 'none') {
+          const stkImg = document.getElementById('stage-sticker-img');
+          const loadedStk = await loadImage(stkImg.src);
+          const stkY = parseInt(document.getElementById('sticker-y').value) / 100 * 1080;
+          const h = 130;
+          const w = (loadedStk.width / loadedStk.height) * h;
+          const x = 960 - (w / 2);
+          ctx.drawImage(loadedStk, x, stkY, w, h);
+        }
+
+        const a = document.createElement('a');
+        a.download = `staged_scene_${Date.now()}.png`;
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+      } catch (err) {
+        console.error('Snapshot failed:', err);
+        alert('Failed to generate snapshot: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

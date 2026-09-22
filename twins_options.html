@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Levi & Luca: Character Variations Picker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+    .card-zoom:hover img {
+      transform: scale(1.02);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased p-4 md:p-8">
+  <div class="max-w-6xl mx-auto space-y-10">
+
+    <!-- Top Header -->
+    <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 text-white p-6 md:p-8 rounded-3xl shadow-lg">
+      <div class="flex flex-col md:flex-row justify-between md:items-center gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur text-white text-xs font-bold rounded-full mb-3">
+            <span>🎯</span> Photo-by-Photo Character Picker
+          </div>
+          <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">
+            Levi & Luca: Character Design Selection
+          </h1>
+          <p class="text-sm md:text-base text-purple-100 mt-2 max-w-2xl leading-relaxed">
+            We locked in <strong>Luca Option 2</strong> based on your choice! Below, check out the newly drafted <strong>Levi Option 4</strong> featuring his non-blocky feathered hair, sharper jawline, and big radiant smile.
+          </p>
+        </div>
+        <div class="flex flex-col gap-2 shrink-0">
+          <a href="./style_showcase.html" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 text-center transition">
+            ← View Full Family Showcase
+          </a>
+          <span class="text-xs text-purple-200 text-center">Server URL: http://localhost:3000/twins_options.html</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE BY SIDE PAIRING SPOTLIGHT -->
+    <div class="bg-white border-2 border-indigo-200 rounded-3xl p-6 md:p-8 shadow-md">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-indigo-100">
+        <div>
+          <span class="px-3 py-1 bg-indigo-100 text-indigo-800 font-extrabold text-xs rounded-full">
+            🌟 Recommended Twin Pair
+          </span>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">
+            Levi (New Option 4) & Luca (Approved Option 2)
+          </h2>
+        </div>
+        <div class="text-xs text-slate-500 font-medium">
+          Drawn in matching watercolor preschool storybook style
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <!-- Levi Spotlight -->
+        <div class="bg-rose-50/60 border-2 border-rose-200 rounded-2xl p-5 space-y-3 text-center">
+          <div class="flex items-center justify-between">
+            <span class="bg-rose-600 text-white font-extrabold text-xs px-3 py-1 rounded-lg">哥哥 Levi</span>
+            <span class="text-xs font-bold text-rose-700 bg-rose-100 px-2.5 py-0.5 rounded-full">⭐ NEW Option 4</span>
+          </div>
+          <div class="h-80 rounded-xl overflow-hidden bg-white border border-rose-200 p-2 flex items-center justify-center shadow-inner">
+            <img src="./assets/characters/variations/levi_var4.jpg" class="max-h-full object-contain rounded-lg" alt="Levi Option 4">
+          </div>
+          <p class="text-xs text-rose-950 font-medium leading-relaxed text-left">
+            ✓ <strong>Sharper face structure:</strong> Leaner jawline with a gentle tapered chin (not round).<br>
+            ✓ <strong>Natural feathered hair:</strong> Soft separated strands instead of a solid block.<br>
+            ✓ <strong>Big bright smile:</strong> Large beaming open-mouth grin full of joy!
+          </p>
+        </div>
+
+        <!-- Luca Spotlight -->
+        <div class="bg-amber-50/60 border-2 border-amber-200 rounded-2xl p-5 space-y-3 text-center">
+          <div class="flex items-center justify-between">
+            <span class="bg-amber-500 text-white font-extrabold text-xs px-3 py-1 rounded-lg">細佬 Luca</span>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">✅ YOU APPROVED (Option 2)</span>
+          </div>
+          <div class="h-80 rounded-xl overflow-hidden bg-white border border-amber-200 p-2 flex items-center justify-center shadow-inner">
+            <img src="./assets/characters/variations/luca_var2.jpg" class="max-h-full object-contain rounded-lg" alt="Luca Option 2">
+          </div>
+          <p class="text-xs text-amber-950 font-medium leading-relaxed text-left">
+            ✓ <strong>Playful hair tuft:</strong> Standing cowlick at the crown.<br>
+            ✓ <strong>Sweet toddler smile:</strong> Two front baby teeth showing.<br>
+            ✓ <strong>Sunny yellow polo:</strong> Perfect cheerful contrast to Levi's red.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVI FULL VARIATIONS SECTION -->
+    <div class="space-y-6">
+      <div class="flex items-center justify-between border-b-2 border-rose-200 pb-3">
+        <div class="flex items-center gap-3">
+          <span class="bg-rose-600 text-white font-black text-sm px-3.5 py-1.5 rounded-xl">哥哥</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">Levi (Older Brother) — All 4 Variations</h2>
+        </div>
+        <span class="text-xs font-bold text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
+          Red Polo + Navy Shorts
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <!-- Levi Option 4 (NEWEST) -->
+        <div class="bg-white border-2 border-rose-400 ring-2 ring-rose-200 rounded-3xl p-4 shadow-md space-y-3 card-zoom">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 bg-rose-600 text-white font-extrabold text-xs rounded-lg shadow-sm">
+              ⭐ Option 4 (NEW)
+            </span>
+            <span class="text-[11px] text-rose-600 font-bold">Sharper Face + Big Smile</span>
+          </div>
+
+          <div class="h-64 rounded-2xl overflow-hidden bg-rose-50/40 border border-rose-200 shadow-inner p-2 flex items-center justify-center">
+            <img src="./assets/characters/variations/levi_var4.jpg" class="max-h-full object-contain rounded-xl" alt="Levi Option 4">
+          </div>
+
+          <div class="text-xs text-slate-600 bg-rose-50/50 p-2.5 rounded-xl border border-rose-100 leading-relaxed">
+            <strong>Key Features:</strong> Non-blocky feathered bangs, leaner tapered jawline, huge radiant open smile with teeth. Matches Luca Option 2!
+          </div>
+        </div>
+
+        <!-- Levi Option 1 -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm space-y-3 card-zoom opacity-80 hover:opacity-100">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-bold text-xs rounded-lg">
+              Option 1
+            </span>
+            <span class="text-[11px] text-slate-400">Photo 1</span>
+          </div>
+
+          <div class="h-64 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-inner p-2 flex items-center justify-center">
+            <img src="./assets/characters/variations/levi_var1.jpg" class="max-h-full object-contain rounded-xl" alt="Levi Option 1">
+          </div>
+
+          <div class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 leading-relaxed">
+            <strong>Key Features:</strong> Straight flat fringe bangs, gentle calm smile, rounder cheeks.
+          </div>
+        </div>
+
+        <!-- Levi Option 2 -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm space-y-3 card-zoom opacity-80 hover:opacity-100">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-bold text-xs rounded-lg">
+              Option 2
+            </span>
+            <span class="text-[11px] text-slate-400">Photo 2</span>
+          </div>
+
+          <div class="h-64 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-inner p-2 flex items-center justify-center">
+            <img src="./assets/characters/variations/levi_var2.jpg" class="max-h-full object-contain rounded-xl" alt="Levi Option 2">
+          </div>
+
+          <div class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 leading-relaxed">
+            <strong>Key Features:</strong> Gentle closed-mouth smile, thicker bowl fringe.
+          </div>
+        </div>
+
+        <!-- Levi Option 3 -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm space-y-3 card-zoom opacity-80 hover:opacity-100">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-bold text-xs rounded-lg">
+              Option 3
+            </span>
+            <span class="text-[11px] text-slate-400">Photo 3</span>
+          </div>
+
+          <div class="h-64 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-inner p-2 flex items-center justify-center">
+            <img src="./assets/characters/variations/levi_var3.jpg" class="max-h-full object-contain rounded-xl" alt="Levi Option 3">
+          </div>
+
+          <div class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 leading-relaxed">
+            <strong>Key Features:</strong> Tilted head, large eyes, sweet toddler lip curve.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LUCA SECTION -->
+    <div class="space-y-6">
+      <div class="flex items-center justify-between border-b-2 border-amber-200 pb-3">
+        <div class="flex items-center gap-3">
+          <span class="bg-amber-500 text-white font-black text-sm px-3.5 py-1.5 rounded-xl">細佬</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">Luca (Younger Brother) — Variations</h2>
+        </div>
+        <span class="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+          Yellow Polo + Navy Shorts
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Luca Option 2 (SELECTED) -->
+        <div class="bg-white border-2 border-emerald-500 ring-4 ring-emerald-100 rounded-3xl p-5 shadow-lg space-y-4 card-zoom">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 bg-emerald-600 text-white font-extrabold text-xs rounded-full shadow-sm">
+              ✅ SELECTED BY YOU (Option 2)
+            </span>
+            <span class="text-xs text-emerald-600 font-bold">Approved</span>
+          </div>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">Approved 2D Cartoon</div>
+            <div class="h-64 rounded-2xl overflow-hidden bg-white border-2 border-emerald-200 shadow-inner p-2 flex items-center justify-center">
+              <img src="./assets/characters/variations/luca_var2.jpg" class="max-h-full object-contain rounded-xl" alt="Luca Option 2">
+            </div>
+          </div>
+
+          <div class="text-xs text-emerald-900 bg-emerald-50 p-3 rounded-xl border border-emerald-200 leading-relaxed">
+            <strong>Key Features:</strong> Wide curious sparkling eyes, gentle open smile with two front teeth, natural top tuft standing up.
+          </div>
+        </div>
+
+        <!-- Luca Option 1 -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-4 card-zoom opacity-70 hover:opacity-100">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 bg-slate-100 text-slate-700 font-bold text-xs rounded-full">
+              Luca — Option 1
+            </span>
+            <span class="text-xs text-slate-400">Photo 1</span>
+          </div>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">2D Cartoon Result</div>
+            <div class="h-64 rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-inner p-2 flex items-center justify-center">
+              <img src="./assets/characters/variations/luca_var1.jpg" class="max-h-full object-contain rounded-xl" alt="Luca Option 1">
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">
+            <strong>Key Features:</strong> Big open-mouth laugh showing teeth, crinkly eyes, waving hand.
+          </div>
+        </div>
+
+        <!-- Luca Option 3 -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-4 card-zoom opacity-70 hover:opacity-100">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 bg-slate-100 text-slate-700 font-bold text-xs rounded-full">
+              Luca — Option 3
+            </span>
+            <span class="text-xs text-slate-400">Photo 3</span>
+          </div>
+
+          <div class="space-y-1">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">2D Cartoon Result</div>
+            <div class="h-64 rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-inner p-2 flex items-center justify-center">
+              <img src="./assets/characters/variations/luca_var3.jpg" class="max-h-full object-contain rounded-xl" alt="Luca Option 3">
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">
+            <strong>Key Features:</strong> Rounder baby face, upward-swept cowlick tuft.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Final Approval Action Card -->
+    <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-700">
+      <div class="space-y-2">
+        <h3 class="text-2xl font-black">
+          How does Levi Option 4 look to you?
+        </h3>
+        <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
+          If <strong>Levi Option 4</strong> hits the mark for his sharper face, natural non-blocky hair, and big radiant smile alongside <strong>Luca Option 2</strong>, let me know in the chat! Once approved, we will lock both in and start background environments and animation.
+        </p>
+      </div>
+      <div class="shrink-0 w-full md:w-auto flex flex-col sm:flex-row gap-3">
+        <a href="./style_showcase.html" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-xl text-center border border-white/20 transition">
+          View All Family Members →
+        </a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

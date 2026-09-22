@@ -1,0 +1,205 @@
+{
+  "characters": [
+    {
+      "id": "dad",
+      "name_display": "Dad / 爸爸",
+      "jyutping": "baa4-baa1",
+      "pinyin": "bà ba",
+      "relation": "father",
+      "role": "Narrator / Primary Instructor",
+      "traits": {
+        "hair": "short neat side-swept black hair",
+        "eyes": "warm, friendly dark brown eyes",
+        "glasses": true,
+        "glasses_style": "modern thin rectangular black frames",
+        "facial_hair": "slight neat stubble / clean-shaven",
+        "smile": "warm, encouraging parental smile",
+        "signature_colors": ["navy blue", "slate grey"]
+      },
+      "wardrobe": ["casual navy t-shirt and jeans", "cozy home sweater"],
+      "voice_profile_id": "dad_cantonese"
+    },
+    {
+      "id": "mom",
+      "name_display": "Mom / 媽媽",
+      "jyutping": "maa4-maa1",
+      "pinyin": "mā ma",
+      "relation": "mother",
+      "role": "Co-Protagonist / Visual Mom (non-speaking)",
+      "traits": {
+        "hair": "shoulder-length dark hair in a cute side ponytail with soft bangs",
+        "eyes": "bright, gentle almond eyes with subtle stylish eyeliner",
+        "glasses": false,
+        "smile": "radiant, sunny, affectionate smile",
+        "signature_colors": ["warm coral pink", "cream"]
+      },
+      "wardrobe": ["warm pink knit sweater/turtleneck", "cozy home loungewear"],
+      "voice_profile_id": "dad_cantonese"
+    },
+    {
+      "id": "levi",
+      "name_display": "Levi (Older Twin Brother / 哥哥)",
+      "jyutping": "go4-go1 / bi4-bi1",
+      "pinyin": "gē ge / bǎo bao",
+      "relation": "son_twin_older",
+      "role": "Protagonist Learner",
+      "traits": {
+        "name": "Levi",
+        "age": "toddler (1-2 years)",
+        "hair": "neat straight downward front fringe / soft dark bangs",
+        "eyes": "big curious sparkling cartoon eyes",
+        "cheeks": "chubby rosy cheeks",
+        "personality": "observant, thoughtful, sweet",
+        "signature_colors": ["sky blue", "classic red"]
+      },
+      "wardrobe": ["red polo shirt with white/blue shorts", "sky blue toddler onesie with bear motif"]
+    },
+    {
+      "id": "luca",
+      "name_display": "Luca (Younger Twin Brother / 細佬)",
+      "jyutping": "sai3-lou2 / bi4-bi1",
+      "pinyin": "dì di / bǎo bao",
+      "relation": "son_twin_younger",
+      "role": "Protagonist Learner",
+      "traits": {
+        "name": "Luca",
+        "age": "toddler (1-2 years)",
+        "hair": "cute spiky textured hair tuft pointing up playfully",
+        "eyes": "wide sparkling anime-style puppy eyes",
+        "cheeks": "very round squishy cheeks, playful open-mouth grin",
+        "personality": "energetic, playful, giggly",
+        "signature_colors": ["sunny yellow", "bright plaid blue"]
+      },
+      "wardrobe": ["blue/purple plaid collared shirt with striped shorts", "sunny yellow onesie with star motif"]
+    },
+    {
+      "id": "family_dog",
+      "name_display": "Family Dog / 小白狗 (日本狐狸犬 / 白波美)",
+      "jyutping": "siu2-baak6-gau2",
+      "pinyin": "xiǎo bái gǒu",
+      "relation": "pet",
+      "role": "Comic Relief / Attention Magnet",
+      "traits": {
+        "breed": "Japanese Spitz / White Pomeranian (日本狐狸犬 / 白松獅犬)",
+        "coat": "pure cloud-like fluffy voluminous white fur, soft like a cotton ball",
+        "ears": "small alert triangular prick ears poking out of fluffy head",
+        "eyes": "shiny black round puppy eyes with sweet smiling dog expression",
+        "nose": "cute black button nose",
+        "tail": "fluffy plume tail curled over the back",
+        "favorite_toy": "white tennis ball or plush toy held happily in mouth"
+      },
+      "wardrobe": ["signature red collar with golden bell", "yellow toddler raincoat for outdoor scenes"]
+    },
+    {
+      "id": "paternal_grandpa",
+      "name_display": "Grandpa (Paternal) / 爺爺",
+      "jyutping": "je4-je4",
+      "pinyin": "yé ye",
+      "relation": "paternal_grandfather",
+      "role": "Supporting Family",
+      "traits": {
+        "hair": "sleek neat dark hair with slight silvering at temples",
+        "glasses": true,
+        "glasses_style": "thin rectangular black wire frames",
+        "expression": "gentle, affectionate, smiling storytelling grandfather",
+        "signature_colors": ["navy blue", "grey"]
+      },
+      "wardrobe": ["plaid checkered polo shirt with dark collar and grey trousers"]
+    },
+    {
+      "id": "paternal_grandma",
+      "name_display": "Grandma (Paternal) / 嫲嫲",
+      "jyutping": "maa4-maa4",
+      "pinyin": "mǎ ma",
+      "relation": "paternal_grandmother",
+      "role": "Supporting Family",
+      "traits": {
+        "hair": "short styled brownish-grey bob haircut with side fringe",
+        "glasses": true,
+        "glasses_style": "delicate gold-rimmed oval glasses",
+        "expression": "warm, joyful, doting grandmother smile",
+        "signature_colors": ["soft magenta", "rose purple"]
+      },
+      "wardrobe": ["magenta patterned top with white long sleeves and dark trousers"]
+    },
+    {
+      "id": "maternal_grandpa",
+      "name_display": "Grandpa (Maternal) / 公公",
+      "jyutping": "gung1-gung1",
+      "pinyin": "gōng gong",
+      "relation": "maternal_grandfather",
+      "role": "Supporting Family",
+      "traits": {
+        "hair": "close-cropped buzz cut salt-and-pepper hair",
+        "glasses": false,
+        "expression": "kindly arched eyebrows, serene, friendly grandfather smile",
+        "signature_colors": ["clean white", "dark slate"]
+      },
+      "wardrobe": ["relaxed white graphic tee and comfortable trousers"]
+    },
+    {
+      "id": "maternal_grandma",
+      "name_display": "Grandma (Maternal) / 婆婆",
+      "jyutping": "po4-po4",
+      "pinyin": "pó po",
+      "relation": "maternal_grandmother",
+      "role": "Supporting Family",
+      "traits": {
+        "hair": "short salt-and-pepper pixie cut with soft textured bangs",
+        "glasses": false,
+        "expression": "warm, round cheerful face, loving grandmotherly smile",
+        "signature_colors": ["soft cream", "lavender"]
+      },
+      "wardrobe": ["relaxed white tee with beaded bracelet and dark trousers"]
+    },
+    {
+      "id": "aunt_sister",
+      "name_display": "Auntie / 姑媽",
+      "jyutping": "gu1-maa1",
+      "pinyin": "gū mā",
+      "relation": "aunt",
+      "role": "Supporting Family",
+      "traits": {
+        "hair": "dark hair tied back neatly, playful bangs",
+        "glasses": true,
+        "glasses_style": "chic dark rounded frames",
+        "expression": "bright, fun, energetic, cheerful laugh",
+        "signature_colors": ["beige", "sand"]
+      },
+      "wardrobe": ["cozy knitted knit sweater or casual tee"]
+    },
+    {
+      "id": "cousin_ryan",
+      "name_display": "Cousin Ryan / 表哥",
+      "jyutping": "biu2-go1",
+      "pinyin": "biǎo gē",
+      "relation": "cousin_older",
+      "role": "Supporting Family / Big Brother Role Model",
+      "traits": {
+        "age": "young boy (around 6-7 years)",
+        "hair": "short dark boy cut with textured bangs",
+        "glasses": true,
+        "glasses_style": "sporty black/neon frame glasses",
+        "expression": "enthusiastic, smiling, adventurous big cousin",
+        "signature_colors": ["sky blue", "under armour sport prints"]
+      },
+      "wardrobe": ["cool athletic t-shirt and shorts"]
+    },
+    {
+      "id": "cousin_younger",
+      "name_display": "Younger Cousin / 表弟",
+      "jyutping": "biu2-dai6",
+      "pinyin": "biǎo dì",
+      "relation": "cousin_younger",
+      "role": "Supporting Family / Toddler Playmate",
+      "traits": {
+        "age": "toddler boy (around 2-3 years)",
+        "hair": "cute soft toddler hair",
+        "accessories": ["fun blue toddler sunglasses"],
+        "expression": "curious, funny, giggly toddler",
+        "signature_colors": ["royal blue", "grey"]
+      },
+      "wardrobe": ["blue tee and comfy shorts"]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 320" width="100%" height="100%">
+  <!-- Paternal Grandparents: 爺爺 (Checkered polo, wire glasses) & 嫲嫲 (Bob cut, gold glasses, magenta top) -->
+  <ellipse cx="180" cy="295" rx="120" ry="16" fill="#0f172a" opacity="0.12"/>
+  
+  <!-- 爺爺 (Grandpa Left) -->
+  <g id="yeye">
+    <!-- Body: Blue Checkered Polo -->
+    <rect x="55" y="155" width="100" height="130" rx="20" fill="#0284c7" stroke="#0f172a" stroke-width="3.5"/>
+    <path d="M 80 155 L 80 285 M 110 155 L 110 285 M 130 155 L 130 285" stroke="#38bdf8" stroke-width="2"/>
+    <path d="M 55 185 L 155 185 M 55 215 L 155 215 M 55 245 L 155 245" stroke="#38bdf8" stroke-width="2"/>
+    <!-- Dark Collar -->
+    <path d="M 85 155 L 105 175 L 125 155 Z" fill="#1e293b" stroke="#0f172a" stroke-width="2.5"/>
+    
+    <!-- Head -->
+    <circle cx="105" cy="100" r="40" fill="#fed7aa" stroke="#0f172a" stroke-width="3.5"/>
+    <!-- Sleek Salt-and-Pepper Combed Hair -->
+    <path d="M 68 95 Q 65 58 105 54 Q 145 58 142 95 C 132 80 120 74 105 74 C 90 74 78 80 68 95 Z" fill="#475569" stroke="#0f172a" stroke-width="3.5"/>
+    
+    <!-- Thin Rectangular Black Wire Glasses -->
+    <rect x="80" y="90" width="22" height="18" rx="4" fill="none" stroke="#0f172a" stroke-width="3"/>
+    <rect x="108" y="90" width="22" height="18" rx="4" fill="none" stroke="#0f172a" stroke-width="3"/>
+    <line x1="102" y1="99" x2="108" y2="99" stroke="#0f172a" stroke-width="2.5"/>
+    <circle cx="91" cy="99" r="3.5" fill="#0f172a"/>
+    <circle cx="119" cy="99" r="3.5" fill="#0f172a"/>
+    
+    <!-- Gentle Smile -->
+    <path d="M 92 122 Q 105 132 118 122" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- 嫲嫲 (Grandma Right) -->
+  <g id="mama">
+    <!-- Body: Magenta Top with white inner sleeves -->
+    <rect x="205" y="160" width="95" height="125" rx="20" fill="#c026d3" stroke="#0f172a" stroke-width="3.5"/>
+    <path d="M 230 190 Q 252 205 275 190" fill="none" stroke="#f0abfc" stroke-width="3"/>
+    <path d="M 235 220 Q 252 235 270 220" fill="none" stroke="#f0abfc" stroke-width="3"/>
+    
+    <!-- Head -->
+    <circle cx="252" cy="102" r="38" fill="#fed7aa" stroke="#0f172a" stroke-width="3.5"/>
+    <!-- Short Brown-Grey Bob Cut with Bangs -->
+    <path d="M 214 108 Q 210 62 252 58 Q 294 62 290 108 C 282 94 268 84 252 84 C 236 84 222 94 214 108 Z" fill="#57534e" stroke="#0f172a" stroke-width="3.5"/>
+    
+    <!-- Delicate Gold-Rimmed Oval Glasses -->
+    <ellipse cx="238" cy="100" rx="12" ry="10" fill="none" stroke="#d97706" stroke-width="2.5"/>
+    <ellipse cx="266" cy="100" rx="12" ry="10" fill="none" stroke="#d97706" stroke-width="2.5"/>
+    <line x1="250" y1="100" x2="254" y2="100" stroke="#d97706" stroke-width="2"/>
+    <circle cx="238" cy="100" r="3.5" fill="#0f172a"/>
+    <circle cx="266" cy="100" r="3.5" fill="#0f172a"/>
+    
+    <!-- Joyful Cheeks & Smile -->
+    <circle cx="228" cy="112" r="7" fill="#f43f5e" opacity="0.35"/>
+    <circle cx="276" cy="112" r="7" fill="#f43f5e" opacity="0.35"/>
+    <path d="M 242 120 Q 252 132 262 120" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 300" width="100%" height="100%">
+  <!-- Family Dog: Pure White Fluffy Japanese Spitz / American Eskimo (小白狗) -->
+  <!-- Characteristics: Cloud-like voluminous white fur, alert prick ears, black button nose, holds white ball, plume tail curled over back -->
+  <defs>
+    <filter id="fluffyShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="160" cy="275" rx="75" ry="14" fill="#0f172a" opacity="0.12"/>
+
+  <!-- Paws & Legs -->
+  <g id="dogLegs">
+    <rect x="100" y="215" width="20" height="50" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+    <rect x="135" y="215" width="20" height="50" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+    <rect x="175" y="215" width="20" height="50" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+    <rect x="210" y="215" width="20" height="50" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+  </g>
+
+  <!-- Fluffy Cloud Body -->
+  <g id="dogBody" filter="url(#fluffyShadow)">
+    <path d="M 90 190 Q 75 145 110 130 Q 140 125 180 130 Q 220 140 235 180 Q 245 225 210 235 Q 170 245 120 235 Q 85 225 90 190 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="3.5"/>
+    <!-- Fluff Tufts Outline Accents -->
+    <path d="M 85 170 Q 75 180 85 190 Q 75 200 88 210" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
+    <path d="M 230 160 Q 242 175 232 190 Q 242 205 230 215" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
+  </g>
+
+  <!-- Plume Fluffy Tail Curled Over Back (Wagging) -->
+  <g id="dogTail" filter="url(#fluffyShadow)">
+    <path d="M 220 160 Q 255 120 250 85 Q 235 65 215 80 Q 195 95 210 130 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+    <path d="M 238 75 Q 255 85 248 105" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+  </g>
+
+  <!-- Fluffy Chest Ruff -->
+  <path d="M 100 155 Q 70 185 105 210 Q 125 225 145 215 Q 120 175 100 155 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+
+  <!-- Head & Facial Assembly -->
+  <g id="dogHead" filter="url(#fluffyShadow)">
+    <!-- Fluffy Head Mane -->
+    <ellipse cx="110" cy="120" rx="42" ry="40" fill="#ffffff" stroke="#cbd5e1" stroke-width="3.5"/>
+
+    <!-- Alert Prick Ears (Small Triangular) -->
+    <!-- Left Ear -->
+    <path d="M 82 95 L 88 55 L 108 85 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M 86 90 L 90 65 L 102 85 Z" fill="#fecdd3"/> <!-- Pink Ear Interior -->
+    <!-- Right Ear -->
+    <path d="M 115 85 L 132 55 L 140 95 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M 120 85 L 130 65 L 135 90 Z" fill="#fecdd3"/> <!-- Pink Ear Interior -->
+
+    <!-- Snout / Muzzle -->
+    <ellipse cx="88" cy="135" rx="20" ry="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5"/>
+
+    <!-- Shiny Black Eyes with Sparkling Highlight -->
+    <ellipse cx="92" cy="112" rx="6.5" ry="7.5" fill="#0f172a"/>
+    <circle cx="90" cy="109" r="2.5" fill="#ffffff"/>
+
+    <ellipse cx="125" cy="114" rx="6.5" ry="7.5" fill="#0f172a"/>
+    <circle cx="123" cy="111" r="2.5" fill="#ffffff"/>
+
+    <!-- Black Button Nose -->
+    <ellipse cx="76" cy="128" rx="5" ry="4" fill="#0f172a"/>
+
+    <!-- Open Doggy Smile holding White Ball! -->
+    <path d="M 76 136 Q 88 152 102 138" fill="none" stroke="#0f172a" stroke-width="3"/>
+    
+    <!-- Signature White Tennis Ball / Toy Held in Mouth (from photo!) -->
+    <circle cx="82" cy="144" r="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5"/>
+    <path d="M 72 140 Q 82 148 92 140" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+
+    <!-- Red Collar with Shiny Golden Bell -->
+    <path d="M 115 155 Q 135 170 152 155" fill="none" stroke="#ef4444" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="136" cy="168" r="6.5" fill="#facc15" stroke="#ca8a04" stroke-width="2"/>
+    <circle cx="136" cy="169" r="1.5" fill="#78350f"/>
+  </g>
+</svg>

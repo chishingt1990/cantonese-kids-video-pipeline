@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 320" width="100%" height="100%">
+  <!-- Auntie (姑媽 with glasses) & Cousins (表哥 Ryan with sporty glasses, and 表弟 with sunglasses) -->
+  <ellipse cx="190" cy="295" rx="140" ry="16" fill="#0f172a" opacity="0.12"/>
+
+  <!-- 姑媽 (Auntie Center-Left) -->
+  <g id="auntie">
+    <rect x="110" y="145" width="85" height="135" rx="18" fill="#d4d4d8" stroke="#0f172a" stroke-width="3.5"/>
+    <!-- Head -->
+    <circle cx="152" cy="95" r="36" fill="#fed7aa" stroke="#0f172a" stroke-width="3.5"/>
+    <!-- Hair Tied Back with Bangs -->
+    <path d="M 118 95 Q 116 58 152 54 Q 188 58 186 95 C 178 85 166 78 152 78 C 138 78 126 85 118 95 Z" fill="#1c1917" stroke="#0f172a" stroke-width="3.5"/>
+    <ellipse cx="188" cy="95" rx="6" ry="10" fill="#1c1917"/> <!-- Hair bun -->
+    <!-- Chic Dark Glasses -->
+    <rect x="132" y="86" width="18" height="15" rx="4" fill="none" stroke="#0f172a" stroke-width="3"/>
+    <rect x="156" y="86" width="18" height="15" rx="4" fill="none" stroke="#0f172a" stroke-width="3"/>
+    <line x1="150" y1="93" x2="156" y2="93" stroke="#0f172a" stroke-width="2.5"/>
+    <circle cx="141" cy="93" r="3" fill="#0f172a"/>
+    <circle cx="165" cy="93" r="3" fill="#0f172a"/>
+    <!-- Smile -->
+    <path d="M 142 112 Q 152 122 162 112" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- 表哥 Ryan (Older Cousin Left - Energetic boy with glasses) -->
+  <g id="ryan">
+    <!-- Athletic Under Armour style shirt -->
+    <rect x="35" y="180" width="70" height="95" rx="14" fill="#0284c7" stroke="#0f172a" stroke-width="3"/>
+    <!-- Head -->
+    <circle cx="70" cy="135" r="30" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+    <!-- Short Boy Hair -->
+    <path d="M 42 135 Q 40 102 70 98 Q 100 102 98 135 C 92 125 82 118 70 118 C 58 118 48 125 42 135 Z" fill="#1c1917" stroke="#0f172a" stroke-width="3"/>
+    <!-- Sporty Glasses -->
+    <rect x="52" y="128" width="16" height="13" rx="3" fill="none" stroke="#10b981" stroke-width="2.5"/>
+    <rect x="72" y="128" width="16" height="13" rx="3" fill="none" stroke="#10b981" stroke-width="2.5"/>
+    <line x1="68" y1="134" x2="72" y2="134" stroke="#10b981" stroke-width="2"/>
+    <circle cx="60" cy="134" r="2.5" fill="#0f172a"/>
+    <circle cx="80" cy="134" r="2.5" fill="#0f172a"/>
+    <!-- Big Adventurous Smile -->
+    <path d="M 60 148 Q 70 158 80 148" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- 表弟 (Younger Cousin Right - Toddler with sunglasses) -->
+  <g id="cousin_younger">
+    <!-- Blue Toddler Tee -->
+    <rect x="235" y="195" width="65" height="85" rx="14" fill="#3b82f6" stroke="#0f172a" stroke-width="3"/>
+    <!-- Head -->
+    <circle cx="267" cy="155" r="28" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+    <!-- Cute toddler hair -->
+    <path d="M 241 155 Q 240 125 267 122 Q 294 125 293 155 Z" fill="#292524" stroke="#0f172a" stroke-width="3"/>
+    <!-- Cool Blue Toddler Sunglasses (from photo!) -->
+    <rect x="250" y="148" width="16" height="12" rx="4" fill="#0284c7" stroke="#1e3a8a" stroke-width="2"/>
+    <rect x="270" y="148" width="16" height="12" rx="4" fill="#0284c7" stroke="#1e3a8a" stroke-width="2"/>
+    <line x1="266" y1="154" x2="270" y2="154" stroke="#1e3a8a" stroke-width="2"/>
+    <!-- Giggly Smile -->
+    <path d="M 258 168 Q 267 176 276 168" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

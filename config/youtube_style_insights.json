@@ -1,0 +1,124 @@
+{
+  "user_discoveries": [
+    {
+      "type": "subscribed_channel",
+      "title": "嘉芙姐姐 - 兒歌童謠 - 故事動畫 - Miss Ka Foo Kids Channel",
+      "description": "嘉芙姐姐音樂小教室\n\n嘉芙姐姐兒歌的創作理念，是希望讓香港本地的小朋友，包括有特殊需要的小朋友，能透過粵語音樂及歌曲有學習與成長，這種學習與成長不僅限於音樂知識及樂器技術，而是讓音樂成為媒介，透過為本地兒童度身訂造的兒歌，配合適當的活動及訓練，讓他們得到身、心、靈的全面發展，達致「寓學習於音樂中」。",
+      "channel_id": "UCZgs3pLaFisZ-TKVOwFEe8Q"
+    },
+    {
+      "type": "subscribed_channel",
+      "title": "GEM鄧紫棋",
+      "description": "《啓示錄》 \n\n七封致天堂的信  七封天堂的回信  \n為愛的啟示掀開神聖序幕 史無前例首創14集音樂連續劇MV  \n\n「如果完美只存在於虛擬世界，你會愛真實的我嗎？」\n\n當多彩的生活失去了顏色，她的心該如何保持燦爛？當璀璨的世界變成一片廢土，她又能在哪裡重拾希望？她絕望地來到自己的盡頭，才發現那是通",
+      "channel_id": "UCsLWG2t7n9LFsvH0wR2rtpw"
+    },
+    {
+      "type": "subscribed_channel",
+      "title": "Dave's Garage",
+      "description": "Windows History, Windows vs Linux Comparisons, Arduino Project Tutorials, Shop Projects, ESP32 Information, and more in Dave's Garage.  With DIY info ",
+      "channel_id": "UCNzszbnvQeFzObW0ghk0Ckw"
+    },
+    {
+      "type": "subscribed_channel",
+      "title": "Lets Build That App",
+      "description": "Here at LetsBuildThatApp, I'll do my best to teach you how to build working apps from the AppStore, i.e. YouTube, Facebook, FB Messenger, etc.  We go ",
+      "channel_id": "UCuP2vJ6kRutQBfRmdcI92mA"
+    },
+    {
+      "type": "subscribed_channel",
+      "title": "Crypto Bobby",
+      "description": "I'm an average dude with a background in Enterprise tech, who loves talking about cryptocurrency and blockchain. Whether it's Bitcoin, Ethereum, Litec",
+      "channel_id": "UCt_oM56Ui0BCCgi0Yc-Wh3Q"
+    },
+    {
+      "type": "playlist",
+      "title": "AI Tools",
+      "item_count": 4
+    },
+    {
+      "type": "playlist",
+      "title": "American songs",
+      "item_count": 17
+    },
+    {
+      "type": "playlist",
+      "title": "Karaoke",
+      "item_count": 48
+    },
+    {
+      "type": "playlist",
+      "title": "Dogs",
+      "item_count": 13
+    },
+    {
+      "type": "playlist",
+      "title": "tylor Swift",
+      "item_count": 2
+    },
+    {
+      "type": "liked_video",
+      "title": "04.Secret History of Microsoft Bob",
+      "channel": "Dave's Garage"
+    }
+  ],
+  "benchmarks": {
+    "dimdim_cantonese": {
+      "channel_name": "Uncle Germ / 點點話 (DimDim)",
+      "style_category": "2D Chibi / Cute Sticker Flashcard",
+      "visual_features": [
+        "1:2 toddler-proportioned characters with oversized expressive heads",
+        "Crisp bold outlines with soft pastel fills",
+        "Floating flashcard words with Traditional Chinese + clear Jyutping",
+        "Clean uncluttered backgrounds so babies focus on the subject",
+        "Gentle bounce and wobble animations on vocal syllables"
+      ],
+      "audio_features": [
+        "Slow, exaggerated parentese (infant-directed speech)",
+        "Playful xylophone and gentle acoustic guitar background music",
+        "Sound effects (ding, pop, sparkle) paired with each key word"
+      ],
+      "recommended_for": "Daily objects, family names, basic actions for under-2-year-olds"
+    },
+    "baobao_cantonese": {
+      "channel_name": "BaoBao Learn Cantonese",
+      "style_category": "Modern Minimalist Vector & Storybook",
+      "visual_features": [
+        "Flat vector aesthetics similar to modern Scandinavian children's books",
+        "High color contrast (deep navy, sunflower yellow, mint green)",
+        "Side-by-side Cantonese characters, Jyutping, and English subtitles"
+      ],
+      "audio_features": [
+        "Authentic Hong Kong colloquial Cantonese",
+        "Call-and-response repetition ('Where is Dad? 爸爸喺邊度呀？')"
+      ],
+      "recommended_for": "Sentence patterns, interactive search-and-find scenes"
+    },
+    "babybus_cantonese": {
+      "channel_name": "BabyBus Cantonese (寶寶巴士 粵語)",
+      "style_category": "2.5D Soft Felt / Rounded Chibi",
+      "visual_features": [
+        "Tactile rounded characters resembling soft plush toys",
+        "Vibrant saturated colors that capture infant visual attention",
+        "High kinetic energy and dynamic camera movements"
+      ],
+      "audio_features": [
+        "Catchy repetitive nursery rhymes and musical hooks",
+        "Character voice acting with distinct vocal timbres"
+      ],
+      "recommended_for": "Songs, routines (brushing teeth, bath time, mealtime)"
+    },
+    "peppa_pig_cantonese": {
+      "channel_name": "Peppa Pig Cantonese Dub (粉紅豬小妹 粵語)",
+      "style_category": "Minimalist 2D Profile Cutout",
+      "visual_features": [
+        "2D flat cutout characters with constant side-view eye alignment",
+        "Simple primary color blocks without shading or gradients",
+        "Charming, childlike geometric line art"
+      ],
+      "audio_features": [
+        "Everyday family dialogue, funny snorts, laughter, wholesome everyday humor"
+      ],
+      "recommended_for": "Family dynamics, sibling interactions, garden play"
+    }
+  }
+}

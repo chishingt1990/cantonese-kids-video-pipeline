@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450" width="100%" height="100%">
+  <!-- Dad: Chi Shing (爸爸) -->
+  <!-- Proportions: Adult father, modern thin black rectangular glasses, neat side-part hair, warm smile, navy tee -->
+  <defs>
+    <filter id="softShadowDad" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="150" cy="425" rx="65" ry="14" fill="#0f172a" opacity="0.12"/>
+
+  <!-- Legs & Shoes -->
+  <g id="legsDad">
+    <!-- Slate Grey Trousers -->
+    <path d="M 112 265 L 188 265 L 182 385 L 155 385 L 150 295 L 145 385 L 118 385 Z" fill="#334155" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Shoes (Casual White/Grey Sneakers) -->
+    <path d="M 108 385 L 142 385 L 145 412 Q 120 415 102 408 Z" fill="#f1f5f9" stroke="#0f172a" stroke-width="3"/>
+    <line x1="105" y1="405" x2="145" y2="405" stroke="#94a3b8" stroke-width="2.5"/>
+    <path d="M 158 385 L 192 385 L 198 408 Q 180 415 155 412 Z" fill="#f1f5f9" stroke="#0f172a" stroke-width="3"/>
+    <line x1="155" y1="405" x2="195" y2="405" stroke="#94a3b8" stroke-width="2.5"/>
+  </g>
+
+  <!-- Arms -->
+  <g id="armsDad">
+    <!-- Left Arm -->
+    <path d="M 95 165 Q 75 220 85 270" fill="none" stroke="#fed7aa" stroke-width="26" stroke-linecap="round"/>
+    <circle cx="85" cy="270" r="14" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+    <!-- Right Arm (Warm welcoming pose) -->
+    <path d="M 205 165 Q 225 210 215 260" fill="none" stroke="#fed7aa" stroke-width="26" stroke-linecap="round"/>
+    <circle cx="215" cy="260" r="14" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+  </g>
+
+  <!-- Torso & Navy T-shirt -->
+  <g id="torsoDad" filter="url(#softShadowDad)">
+    <path d="M 95 155 Q 88 265 105 275 L 195 275 Q 212 265 205 155 Z" fill="#1e3a8a" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Sleeves -->
+    <path d="M 95 155 L 75 195 L 105 205 L 115 160 Z" fill="#172554" stroke="#0f172a" stroke-width="3"/>
+    <path d="M 205 155 L 225 195 L 195 205 L 185 160 Z" fill="#172554" stroke="#0f172a" stroke-width="3"/>
+    <!-- Crew Neckline -->
+    <path d="M 132 155 Q 150 170 168 155" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+    <path d="M 135 155 Q 150 166 165 155" fill="#fed7aa"/>
+  </g>
+
+  <!-- Head Assembly -->
+  <g id="headDad" filter="url(#softShadowDad)">
+    <!-- Neck -->
+    <rect x="135" y="135" width="30" height="25" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+
+    <!-- Ears -->
+    <circle cx="95" cy="98" r="14" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+    <circle cx="205" cy="98" r="14" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+
+    <!-- Face Base -->
+    <path d="M 102 85 C 96 130 115 145 150 145 C 185 145 204 130 198 85 C 192 45 108 45 102 85 Z" fill="#fed7aa" stroke="#0f172a" stroke-width="3.5"/>
+
+    <!-- Subtle Stubble / Beard Shadow -->
+    <path d="M 125 128 Q 150 142 175 128 Q 150 145 125 128 Z" fill="#e2e8f0" opacity="0.4"/>
+
+    <!-- Eyes Behind Glasses -->
+    <ellipse cx="128" cy="95" rx="7" ry="8" fill="#0f172a"/>
+    <circle cx="126" cy="92" r="3" fill="#ffffff"/>
+    <ellipse cx="172" cy="95" rx="7" ry="8" fill="#0f172a"/>
+    <circle cx="170" cy="92" r="3" fill="#ffffff"/>
+
+    <!-- Modern Thin Black Rectangular Eyeglasses (Dad's Signature!) -->
+    <!-- Left Lens Frame -->
+    <rect x="112" y="82" width="32" height="26" rx="6" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+    <!-- Right Lens Frame -->
+    <rect x="156" y="82" width="32" height="26" rx="6" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+    <!-- Glasses Bridge -->
+    <line x1="144" y1="92" x2="156" y2="92" stroke="#0f172a" stroke-width="3.5"/>
+    <!-- Glasses Temples to Ears -->
+    <line x1="112" y1="90" x2="98" y2="92" stroke="#0f172a" stroke-width="3"/>
+    <line x1="188" y1="90" x2="202" y2="92" stroke="#0f172a" stroke-width="3"/>
+
+    <!-- Eyebrows -->
+    <path d="M 114 76 Q 128 72 142 76" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M 158 76 Q 172 72 186 76" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Nose -->
+    <path d="M 150 96 L 148 110 L 154 110" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Warm Encouraging Smile -->
+    <path d="M 134 122 Q 150 135 166 122" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M 135 123 Q 150 132 165 123 Z" fill="#ffffff"/>
+
+    <!-- Hair: Short Neat Side-Swept Black Hair (Side Part) -->
+    <path d="M 98 82 Q 95 38 140 35 Q 185 32 202 70 Q 205 88 198 92 C 190 75 178 72 155 70 C 130 68 110 75 98 82 Z" fill="#1c1917" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Side Part Sweep Details -->
+    <path d="M 132 38 Q 148 55 175 60" fill="none" stroke="#44403c" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 115 48 Q 130 62 148 65" fill="none" stroke="#44403c" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

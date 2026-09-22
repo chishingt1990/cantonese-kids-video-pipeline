@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450" width="100%" height="100%">
+  <!-- Mom (媽媽) -->
+  <!-- Proportions: Warm feminine mother, radiant smile, side ponytail with bangs, cozy pink knit sweater -->
+  <defs>
+    <filter id="softShadowMom" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Shadow -->
+  <ellipse cx="150" cy="425" rx="60" ry="13" fill="#0f172a" opacity="0.12"/>
+
+  <!-- Legs & Shoes -->
+  <g id="legsMom">
+    <!-- Cream / Dark Trousers -->
+    <path d="M 116 270 L 184 270 L 180 385 L 155 385 L 150 295 L 145 385 L 120 385 Z" fill="#475569" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Cozy Slip-on Flats -->
+    <path d="M 112 385 Q 140 380 142 410 Q 120 412 110 405 Z" fill="#fb7185" stroke="#0f172a" stroke-width="3"/>
+    <path d="M 158 385 Q 186 380 188 410 Q 170 412 156 405 Z" fill="#fb7185" stroke="#0f172a" stroke-width="3"/>
+  </g>
+
+  <!-- Arms -->
+  <g id="armsMom">
+    <!-- Left Arm -->
+    <path d="M 100 165 Q 80 215 90 265" fill="none" stroke="#fed7aa" stroke-width="24" stroke-linecap="round"/>
+    <circle cx="90" cy="265" r="13" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+    <!-- Right Arm (Gentle hugging / welcoming pose) -->
+    <path d="M 200 165 Q 220 215 210 265" fill="none" stroke="#fed7aa" stroke-width="24" stroke-linecap="round"/>
+    <circle cx="210" cy="265" r="13" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+  </g>
+
+  <!-- Torso & Cozy Warm Pink Knit Sweater -->
+  <g id="torsoMom" filter="url(#softShadowMom)">
+    <path d="M 100 155 Q 90 265 108 275 L 192 275 Q 210 265 200 155 Z" fill="#f472b6" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+    <!-- Knit texture lines -->
+    <line x1="120" y1="180" x2="120" y2="265" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4"/>
+    <line x1="140" y1="175" x2="140" y2="270" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4"/>
+    <line x1="160" y1="175" x2="160" y2="270" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4"/>
+    <line x1="180" y1="180" x2="180" y2="265" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4"/>
+    <!-- Cozy Mock Turtleneck Collar -->
+    <rect x="125" y="135" width="50" height="25" rx="8" fill="#db2777" stroke="#0f172a" stroke-width="3"/>
+  </g>
+
+  <!-- Head Assembly -->
+  <g id="headMom" filter="url(#softShadowMom)">
+    <!-- Side Ponytail Hair Behind Head -->
+    <path d="M 195 85 Q 240 95 245 145 Q 235 170 210 160 Q 225 130 195 105 Z" fill="#1c1917" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+    <ellipse cx="205" cy="100" rx="8" ry="6" fill="#f43f5e"/> <!-- Cute Hair Tie -->
+
+    <!-- Ears -->
+    <circle cx="102" cy="98" r="12" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+    <circle cx="198" cy="98" r="12" fill="#fed7aa" stroke="#0f172a" stroke-width="3"/>
+
+    <!-- Face Base -->
+    <path d="M 106 85 C 102 128 118 142 150 142 C 182 142 198 128 194 85 C 190 48 110 48 106 85 Z" fill="#fed7aa" stroke="#0f172a" stroke-width="3.5"/>
+
+    <!-- Cheeks Blush -->
+    <circle cx="118" cy="115" r="12" fill="#f43f5e" opacity="0.3"/>
+    <circle cx="182" cy="115" r="12" fill="#f43f5e" opacity="0.3"/>
+
+    <!-- Eyes (Gentle Almond Eyes with Winged Eyeliner) -->
+    <path d="M 118 95 Q 128 90 138 95" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+    <line x1="138" y1="95" x2="143" y2="92" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+    <ellipse cx="128" cy="98" rx="6.5" ry="7.5" fill="#0f172a"/>
+    <circle cx="126" cy="95" r="3" fill="#ffffff"/>
+
+    <path d="M 162 95 Q 172 90 182 95" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+    <line x1="182" y1="95" x2="187" y2="92" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+    <ellipse cx="172" cy="98" rx="6.5" ry="7.5" fill="#0f172a"/>
+    <circle cx="170" cy="95" r="3" fill="#ffffff"/>
+
+    <!-- Eyebrows -->
+    <path d="M 118 84 Q 128 80 138 84" fill="none" stroke="#1c1917" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 162 84 Q 172 80 182 84" fill="none" stroke="#1c1917" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Small Nose -->
+    <circle cx="150" cy="106" r="2.5" fill="#f87171"/>
+
+    <!-- Radiant Sunny Smile -->
+    <path d="M 136 118 Q 150 134 164 118" fill="none" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 137 119 Q 150 132 163 119 Z" fill="#ffffff"/>
+
+    <!-- Hair: Bangs and Side Flow -->
+    <g id="hairMom">
+      <path d="M 104 80 Q 100 42 145 38 Q 190 38 196 80 C 185 70 170 65 150 66 C 130 65 115 70 104 80 Z" fill="#1c1917" stroke="#0f172a" stroke-width="3.5"/>
+      <!-- Soft Front Fringe Bangs -->
+      <path d="M 112 68 Q 128 85 142 74 Q 155 86 168 70 Q 182 84 190 75" fill="none" stroke="#0f172a" stroke-width="3"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cantonese Kids Video Pipeline — Episode 1 Theater</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', 'Noto Sans TC', sans-serif; }
+  </style>
+</head>
+<body class="bg-amber-50/40 text-slate-800 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-amber-100 sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white/90">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🎬</span>
+        <div>
+          <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">
+            兩個小寶貝，早晨呀！<span class="text-amber-500 font-bold text-base md:text-lg block md:inline md:ml-2">Episode 1 Review</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Cantonese Toddler Educational Video • Starring Levi & Luca</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          1080p Master Ready
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-10">
+
+    <!-- Hero Video Player Section -->
+    <section class="bg-white border border-amber-100 rounded-3xl p-6 md:p-8 shadow-xl space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-900 rounded-lg text-xs font-bold mb-2">
+            <span>🌟</span> FULL 2.5-MINUTE ANIMATED EPISODE
+          </div>
+          <h2 class="text-2xl font-black text-slate-900">
+            Episode 1: Good Morning, Levi & Luca! (見到屋企人)
+          </h2>
+          <p class="text-sm text-slate-500">
+            Featuring Dad's real Cantonese narration, dual Traditional Cantonese / Jyutping subtitles, gentle acoustic BGM, and animated family puppets.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="/assets/outputs/episode_01_meeting_family.mp4" download class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow transition">
+            <span>📥</span> Download MP4
+          </a>
+        </div>
+      </div>
+
+      <!-- Video Screen -->
+      <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-black border-4 border-slate-900 aspect-video">
+        <video id="mainPlayer" controls playsinline class="w-full h-full object-contain">
+          <source src="/assets/outputs/episode_01_meeting_family.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+
+      <!-- Quick Scene Navigation -->
+      <div class="space-y-3">
+        <div class="text-xs font-bold text-slate-400 tracking-wider uppercase">Jump to Scene</div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-xs">
+          <button onclick="seekTo(0)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            🌅 0:00 Nursery Sun
+          </button>
+          <button onclick="seekTo(10)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            🤗 0:10 Dad's Hug
+          </button>
+          <button onclick="seekTo(23)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            👶 0:23 Stretching
+          </button>
+          <button onclick="seekTo(38)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            🥣 0:38 Breakfast
+          </button>
+          <button onclick="seekTo(58)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            🍌 0:58 Say "Ahhh—"
+          </button>
+          <button onclick="seekTo(76)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            🐶 1:16 Spitz Doggy
+          </button>
+          <button onclick="seekTo(92)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            👵 1:32 Grandparents
+          </button>
+          <button onclick="seekTo(110)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            ⚽ 1:50 Cousins Ball
+          </button>
+          <button onclick="seekTo(126)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            ❤️ 2:06 Family Love
+          </button>
+          <button onclick="seekTo(138)" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl font-bold text-left transition">
+            👋 2:18 Wave Bye Bye
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Character Cast Gallery -->
+    <section class="bg-white border border-amber-100 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+      <div class="border-b border-slate-100 pb-3">
+        <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
+          <span>🎨</span> 2D Cartoon Cast Lineup
+        </h3>
+        <p class="text-xs text-slate-500">Every character grounded in real family photographs with matching preschool pastel aesthetic.</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <!-- Luca -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/sprites/luca.png" class="max-h-full object-contain" alt="Luca">
+          </div>
+          <div class="font-black text-sm text-slate-800">Luca (細佬)</div>
+          <p class="text-[11px] text-slate-500">Solid yellow polo • Round cheeks • Downward bangs</p>
+        </div>
+
+        <!-- Levi -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/sprites/levi.png" class="max-h-full object-contain" alt="Levi">
+          </div>
+          <div class="font-black text-sm text-slate-800">Levi (哥哥)</div>
+          <p class="text-[11px] text-slate-500">Solid red polo • Big open toothy smile • Sharper chin</p>
+        </div>
+
+        <!-- Dad -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/characters/dad_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Dad">
+          </div>
+          <div class="font-black text-sm text-slate-800">Dad (爸爸)</div>
+          <p class="text-[11px] text-slate-500">Narrator • Dark glasses • Upward quiff • Teal tee</p>
+        </div>
+
+        <!-- Mom -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/characters/mom_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Mom">
+          </div>
+          <div class="font-black text-sm text-slate-800">Mom (媽媽)</div>
+          <p class="text-[11px] text-slate-500">Side ponytail • Winged eyeliner • Striped top</p>
+        </div>
+
+        <!-- Spitz Dog -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/characters/dog_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Dog">
+          </div>
+          <div class="font-black text-sm text-slate-800">White Spitz Dog (小白狗)</div>
+          <p class="text-[11px] text-slate-500">Fluffy plume tail • Signature ball • Playful barks</p>
+        </div>
+
+        <!-- Paternal Grandparents -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/characters/grandparents_paternal_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Paternal Grandparents">
+          </div>
+          <div class="font-black text-sm text-slate-800">爺爺 & 嫲嫲</div>
+          <p class="text-[11px] text-slate-500">Paternal grandparents • Blue plaid & magenta top</p>
+        </div>
+
+        <!-- Maternal Grandparents -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/characters/grandparents_maternal_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Maternal Grandparents">
+          </div>
+          <div class="font-black text-sm text-slate-800">公公 & 婆婆</div>
+          <p class="text-[11px] text-slate-500">Maternal grandparents • Glasses & cropped pixie bangs</p>
+        </div>
+
+        <!-- Auntie & Cousins -->
+        <div class="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 text-center space-y-2">
+          <div class="h-44 flex items-center justify-center">
+            <img src="/assets/characters/auntie_cousins_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Auntie & Cousins">
+          </div>
+          <div class="font-black text-sm text-slate-800">姑媽 & 表哥表弟</div>
+          <p class="text-[11px] text-slate-500">Lavender floral top • Green glasses cousin Ryan</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Audio Track Details -->
+    <section class="bg-white border border-amber-100 rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+      <div class="border-b border-slate-100 pb-3">
+        <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
+          <span>🎙️</span> Sound & Narration Studio
+        </h3>
+        <p class="text-xs text-slate-500">Dad's authentic Cantonese voice track mixed with warm preschool acoustic background music and cartoon sound effects.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-2">
+          <div class="text-xs font-bold text-slate-600">Episode 1 Master Mixed Audio Track (148s)</div>
+          <audio controls class="w-full">
+            <source src="/assets/outputs/episode_01_master_audio.wav" type="audio/wav">
+          </audio>
+        </div>
+        <div class="space-y-2">
+          <div class="text-xs font-bold text-slate-600">Dad's Clean Raw Voice Recording (75.5s)</div>
+          <audio controls class="w-full">
+            <source src="/assets/audio_samples/dad_cantonese_clean.wav" type="audio/wav">
+          </audio>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="text-center py-8 text-xs text-slate-400">
+    Cantonese Kids Educational Video Pipeline • Built with local Python, OpenCV & FFmpeg
+  </footer>
+
+  <script>
+    function seekTo(sec) {
+      const p = document.getElementById('mainPlayer');
+      p.currentTime = sec;
+      p.play();
+    }
+  </script>
+</body>
+</html>

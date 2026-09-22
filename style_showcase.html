@@ -1,0 +1,478 @@
+﻿<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ç²µèªžå¹¼å…’å‹•ç•«ï¼šå…¨å®¶ 2D å¡é€šé€ åž‹å¯©é–±ä¸­å¿ƒ (Character Design Review)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+    body { font-family: 'Noto Sans TC', system-ui, -apple-system, sans-serif; }
+    .card-hover:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 30px -10px rgba(0, 0, 0, 0.12);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased p-4 md:p-8">
+  <div class="max-w-6xl mx-auto space-y-8">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-blue-700 via-indigo-600 to-purple-600 text-white p-6 md:p-8 rounded-3xl shadow-lg">
+      <div class="flex flex-col md:flex-row justify-between md:items-center gap-6">
+        <div>
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="px-3 py-1 bg-white/20 backdrop-blur text-white text-xs font-bold rounded-full">
+              ðŸŽ¨ 2D å¹¼å…’ç¹ªæœ¬æ¦‚å¿µé€ åž‹ (Nano Banana AI ç”Ÿæˆ)
+            </span>
+            <span class="px-3 py-1 bg-emerald-400/30 text-emerald-100 text-xs font-bold rounded-full border border-emerald-300/40">
+              âœ“ Google AI Pro è¨‚é–±åŒ…å« â€§ ç„¡éœ€é¡å¤–ä»˜è²»
+            </span>
+          </div>
+          <h1 class="text-2xl md:text-4xl font-black tracking-tight">
+            ã€Šå“¥å“¥ç´°ä½¬å˜…é–‹å¿ƒä¸€æ—¥ã€‹å…¨å®¶è§’è‰²é€ åž‹å¯©é–±
+          </h1>
+          <p class="text-sm md:text-base text-blue-100 mt-2 max-w-3xl leading-relaxed">
+            ä¾æ“šæ‚¨æä¾›çš„çœŸå¯¦ç”Ÿæ´»ç…§ç‰‡ï¼Œé€éŽ Google Nano Banana æ¨¡åž‹ä»¥ç²¾æº–åœ–åƒæ¢ä»¶æ³¨å…¥ï¼Œé‡èº«ç¹ªè£½å‡ºå°ˆå±¬æ‚¨å®¶åº­çš„ 2D å¹¼å…’æ•…äº‹ç¹ªæœ¬é¢¨æ ¼è§’è‰²ã€‚æ¯ä½äººç‰©çš„çœ¼é¡ã€é«®åž‹ã€ç¬‘å®¹ç‰¹è³ªå‡è¢«ç´°ç·»é‚„åŽŸï¼
+          </p>
+        </div>
+        <div class="flex flex-col items-start md:items-end gap-2 shrink-0">
+          <div class="bg-white text-slate-900 font-bold text-sm px-4 py-2.5 rounded-2xl shadow-md flex items-center gap-2">
+            <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+            8 çµ„å®¶åº­è§’è‰²å·²å…¨æ•¸å°±ç·’
+          </div>
+          <span class="text-xs text-blue-200">æœ¬åœ°ä¼ºæœå™¨ï¼šhttp://localhost:3000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Bar -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-slate-400 mr-2">Quick Jump:</span>
+        <a href="#char-levi" class="px-3 py-1.5 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-xl transition">Levi (Older Brother)</a>
+        <a href="#char-luca" class="px-3 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl transition">Luca (Younger Brother)</a>
+        <a href="#char-dad" class="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl transition">Dad (Chi Shing)</a>
+        <a href="#char-mom" class="px-3 py-1.5 bg-pink-50 text-pink-700 hover:bg-pink-100 rounded-xl transition">Mom</a>
+        <a href="#char-dog" class="px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl transition">Spitz Dog</a>
+        <a href="#char-paternal" class="px-3 py-1.5 bg-purple-50 text-purple-700 hover:bg-purple-100 rounded-xl transition">Paternal Grandparents</a>
+        <a href="#char-maternal" class="px-3 py-1.5 bg-teal-50 text-teal-700 hover:bg-teal-100 rounded-xl transition">Maternal Grandparents</a>
+        <a href="#char-aunt" class="px-3 py-1.5 bg-orange-50 text-orange-700 hover:bg-orange-100 rounded-xl transition">Aunt & Cousins</a>
+      </div>
+      <a href="./twins_options.html" class="px-4 py-2 bg-gradient-to-r from-rose-500 to-amber-500 text-white font-extrabold rounded-xl shadow hover:opacity-90 transition flex items-center gap-1.5">
+        <span>âœ¨</span> View Levi & Luca Variations Picker â†’
+      </a>
+    </div>
+
+    <!-- Characters Gallery Section -->
+    <div class="space-y-8">
+
+      <!-- 1. Levi (Older Twin Brother / å“¥å“¥) -->
+      <div id="char-levi" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-rose-600 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">é›™èƒžèƒŽå¤§ä½¬</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">Levi å“¥å“¥ (go4-go1)</h2>
+              <span class="text-xs text-rose-700 font-bold">å¹¼å…’ä¸»è§’ â€§ è±¡å¾µè‰²ï¼šæ´»åŠ›äº®ç´… (Red)</span>
+            </div>
+          </div>
+          <div class="text-xs bg-rose-50 text-rose-800 font-semibold px-3 py-1.5 rounded-full border border-rose-200">
+            ç‰¹è‰²ï¼šæ•´é½Šå¹³é †ç›´é½Šè”­ â€§ åœ“æ½¤ç²‰ç´…è˜‹æžœè‚Œ â€§ äº®ç´…è‰² Polo è¡«
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/levi_older_brother/20260701_104200_7d434ade.jpg" class="w-full h-full object-cover object-center" alt="Levi Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> ä¹–å·§å°ˆæ³¨ç¥žæƒ…ã€åœ“æ»¾æ»¾è‚‰å˜Ÿå˜Ÿé›™é °ã€è¦†è“‹å‰é¡çš„æ¨™èªŒæ€§æ•´é½Šå¹³ç›´é½Šç€æµ·ã€æ´»æ½‘ç´…è‰²ä¸Šè¡£ã€‚
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-rose-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-rose-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/levi_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Levi 2D Art">
+            </div>
+            <p class="text-xs text-rose-900 leading-relaxed bg-rose-50/70 p-3 rounded-xl border border-rose-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> æº«æš–æŸ”å’Œçš„ç¹ªæœ¬ç­†è§¸ï¼Œå¤§çœ¼ç›å……æ»¿å¥½å¥‡å¿ƒï¼Œå®Œç¾Žå‘ˆç¾ Levi æ¨™èªŒçš„åŽšå¯¦é½Šç€æµ·èˆ‡ç´…è¡«è—è¤²ã€‚
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Luca (Younger Twin Brother / ç´°ä½¬) -->
+      <div id="char-luca" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-amber-500 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">é›™èƒžèƒŽç´°ä½¬</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">Luca ç´°ä½¬ (sai3-lou2)</h2>
+              <span class="text-xs text-amber-700 font-bold">å¹¼å…’ä¸»è§’ â€§ è±¡å¾µè‰²ï¼šé™½å…‰æª¸æª¬é»ƒ (Yellow)</span>
+            </div>
+          </div>
+          <div class="text-xs bg-amber-50 text-amber-800 font-semibold px-3 py-1.5 rounded-full border border-amber-200">
+            ç‰¹è‰²ï¼šè‡ªç„¶å¾®ç¿¹ç¢Žé«®å‘†æ¯› â€§ ç‡¦çˆ›éœ²ä¹³é½’å¤§ç¬‘è‡‰ â€§ äº®é»ƒè‰² Polo è¡«
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/luca_younger_brother/PXL_20260805_022850458.jpg" class="w-full h-full object-cover object-top" alt="Luca Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> ç†±æƒ…é–‹æœ—å¤–å‘ã€ç‡¦çˆ›éœ²ç‰™ç¬‘å®¹ã€é ­é ‚å¸¶æœ‰è¼•å¾®è‡ªç„¶æ²ç¿¹çš„å‘†æ¯›èˆ‡ç©ºæ°£æ„Ÿç¢Žé«®ã€é®®é»ƒè‰²ä¸Šè¡£ã€‚
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-amber-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-amber-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/luca_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Luca 2D Art">
+            </div>
+            <p class="text-xs text-amber-900 leading-relaxed bg-amber-50/70 p-3 rounded-xl border border-amber-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> ä¸€çœ¼å³å¯èˆ‡å“¥å“¥æ¸…æ™°å€åˆ†ï¼é ­é ‚ç¿¹é«®éˆå‹•å¯æ„›ï¼Œé–‹å£ç‡¦ç¬‘éœ²å¯æ„›é–€ç‰™ï¼Œé»ƒè‰² Polo è¡«ç”Ÿå‹•æ´»æ½‘ã€‚
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Dad (Chi Shing / çˆ¸çˆ¸) -->
+      <div id="char-dad" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-blue-700 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">çˆ¸çˆ¸ â€§ æ—ç™½å¼•å°Ž</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">Chi Shing çˆ¸çˆ¸ (baa4-baa1)</h2>
+              <span class="text-xs text-blue-700 font-bold">å…¨åŠ‡æ—ç™½ â€§ æ…ˆç¥¥çˆ¸çˆ¸ â€§ è±¡å¾µè‰²ï¼šçŸ¥æ€§æ¹–æ°´è—</span>
+            </div>
+          </div>
+          <div class="text-xs bg-blue-50 text-blue-800 font-semibold px-3 py-1.5 rounded-full border border-blue-200">
+            ç‰¹è‰²ï¼šç¾ä»£é»‘æ¡†çœ¼é¡ â€§ ç²¾ç·»é¬é«­èˆ‡ä¸‹å·´ç¾Šè§’é¬ â€§ æº«æš–å¤§çœ¼ç¬‘æ„
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/dad/PXL_20260604_192934949.MP.jpg" class="w-full h-full object-cover object-top" alt="Dad Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> ä¿è½çŸ­é«®é«˜é¡é ­ã€é•·æ–¹å½¢é»‘æ¡†çœ¼é¡ã€ä¿®å‰ªæ•´é½Šçš„å”‡ä¸Šé¬èˆ‡ä¸‹å·´é¬é«­ã€æº«å’Œè¦ªåˆ‡çš„çœ¼è§’ç¬‘ç´‹ã€‚
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-blue-700 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-blue-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/dad_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Dad 2D Art">
+            </div>
+            <p class="text-xs text-blue-900 leading-relaxed bg-blue-50/70 p-3 rounded-xl border border-blue-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> ç²¾æº–æ•æ‰é»‘æ¡†çœ¼é¡ã€çŸ­é«®èˆ‡ä¸‹å·´é¬åž‹ï¼èº«è‘—ä¼‘é–’è—è‰²æ£‰ T èˆ‡æ·±ç°é•·è¤²ï¼Œæº«æš–èº«å½¢å¼•å°Žé›™èƒžèƒŽäº’å‹•ã€‚
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Mom (åª½åª½) -->
+      <div id="char-mom" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-pink-600 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">åª½åª½ â€§ æº«é¦¨é—œæ‡·</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">åª½åª½ (maa4-maa1)</h2>
+              <span class="text-xs text-pink-700 font-bold">æº«æŸ”é¼“å‹µ â€§ æ“æŠ±å‘Šåˆ¥ â€§ è±¡å¾µè‰²ï¼šæµ·è»æ¢ç´‹é…æŸ”ç²‰</span>
+            </div>
+          </div>
+          <div class="text-xs bg-pink-50 text-pink-800 font-semibold px-3 py-1.5 rounded-full border border-pink-200">
+            ç‰¹è‰²ï¼šå´æ¢³æŸ”é †ä½Žé¦¬å°¾ â€§ æ¨™èªŒæ€§å¾®ç¿¹çœ¼ç·š â€§ æ°£è³ªæµ·è»é¢¨æ©«ç´‹é‡ç¹”è¡«
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/mom/PXL_20260120_021418032.MP.jpg" class="w-full h-full object-cover object-top" alt="Mom Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> ç²¾ç·»æä»çœ¼èˆ‡ä¿çš®å¾®ç¿¹çœ¼ç·šã€æŸ”å’Œå´æ¢³åž‚æ–¼å–®è‚©çš„ä½Žé¦¬å°¾é•·é«®ã€æ¸…éº—ç¬‘å®¹ã€ä¼‘é–’å„ªé›…æ°£è³ªã€‚
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-pink-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-pink-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/mom_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Mom 2D Art">
+            </div>
+            <p class="text-xs text-pink-900 leading-relaxed bg-pink-50/70 p-3 rounded-xl border border-pink-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> å–®è‚©å´é¦¬å°¾èˆ‡å¾®ç¿¹çœ¼ç·šç´°è†©å‘ˆç¾ï¼Œèº«ç©¿æ°£è³ªè—ç™½æ©«ç´‹ä¸€å­—é ˜é•·è¢–è¡«èˆ‡è²¼èº«ç‰›ä»”è¤²ï¼Œå§¿æ…‹è¦ªåˆ‡å„ªé›…ã€‚
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Dog (White Spitz / å°ç™½ç‹—) -->
+      <div id="char-dog" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-emerald-600 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">æ¯›å­©å®¶åº­æˆå“¡</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">ç´”ç™½éŠ€ç‹ Spitz å°ç™½ç‹— (siu2-baak6-gau2)</h2>
+              <span class="text-xs text-emerald-700 font-bold">çŽ©ä¼´èŒå¯µ â€§ è±¡å¾µè‰²ï¼šé›²æœµç´”ç™½ (Pure White)</span>
+            </div>
+          </div>
+          <div class="text-xs bg-emerald-50 text-emerald-800 font-semibold px-3 py-1.5 rounded-full border border-emerald-200">
+            ç‰¹è‰²ï¼šç…å­èˆ¬è“¬é¬†é›²æœµæ¯›é ˜ â€§ æ²ç¿¹å¤§ç¾½æ¯›å°¾å·´ â€§ å£å’¬ç¶²çƒ
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/dog/IMG_0719.JPG" class="w-full h-full object-cover object-center" alt="Dog Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> é›ªç™½åŽšå¯¦åƒæ£‰èŠ±ç³–çš„æ¿ƒå¯†é•·æ¯›ã€èƒ¸å‰å®›å¦‚ç…å­ mane çš„è±åŽšæ¯›é ˜ã€æŒºæ‹”å°å°–è€³ã€å£å’¬æœ€å¿ƒæ„›çš„ç¶²çƒï¼
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-emerald-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/dog_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Dog 2D Art">
+            </div>
+            <p class="text-xs text-emerald-900 leading-relaxed bg-emerald-50/70 p-3 rounded-xl border border-emerald-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> å®Œç¾Žå‘ˆç¾æ—¥æœ¬éŠ€ç‹çŠ¬ç‰¹æœ‰çš„è“¬é¬†é›²æœµæ¯›ã€é»‘è‰²åœ“æºœå¤§çœ¼ã€èƒŒéƒ¨æ²å°¾ï¼Œæ­¡æ¨‚å’¬ä½ç¶²çƒï¼ŒèŒæ„Ÿåè¶³ï¼
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Paternal Grandparents (çˆºçˆº & å«²å«²) -->
+      <div id="char-paternal" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-purple-600 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">çˆ¶ç³»é•·è¼©</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">çˆºçˆº & å«²å«² (je4-je2 & maa4-maa4)</h2>
+              <span class="text-xs text-purple-700 font-bold">æ…ˆç¥¥é—œæ„› â€§ è±¡å¾µè‰²ï¼šå¯¶è— Polo è¡«é…æ·¡ç´«å„ªé›…è¡«</span>
+            </div>
+          </div>
+          <div class="text-xs bg-purple-50 text-purple-800 font-semibold px-3 py-1.5 rounded-full border border-purple-200">
+            ç‰¹è‰²ï¼šçˆºçˆºé»‘æ¡†çœ¼é¡+ç¶“å…¸è— Polo â€§ å«²å«²é‡‘çµ²æ©¢åœ“é¡æ¡†+ç´«ç¾…è˜­å„ªé›…ä¸Šè¡£
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/grandparents_paternal_withtwins/PXL_20260511_031103919.MP.jpg" class="w-full h-full object-cover object-top" alt="Paternal Grandparents Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> çˆºçˆºæ—åˆ†ç°ç™½é«®ã€é»‘æ¡†çœ¼é¡ã€å¯¶è—è‰²ç¶“å…¸é±·é­šå¾½æ¨™çŸ­è¢– Polo è¡«ï¼›å«²å«²é½Šè‚©å¾®æ²çŸ­é«®ã€æ©¢åœ“é‡‘çµ²çœ¼é¡ã€æ·¡ç´«èŠ±é‚Šè¡«ã€‚
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-purple-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-purple-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/grandparents_paternal_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Paternal Grandparents 2D Art">
+            </div>
+            <p class="text-xs text-purple-900 leading-relaxed bg-purple-50/70 p-3 rounded-xl border border-purple-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> å…©äººä¸¦è‚©è¦ªåˆ‡æº«åŽšï¼Œçˆºçˆºçš„å¯¶è— Polo è¡«èˆ‡çœ¼é¡ã€å«²å«²çš„ç²¾ç·»çœ¼é¡èˆ‡ç´«ç³»ä¸Šè¡£çµ²çµ²å…¥æ‰£ï¼Œæ¥µå…·é•·è¼©è¾¨è­˜åº¦ã€‚
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Maternal Grandparents (å…¬å…¬ & å©†å©†) -->
+      <div id="char-maternal" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-teal-600 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">æ¯ç³»é•·è¼©</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">å…¬å…¬ & å©†å©† (gung1-gung1 & po4-po2)</h2>
+              <span class="text-xs text-teal-700 font-bold">æˆ¶å¤–é™ªä¼´ â€§ è±¡å¾µè‰²ï¼šæ¸…çˆ½ç±³ç™½ T é…å–œæ…¶çŠç‘šç´…èŠ±è¡«</span>
+            </div>
+          </div>
+          <div class="text-xs bg-teal-50 text-teal-800 font-semibold px-3 py-1.5 rounded-full border border-teal-200">
+            ç‰¹è‰²ï¼šå…¬å…¬éŠ€ç™½ä¿è½å¹³é ­ â€§ å©†å©†ç²¾éˆè¶…çŸ­ç€æµ·çŸ­é«®+æ‰‹è…•æ·±è‰²ä½›ç æ‰‹ä¸²
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/grandparents_maternal_withtwins/ff11258a2i78a1a7714b4622ddb2686a.jpg" class="w-full h-full object-cover object-top" alt="Maternal Grandparents Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> å…¬å…¬èº«å½¢çˆ½æœ—ã€ç•™æœ‰æ¨™èªŒæ€§éŠ€ç°è¶…çŸ­å¹³é ­ã€ç°¡å–®ç±³ç™½æ£‰ Tï¼›å©†å©†åœ“è‡‰ç¥žé‡‡å¥•å¥•ã€è¶…çŸ­ä¿è½ pixie é«®åž‹ã€æ‰‹ä¸Šä½©æˆ´æ·±è‰²ä½›ç å¿µç æ‰‹ä¸²ã€‚
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-teal-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-teal-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/grandparents_maternal_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Maternal Grandparents 2D Art">
+            </div>
+            <p class="text-xs text-teal-900 leading-relaxed bg-teal-50/70 p-3 rounded-xl border border-teal-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> ç¥žé‡‡å¥•å¥•ï¼å…¬å…¬æ¨™èªŒæ€§å¹³é ­çŸ­é«®èˆ‡ä¿è½èº«è»€ã€å©†å©†è…•ä¸Šçš„åœ“ç æ‰‹ä¸²èˆ‡æ©˜ç´…å°èŠ±å°é–‹è¡«ç²¾æº–åˆ°ä½ã€‚
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. Aunt & Cousins (å§‘åª½ & è¡¨å“¥ Ryan & è¡¨å¼Ÿ) -->
+      <div id="char-aunt" class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm card-hover">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="bg-orange-500 text-white font-black text-sm px-3.5 py-1.5 rounded-xl shadow-sm">åŒè¼©è¦ªå‹</span>
+            <div>
+              <h2 class="font-black text-2xl text-slate-900">å§‘åª½ & è¡¨å“¥ Ryan & è¡¨å¼Ÿ</h2>
+              <span class="text-xs text-orange-700 font-bold">å…¬åœ’æˆ¶å¤–æ­¡èš â€§ è±¡å¾µè‰²ï¼šé‹å‹•äº®ç¶ é¡æ¡†èˆ‡é›»å…‰è—é»‘è¶…</span>
+            </div>
+          </div>
+          <div class="text-xs bg-orange-50 text-orange-800 font-semibold px-3 py-1.5 rounded-full border border-orange-200">
+            ç‰¹è‰²ï¼šå§‘åª½é ­é ‚åž‹æ ¼é»‘è¶… â€§ Ryan èž¢å…‰ç¶ é‹å‹•çœ¼é¡ â€§ è¡¨å¼Ÿäº®è—è‰²å¹¼å…’å¤ªé™½çœ¼é¡
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Real Photo -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸ“¸</span> çœŸäººç”Ÿæ´»ç…§ (Real Photo)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center">
+              <img src="./assets/raw_photos/aunt_and_cousins/PXL_20260630_180058560.jpg" class="w-full h-full object-cover object-top" alt="Aunt and Cousins Photo">
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <strong>çœŸå¯¦ç‰¹å¾µæå–ï¼š</strong> å§‘åª½é ­é ‚æž¶è‘—æ·±è‰²å¢¨é¡ã€çŠç‘šè‰²ä¸Šè¡£é…ç‰›ä»”çŸ­è¤²ï¼›è¡¨å“¥ Ryan æˆ´è‘—æ¨™èªŒæ€§é»‘åº•äº®èž¢å…‰ç¶ é‹å‹•åž‹é•·æ–¹å½¢çœ¼é¡ï¼›æŠ±è‘—çš„å°è¡¨å¼Ÿæˆ´è‘—äº®è—è‰²å…’ç«¥é˜²æ›¬å¢¨é¡ï¼
+            </p>
+          </div>
+
+          <!-- 2D Concept Art -->
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-orange-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span>ðŸŽ¨</span> 2D ç¹ªæœ¬æ’ç•«é€ åž‹ (Nano Banana 2D Concept Art)
+            </div>
+            <div class="h-96 rounded-2xl overflow-hidden bg-white border-2 border-orange-300 shadow-md flex items-center justify-center p-3">
+              <img src="./assets/characters/auntie_cousins_cartoon.jpg" class="max-h-full object-contain rounded-xl" alt="Aunt and Cousins 2D Art">
+            </div>
+            <p class="text-xs text-orange-900 leading-relaxed bg-orange-50/70 p-3 rounded-xl border border-orange-200">
+              <strong>é€ åž‹é‚„åŽŸï¼š</strong> æ¥µé«˜é‚„åŽŸåº¦ï¼Ryan é¼»æ¨‘ä¸Šçš„èž¢å…‰ç¶ é¡æ¡†èˆ‡è¡¨å¼Ÿçš„å°è—å¢¨é¡æ ¼å¤–å¸ç›ï¼Œå®¶åº­è¾¨è­˜åº¦ 100%ï¼
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Audio Review Section -->
+    <div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+      <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <span>ðŸŽ™ï¸</span> çˆ¸çˆ¸çœŸå¯¦ç²µèªžåŽŸè²æ—ç™½æ ¸å° (Dad's Real Voice Track)
+          </h2>
+          <p class="text-sm text-slate-500 mt-1">
+            å·²æ¶ˆé™¤èƒŒæ™¯å™ªéŸ³ä¸¦æ ¡æ­£é›»å¹³ï¼Œä½œç‚ºç¬¬ 1 é›†å‹•ç•«å…¨åŠ‡æ—ç™½åŠå£åž‹åŒæ­¥æ ¸å¿ƒä¾†æºã€‚
+          </p>
+        </div>
+        <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-3.5 py-1.5 rounded-full self-start sm:self-auto">
+          âœ“ 44.1kHz é«˜æ¸…ç„¡æéŸ³é »
+        </span>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="w-full md:w-3/5">
+          <audio controls class="w-full">
+            <source src="./assets/audio_samples/dad_cantonese_clean.wav" type="audio/wav">
+            æ‚¨çš„ç€è¦½å™¨ä¸æ”¯æŒéŸ³é »æ’­æ”¾ã€‚
+          </audio>
+        </div>
+        <div class="text-xs text-slate-600 space-y-1.5 w-full md:w-2/5 border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-6">
+          <div><strong class="text-slate-800">éŸ³é »æ™‚é•·ï¼š</strong> 75.54 ç§’ (1 åˆ† 15 ç§’)</div>
+          <div><strong class="text-slate-800">å»¶ä¼¸æ©Ÿåˆ¶ï¼š</strong> é€éŽå ´æ™¯éŽæ¸¡ã€äº’å‹•æå•åœé “èˆ‡æ­¡æ¨‚å…’æ­Œ BGM é‹ªå¢Šè‡³ 2.5 åˆ†é˜ (150ç§’)</div>
+          <div><strong class="text-slate-800">é‹ç®—ä¿éšœï¼š</strong> 100% æœ¬åœ°è…³æœ¬é‹ç®—ï¼Œå®Œå…¨ä¸ä¾è³´ä»˜è²»èªžéŸ³ API</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approval Action Card -->
+    <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-700">
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/30">
+          <span>âœ¨</span> æ‰€æœ‰ 2D äººç‰©é€ åž‹å·²å®Œæˆç…§ç‰‡å°æ¨™
+        </div>
+        <h3 class="text-2xl md:text-3xl font-black">
+          æº–å‚™å¥½ç”Ÿæˆ 2.5 åˆ†é˜å‹•æ…‹å½±ç‰‡äº†å—Žï¼Ÿ
+        </h3>
+        <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">
+          è‹¥æ‚¨å°ä¸Šè¿° 8 çµ„è§’è‰²çš„é€ åž‹æ»¿æ„ï¼Œè«‹åœ¨å°è©±æ¡†ä¸­å›žè¦†ç¢ºèªã€‚æˆ‘å°‡ç«‹å³å•Ÿå‹•èƒŒæ™¯ç”Ÿæˆï¼ˆå®¢å»³/ç¡æˆ¿/å»šæˆ¿/å…¬åœ’å ´æ™¯ï¼‰ä¸¦å°‡è§’è‰²æ”¾å…¥å ´æ™¯ä¸­åˆæˆå…·å‚™çœ¨çœ¼ã€èµ°è·¯ã€è¸©å–®è»Šã€å£åž‹åŒæ­¥çš„ 1080p å®Œæ•´å½±ç‰‡ï¼
+        </p>
+      </div>
+      <div class="shrink-0 w-full md:w-auto">
+        <div class="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-base rounded-2xl text-center shadow-lg transition">
+          ðŸš€ è«‹æ–¼å°è©±æ¡†å‘ŠçŸ¥æ˜¯å¦ç¢ºèªæˆ–å¾®èª¿ï¼
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

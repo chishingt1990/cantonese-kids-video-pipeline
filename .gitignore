@@ -1,0 +1,42 @@
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Large Rendered Media Outputs & Temp Audio
+assets/outputs/
+assets/raw_photos/
+*.mp4
+*.wav
+projects/*/frames/
+
+# Local Environment, API Keys & OAuth Secrets (NEVER COMMIT TO GITHUB)
+.env
+.env.local
+.env.*.local
+config/client_secret.json
+config/google_token.json
+config/api_keys.json
+
+# Logs & scratch test files
+*.log
+scratch/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Agent task / system artifacts
+.system_generated/
+

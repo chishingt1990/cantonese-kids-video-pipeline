@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Video Studio — Personalized Educational Videos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; }
+    .tc-font { font-family: 'Noto Sans TC', sans-serif; }
+    .pulse-record { animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  </style>
+</head>
+<body class="bg-amber-50/30 text-stone-800 min-h-screen flex">
+
+  <!-- ======================================================== -->
+  <!-- LEFT SIDEBAR PANE -->
+  <!-- ======================================================== -->
+  <aside class="w-72 bg-white border-r border-amber-100 flex flex-col justify-between shrink-0 h-screen sticky top-0 shadow-sm z-20">
+    <!-- TOP SECTION -->
+    <div class="p-5 space-y-5">
+      <!-- APP LOGO -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-rose-400 flex items-center justify-center text-xl shadow-sm shadow-amber-200">
+          🌱
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-tight text-stone-900 leading-none">Kids Video Studio</h1>
+          <p class="text-[11px] text-stone-400 font-medium mt-1">Parent-Powered Cantonese</p>
+        </div>
+      </div>
+
+      <!-- ACTIVE MODEL SELECTOR RIGHT ON MAIN PAGE -->
+      <div class="bg-stone-50 border border-stone-200 rounded-2xl p-3 space-y-1.5 shadow-inner">
+        <div class="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-stone-500">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Active AI Model</span>
+          <span class="text-[9px] text-amber-700 font-bold">Switch Anytime</span>
+        </div>
+        <select id="main-model-picker" onchange="quickSwitchModel(this.value)" class="w-full px-2.5 py-1.5 rounded-xl border border-stone-200 bg-white font-bold text-xs text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-sm">
+          <optgroup label="✨ Google Gemini (Google AI Pro)">
+            <option value="gemini-3.8-flash">Gemini 3.8 Flash (Latest Cutting-Edge)</option>
+            <option value="gemini-3.7-flash">Gemini 3.7 Flash (High Performance)</option>
+            <option value="gemini-3.6-flash" selected>Gemini 3.6 Flash (Verified Stable)</option>
+            <option value="gemini-flash-latest">Gemini Flash Latest (Auto-Track)</option>
+            <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro (Deep Preschool Story)</option>
+            <option value="gemini-pro-latest">Gemini Pro Latest (Deep Reasoning)</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
+          </optgroup>
+          <optgroup label="🧠 OpenAI">
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="gpt-4o-mini">GPT-4o Mini</option>
+          </optgroup>
+          <optgroup label="🎭 Anthropic Claude">
+            <option value="claude-3-7-sonnet-20250219">Claude 3.7 Sonnet</option>
+            <option value="claude-3-5-haiku-latest">Claude 3.5 Haiku</option>
+          </optgroup>
+          <optgroup label="🦙 Local Ollama (Offline)">
+            <option value="llama3.2">Llama 3.2 (Local)</option>
+            <option value="qwen2.5">Qwen 2.5 (Local Cantonese/Chinese)</option>
+            <option value="deepseek-r1">DeepSeek R1 (Local)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- ACTIVE PROJECT CONTROLS & PERSISTENCE -->
+      <div class="bg-amber-50/80 border border-amber-200/70 rounded-2xl p-3 space-y-2 shadow-xs">
+        <div class="flex items-center justify-between">
+          <div class="text-[9px] font-extrabold uppercase tracking-wider text-amber-700">Project</div>
+          <span id="project-sync-badge" class="text-[9px] font-bold text-emerald-700 bg-emerald-100/90 px-1.5 py-0.5 rounded-full flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Saved
+          </span>
+        </div>
+        <div id="side-project-title" class="font-bold text-xs text-stone-900 truncate tc-font">見到屋企人 (Meeting Family)</div>
+        <div class="text-[10px] text-stone-400"><span id="side-project-scenes">7 Scenes</span> · 1080p HD</div>
+        <div class="flex items-center gap-1.5 pt-1 border-t border-amber-200/50 text-[11px]">
+          <button type="button" onclick="openProjectLibraryModal()" class="flex-1 py-1 px-2 rounded-lg bg-white hover:bg-amber-100 border border-amber-200 font-bold text-stone-700 hover:text-amber-900 transition flex items-center justify-center gap-1">
+            <span>📂</span> Library
+          </button>
+          <button type="button" onclick="manualSaveProject()" title="Save (Ctrl+S)" class="py-1 px-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold transition flex items-center justify-center">
+            <span>💾</span>
+          </button>
+          <button type="button" onclick="openNewProjectModal()" title="New Episode Project" class="py-1 px-2.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold transition flex items-center justify-center">
+            <span>➕</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SIDEBAR NAV ITEMS -->
+      <nav class="space-y-1.5 font-semibold text-xs">
+        <button onclick="setStep(1)" id="side-step-1" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition bg-amber-500 text-white font-bold shadow-sm shadow-amber-200">
+          <span class="text-sm">💡</span>
+          <span>1. Theme & Ideas</span>
+        </button>
+        <button onclick="setStep(2)" id="side-step-2" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
+          <span class="text-sm">📝</span>
+          <span>2. Script & Vocab</span>
+        </button>
+        <button onclick="setStep(3)" id="side-step-3" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
+          <span class="text-sm">🎨</span>
+          <span>3. Picture Book Studio</span>
+        </button>
+        <button onclick="setStep(4)" id="side-step-4" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
+          <span class="text-sm">🎙️</span>
+          <span>4. Voice & Sound</span>
+        </button>
+        <button onclick="setStep(5)" id="side-step-5" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
+          <span class="text-sm">🎬</span>
+          <span>5. Render & Video</span>
+        </button>
+      </nav>
+
+      <!-- VISUAL ASSET INSPECTOR LINK -->
+      <div class="pt-2 border-t border-amber-100/80">
+        <a href="/review" target="_blank" class="w-full px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 transition bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-200/80 shadow-xs text-xs">
+          <span class="text-sm">🖼️</span>
+          <span>Review Sprites & Scenes</span>
+          <span class="ml-auto text-[9px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-extrabold uppercase">Gallery</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- BOTTOM USAGE & CAPABILITIES PANEL -->
+    <div class="p-4 border-t border-stone-100 bg-stone-50/70 space-y-3">
+      <div class="space-y-1.5 text-[11px]">
+        <div class="flex items-center justify-between text-stone-500 font-medium">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Storage</span>
+          <span class="font-bold text-stone-700">100% On-Device</span>
+        </div>
+        <div class="flex items-center justify-between text-stone-500 font-medium">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Video Pipeline</span>
+          <span class="font-bold text-stone-700">FFmpeg 1080p</span>
+        </div>
+      </div>
+
+      <button onclick="toggleSettingsModal()" class="w-full py-2.5 px-3 rounded-xl bg-white border border-stone-200 text-stone-700 font-bold text-xs hover:bg-stone-100 transition flex items-center justify-center gap-2 shadow-sm">
+        <span>🔑</span> Manage API Keys & Providers
+      </button>
+    </div>
+  </aside>
+
+  <!-- ======================================================== -->
+  <!-- MAIN WORKSPACE -->
+  <!-- ======================================================== -->
+  <main class="flex-1 p-8 overflow-y-auto max-w-5xl">
+
+    <!-- STEP 1: IDEA & THEME -->
+    <div id="step-1" class="step-view space-y-6">
+      <div class="space-y-1">
+        <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 1: Ideation</span>
+        <h2 class="text-3xl font-extrabold text-stone-900 tracking-tight">What do we want to teach today?</h2>
+        <p class="text-stone-500 text-sm">Pick a gentle, wholesome theme tailored for your little ones without the addictive frenzy of YouTube.</p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-6 md:p-8 border border-amber-100 shadow-sm space-y-6">
+        <div>
+          <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Child Age Group</label>
+          <div class="grid grid-cols-3 gap-3">
+            <button onclick="setAge(this, '1-2 years (Toddlers)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-amber-400 bg-amber-50/50 text-amber-900 font-bold text-sm text-center transition">1–2 Years (Toddlers)</button>
+            <button onclick="setAge(this, '2-3 years (Preschool)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 hover:border-amber-300 text-stone-600 font-bold text-sm text-center transition">2–3 Years (Preschool)</button>
+            <button onclick="setAge(this, '3-5 years (Kindergarten)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 hover:border-amber-300 text-stone-600 font-bold text-sm text-center transition">3–5 Years (Kindergarten)</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Lesson Presets & Topics</label>
+          <div id="lesson-topic-chips" class="flex flex-wrap gap-2">
+            <button onclick="setTopicChip(this, 'Meeting Family & Greeting Relatives')" class="chip px-4 py-2 rounded-full border border-amber-300 bg-amber-100/50 text-amber-900 text-xs font-bold">👨‍👩‍👦 Meeting Family & Relatives</button>
+            <button onclick="setTopicChip(this, 'Morning Routine & Brushing Teeth')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">☀️ Morning Routine & Brushing Teeth</button>
+            <button onclick="setTopicChip(this, 'Breakfast & Healthy Eating Habits')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">🥣 Breakfast & Eating Fruit</button>
+            <button onclick="setTopicChip(this, 'Animal Friends & Puppy Sounds')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">🐶 Animal Friends & Sounds</button>
+            <button onclick="setTopicChip(this, 'Bedtime Routine & Sweet Dreams')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">🌙 Bedtime & Sweet Dreams</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Custom Topic or Specific Details</label>
+          <input id="input-topic" type="text" value="Meeting Family & Greeting Relatives" class="w-full px-4 py-3 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm font-medium">
+        </div>
+
+        <button onclick="generateIdeas()" id="btn-gen-ideas" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold text-sm shadow-md shadow-amber-200 flex items-center justify-center gap-2 transition">
+          <span>✨</span> Brainstorm Episode Concepts
+        </button>
+      </div>
+
+      <div id="ideas-container" class="grid md:grid-cols-3 gap-5"></div>
+    </div>
+
+    <!-- STEP 2: SCRIPT & VOCABULARY -->
+    <div id="step-2" class="step-view hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 2: Scripting</span>
+          <h2 id="script-episode-title" class="text-2xl font-extrabold text-stone-900 mt-1">Episode Script & Vocabulary</h2>
+          <p class="text-stone-500 text-xs">Review and refine spoken Cantonese parentese dialogue and English bilingual context.</p>
+        </div>
+        <button onclick="setStep(3)" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
+          Next: Picture Book Studio ➔
+        </button>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
+        <h4 class="text-xs font-extrabold text-stone-500 uppercase tracking-wider">Target Vocabulary Flashcards</h4>
+        <div id="vocab-cards-list" class="flex flex-wrap gap-3"></div>
+      </div>
+
+      <div id="scenes-list" class="space-y-4"></div>
+    </div>
+
+    <!-- STEP 3: PICTURE BOOK STUDIO & SCENE DIRECTOR -->
+    <div id="step-3" class="step-view hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 3: Picture Book Studio 🎨</span>
+          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Autonomous Scene Director & Co-pilot</h2>
+          <p class="text-stone-500 text-xs">AI reads your script, selects warm pastel backgrounds, poses characters, and places 3D stickers automatically.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-auto-direct-all" onclick="triggerAutoDirectAllScenes()" class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
+            <span>✨</span> Auto-Direct All Scenes
+          </button>
+          <button onclick="openCustomOutfitModal()" class="px-3.5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 font-bold text-xs flex items-center gap-1.5 transition">
+            <span>🎨</span> Custom Outfit
+          </button>
+          <button onclick="setStep(4)" class="px-6 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-md flex items-center gap-1.5 transition">
+            Next: Voice Studio ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- SCENE SELECTOR TABS -->
+      <div class="bg-white p-3 rounded-2xl border border-amber-100 shadow-sm flex items-center gap-2 overflow-x-auto" id="stage-scene-tabs">
+        <!-- Generated Scene Pills -->
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-6">
+        <!-- LEFT: 16:9 INTERACTIVE SCENE VIEWPORT (2 COLS) -->
+        <div class="lg:col-span-2 space-y-4">
+          <!-- 16:9 DRAG & DROP CANVAS -->
+          <div class="relative aspect-video rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-stone-100 select-none cursor-crosshair" id="visual-stage-canvas" ondragover="handleStageDragOver(event)" ondragleave="handleStageDragLeave(event)" ondrop="handleStageDrop(event)">
+            <!-- Background Image -->
+            <img id="stage-bg-img" src="/api/characters/background/bg_living_room.png" class="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-300">
+
+            <!-- Drop Zone Helper overlay when dragging -->
+            <div id="stage-drop-overlay" class="absolute inset-0 border-4 border-dashed border-amber-400 bg-amber-400/15 hidden pointer-events-none z-30 flex items-center justify-center">
+              <div class="bg-amber-500 text-white font-extrabold text-sm px-5 py-2.5 rounded-2xl shadow-xl flex items-center gap-2">
+                <span>📍</span> Drop Character or Sticker Anywhere on Scene!
+              </div>
+            </div>
+
+            <!-- Live Vocab Badge Preview (matching render_service.py) -->
+            <div id="stage-vocab-badge" class="absolute top-3 left-4 bg-amber-50/95 backdrop-blur-xs border-2 border-amber-300/80 rounded-2xl px-3 py-1.5 shadow-md z-35 pointer-events-none flex items-center gap-1.5 transition-all">
+              <span class="text-amber-500 text-xs">★</span>
+              <span id="stage-vocab-text" class="font-extrabold text-amber-950 text-xs tc-font tracking-wide">屋企人</span>
+            </div>
+
+            <!-- Free-form Characters Container (z-20) -->
+            <div class="absolute inset-0 z-20 pointer-events-none" id="stage-character-layer">
+              <!-- Rendered Draggable Character Sprites -->
+            </div>
+
+            <!-- Educational Storybook Stickers Layer (z-30) -->
+            <div class="absolute inset-0 z-30 pointer-events-none" id="stage-sticker-layer">
+              <!-- Rendered Draggable Stickers & Props -->
+            </div>
+
+            <!-- Subtitle Bar Preview (Clean Spoken Cantonese + English) - Forefront z-40 -->
+            <div class="absolute bottom-3 inset-x-8 bg-white/95 backdrop-blur-md rounded-2xl px-5 py-2.5 text-center border-2 border-amber-300 shadow-lg pointer-events-none z-40">
+              <p id="stage-sub-cantonese" class="font-extrabold text-stone-900 text-lg tc-font leading-tight">早晨呀！</p>
+              <p id="stage-sub-english" class="text-xs text-stone-600 font-semibold mt-0.5">Good morning sweet babies!</p>
+            </div>
+          </div>
+
+          <!-- INLINE SCENE CO-PILOT BAR -->
+          <div class="bg-gradient-to-r from-amber-400 via-rose-400 to-amber-500 p-[1.5px] rounded-3xl shadow-sm">
+            <div class="bg-white rounded-[22px] p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">🪄</span>
+                  <div>
+                    <h4 class="font-extrabold text-xs text-stone-900 tracking-tight">Inline Scene Co-pilot</h4>
+                    <p class="text-[10px] text-stone-400">Describe visual changes in plain English or Cantonese</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button id="btn-copilot-undo" onclick="undoCopilotTweak()" disabled class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-stone-200 text-stone-400 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-stone-50 transition flex items-center gap-1">
+                    <span>↩️</span> Undo
+                  </button>
+                  <button onclick="triggerAutoDirectSingleScene(activeStageSceneIdx)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 transition flex items-center gap-1">
+                    <span>✨</span> Re-Direct Scene
+                  </button>
+                </div>
+              </div>
+
+              <!-- Input and Submit -->
+              <div class="relative flex items-center">
+                <input 
+                  id="copilot-input" 
+                  type="text" 
+                  onkeydown="if(event.key==='Enter'){event.preventDefault();executeCopilotTweak();}"
+                  placeholder="e.g. 'Make dog eat banana in mouth', 'Add a 多謝 sticker', 'Change background to sunny beach'..."
+                  class="w-full text-xs px-3.5 py-2.5 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 pr-24 shadow-xs"
+                >
+                <button 
+                  id="btn-copilot-submit" 
+                  onclick="executeCopilotTweak()" 
+                  class="absolute right-1.5 top-1.5 bottom-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold text-xs flex items-center gap-1 transition shadow-xs"
+                >
+                  <span>🪄</span> Apply
+                </button>
+              </div>
+
+              <!-- 1-Tap Quick Action Chips -->
+              <div class="space-y-1">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-stone-400">1-Tap Co-pilot Actions:</span>
+                <div class="flex flex-wrap gap-1.5">
+                  <button type="button" onclick="quickCopilotChip('Make Spitz dog hold and eat a sweet yellow banana in mouth')" class="text-[10px] px-2.5 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-200 transition">🍌 Dog Eat Banana</button>
+                  <button type="button" onclick="quickCopilotChip('Levi and Luca give each other a big warm hug')" class="text-[10px] px-2.5 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold border border-rose-200 transition">🤗 Twin Hug</button>
+                  <button type="button" onclick="quickCopilotChip('Add a puffy candy 多謝 / Thank you sticker')" class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold border border-emerald-200 transition">🏷️ + 多謝 Sticker</button>
+                  <button type="button" onclick="quickCopilotChip('Add colorful ABC preschool blocks near bottom left')" class="text-[10px] px-2.5 py-1 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-800 font-bold border border-sky-200 transition">🔤 + ABC Blocks</button>
+                  <button type="button" onclick="quickCopilotChip('Change background to gentle wildflower mountain hills')" class="text-[10px] px-2.5 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-medium border border-emerald-200 transition">⛰️ Mountains</button>
+                  <button type="button" onclick="quickCopilotChip('Change background to sunny pastel beach with ocean waves')" class="text-[10px] px-2.5 py-1 rounded-full bg-stone-50 hover:bg-stone-100 text-stone-700 font-medium border border-stone-200 transition">🏖️ Sunny Beach</button>
+                  <button type="button" onclick="quickCopilotChip('Change background to cozy bedroom with stars and crescent moon')" class="text-[10px] px-2.5 py-1 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-medium border border-indigo-200 transition">🌙 Bedtime Nursery</button>
+                  <button type="button" onclick="quickCopilotChip('Change background to sunny picnic park with green meadow')" class="text-[10px] px-2.5 py-1 rounded-full bg-lime-50 hover:bg-lime-100 text-lime-900 font-medium border border-lime-200 transition">🌳 Park</button>
+                  <button type="button" onclick="quickCopilotChip('Change background to warm dining room with dim sum steamers and teapot')" class="text-[10px] px-2.5 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-900 font-medium border border-amber-200 transition">🥣 Dim Sum Dining</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PASTEL SCENE & BACKGROUND STUDIO BOX -->
+          <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2.5">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🎨</span>
+                <div>
+                  <h4 class="font-extrabold text-xs text-stone-800 uppercase tracking-wider">Pastel Scene & Background Studio</h4>
+                  <p class="text-[11px] text-stone-400">Consistent storybook pastel palette with warm lighting</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <a href="/review" target="_blank" class="text-xs text-amber-900 font-extrabold bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-2xl border border-amber-300 shadow-xs flex items-center gap-1.5 transition" title="Open full visual asset inspector and staging sandbox">
+                  <span>🖼️</span> Review Gallery
+                </a>
+                <button onclick="openBgStudioModal()" class="text-xs text-amber-900 font-extrabold bg-amber-100 hover:bg-amber-200 px-3.5 py-1.5 rounded-2xl border border-amber-300 shadow-xs flex items-center gap-1.5 transition">
+                  <span>🎨</span> Design Custom Setting
+                </button>
+                <button onclick="applyBackgroundToAllScenes()" title="Apply current background to all scenes in episode" class="text-[10px] text-stone-600 hover:text-amber-800 font-bold bg-stone-100 hover:bg-amber-100 px-2.5 py-1.5 rounded-full border border-stone-200 transition">
+                  🔄 Apply to All Scenes
+                </button>
+                <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2.5 py-1.5 rounded-full border border-amber-200">1920x1080 HD</span>
+              </div>
+            </div>
+
+            <!-- Available Backgrounds Visual Cards (Multi-Row Wrapping Grid, No Horizontal Scroll) -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-stone-700 uppercase tracking-wider">Select Scene Background:</span>
+                <button onclick="openBgStudioModal()" class="text-xs text-amber-600 hover:text-amber-700 font-bold underline cursor-pointer">+ Design Custom Setting</button>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-[220px] overflow-y-auto p-1 pr-1.5" id="background-presets-list">
+                <!-- Mini thumbnails of existing scenes rendered here as a wrapping grid -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: CAST & PALETTES (1 COL) -->
+        <div class="space-y-4">
+          <!-- Active Characters in this Scene with quick action controls -->
+          <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <h4 class="font-extrabold text-xs text-stone-800 uppercase tracking-wider">Cast in this Scene</h4>
+              <span id="active-scene-indicator" class="text-xs font-bold text-amber-700">Scene 1</span>
+            </div>
+            <div id="scene-active-characters-list" class="space-y-2 max-h-[200px] overflow-y-auto pr-1">
+              <!-- Active character cards -->
+            </div>
+          </div>
+
+          <!-- STORYBOOK STICKERS PALETTE -->
+          <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="text-base">🏷️</span>
+                <h4 class="font-extrabold text-xs text-stone-800 uppercase tracking-wider">Storybook Stickers</h4>
+              </div>
+              <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">1-Tap to Add</span>
+            </div>
+            <p class="text-[11px] text-stone-400">Click any 3D sticker or phonics block to place it into the scene:</p>
+            <div id="storybook-stickers-palette" class="grid grid-cols-3 gap-2 max-h-[220px] overflow-y-auto pr-1">
+              <!-- Loaded dynamically from /api/scene-director/stickers/catalog -->
+            </div>
+          </div>
+
+          <!-- DRAGGABLE FAMILY MEMBER PALETTE -->
+          <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-extrabold text-xs text-stone-800 uppercase tracking-wider">Family Member Palette</h4>
+              <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">👆 Drag to Scene</span>
+            </div>
+            <p class="text-[11px] text-stone-400">Drag any family member directly onto the 16:9 canvas to place them anywhere:</p>
+            <div id="draggable-family-roster" class="grid grid-cols-2 gap-2 max-h-[240px] overflow-y-auto pr-1">
+              <!-- Draggable roster items -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: VOICE & SOUND STUDIO -->
+    <div id="step-4" class="step-view hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 4: Voiceover & Sound</span>
+          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Audio Studio & Teleprompter</h2>
+          <p class="text-stone-500 text-xs">Generate instant Cantonese neural voices with 1 click, or record your personal voice via microphone.</p>
+        </div>
+        <button onclick="setStep(5)" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
+          Next: Render Video ➔
+        </button>
+      </div>
+
+      <!-- 1-CLICK BULK GENERATION BANNER -->
+      <div class="bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 rounded-3xl p-6 text-white shadow-md flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">⚡</span>
+            <h3 class="text-lg font-extrabold">1-Click Generate All Scene Voices (Cantonese AI)</h3>
+          </div>
+          <p class="text-amber-100 text-xs">Instantly synthesizes high-fidelity Hong Kong Cantonese neural speech for all 7 scenes and mixes acoustic ukulele BGM.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <select id="bulk-persona-selector" class="text-stone-800 text-xs font-bold px-3 py-2 rounded-xl bg-white focus:outline-none shadow-sm">
+            <option value="dad">👨 Narrator: Warm Dad (Wan Lung)</option>
+            <option value="mom">👩 Narrator: Gentle Mom (Hiu Maan)</option>
+            <option value="child">🧒 Narrator: Cheerful Child (Hiu Gaai)</option>
+          </select>
+          <button id="btn-bulk-tts" onclick="generateAllVoicesAI()" class="px-5 py-2.5 rounded-xl bg-white text-stone-900 hover:bg-amber-50 font-extrabold text-xs shadow-sm flex items-center gap-1.5 transition">
+            <span>✨</span> Generate All Scenes
+          </button>
+        </div>
+      </div>
+
+      <!-- MASTER SOUNDTRACK PREVIEW -->
+      <div class="bg-white rounded-3xl p-4 border border-amber-100 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-lg">
+            🎵
+          </div>
+          <div>
+            <h4 class="font-bold text-stone-800 text-xs">Master Soundtrack (Voice + Ukulele BGM + Auto-Ducking)</h4>
+            <p class="text-[11px] text-stone-400">Re-mixed automatically whenever you record or generate voice clips</p>
+          </div>
+        </div>
+        <audio id="master-audio-player" controls class="h-8 max-w-[280px]" src="/api/audio/master"></audio>
+      </div>
+
+      <div id="audio-scenes-list" class="space-y-4"></div>
+    </div>
+
+    <!-- STEP 5: RENDER & PREVIEW -->
+    <div id="step-5" class="step-view hidden space-y-6">
+      <div class="space-y-1">
+        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 5: Production</span>
+        <h2 class="text-2xl font-extrabold text-stone-900 tracking-tight">1080p Video Rendering</h2>
+        <p class="text-stone-500 text-xs">Stitched on your local computer using FFmpeg with character animations and dual subtitles.</p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-6 md:p-8 border border-amber-100 shadow-sm space-y-6">
+        <div id="render-pre" class="text-center py-8 space-y-4">
+          <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mx-auto">
+            🎬
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-stone-800">Ready to Render Episode</h3>
+            <p class="text-xs text-stone-400">Pipes character sprites, gentle breathing animations, and dual subtitles into 1080p MP4.</p>
+          </div>
+
+          <!-- Subtitle & Visual Styling Controls -->
+          <div class="max-w-xl mx-auto text-left bg-amber-50/60 rounded-2xl p-4 border border-amber-200/80 space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-extrabold text-xs text-stone-800 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🎨</span> Subtitle & Visual Styling
+              </h4>
+              <span class="text-[10px] text-amber-800 font-bold bg-amber-100 px-2.5 py-0.5 rounded-full">Bilingual Subtitles</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div>
+                <label class="block font-bold text-stone-600 text-[11px] mb-1">Subtitle Pill Style</label>
+                <select id="sub-pill-style" class="w-full px-2.5 py-2 rounded-xl border border-stone-200 bg-white font-semibold text-stone-800 text-xs focus:ring-2 focus:ring-amber-400">
+                  <option value="warm_cream" selected>Warm Frosted (Default)</option>
+                  <option value="pastel_amber">Pastel Amber Card</option>
+                  <option value="translucent_dark">Translucent Dark Cinema</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-stone-600 text-[11px] mb-1">Cantonese Font Size</label>
+                <select id="sub-font-cn" class="w-full px-2.5 py-2 rounded-xl border border-stone-200 bg-white font-semibold text-stone-800 text-xs focus:ring-2 focus:ring-amber-400">
+                  <option value="46">Compact (46px)</option>
+                  <option value="52" selected>Standard (52px)</option>
+                  <option value="58">Large (58px)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-stone-600 text-[11px] mb-1">English Font Size</label>
+                <select id="sub-font-en" class="w-full px-2.5 py-2 rounded-xl border border-stone-200 bg-white font-semibold text-stone-800 text-xs focus:ring-2 focus:ring-amber-400">
+                  <option value="22">Small (22px)</option>
+                  <option value="26" selected>Standard (26px)</option>
+                  <option value="30">Prominent (30px)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="startRender()" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold text-sm shadow-md shadow-amber-200 transition">
+            Start 1080p Video Rendering
+          </button>
+        </div>
+
+        <div id="render-progress-box" class="hidden space-y-3 py-6">
+          <div class="flex justify-between text-xs font-bold text-stone-600">
+            <span>Rendering Frames with Local FFmpeg...</span>
+            <span id="render-percent">0%</span>
+          </div>
+          <div class="w-full bg-stone-100 h-4 rounded-full overflow-hidden p-0.5 border border-stone-200">
+            <div id="render-progress-bar" class="bg-gradient-to-r from-amber-500 to-emerald-500 h-full rounded-full transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+        <div id="render-player-box" class="space-y-4">
+          <div class="aspect-video bg-black rounded-2xl overflow-hidden shadow-inner border border-stone-200">
+            <video id="video-player" controls class="w-full h-full" src="/api/render/video/episode_01_meeting_family.mp4"></video>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <a id="btn-download-mp4" href="/api/render/video/episode_01_meeting_family.mp4" download="Episode_01_Meeting_Family.mp4" class="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm flex items-center gap-2">
+              <span>⬇️</span> Download Video (MP4)
+            </a>
+            <button id="btn-open-yt-modal" onclick="openYouTubePublishModal()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-200 flex items-center gap-2 transition">
+              <span>🚀</span> Publish to YouTube
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MULTI-PROVIDER SETTINGS MODAL -->
+  <!-- ======================================================== -->
+  <div id="modal-settings" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 border border-stone-200 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div>
+          <h3 class="font-extrabold text-stone-900 text-base">API Keys & AI Providers</h3>
+          <p class="text-[11px] text-stone-400">All keys are stored 100% locally on your PC. Never uploaded.</p>
+        </div>
+        <button onclick="toggleSettingsModal()" class="text-stone-400 hover:text-stone-700 font-bold">✕</button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <!-- GOOGLE GEMINI -->
+        <div class="p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200/70 space-y-2">
+          <div class="flex items-center gap-2 font-bold text-amber-900">
+            <span>✨</span> Google Gemini API Key (Google AI Pro)
+          </div>
+          <input id="setting-gemini-key" type="password" placeholder="AIzaSy..." class="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 font-mono text-xs">
+          <p class="text-[10px] text-stone-400">Used for Gemini 3.8 Flash, 3.7, 3.6, and Gemini 3.1 Pro.</p>
+        </div>
+
+        <!-- OPENAI -->
+        <div class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-200/70 space-y-2">
+          <div class="flex items-center gap-2 font-bold text-emerald-900">
+            <span>🧠</span> OpenAI API Key (Optional)
+          </div>
+          <input id="setting-openai-key" type="password" placeholder="sk-..." class="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 font-mono text-xs">
+          <p class="text-[10px] text-stone-400">Enables GPT-4o and GPT-4o-mini in the model picker.</p>
+        </div>
+
+        <!-- ANTHROPIC CLAUDE -->
+        <div class="p-3.5 rounded-2xl bg-purple-50/50 border border-purple-200/70 space-y-2">
+          <div class="flex items-center gap-2 font-bold text-purple-900">
+            <span>🎭</span> Anthropic Claude API Key (Optional)
+          </div>
+          <input id="setting-anthropic-key" type="password" placeholder="sk-ant-..." class="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-purple-400 font-mono text-xs">
+          <p class="text-[10px] text-stone-400">Enables Claude 3.7 Sonnet and Claude 3.5 Haiku.</p>
+        </div>
+
+        <!-- AZURE OPENAI -->
+        <div class="p-3.5 rounded-2xl bg-sky-50/50 border border-sky-200/70 space-y-2">
+          <div class="flex items-center gap-2 font-bold text-sky-900">
+            <span>☁️</span> Azure OpenAI (Optional)
+          </div>
+          <div class="space-y-1.5">
+            <input id="setting-azure-key" type="password" placeholder="Azure API Key" class="w-full px-3 py-1.5 rounded-xl border border-stone-200 font-mono text-xs">
+            <input id="setting-azure-endpoint" type="text" placeholder="https://your-resource.openai.azure.com" class="w-full px-3 py-1.5 rounded-xl border border-stone-200 text-xs">
+          </div>
+        </div>
+
+        <!-- LOCAL OLLAMA -->
+        <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+          <div class="flex items-center gap-2 font-bold text-stone-800">
+            <span>🦙</span> Local Ollama URL (100% Offline)
+          </div>
+          <input id="setting-ollama-url" type="text" value="http://localhost:11434" class="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-400 text-xs">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-stone-100 pt-3">
+        <button onclick="toggleSettingsModal()" class="px-4 py-2 rounded-xl border border-stone-200 text-stone-600 font-semibold text-xs">Cancel</button>
+        <button onclick="saveSettings()" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm">Save All Keys</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js?v=2"></script>
+  <!-- AI OUTFIT & POSE STUDIO MODAL -->
+  <div id="modal-custom-outfit" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-stone-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">✨</span>
+          <div>
+            <h3 class="text-base font-extrabold text-stone-900">AI Character Outfit & Pose Studio</h3>
+            <p class="text-[11px] text-stone-400">Create, preview, edit, and equip custom toddler outfits and props</p>
+          </div>
+        </div>
+        <button onclick="closeCustomOutfitModal()" class="w-8 h-8 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-600 flex items-center justify-center text-base">✕</button>
+      </div>
+
+      <!-- STEP A: CHARACTER & PROMPT -->
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">1. Select Character</label>
+          <div class="grid grid-cols-4 sm:grid-cols-8 gap-2 overflow-x-auto pb-1" id="outfit-char-picker">
+            <!-- Dynamically populated from allCharacters -->
+          </div>
+          <input type="hidden" id="modal-outfit-char" value="levi">
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">2. Outfit / Pose / Prop Prompt</label>
+          <div class="relative">
+            <input id="modal-outfit-prompt" type="text" placeholder="e.g. crouched playing with red toy car" class="w-full text-xs px-3.5 py-3 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 pr-24 shadow-xs">
+            <button id="btn-preview-outfit" onclick="generateOutfitPreview()" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1 transition shadow-xs">
+              <span>✨</span> Preview
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Inspiration Chips -->
+        <div class="space-y-1">
+          <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Quick Inspiration Chips:</span>
+          <div class="flex flex-wrap gap-1.5" id="outfit-chips-container">
+            <!-- Dynamically populated per character -->
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP B: INTERACTIVE LIVE PREVIEW CANVAS -->
+      <div class="space-y-2 pt-1 border-t border-stone-100">
+        <div class="flex items-center justify-between">
+          <label class="block text-[11px] font-bold text-stone-600 uppercase tracking-wider">3. Live Sprite Preview</label>
+          <span id="preview-status-badge" class="text-[10px] font-bold text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">Base Sprite</span>
+        </div>
+
+        <div class="relative h-56 rounded-2xl border-2 border-stone-200 overflow-hidden flex items-center justify-center" style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px), radial-gradient(#cbd5e1 1px, #f8fafc 1px); background-size: 20px 20px; background-position: 0 0, 10 p 10px;">
+          <!-- Preview Image -->
+          <img id="outfit-live-preview-img" src="/api/characters/sprite/levi_default.png" class="max-h-48 object-contain filter drop-shadow-md transition-all duration-300">
+          
+          <!-- Loading Overlay -->
+          <div id="outfit-preview-loading" class="absolute inset-0 bg-white/80 backdrop-blur-xs hidden flex flex-col items-center justify-center gap-2">
+            <div class="w-8 h-8 border-3 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+            <span class="text-xs font-extrabold text-stone-700">Painting toddler sprite...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="flex items-center justify-between border-t border-stone-100 pt-3">
+        <button type="button" onclick="closeCustomOutfitModal()" class="px-4 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-bold text-xs hover:bg-stone-50">Cancel</button>
+        <div class="flex items-center gap-2">
+          <button id="btn-save-outfit" type="button" onclick="saveAndEquipCustomOutfit()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
+            <span>💾</span> Save to Character & Equip
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI SCENE BACKGROUND STUDIO MODAL -->
+  <div id="modal-bg-studio" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-6 shadow-2xl space-y-4 border border-stone-100 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🎨</span>
+          <div>
+            <h3 class="text-base font-extrabold text-stone-900">AI Scene Background Studio</h3>
+            <p class="text-[11px] text-stone-400">Describe a new setting, preview in high-res, and refine through natural language before applying</p>
+          </div>
+        </div>
+        <button onclick="closeBgStudioModal()" class="w-8 h-8 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-600 flex items-center justify-center text-base">✕</button>
+      </div>
+
+      <div class="grid md:grid-cols-12 gap-5">
+        <!-- LEFT: 16:9 PREVIEW VIEWPORT (7 COLS) -->
+        <div class="md:col-span-7 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-stone-600 uppercase tracking-wider">Live Preview Viewport</span>
+            <span id="bg-studio-preview-badge" class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">✨ Preview (Not Yet Applied)</span>
+          </div>
+
+          <div class="relative aspect-video rounded-2xl overflow-hidden border-2 border-stone-200 bg-stone-100 shadow-sm flex items-center justify-center group">
+            <img id="bg-studio-preview-img" src="/api/characters/background/bg_living_room.png" class="w-full h-full object-cover transition-all duration-300">
+            
+            <!-- Loading Overlay -->
+            <div id="bg-studio-loading" class="absolute inset-0 bg-stone-900/50 backdrop-blur-xs hidden flex flex-col items-center justify-center gap-2 z-20">
+              <div class="w-9 h-9 border-3 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+              <span id="bg-studio-loading-text" class="text-xs font-extrabold text-white">Painting pastel background...</span>
+            </div>
+
+            <!-- Preview Mode Watermark -->
+            <div class="absolute bottom-2.5 right-3 bg-stone-900/60 backdrop-blur-xs text-white text-[10px] font-bold px-2.5 py-1 rounded-full pointer-events-none">
+              1920x1080 HD
+            </div>
+          </div>
+
+          <!-- Iteration History Strip -->
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+              <span>Versions in this session:</span>
+              <span id="bg-studio-history-count" class="text-stone-500">1 Version</span>
+            </div>
+            <div id="bg-studio-version-strip" class="flex gap-2 overflow-x-auto pb-1">
+              <!-- Dynamically populated version cards -->
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: NATURAL LANGUAGE CONTROLS & REFINEMENT (5 COLS) -->
+        <div class="md:col-span-5 space-y-3.5 flex flex-col justify-between">
+          <!-- Step 1: Initial Setting -->
+          <div class="space-y-2">
+            <label class="block text-[11px] font-bold text-stone-700 uppercase tracking-wider">1. Describe Setting</label>
+            <div class="relative">
+              <textarea id="bg-studio-initial-prompt" rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();generateBgStudioInitial();}" placeholder="e.g. Grandma's cozy sunny dining room with round wooden table and dim sum" class="w-full text-xs p-3 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-xs resize-none"></textarea>
+            </div>
+            
+            <!-- Inspiration Idea Chips -->
+            <div class="flex flex-wrap gap-1">
+              <button type="button" onclick="setBgStudioPrompt('Gentle rolling wildflower hills and mountain path with soft blue morning sky')" class="text-[10px] px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200">⛰️ Wildflower Mountains</button>
+              <button type="button" onclick="setBgStudioPrompt('Grandma\'s sunny dining room with round wooden table and dim sum steamers')" class="text-[10px] px-2 py-0.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold border border-amber-200">🥣 Dim Sum Kitchen</button>
+              <button type="button" onclick="setBgStudioPrompt('Toy playroom with block castle and teddy bears on rug')" class="text-[10px] px-2 py-0.5 rounded-lg bg-stone-50 hover:bg-stone-100 text-stone-700 font-semibold border border-stone-200">🧸 Toy Playroom</button>
+              <button type="button" onclick="setBgStudioPrompt('Sunny beach with sandcastles and ocean waves')" class="text-[10px] px-2 py-0.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-800 font-semibold border border-sky-200">🏖️ Sand Beach</button>
+              <button type="button" onclick="setBgStudioPrompt('Sunny park meadow with green grass, big shady tree, and picnic blanket')" class="text-[10px] px-2 py-0.5 rounded-lg bg-lime-50 hover:bg-lime-100 text-lime-800 font-semibold border border-lime-200">🌳 Sunny Park</button>
+              <button type="button" onclick="setBgStudioPrompt('Cozy bedtime nursery with stars, glowing crescent moon, and night lamp')" class="text-[10px] px-2 py-0.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-semibold border border-indigo-200">🌙 Starry Bedroom</button>
+              <button type="button" onclick="setBgStudioPrompt('Cheerful toddler bathtub full of bubbly foam and yellow rubber duckies')" class="text-[10px] px-2 py-0.5 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold border border-teal-200">🛁 Bubble Bath</button>
+            </div>
+
+            <button id="btn-bg-studio-generate" onclick="generateBgStudioInitial()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition">
+              <span>✨</span> Generate Initial Preview
+            </button>
+          </div>
+
+          <!-- Step 2: Natural Language Iterative Refinement -->
+          <div class="space-y-2 pt-2 border-t border-stone-100" id="bg-studio-refine-section">
+            <div class="flex items-center justify-between">
+              <label class="block text-[11px] font-bold text-stone-700 uppercase tracking-wider">2. Continue Editing (Natural Language)</label>
+              <span class="text-[9px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded-full">Interactive Iterations</span>
+            </div>
+
+            <!-- Chat-like turn history -->
+            <div id="bg-studio-refine-history" class="bg-stone-50 rounded-2xl p-2.5 max-h-28 overflow-y-auto space-y-1.5 border border-stone-200/70 text-[11px]">
+              <div class="text-stone-400 italic text-center py-2">Generate an initial setting first to start refining!</div>
+            </div>
+
+            <!-- Refine input & submit -->
+            <div class="flex gap-1.5">
+              <input id="bg-studio-refine-input" type="text" onkeydown="if(event.key==='Enter'){event.preventDefault();refineBgStudio();}" placeholder="e.g. Make it sunset with golden light, add yellow curtains" class="flex-1 text-xs px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400">
+              <button id="btn-bg-studio-refine" onclick="refineBgStudio()" class="px-3.5 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs flex items-center gap-1 shrink-0 transition">
+                <span>🪄</span> Refine
+              </button>
+            </div>
+
+            <!-- Quick Tweak suggestions -->
+            <div class="flex flex-wrap gap-1">
+              <button type="button" onclick="setBgStudioRefine('Make it sunset with warm golden light')" class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 hover:bg-amber-100 text-stone-600 font-medium">🌅 Sunset Lighting</button>
+              <button type="button" onclick="setBgStudioRefine('Add toy blocks and a teddy bear on the rug')" class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 hover:bg-amber-100 text-stone-600 font-medium">🧸 Add Floor Toys</button>
+              <button type="button" onclick="setBgStudioRefine('Change wall color to soft pastel yellow')" class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 hover:bg-amber-100 text-stone-600 font-medium">🎨 Yellow Walls</button>
+              <button type="button" onclick="setBgStudioRefine('Change to starry night with glowing moon')" class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 hover:bg-amber-100 text-stone-600 font-medium">🌙 Starry Night</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Apply & Save Controls -->
+          <div class="space-y-2 pt-2 border-t border-stone-100">
+            <div class="flex gap-2">
+              <button type="button" onclick="applyBgStudioToCurrentScene()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1 transition">
+                <span>✓</span> Apply to Current Scene
+              </button>
+              <button type="button" onclick="applyBgStudioToAllScenes()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1 transition">
+                <span>🔄</span> Apply to All Scenes
+              </button>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <button type="button" onclick="saveBgStudioPreset()" class="text-xs text-stone-700 hover:text-amber-800 font-bold bg-stone-100 hover:bg-amber-100 px-3 py-2 rounded-xl border border-stone-200 transition flex items-center gap-1">
+                <span>💾</span> Save to Presets
+              </button>
+              <button type="button" onclick="closeBgStudioModal()" class="text-xs text-stone-400 hover:text-stone-600 font-medium px-3 py-2">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- PROJECT LIBRARY DRAWER MODAL -->
+  <!-- ======================================================== -->
+  <div id="modal-project-library" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 border border-stone-200 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">📂</span>
+          <div>
+            <h3 class="font-extrabold text-stone-900 text-base">Project Library</h3>
+            <p class="text-[11px] text-stone-400">Manage, reopen, and duplicate your Cantonese learning episodes.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="openNewProjectModal()" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-xs flex items-center gap-1.5 transition">
+            <span>➕</span> New Episode
+          </button>
+          <button onclick="closeProjectLibraryModal()" class="text-stone-400 hover:text-stone-700 font-bold px-2 py-1">✕</button>
+        </div>
+      </div>
+
+      <!-- Filter and Search -->
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <input id="proj-search-input" type="text" oninput="filterProjectsList()" placeholder="Search episodes by title or topic..." class="flex-1 text-xs px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400">
+        <div class="flex items-center gap-1 text-[11px]">
+          <button type="button" onclick="filterProjectsByAge('all')" class="proj-age-filter px-2.5 py-1 rounded-lg bg-amber-500 text-white font-bold">All</button>
+          <button type="button" onclick="filterProjectsByAge('1-2 years')" class="proj-age-filter px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 text-stone-600 font-medium">1-2 yrs</button>
+          <button type="button" onclick="filterProjectsByAge('2-3 years')" class="proj-age-filter px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 text-stone-600 font-medium">2-3 yrs</button>
+          <button type="button" onclick="filterProjectsByAge('3-5 years')" class="proj-age-filter px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 text-stone-600 font-medium">3-5 yrs</button>
+        </div>
+      </div>
+
+      <!-- Project Cards List -->
+      <div id="project-library-cards" class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-3.5 p-1">
+        <div class="text-stone-400 text-center py-10 col-span-2">Loading episodes...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- NEW PROJECT MODAL -->
+  <!-- ======================================================== -->
+  <div id="modal-new-project" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 border border-stone-200 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+        <h3 class="font-extrabold text-stone-900 text-base">Create New Episode</h3>
+        <button onclick="closeNewProjectModal()" class="text-stone-400 hover:text-stone-700 font-bold">✕</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Cantonese Title (繁體中文)</label>
+          <input id="new-proj-title-cn" type="text" placeholder="e.g. 公園一齊玩" class="w-full px-3 py-2 rounded-xl border border-stone-200 tc-font font-bold text-stone-900 focus:ring-2 focus:ring-amber-400">
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">English Title</label>
+          <input id="new-proj-title-en" type="text" placeholder="e.g. Playing in the Park Together" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-800 focus:ring-2 focus:ring-amber-400">
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Target Age</label>
+          <select id="new-proj-age" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-800 focus:ring-2 focus:ring-amber-400">
+            <option value="1-2 years">1-2 years (Toddlers & Parentese)</option>
+            <option value="2-3 years" selected>2-3 years (Early Words & Actions)</option>
+            <option value="3-5 years">3-5 years (Preschool Conversation)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Lesson Theme / Topic</label>
+          <input id="new-proj-theme" type="text" placeholder="e.g. Sharing, ABCs, Animals, Morning Routine" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-800 focus:ring-2 focus:ring-amber-400">
+        </div>
+      </div>
+      <div class="flex gap-2 pt-2 border-t border-stone-100">
+        <button type="button" onclick="submitCreateNewProject()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-sm transition">
+          Create & Start Working
+        </button>
+        <button type="button" onclick="closeNewProjectModal()" class="px-4 py-2.5 rounded-xl text-stone-400 hover:text-stone-600 text-xs font-medium">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- YOUTUBE PUBLISHING MODAL -->
+  <!-- ======================================================== -->
+  <div id="modal-youtube-publish" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 border border-stone-200 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🚀</span>
+          <div>
+            <h3 class="font-extrabold text-stone-900 text-base">Publish Episode to YouTube</h3>
+            <p class="text-[11px] text-stone-400">Upload your rendered 1080p video with bilingual preschool metadata & COPPA compliance.</p>
+          </div>
+        </div>
+        <button onclick="closeYouTubePublishModal()" class="text-stone-400 hover:text-stone-700 font-bold">✕</button>
+      </div>
+
+      <!-- Channel Connection Banner -->
+      <div id="yt-channel-banner" class="bg-stone-50 rounded-2xl p-3 border border-stone-200 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div id="yt-channel-avatar" class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold text-lg">📺</div>
+          <div>
+            <div id="yt-channel-name" class="font-bold text-xs text-stone-800">Checking YouTube Connection...</div>
+            <div id="yt-channel-subtext" class="text-[11px] text-stone-400">Google OAuth 2.0</div>
+          </div>
+        </div>
+        <button id="btn-yt-connect" type="button" onclick="connectYouTubeChannel()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-xs transition">
+          Connect YouTube
+        </button>
+      </div>
+
+      <!-- Metadata Section -->
+      <div class="space-y-3.5 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="font-extrabold text-stone-700 uppercase tracking-wider text-[11px]">Video Details</span>
+          <button type="button" onclick="generateYouTubeAiMetadata()" id="btn-ai-gen-yt-meta" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-[11px] flex items-center gap-1.5 transition">
+            <span>✨</span> AI Generate Preschool Metadata
+          </button>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">YouTube Title</label>
+          <input id="yt-input-title" type="text" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-800 font-semibold focus:ring-2 focus:ring-amber-400">
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Description & Timestamped Chapters</label>
+          <textarea id="yt-input-desc" rows="5" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 font-mono text-[11px] focus:ring-2 focus:ring-amber-400 leading-relaxed"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-stone-700 mb-1">Preschool SEO Tags (Comma-separated)</label>
+          <input id="yt-input-tags" type="text" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 text-xs focus:ring-2 focus:ring-amber-400">
+        </div>
+
+        <!-- Thumbnail Selection -->
+        <div>
+          <label class="block font-bold text-stone-700 mb-1.5">Select 16:9 Thumbnail Frame</label>
+          <div id="yt-thumbnail-candidates" class="grid grid-cols-4 gap-2">
+            <div class="aspect-video bg-stone-100 rounded-xl border border-stone-200 flex items-center justify-center text-[10px] text-stone-400">
+              Default Cover
+            </div>
+          </div>
+        </div>
+
+        <!-- Compliance & Visibility -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+          <div class="bg-amber-50/60 rounded-xl p-3 border border-amber-200/60 flex items-start gap-2">
+            <input type="checkbox" id="yt-made-for-kids" checked disabled class="mt-0.5 rounded text-amber-600 focus:ring-amber-400">
+            <div>
+              <div class="font-bold text-[11px] text-amber-900">Made for Kids (COPPA Compliant)</div>
+              <div class="text-[10px] text-amber-700/80">Required by YouTube policy for toddler content. Protects young viewers.</div>
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-stone-700 text-[11px] mb-1">Visibility</label>
+            <select id="yt-visibility" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-800 font-semibold text-xs focus:ring-2 focus:ring-amber-400">
+              <option value="unlisted" selected>Unlisted (Recommended for Review)</option>
+              <option value="public">Public (Everyone can watch)</option>
+              <option value="private">Private (Only you)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Progress / Success Box -->
+      <div id="yt-upload-status-box" class="hidden p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+        <div class="flex items-center justify-between text-xs font-bold text-stone-700">
+          <span id="yt-upload-status-text">Uploading Video to YouTube...</span>
+          <span id="yt-upload-percent">0%</span>
+        </div>
+        <div class="w-full bg-stone-200 h-3 rounded-full overflow-hidden">
+          <div id="yt-upload-bar" class="bg-gradient-to-r from-red-600 to-rose-500 h-full rounded-full transition-all duration-300 w-0"></div>
+        </div>
+        <div id="yt-upload-success-link" class="hidden pt-2 text-center text-xs font-bold"></div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-2 pt-2 border-t border-stone-100">
+        <button id="btn-submit-yt-upload" type="button" onclick="submitYouTubeUpload()" class="flex-1 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-200 transition flex items-center justify-center gap-2">
+          <span>🚀</span> Start YouTube Upload
+        </button>
+        <button type="button" onclick="closeYouTubePublishModal()" class="px-5 py-3 rounded-2xl text-stone-400 hover:text-stone-600 text-xs font-medium">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
