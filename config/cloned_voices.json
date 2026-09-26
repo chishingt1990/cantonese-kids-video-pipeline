@@ -1,0 +1,9 @@
+[
+  {
+    "voice_id": "voice_6k5rt0208uou",
+    "name": "My Voice",
+    "created_at": "2026-09-26",
+    "sample": "assets/audio_samples/my_voice_sample.m4a",
+    "note": "Created externally via Gemini API voice replication (user's own voice + consent recording), Sep 26 2026"
+  }
+]
