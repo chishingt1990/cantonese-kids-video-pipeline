@@ -1767,6 +1767,98 @@ async function saveAndEquipCustomOutfit() {
 let mediaRecorder;
 let audioChunks = [];
 
+// Parent voice cloning (Gemini voice replication) state
+let parentVoiceState = { available: false, voices: [], selectedVoiceId: null };
+
+function updateConsentFileName(input) {
+  const label = document.getElementById('consent-file-name');
+  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Consent clip';
+}
+
+async function refreshVoiceCloneStatus() {
+  const statusEl = document.getElementById('voice-clone-status');
+  const selectEl = document.getElementById('cloned-voice-select');
+  const cloneBtn = document.getElementById('btn-clone-voice');
+  const useBox = document.getElementById('use-cloned-voice');
+  if (!statusEl || !selectEl) return;
+  try {
+    const res = await fetch('/api/audio/voice-clone/status');
+    const data = await res.json();
+    parentVoiceState.available = !!data.available;
+    parentVoiceState.voices = data.voices || [];
+    selectEl.innerHTML = parentVoiceState.voices.length
+      ? parentVoiceState.voices.map(v => `<option value="${v.voice_id}">${v.name} (cloned)</option>`).join('')
+      : '<option value="">No cloned voice yet</option>';
+    if (parentVoiceState.voices.length) {
+      parentVoiceState.selectedVoiceId = parentVoiceState.voices[parentVoiceState.voices.length - 1].voice_id;
+      selectEl.value = parentVoiceState.selectedVoiceId;
+    }
+    if (!data.available) {
+      statusEl.innerText = '⚠️ Gemini API key not set — add it in Settings (or GEMINI_API_KEY in your .env) to enable cloning. The built-in Cantonese AI voices still work.';
+      statusEl.className = 'text-[11px] text-amber-600 font-bold';
+      if (cloneBtn) cloneBtn.disabled = true;
+      if (useBox) { useBox.checked = false; useBox.disabled = true; }
+    } else {
+      statusEl.innerText = parentVoiceState.voices.length
+        ? `✅ Gemini connected — ${parentVoiceState.voices.length} cloned voice(s) ready.`
+        : '✅ Gemini connected — no cloned voices yet. Attach dad\'s consent clip, then click "Clone Dad\'s Voice" (dad\'s sample is used automatically as the voice sample).';
+      statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+      if (cloneBtn) cloneBtn.disabled = false;
+      if (useBox) useBox.disabled = false;
+    }
+  } catch (e) {
+    console.error(e);
+    statusEl.innerText = 'Could not reach the voice-clone service.';
+  }
+}
+
+function selectClonedVoice(voiceId) {
+  parentVoiceState.selectedVoiceId = voiceId || null;
+}
+
+async function cloneParentVoice() {
+  const btn = document.getElementById('btn-clone-voice');
+  const statusEl = document.getElementById('voice-clone-status');
+  const consentInput = document.getElementById('consent-file-input');
+  const consentFile = consentInput && consentInput.files ? consentInput.files[0] : null;
+  if (!consentFile) {
+    statusEl.innerText = '⚠️ Please attach dad\'s consent recording first — a clip of him saying the consent statement word for word (see above).';
+    statusEl.className = 'text-[11px] text-amber-600 font-bold';
+    return;
+  }
+  btn.innerHTML = '<span class="animate-spin">⏳</span> Cloning voice…';
+  btn.disabled = true;
+  statusEl.innerText = '🧬 Sending voice sample + consent clip to Gemini… (this can take a minute)';
+  statusEl.className = 'text-[11px] text-stone-500 font-bold';
+  try {
+    const fd = new FormData();
+    fd.append('name', 'Dad');
+    fd.append('consent_file', consentFile);
+    const res = await fetch('/api/audio/voice-clone/create', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (res.ok && data.status === 'success') {
+      await refreshVoiceCloneStatus();
+      const useBox = document.getElementById('use-cloned-voice');
+      if (useBox && !useBox.disabled) useBox.checked = true;
+    } else {
+      statusEl.innerText = `❌ Cloning failed: ${data.detail || 'unknown error'}`;
+      statusEl.className = 'text-[11px] text-rose-500 font-bold';
+    }
+  } catch (e) {
+    console.error(e);
+    statusEl.innerText = '❌ Cloning failed — please check server logs.';
+    statusEl.className = 'text-[11px] text-rose-500 font-bold';
+  } finally {
+    btn.innerHTML = '<span>🧬</span> Clone Dad\'s Voice';
+    btn.disabled = !parentVoiceState.available;
+  }
+}
+
+function useClonedParentVoice() {
+  const useBox = document.getElementById('use-cloned-voice');
+  return !!(useBox && useBox.checked && parentVoiceState.selectedVoiceId && parentVoiceState.available);
+}
+
 function renderAudioStep() {
   const container = document.getElementById('audio-scenes-list');
   container.innerHTML = currentProject.scenes.map((s, idx) => {
@@ -1809,6 +1901,7 @@ function renderAudioStep() {
       </div>
     `;
   }).join('');
+  refreshVoiceCloneStatus();
 }
 
 function updateSceneSpeaker(idx, val) {
@@ -1829,14 +1922,15 @@ async function generateSingleVoiceAI(sceneIdx) {
   btn.disabled = true;
 
   try {
-    const res = await fetch('/api/audio/tts/scene', {
+    const cloned = useClonedParentVoice();
+    const url = cloned ? '/api/audio/voice-clone/synthesize' : '/api/audio/tts/scene';
+    const payload = cloned
+      ? { scene_idx: sceneIdx + 1, text: scene.cantonese, voice_id: parentVoiceState.selectedVoiceId }
+      : { scene_idx: sceneIdx + 1, text: scene.cantonese, persona: persona };
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        scene_idx: sceneIdx + 1,
-        text: scene.cantonese,
-        persona: persona
-      })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if (data.status === 'success') {
@@ -1873,13 +1967,15 @@ async function generateAllVoicesAI() {
   btn.disabled = true;
 
   try {
-    const res = await fetch('/api/audio/tts/all', {
+    const cloned = useClonedParentVoice();
+    const url = cloned ? '/api/audio/voice-clone/synthesize-all' : '/api/audio/tts/all';
+    const payload = cloned
+      ? { scenes: currentProject.scenes, voice_id: parentVoiceState.selectedVoiceId }
+      : { scenes: currentProject.scenes, default_persona: persona };
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        scenes: currentProject.scenes,
-        default_persona: persona
-      })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
     if (data.status === 'success') {
@@ -2005,6 +2101,11 @@ async function startRender() {
     pill_style: pillStyle,
     font_size_cn: fontCn,
     font_size_en: fontEn
+  };
+  // Sing-along karaoke captions toggle (default on)
+  const singalongBox = document.getElementById('caption-singalong');
+  currentProject.caption_options = {
+    enabled: singalongBox ? singalongBox.checked : true
   };
 
   try {

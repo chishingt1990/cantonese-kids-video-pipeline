@@ -7,6 +7,14 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from app.services.tts_service import synthesize_scene_voice
 from app.services.audio_service import mix_scene_audio, get_audio_duration
+from app.services.voice_clone_service import (
+    is_voice_clone_available,
+    list_cloned_voices,
+    create_cloned_voice,
+    synthesize_scene_cloned_voice,
+    default_sample_path,
+    VoiceCloneUnavailableError,
+)
 
 router = APIRouter(prefix="/api/audio", tags=["audio"])
 
@@ -162,5 +170,153 @@ async def upload_scene_voice(
         "scene_idx": scene_idx,
         "duration": dur,
         "audio_url": f"/api/audio/clip/{filename}?t={int(time.time()*1000)}",
+        "master_audio_url": f"/api/audio/master?t={int(time.time()*1000)}"
+    }
+
+
+# ---------------------------------------------------------------------------
+# Parent-voice cloning (Gemini voice replication). New routes only — existing
+# routes above are untouched. All of these degrade gracefully when no Gemini
+# API key is configured (503 with a friendly message, never a crash).
+# ---------------------------------------------------------------------------
+
+class ClonedSceneTTSRequest(BaseModel):
+    scene_idx: int
+    text: str
+    voice_id: str
+
+class ClonedBulkTTSRequest(BaseModel):
+    scenes: List[dict]
+    voice_id: str
+
+@router.get("/voice-clone/status")
+def voice_clone_status():
+    """Whether cloning is configured, plus previously created cloned voices."""
+    return {
+        "available": is_voice_clone_available(),
+        "voices": list_cloned_voices(),
+    }
+
+@router.post("/voice-clone/create")
+async def voice_clone_create(
+    name: str = Form("Dad"),
+    audio_file: UploadFile = File(None),
+    consent_file: UploadFile = File(None),
+):
+    """
+    Creates a Gemini replicated voice from a parent voice sample + consent clip.
+    If no reference audio file is uploaded, uses assets/audio_samples/dad_cantonese.mp3.
+    The consent clip is REQUIRED by Google: the same speaker reciting the
+    consent statement word for word (en-US:
+    "I am the owner of this voice and I consent to Google using this voice to
+    create a synthetic voice model.").
+    """
+    if not is_voice_clone_available():
+        raise HTTPException(
+            status_code=503,
+            detail="Gemini is not configured. Add your Gemini API key in the studio Settings page (or set GEMINI_API_KEY in your .env file), then try again.",
+        )
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    sample_path = None
+    temp_sample = None
+    temp_consent = None
+    try:
+        if audio_file is not None:
+            temp_sample = os.path.join(project_root, "assets", "outputs", "audio_clips", "temp_clone_sample.mp3")
+            os.makedirs(os.path.dirname(temp_sample), exist_ok=True)
+            contents = await audio_file.read()
+            with open(temp_sample, "wb") as f:
+                f.write(contents)
+            sample_path = temp_sample
+        else:
+            sample_path = default_sample_path()
+
+        if consent_file is None:
+            raise HTTPException(
+                status_code=400,
+                detail="A consent recording is required by Google. Record the same speaker saying, "
+                'word for word: "I am the owner of this voice and I consent to Google using '
+                'this voice to create a synthetic voice model."',
+            )
+        temp_consent = os.path.join(project_root, "assets", "outputs", "audio_clips", "temp_clone_consent")
+        os.makedirs(os.path.dirname(temp_consent), exist_ok=True)
+        consent_contents = await consent_file.read()
+        with open(temp_consent, "wb") as f:
+            f.write(consent_contents)
+
+        return create_cloned_voice(
+            sample_path=sample_path, consent_path=temp_consent, name=name
+        )
+    except VoiceCloneUnavailableError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    except HTTPException:
+        raise
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        for tmp in (temp_sample, temp_consent):
+            if tmp and os.path.exists(tmp):
+                try:
+                    os.remove(tmp)
+                except Exception:
+                    pass
+
+@router.post("/voice-clone/synthesize")
+def synthesize_single_scene_cloned(req: ClonedSceneTTSRequest):
+    """Generate a single scene's narration in a cloned parent voice."""
+    try:
+        res = synthesize_scene_cloned_voice(req.scene_idx, req.text, req.voice_id)
+        res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
+        _remix_master_audio()
+        res["master_audio_url"] = f"/api/audio/master?t={int(time.time()*1000)}"
+        return res
+    except VoiceCloneUnavailableError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/voice-clone/synthesize-all")
+def synthesize_all_scenes_cloned(req: ClonedBulkTTSRequest):
+    """Generate all scenes' narration in a cloned parent voice (Cantonese)."""
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    audio_clips_dir = os.path.join(project_root, "assets", "outputs", "audio_clips")
+    os.makedirs(audio_clips_dir, exist_ok=True)
+
+    results = []
+    voice_paths = []
+    durations = []
+
+    for idx, s in enumerate(req.scenes):
+        scene_idx = s.get("scene_number", idx + 1)
+        text = s.get("cantonese", "")
+        if text.strip():
+            try:
+                res = synthesize_scene_cloned_voice(scene_idx, text, req.voice_id)
+            except VoiceCloneUnavailableError as e:
+                raise HTTPException(status_code=503, detail=str(e))
+            res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
+            results.append(res)
+            voice_paths.append(res["path"])
+            dur = max(res["duration"] + 1.2, float(s.get("duration_sec", 6)))
+            durations.append(dur)
+        else:
+            filename = f"scene_{scene_idx:02d}_voice.wav"
+            v_path = os.path.join(audio_clips_dir, filename)
+            voice_paths.append(v_path if os.path.exists(v_path) else None)
+            durations.append(float(s.get("duration_sec", 6)))
+
+    master_audio_path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
+    try:
+        mix_scene_audio(voice_paths, durations, master_audio_path)
+    except Exception as e:
+        print(f"Warning: master audio mix failed: {e}")
+
+    return {
+        "status": "success",
+        "generated_count": len(results),
+        "scenes": results,
+        "cloned": True,
         "master_audio_url": f"/api/audio/master?t={int(time.time()*1000)}"
     }

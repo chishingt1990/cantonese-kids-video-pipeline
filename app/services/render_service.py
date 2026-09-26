@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import threading
 import numpy as np
@@ -22,6 +23,100 @@ def get_font(size: int, bold: bool = False):
             except Exception:
                 pass
     return ImageFont.load_default()
+
+
+# ---------------------------------------------------------------------------
+# Sing-along karaoke captions.
+# Each scene's Cantonese line is split into short singable phrases. Timing
+# prefers the real narration (scene <-> audio-clip pairing the pipeline
+# already produces); when a clip's duration is unknown we fall back to
+# distributing phrases evenly across the scene duration, weighted by length.
+# ---------------------------------------------------------------------------
+
+def _split_caption_lines(text: str, max_chars: int = 10) -> list:
+    """Split a Cantonese line into short singable phrases at punctuation."""
+    parts = re.split(r'([，。！？；：、,.!?;:\s]+)', text or "")
+    lines, buf = [], ""
+    for p in parts:
+        if not p:
+            continue
+        if re.fullmatch(r'[，。！？；：、,.!?;:\s]+', p):
+            if buf:
+                lines.append(buf)
+                buf = ""
+            continue
+        while buf and len(buf) + len(p) > max_chars:
+            take = max_chars - len(buf)
+            buf += p[:take]
+            p = p[take:]
+            lines.append(buf)
+            buf = ""
+        buf += p
+    if buf:
+        lines.append(buf)
+    return [l for l in lines if l]
+
+
+def _build_scene_caption_timeline(scene: dict, project_root: str, font) -> list:
+    """
+    Returns a list of caption cues for one scene:
+    [{"start", "end", "chars", "widths", "total_w"}].
+    """
+    text = (scene.get("cantonese") or "").strip()
+    if not text:
+        return []
+    lines = _split_caption_lines(text)
+    if not lines:
+        return []
+
+    duration = float(scene.get("duration_sec", 6))
+
+    # Prefer real narration timing: resolve this scene's voice clip and read
+    # its actual duration, clamped to the scene length.
+    audio_dur = None
+    s_num = scene.get("scene_number", 1)
+    clip_name = None
+    if scene.get("audio_url"):
+        clip_name = os.path.basename(scene["audio_url"].split("?")[0])
+    for candidate in [clip_name, f"scene_{s_num:02d}_voice.wav"]:
+        if not candidate:
+            continue
+        clip_path = os.path.join(
+            project_root, "assets", "outputs", "audio_clips", candidate
+        )
+        if os.path.exists(clip_path):
+            try:
+                audio_dur = get_audio_duration(clip_path)
+            except Exception:
+                audio_dur = None
+            break
+
+    if audio_dur and audio_dur > 0:
+        span = min(duration - 0.6, audio_dur + 0.4)
+    else:
+        span = duration - 0.6
+    span = max(1.0, span)
+
+    lead_in = 0.3
+    total_chars = max(1, sum(len(l) for l in lines))
+    timeline = []
+    t = lead_in
+    for line in lines:
+        line_dur = span * (len(line) / total_chars)
+        chars = list(line)
+        try:
+            widths = [font.getlength(ch) for ch in chars]
+        except Exception:
+            widths = [font.size * 0.9] * len(chars)
+        timeline.append({
+            "start": t,
+            "end": t + line_dur,
+            "chars": chars,
+            "widths": widths,
+            "total_w": sum(widths),
+        })
+        t += line_dur
+    return timeline
 
 def render_project_video(project_data: dict, job_id: str, output_path: str):
     JOBS[job_id] = {"status": "rendering", "progress": 0, "error": None}
@@ -96,6 +191,18 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
         font_english = get_font(font_size_en, bold=False)
         font_vocab = get_font(36, bold=True)
         font_jyutping = get_font(30, bold=False)
+        font_karaoke = get_font(64, bold=True)
+
+        # Sing-along caption timelines (karaoke). Toggle lives in the Render
+        # step; default ON. When off, rendering follows the original path.
+        caption_opts = project_data.get("caption_options", {})
+        singalong_enabled = caption_opts.get("enabled", True)
+        caption_timelines = []
+        if singalong_enabled:
+            for _scene in scenes:
+                caption_timelines.append(
+                    _build_scene_caption_timeline(_scene, project_root, font_karaoke)
+                )
         
         frame_idx = 0
         
@@ -329,6 +436,59 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                         else:
                             draw.rounded_rectangle([60, 50, 380, 140], radius=16, fill=(255, 248, 235), outline=(245, 158, 11), width=3)
                             draw.text((220, 95), f"★ {vocab}", fill=(180, 83, 9), font=font_vocab, anchor="mm")
+
+                # 5b. Sing-along karaoke captions (toddler-friendly, burned in).
+                # Drawn above the subtitle pill; skipped entirely when toggled off.
+                if singalong_enabled and s_idx < len(caption_timelines):
+                    cues = caption_timelines[s_idx]
+                    scene_elapsed = f / fps
+                    active = next(
+                        (c for c in cues if c["start"] <= scene_elapsed < c["end"]),
+                        None,
+                    )
+                    if active:
+                        fade = min(
+                            1.0,
+                            (scene_elapsed - active["start"]) / 0.15,
+                            (active["end"] - scene_elapsed) / 0.15,
+                        )
+                        if fade > 0.05:
+                            n_chars = len(active["chars"])
+                            progress = (scene_elapsed - active["start"]) / max(
+                                0.001, active["end"] - active["start"]
+                            )
+                            lit_count = progress * n_chars
+
+                            k_draw = ImageDraw.Draw(frame, "RGBA")
+                            cy = 748  # sits above the subtitle pill
+                            cx = width // 2 - active["total_w"] / 2
+                            try:
+                                _bbox = font_karaoke.getbbox("".join(active["chars"]))
+                                line_h = _bbox[3] - _bbox[1]
+                            except Exception:
+                                line_h = 64
+                            # Soft backdrop for readability
+                            k_draw.rounded_rectangle(
+                                [cx - 36, cy - 22, cx + active["total_w"] + 36, cy + line_h + 22],
+                                radius=32,
+                                fill=(30, 20, 12, int(110 * fade)),
+                            )
+                            # Karaoke: sung chars glow amber, upcoming chars stay cream
+                            x = cx
+                            for i, ch in enumerate(active["chars"]):
+                                sung = i < lit_count
+                                fill = (
+                                    (255, 176, 32, int(255 * fade))
+                                    if sung
+                                    else (255, 251, 235, int(255 * fade))
+                                )
+                                k_draw.text(
+                                    (x, cy), ch, font=font_karaoke, fill=fill,
+                                    stroke_width=3,
+                                    stroke_fill=(40, 25, 10, int(220 * fade)),
+                                    anchor="lt",
+                                )
+                                x += active["widths"][i]
                 
                 # Pipe to ffmpeg
                 proc.stdin.write(frame.tobytes())
