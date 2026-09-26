@@ -392,22 +392,11 @@
     <section id="tab-stickers" class="tab-content space-y-6">
       <div class="bg-white rounded-2xl p-4 border border-stone-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-0.5">
-          <h2 class="font-extrabold text-base text-stone-900">Snug Educational Badges & Phonics Props</h2>
-          <p class="text-xs text-stone-500">Snug centered pill badges with Traditional Cantonese Chinese, Jyutping, and English subtitles.</p>
+          <h2 class="font-extrabold text-base text-stone-900">Educational Badges, Phonics & Visual Props</h2>
+          <p class="text-xs text-stone-500">Traditional Cantonese Chinese vocabulary pills, milestone props, vehicles, toys, and animals.</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="filterStickers('all', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-xs">
-            All (22)
-          </button>
-          <button onclick="filterStickers('word', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
-            💬 Word Badges (12)
-          </button>
-          <button onclick="filterStickers('block', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
-            🧱 Phonics Blocks (6)
-          </button>
-          <button onclick="filterStickers('prop', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs">
-            🍎 Props & Food (4)
-          </button>
+        <div id="sticker-filter-pills" class="flex flex-wrap items-center gap-1.5 text-xs font-bold">
+          <!-- Populated dynamically by JS -->
         </div>
       </div>
 
@@ -494,7 +483,7 @@
 
     async function loadCharacters() {
       try {
-        const res = await fetch('/api/characters/all');
+        const res = await fetch(`/api/characters/all?t=${Date.now()}`);
         const data = await res.json();
         charactersData = data.characters || [];
         
@@ -590,7 +579,7 @@
             return;
           }
 
-          const spriteUrl = `/api/characters/sprite/${pose.sprite}`;
+          const spriteUrl = `/api/characters/sprite/${pose.sprite}?v=${Date.now()}`;
           const poseEl = document.createElement('div');
           poseEl.className = 'bg-stone-50 rounded-2xl border border-stone-200/80 p-3 space-y-2 hover:border-amber-300 transition-all group flex flex-col justify-between';
           
@@ -625,7 +614,7 @@
 
     async function loadBackgrounds() {
       try {
-        const res = await fetch('/api/characters/backgrounds');
+        const res = await fetch(`/api/characters/backgrounds?t=${Date.now()}`);
         const data = await res.json();
         backgroundsData = data.backgrounds || [];
         document.getElementById('metric-scenes').textContent = `${backgroundsData.length} Master Scenes`;
@@ -695,39 +684,90 @@
       });
     }
 
+    let activeStickerFilter = 'all';
+
     async function loadStickers() {
       try {
-        const res = await fetch('/api/scene-director/stickers/catalog');
+        const res = await fetch(`/api/scene-director/stickers/catalog?t=${Date.now()}`);
         const data = await res.json();
         stickersData = data.stickers || [];
         document.getElementById('metric-stickers').textContent = `${stickersData.length} Stickers`;
+        renderStickerFilterButtons();
         renderStickers('all');
       } catch (err) {
         console.error('Failed to load stickers:', err);
       }
     }
 
-    function filterStickers(type, btn) {
-      if (btn) {
-        document.querySelectorAll('.sticker-filter-btn').forEach(b => {
-          b.className = 'sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs';
-        });
-        btn.className = 'sticker-filter-btn px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-xs';
+    function isStickerMatch(s, category) {
+      if (category === 'all') return true;
+      const sid = (s.id || '').toLowerCase();
+      if (category === 'word') {
+        return s.type === 'word' || sid.startsWith('badge_') || sid.startsWith('word_') || sid.startsWith('vocab_');
       }
-      renderStickers(type);
+      if (category === 'block') {
+        return s.type === 'letter' || s.type === 'number' || s.type === 'block' || sid.startsWith('block_');
+      }
+      if (category === 'vehicle') {
+        return ['car', 'bus', 'truck', 'train', 'plane', 'airplane'].some(k => sid.includes(k));
+      }
+      if (category === 'food') {
+        return ['banana', 'apple', 'dim_sum', 'fruit', 'siu_mai', 'har_gow', 'egg_tart', 'watermelon', 'strawberry', 'milk', 'cookie', 'bowl', 'cup', 'spoon', 'meal'].some(k => sid.includes(k));
+      }
+      if (category === 'nature') {
+        return ['dog', 'duck', 'cat', 'kitty', 'bunny', 'frog', 'sun', 'rainbow', 'star', 'bubble', 'heart', 'sparkle', 'washcloth', 'toothbrush', 'crayons', 'balloon', 'gift', 'hat'].some(k => sid.includes(k));
+      }
+      return true;
     }
 
-    function renderStickers(type = 'all') {
+    function renderStickerFilterButtons() {
+      const container = document.getElementById('sticker-filter-pills');
+      if (!container) return;
+      
+      const counts = {
+        all: stickersData.length,
+        word: stickersData.filter(s => isStickerMatch(s, 'word')).length,
+        block: stickersData.filter(s => isStickerMatch(s, 'block')).length,
+        vehicle: stickersData.filter(s => isStickerMatch(s, 'vehicle')).length,
+        food: stickersData.filter(s => isStickerMatch(s, 'food')).length,
+        nature: stickersData.filter(s => isStickerMatch(s, 'nature')).length,
+      };
+
+      const categories = [
+        { id: 'all', label: `All (${counts.all})` },
+        { id: 'word', label: `💬 Badges (${counts.word})` },
+        { id: 'block', label: `🧱 Phonics (${counts.block})` },
+        { id: 'vehicle', label: `🚗 Vehicles & Toys (${counts.vehicle})` },
+        { id: 'food', label: `🍎 Food (${counts.food})` },
+        { id: 'nature', label: `🐶 Animals & Props (${counts.nature})` },
+      ];
+
+      container.innerHTML = categories.map(cat => `
+        <button onclick="filterStickers('${cat.id}', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl ${activeStickerFilter === cat.id ? 'bg-amber-500 text-white font-bold shadow-xs' : 'bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold'} text-xs">
+          ${cat.label}
+        </button>
+      `).join('');
+    }
+
+    function filterStickers(category, btn) {
+      activeStickerFilter = category;
+      document.querySelectorAll('.sticker-filter-btn').forEach(b => {
+        b.className = 'sticker-filter-btn px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs';
+      });
+      if (btn) {
+        btn.className = 'sticker-filter-btn px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-xs';
+      }
+      renderStickers(category);
+    }
+
+    function renderStickers(category = 'all') {
       const container = document.getElementById('stickers-container');
       container.innerHTML = '';
 
-      const filtered = stickersData.filter(s => {
-        if (type === 'all') return true;
-        return s.type === type;
-      });
+      const filtered = stickersData.filter(s => isStickerMatch(s, category));
 
       filtered.forEach(stk => {
-        const imgUrl = `/api/scene-director/stickers/render/${stk.id}`;
+        const imgUrl = `/api/scene-director/stickers/render/${stk.id}?v=${Date.now()}`;
         const card = document.createElement('div');
         card.className = 'bg-white rounded-2xl p-3 border border-stone-200 shadow-xs flex flex-col justify-between space-y-2 hover:border-amber-300 transition-all group';
         
@@ -738,7 +778,7 @@
             </div>
             <div class="mt-2 text-center">
               <div class="font-bold text-xs text-stone-800 truncate tc-font">${stk.label || stk.id}</div>
-              <div class="text-[10px] text-stone-400 capitalize">${stk.type} · ${stk.color_theme || 'standard'}</div>
+              <div class="text-[10px] text-stone-400 capitalize truncate">${stk.id}</div>
             </div>
           </div>
 
@@ -882,7 +922,7 @@
 
       if (leftPose && leftPose !== 'none') {
         leftCharBox.style.display = 'block';
-        leftCharImg.src = `/api/characters/sprite/${leftPose}`;
+        leftCharImg.src = `/api/characters/sprite/${leftPose}?v=${Date.now()}`;
         leftCharBox.style.left = `${leftX}%`;
         leftCharBox.style.transform = `translate(-50%, 0) scale(${leftScale}) scaleX(${leftFlip ? -1 : 1})`;
       } else {
@@ -900,7 +940,7 @@
 
       if (rightPose && rightPose !== 'none') {
         rightCharBox.style.display = 'block';
-        rightCharImg.src = `/api/characters/sprite/${rightPose}`;
+        rightCharImg.src = `/api/characters/sprite/${rightPose}?v=${Date.now()}`;
         rightCharBox.style.left = `${rightX}%`;
         rightCharBox.style.transform = `translate(-50%, 0) scale(${rightScale}) scaleX(${rightFlip ? -1 : 1})`;
       } else {
@@ -917,7 +957,7 @@
 
       if (petCharId !== 'none' && petPose && petPose !== 'none') {
         petBox.style.display = 'block';
-        petImg.src = `/api/characters/sprite/${petPose}`;
+        petImg.src = `/api/characters/sprite/${petPose}?v=${Date.now()}`;
         petBox.style.left = `${petX}%`;
         petBox.style.transform = `translate(-50%, 0) scale(1) scaleX(${petFlip ? -1 : 1})`;
       } else {

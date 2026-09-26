@@ -9,15 +9,16 @@ logger = logging.getLogger(__name__)
 PRESET_BACKGROUNDS = [
     "living_room", "nursery", "kitchen", "park", "beach",
     "playroom", "reading_nook", "dining", "bathroom", "mountains",
-    "playground", "farm_field", "duck_pond", "backyard_garden"
+    "playground", "farm_field", "duck_pond", "backyard_garden",
+    "art_room", "supermarket"
 ]
 
 CHARACTER_POSES = {
-    "levi": ["default", "waving", "sleeping", "eating", "stretching", "arms_out_hug", "pointing", "running"],
-    "luca": ["default", "waving", "sleeping", "eating", "clapping", "holding_toy"],
-    "dad": ["default", "kneeling", "waving", "drinking", "sitting", "teaching"],
+    "levi": ["default", "sad", "waving", "pointing", "running", "arms_out_hug", "stretching", "eating", "sleeping"],
+    "luca": ["default", "waving", "clapping", "holding_toy", "eating", "sleeping"],
+    "dad": ["default", "sitting", "kneeling", "teaching", "waving", "drinking"],
     "mom": ["default", "kneeling_hug", "holding_fruit", "teaching"],
-    "dog": ["default", "running", "playing_ball", "eating_banana"],
+    "dog": ["default", "playing_ball", "running", "eating_banana"],
     "grandparents_paternal": ["default", "drinking_tea"],
     "grandparents_maternal": ["default", "waving"],
     "auntie_cousins": ["default", "waving"]
@@ -40,15 +41,15 @@ STAGE COORDINATE RULES:
 - Characters scale: Adults = 1.0, Toddlers = 1.0, Dog = 1.0.
 - Educational stickers: Limit to 1-2 high-impact items. Place stickers in upper safe zones (y_percent between 18.0 and 32.0, x_percent between 18.0 and 82.0). NEVER place stickers below y_percent = 72.0 (reserved for subtitles).
 - Choose poses ONLY from available catalog:
-  - levi: default, waving, sleeping, eating, stretching, arms_out_hug, pointing, running
-  - luca: default, waving, sleeping, eating, clapping, holding_toy
-  - dad: default, kneeling, waving, drinking, sitting, teaching
+  - levi: default, waving, pointing, running, arms_out_hug, stretching, eating, sleeping
+  - luca: default, waving, clapping, holding_toy, eating, sleeping
+  - dad: default, sitting, kneeling, teaching, waving, drinking
   - mom: default, kneeling_hug, holding_fruit, teaching
-  - dog: default, running, playing_ball, eating_banana
+  - dog: default, playing_ball, running, eating_banana
   - grandparents_paternal: default, drinking_tea
   - grandparents_maternal: default, waving
   - auntie_cousins: default, waving
-- Choose background_id from: living_room, nursery, kitchen, park, beach, playroom, reading_nook, dining, bathroom, mountains, playground, farm_field, duck_pond, backyard_garden.
+- Choose background_id from: living_room, nursery, kitchen, park, beach, playroom, reading_nook, dining, bathroom, mountains, playground, farm_field, duck_pond, backyard_garden, art_room, supermarket.
 
 Return ONLY a valid JSON object matching this schema:
 {
@@ -158,13 +159,17 @@ def _get_stage_slots(n: int) -> List[float]:
 
 def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """Deterministic, instant rule-based visual staging for offline states."""
-    text = (scene.get("cantonese", "") + " " + scene.get("english", "") + " " + scene.get("title", "")).lower()
+    text = (scene.get("cantonese", "") + " " + scene.get("english", "") + " " + scene.get("title", "") + " " + scene.get("speaker", "")).lower()
     vocab = scene.get("vocab_highlight", "")
 
-    # 1. Background Selection
+    # 1. Background Selection: Preserve existing preset if valid
     bg = scene.get("background", "living_room")
     if bg not in PRESET_BACKGROUNDS:
-        if any(k in text for k in ["playground", "swing", "slide", "滑梯", "鞦韆"]):
+        if any(k in text for k in ["art", "draw", "paint", "easel", "crayon", "畫畫", "彩色"]):
+            bg = "art_room"
+        elif any(k in text for k in ["supermarket", "grocery", "market", "shop", "cart", "買嘢", "超市", "市場"]):
+            bg = "supermarket"
+        elif any(k in text for k in ["playground", "swing", "slide", "滑梯", "鞦韆"]):
             bg = "playground"
         elif any(k in text for k in ["duck", "pond", "lake", "鴨仔", "水池"]):
             bg = "duck_pond"
@@ -203,19 +208,80 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
     has_grandparents = any(k in text for k in ["grandpa", "grandma", "爺爺", "嫲嫲", "公公", "婆婆"])
 
     # Milestone Domain Detectors
+    is_sadness = any(k in text for k in ["sad", "cry", "tear", "frown", "disappoint", "fly away", "lost", "掉", "唔開心", "喊", "飛走", "眼淚", "心痛", "安慰"])
+    is_celebration = any(k in text for k in ["hooray", "cheer", "celebrate", "clap", "well done", "clever", "smart", "成功", "好叻", "拍手", "讚", "太棒"])
     is_hygiene = any(k in text for k in ["brush", "teeth", "wash", "hand", "bath", "soap", "bubble", "towel", "刷牙", "洗手", "沖涼", "抹手", "乾淨"])
-    is_dim_sum = any(k in text for k in ["dim sum", "dumpling", "tea", "steamer", "點心", "蝦餃", "飲茶", "蒸籠"])
-    is_mealtime = any(k in text for k in ["eat", "banana", "apple", "fruit", "snack", "hungry", "bowl", "spoon", "breakfast", "meal", "yummy", "食", "水果", "早餐", "好味"])
+    is_dim_sum = any(k in text for k in ["dim sum", "dumpling", "tea", "steamer", "har gow", "siu mai", "egg tart", "點心", "蝦餃", "燒賣", "蛋撻", "飲茶", "蒸籠"])
+    is_mealtime = any(k in text for k in ["eat", "banana", "apple", "strawberry", "watermelon", "cookie", "milk", "fruit", "snack", "hungry", "bowl", "spoon", "breakfast", "meal", "yummy", "食", "水果", "早餐", "好味", "西瓜", "士多啤梨", "曲奇"])
+    is_vehicle = any(k in text for k in ["bus", "car", "truck", "plane", "airplane", "train", "fire truck", "校巴", "車", "飛機", "火車", "消防車"])
+    is_animal = any(k in text for k in ["duck", "cat", "kitty", "bunny", "rabbit", "frog", "鴨仔", "貓咪", "兔仔", "青蛙"])
     is_blocks = any(k in text for k in ["block", "tower", "stack", "abc", "積木", "搭積木"])
-    is_drawing_reading = any(k in text for k in ["book", "read", "story", "crayon", "draw", "睇書", "講故事", "畫畫"])
-    is_toy_play = any(k in text for k in ["toy", "car", "play", "share", "turn", "玩", "玩具車", "輪流"])
+    is_art = any(k in text for k in ["art", "draw", "crayon", "paint", "rainbow", "畫畫", "蠟筆", "彩虹"])
+    is_drawing_reading = any(k in text for k in ["book", "read", "story", "睇書", "講故事"])
     is_bedtime = any(k in text for k in ["sleep", "bed", "night", "star", "moon", "dream", "lullaby", "瞓", "晚安", "瞓覺", "發夢", "星星", "月亮"])
-    is_hugging = any(k in text for k in ["hug", "arms", "love", "comfort", "cuddle", "抱抱", "我愛你", "安慰"])
-    is_waving = any(k in text for k in ["hello", "good morning", "hi", "bye", "早晨", "揮手", "你好"])
+    is_hugging = any(k in text for k in ["hug", "arms", "love", "comfort", "cuddle", "抱抱", "我愛你"])
+    is_waving = any(k in text for k in ["hello", "good morning", "hi", "bye", "goodbye", "早晨", "揮手", "你好", "拜拜"])
 
-    # 1. Hygiene Domain (Bathroom Routine)
-    if is_hygiene:
-        bg = "bathroom"
+    # 1. Emotional Disruption & Comfort Domain (Sadness, Lost Item, Empathy)
+    if is_sadness:
+        # Luca is crying or Levi is sad
+        chars.append({"name": "luca", "pose": "crying", "scale": 1.0, "x_percent": 64.0, "y_percent": 88.0, "flip": True, "layer": 1})
+        if has_mom:
+            chars.append({"name": "mom", "pose": "kneeling_hug", "scale": 1.0, "x_percent": 28.0, "y_percent": 86.0, "flip": False, "layer": 1})
+        elif has_dad:
+            chars.append({"name": "dad", "pose": "comforting_hug", "scale": 1.0, "x_percent": 28.0, "y_percent": 86.0, "flip": False, "layer": 1})
+        else:
+            chars.append({"name": "levi", "pose": "arms_out_hug", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
+            
+        stickers.append({"id": "prop_comfort_hearts", "type": "icon", "content": "comfort_hearts", "x_percent": 50.0, "y_percent": 38.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 2})
+        stickers.append({"id": "badge_calm_down", "type": "word", "content": "深呼吸", "english": "Deep Breath & Hug", "color_theme": "sky", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
+
+    # 2. Celebration & Milestone Domain (Scene 6 or Praises)
+    elif is_celebration:
+        chars.append({"name": "levi", "pose": "cheering", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
+        chars.append({"name": "luca", "pose": "cheering", "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
+        if has_dad:
+            chars.append({"name": "dad", "pose": "clapping", "scale": 1.0, "x_percent": 18.0, "y_percent": 86.0, "flip": False, "layer": 1})
+        elif has_mom:
+            chars.append({"name": "mom", "pose": "clapping", "scale": 1.0, "x_percent": 84.0, "y_percent": 86.0, "flip": True, "layer": 1})
+        if has_dog:
+            chars.append({"name": "dog", "pose": "dancing_paw", "scale": 1.0, "x_percent": 50.0, "y_percent": 90.0, "flip": False, "layer": 3})
+            
+        stickers.append({"id": "prop_sparkle_cluster", "type": "icon", "content": "sparkle_cluster", "x_percent": 50.0, "y_percent": 38.0, "scale": 1.1, "rotation_deg": 0.0, "layer": 2})
+        stickers.append({"id": "badge_well_done", "type": "word", "content": "好叻仔！", "english": "Well Done!", "color_theme": "emerald", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
+
+    # 3. Vehicle & Transport Domain
+    elif is_vehicle:
+        chars.append({"name": "levi", "pose": "pointing", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
+        chars.append({"name": "luca", "pose": "cheering", "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
+        if has_dog:
+            chars.append({"name": "dog", "pose": "running", "scale": 1.0, "x_percent": 84.0, "y_percent": 88.0, "flip": True, "layer": 2})
+        
+        v_prop = "prop_bus" if "bus" in text or "校巴" in text else ("prop_fire_truck" if "fire" in text or "消防" in text else ("prop_airplane" if "plane" in text or "飛機" in text else ("prop_train" if "train" in text or "火車" in text else "prop_toy_car")))
+        stickers.append({"id": v_prop, "type": "icon", "content": v_prop.replace("prop_", ""), "x_percent": 50.0, "y_percent": 76.0, "scale": 1.15, "rotation_deg": 0.0, "layer": 3})
+        stickers.append({"id": "badge_vehicle", "type": "word", "content": "好快好得意", "english": "Zoom Zoom!", "color_theme": "amber", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
+
+    # 4. Animal Friends Domain
+    elif is_animal:
+        chars.append({"name": "levi", "pose": "thinking", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
+        chars.append({"name": "luca", "pose": "pointing", "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
+        if has_dog:
+            chars.append({"name": "dog", "pose": "sitting_attentive", "scale": 1.0, "x_percent": 50.0, "y_percent": 90.0, "flip": False, "layer": 3})
+        
+        a_prop = "prop_duckling" if "duck" in text or "鴨仔" in text else ("prop_kitty_cat" if "cat" in text or "貓" in text else ("prop_bunny" if "bunny" in text or "rabbit" in text or "兔" in text else "prop_frog"))
+        stickers.append({"id": a_prop, "type": "icon", "content": a_prop.replace("prop_", ""), "x_percent": 50.0, "y_percent": 76.0, "scale": 1.1, "rotation_deg": 0.0, "layer": 3})
+        stickers.append({"id": "badge_animals", "type": "word", "content": "可愛小動物", "english": "Cute Animals", "color_theme": "emerald", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
+
+    # 5. Art, Drawing & Colors Domain
+    elif is_art:
+        chars.append({"name": "levi", "pose": "holding_book", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
+        chars.append({"name": "luca", "pose": "clapping", "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
+        stickers.append({"id": "prop_crayons", "type": "icon", "content": "crayons", "x_percent": 50.0, "y_percent": 78.0, "scale": 1.1, "rotation_deg": 0.0, "layer": 3})
+        stickers.append({"id": "prop_rainbow", "type": "icon", "content": "rainbow", "x_percent": 80.0, "y_percent": 25.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 2})
+        stickers.append({"id": "badge_colors", "type": "word", "content": "美麗色彩", "english": "Colorful Art", "color_theme": "rose", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
+
+    # 6. Hygiene Domain (Bathroom Routine)
+    elif is_hygiene:
         chars.append({"name": "levi", "pose": "pointing", "scale": 1.0, "x_percent": 36.0, "y_percent": 88.0, "flip": False, "layer": 1})
         chars.append({"name": "luca", "pose": "clapping", "scale": 1.0, "x_percent": 64.0, "y_percent": 88.0, "flip": True, "layer": 1})
         if has_mom:
@@ -223,14 +289,12 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
         elif has_dad:
             chars.append({"name": "dad", "pose": "teaching", "scale": 1.0, "x_percent": 18.0, "y_percent": 86.0, "flip": False, "layer": 1})
         
-        # Anchored hand-level toothbrush & soap bubbles
         stickers.append({"id": "prop_toothbrush_blue", "type": "icon", "content": "toothbrush_blue", "x_percent": 42.0, "y_percent": 74.0, "scale": 0.85, "rotation_deg": -15.0, "layer": 3})
         stickers.append({"id": "prop_soap_bubbles", "type": "icon", "content": "soap_bubbles", "x_percent": 72.0, "y_percent": 30.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 2})
         stickers.append({"id": "badge_hygiene", "type": "word", "content": "一齊刷牙", "english": "Brush Teeth Together", "color_theme": "sky", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
 
-    # 2. Mealtime & Dim Sum Domain
+    # 7. Mealtime & Dim Sum Domain
     elif is_dim_sum or (is_mealtime and has_grandparents):
-        bg = "dining"
         gp_name = "grandparents_paternal" if any(k in text for k in ["爺爺", "嫲嫲"]) else "grandparents_maternal"
         chars.append({"name": gp_name, "pose": "drinking_tea", "scale": 1.0, "x_percent": 24.0, "y_percent": 86.0, "flip": False, "layer": 1})
         chars.append({"name": "levi", "pose": "eating", "scale": 1.0, "x_percent": 58.0, "y_percent": 88.0, "flip": False, "layer": 2})
@@ -239,47 +303,42 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
         stickers.append({"id": "badge_dim_sum", "type": "word", "content": "飲茶食點心", "english": "Yummy Dim Sum", "color_theme": "amber", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
 
     elif is_mealtime:
-        bg = "kitchen"
         if has_mom:
-            chars.append({"name": "mom", "pose": "holding_fruit", "scale": 1.0, "x_percent": 24.0, "y_percent": 86.0, "flip": False, "layer": 1})
+            chars.append({"name": "mom", "pose": "holding_bowl", "scale": 1.0, "x_percent": 24.0, "y_percent": 86.0, "flip": False, "layer": 1})
         elif has_dad:
             chars.append({"name": "dad", "pose": "sitting", "scale": 1.0, "x_percent": 24.0, "y_percent": 86.0, "flip": False, "layer": 1})
         chars.append({"name": "levi", "pose": "eating", "scale": 1.0, "x_percent": 54.0, "y_percent": 88.0, "flip": False, "layer": 2})
         chars.append({"name": "luca", "pose": "eating", "scale": 1.0, "x_percent": 76.0, "y_percent": 88.0, "flip": True, "layer": 2})
         if has_dog or "banana" in text:
             chars.append({"name": "dog", "pose": "eating_banana", "scale": 1.0, "x_percent": 50.0, "y_percent": 90.0, "flip": False, "layer": 3})
-        # Tangible fruit plate or bowl
-        stickers.append({"id": "prop_fruit_plate", "type": "icon", "content": "fruit_plate", "x_percent": 50.0, "y_percent": 78.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 3})
+        
+        m_prop = "prop_strawberry" if "strawberry" in text or "士多啤梨" in text else ("prop_watermelon_slice" if "watermelon" in text or "西瓜" in text else ("prop_cookie" if "cookie" in text or "餅" in text else "prop_fruit_plate"))
+        stickers.append({"id": m_prop, "type": "icon", "content": m_prop.replace("prop_", ""), "x_percent": 50.0, "y_percent": 78.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 3})
         stickers.append({"id": "badge_mealtime", "type": "word", "content": "好美味！", "english": "So Yummy!", "color_theme": "gold", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
 
-    # 3. Play, Cognitive & Blocks Domain
-    elif is_blocks or is_toy_play:
-        bg = "playroom"
-        chars.append({"name": "levi", "pose": "pointing", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
-        chars.append({"name": "luca", "pose": "holding_toy", "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
+    # 8. Play, Cognitive & Blocks Domain
+    elif is_blocks:
+        chars.append({"name": "levi", "pose": "sitting_floor", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
+        chars.append({"name": "luca", "pose": "sitting_floor", "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
         if has_dog:
-            chars.append({"name": "dog", "pose": "playing_ball", "scale": 1.0, "x_percent": 84.0, "y_percent": 88.0, "flip": True, "layer": 2})
+            chars.append({"name": "dog", "pose": "sitting_attentive", "scale": 1.0, "x_percent": 84.0, "y_percent": 88.0, "flip": True, "layer": 2})
         
-        # Physical Block Tower or Toy Car between the twins
-        prop_id = "prop_block_tower" if is_blocks else "prop_toy_car"
-        stickers.append({"id": prop_id, "type": "icon", "content": prop_id.replace("prop_", ""), "x_percent": 50.0, "y_percent": 80.0, "scale": 1.15, "rotation_deg": 0.0, "layer": 3})
+        stickers.append({"id": "prop_block_tower", "type": "icon", "content": "block_tower", "x_percent": 50.0, "y_percent": 80.0, "scale": 1.15, "rotation_deg": 0.0, "layer": 3})
         stickers.append({"id": "badge_play_together", "type": "word", "content": "輪流玩", "english": "Take Turns & Share", "color_theme": "purple", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
 
     elif is_drawing_reading:
-        bg = "reading_nook"
         if has_dad:
             chars.append({"name": "dad", "pose": "teaching", "scale": 1.0, "x_percent": 30.0, "y_percent": 86.0, "flip": False, "layer": 1})
-            chars.append({"name": "levi", "pose": "default", "scale": 1.0, "x_percent": 56.0, "y_percent": 88.0, "flip": True, "layer": 2})
+            chars.append({"name": "levi", "pose": "holding_book", "scale": 1.0, "x_percent": 56.0, "y_percent": 88.0, "flip": True, "layer": 2})
             chars.append({"name": "luca", "pose": "clapping", "scale": 1.0, "x_percent": 74.0, "y_percent": 88.0, "flip": True, "layer": 2})
         else:
-            chars.append({"name": "levi", "pose": "pointing", "scale": 1.0, "x_percent": 36.0, "y_percent": 88.0, "flip": False, "layer": 1})
-            chars.append({"name": "luca", "pose": "holding_toy", "scale": 1.0, "x_percent": 64.0, "y_percent": 88.0, "flip": True, "layer": 1})
+            chars.append({"name": "levi", "pose": "holding_book", "scale": 1.0, "x_percent": 36.0, "y_percent": 88.0, "flip": False, "layer": 1})
+            chars.append({"name": "luca", "pose": "pointing", "scale": 1.0, "x_percent": 64.0, "y_percent": 88.0, "flip": True, "layer": 1})
         stickers.append({"id": "prop_picture_book", "type": "icon", "content": "picture_book", "x_percent": 50.0, "y_percent": 78.0, "scale": 1.1, "rotation_deg": 0.0, "layer": 3})
         stickers.append({"id": "badge_reading", "type": "word", "content": "睇故事書", "english": "Storybook Time", "color_theme": "rose", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
 
-    # 4. Bedtime & Sleep Domain
+    # 9. Bedtime & Sleep Domain
     elif is_bedtime:
-        bg = "nursery"
         chars.append({"name": "levi", "pose": "sleeping", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
         chars.append({"name": "luca", "pose": "sleeping", "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
         if has_mom:
@@ -287,27 +346,26 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
         elif has_dad:
             chars.append({"name": "dad", "pose": "kneeling", "scale": 1.0, "x_percent": 18.0, "y_percent": 86.0, "flip": False, "layer": 1})
         if has_dog:
-            chars.append({"name": "dog", "pose": "default", "scale": 0.9, "x_percent": 84.0, "y_percent": 88.0, "flip": True, "layer": 2})
+            chars.append({"name": "dog", "pose": "curled_sleeping", "scale": 0.9, "x_percent": 84.0, "y_percent": 88.0, "flip": True, "layer": 2})
         stickers.append({"id": "prop_star", "type": "icon", "content": "star", "x_percent": 80.0, "y_percent": 26.0, "scale": 1.1, "rotation_deg": 10.0, "layer": 2})
         stickers.append({"id": "badge_goodnight", "type": "word", "content": "晚安早抖", "english": "Sweet Dreams", "color_theme": "indigo", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
 
-    # 5. Hugging, Love & Manners (Default Warm Preschool Staging)
+    # 10. Hugging, Love & Manners (Default Warm Preschool Staging)
     else:
-        bg = "living_room" if not any(k in text for k in ["park", "outdoor", "公園"]) else "park"
         if has_dad:
             chars.append({"name": "dad", "pose": "kneeling", "scale": 1.0, "x_percent": 26.0, "y_percent": 86.0, "flip": False, "layer": 1})
-            chars.append({"name": "levi", "pose": "arms_out_hug" if is_hugging else ("waving" if is_waving else "default"), "scale": 1.0, "x_percent": 54.0, "y_percent": 88.0, "flip": False, "layer": 2})
-            chars.append({"name": "luca", "pose": "clapping" if is_hugging else ("waving" if is_waving else "default"), "scale": 1.0, "x_percent": 76.0, "y_percent": 88.0, "flip": True, "layer": 2})
+            chars.append({"name": "levi", "pose": "arms_out_hug" if is_hugging else ("waving" if is_waving else "thinking"), "scale": 1.0, "x_percent": 54.0, "y_percent": 88.0, "flip": False, "layer": 2})
+            chars.append({"name": "luca", "pose": "arms_out_hug" if is_hugging else ("waving" if is_waving else "default"), "scale": 1.0, "x_percent": 76.0, "y_percent": 88.0, "flip": True, "layer": 2})
         elif has_mom:
-            chars.append({"name": "mom", "pose": "kneeling_hug", "scale": 1.0, "x_percent": 26.0, "y_percent": 86.0, "flip": False, "layer": 1})
+            chars.append({"name": "mom", "pose": "waving" if is_waving else "kneeling_hug", "scale": 1.0, "x_percent": 26.0, "y_percent": 86.0, "flip": False, "layer": 1})
             chars.append({"name": "levi", "pose": "arms_out_hug" if is_hugging else "default", "scale": 1.0, "x_percent": 54.0, "y_percent": 88.0, "flip": False, "layer": 2})
             chars.append({"name": "luca", "pose": "waving", "scale": 1.0, "x_percent": 76.0, "y_percent": 88.0, "flip": True, "layer": 2})
         else:
             chars.append({"name": "levi", "pose": "arms_out_hug" if is_hugging else ("waving" if is_waving else "default"), "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
-            chars.append({"name": "luca", "pose": "clapping" if is_hugging else ("waving" if is_waving else "default"), "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
+            chars.append({"name": "luca", "pose": "arms_out_hug" if is_hugging else ("waving" if is_waving else "default"), "scale": 1.0, "x_percent": 66.0, "y_percent": 88.0, "flip": True, "layer": 1})
         
         if has_dog:
-            chars.append({"name": "dog", "pose": "default", "scale": 1.0, "x_percent": 50.0, "y_percent": 90.0, "flip": False, "layer": 3})
+            chars.append({"name": "dog", "pose": "sitting_attentive", "scale": 1.0, "x_percent": 50.0, "y_percent": 90.0, "flip": False, "layer": 3})
 
         if is_hugging:
             stickers.append({"id": "prop_comfort_hearts", "type": "icon", "content": "comfort_hearts", "x_percent": 50.0, "y_percent": 42.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 2})
@@ -353,7 +411,11 @@ def apply_copilot_tweak(current_scene: Dict[str, Any], instruction: str) -> Dict
     stickers = [dict(s) for s in updated.get("stickers", [])]
 
     # 1. Background tweaks
-    if any(k in inst_lower for k in ["mountain", "hill", "wildflower", "山", "花"]):
+    if any(k in inst_lower for k in ["art", "painting", "easel", "畫畫"]):
+        updated["background"] = "art_room"
+    elif any(k in inst_lower for k in ["supermarket", "grocery", "market", "超市", "市場"]):
+        updated["background"] = "supermarket"
+    elif any(k in inst_lower for k in ["mountain", "hill", "wildflower", "山", "花"]):
         updated["background"] = "mountains"
     elif any(k in inst_lower for k in ["beach", "ocean", "sandcastle", "沙灘", "海"]):
         updated["background"] = "beach"
@@ -378,7 +440,7 @@ def apply_copilot_tweak(current_scene: Dict[str, Any], instruction: str) -> Dict
     # Add or pose dog
     if any(k in inst_lower for k in ["dog", "spitz", "波波", "狗"]):
         dog_char = next((c for c in chars if c["name"] == "dog"), None)
-        dog_pose = "eating_banana" if any(k in inst_lower for k in ["banana", "香蕉", "eat"]) else "default"
+        dog_pose = "eating_banana" if any(k in inst_lower for k in ["banana", "香蕉", "eat"]) else ("dancing_paw" if any(k in inst_lower for k in ["dance", "cheer", "jump"]) else ("curled_sleeping" if any(k in inst_lower for k in ["sleep", "nap"]) else "sitting_attentive"))
         if not dog_char:
             chars.append({"name": "dog", "pose": dog_pose, "scale": 1.0, "x_percent": 50.0, "y_percent": 90.0, "flip": False, "layer": 3})
         else:
@@ -390,6 +452,16 @@ def apply_copilot_tweak(current_scene: Dict[str, Any], instruction: str) -> Dict
         if levi_char:
             if any(k in inst_lower for k in ["banana", "香蕉", "eat", "食"]):
                 levi_char["pose"] = "eating"
+            elif any(k in inst_lower for k in ["think", "curious", "諗", "思考"]):
+                levi_char["pose"] = "thinking"
+            elif any(k in inst_lower for k in ["cheer", "hooray", "celebrate", "開心", "好叻"]):
+                levi_char["pose"] = "cheering"
+            elif any(k in inst_lower for k in ["sad", "cry", "tear", "唔開心", "喊"]):
+                levi_char["pose"] = "sad"
+            elif any(k in inst_lower for k in ["book", "read", "story", "睇書"]):
+                levi_char["pose"] = "holding_book"
+            elif any(k in inst_lower for k in ["sit", "floor", "mat", "坐"]):
+                levi_char["pose"] = "sitting_floor"
             elif any(k in inst_lower for k in ["hug", "arms", "抱抱"]):
                 levi_char["pose"] = "arms_out_hug"
             elif any(k in inst_lower for k in ["wave", "hello", "揮手"]):
@@ -403,6 +475,18 @@ def apply_copilot_tweak(current_scene: Dict[str, Any], instruction: str) -> Dict
         if luca_char:
             if any(k in inst_lower for k in ["banana", "fruit", "eat", "食"]):
                 luca_char["pose"] = "eating"
+            elif any(k in inst_lower for k in ["cry", "sad", "tear", "喊", "唔開心"]):
+                luca_char["pose"] = "crying"
+            elif any(k in inst_lower for k in ["cheer", "hooray", "celebrate", "好叻"]):
+                luca_char["pose"] = "cheering"
+            elif any(k in inst_lower for k in ["point", "look", "睇下", "指"]):
+                luca_char["pose"] = "pointing"
+            elif any(k in inst_lower for k in ["hug", "arms", "抱抱"]):
+                luca_char["pose"] = "arms_out_hug"
+            elif any(k in inst_lower for k in ["sit", "floor", "mat", "坐"]):
+                luca_char["pose"] = "sitting_floor"
+            elif any(k in inst_lower for k in ["clap", "拍手"]):
+                luca_char["pose"] = "clapping"
             elif any(k in inst_lower for k in ["wave", "hello", "揮手"]):
                 luca_char["pose"] = "waving"
             elif any(k in inst_lower for k in ["sleep", "瞓"]):
@@ -418,6 +502,9 @@ def apply_copilot_tweak(current_scene: Dict[str, Any], instruction: str) -> Dict
     elif any(k in inst_lower for k in ["banana", "香蕉"]):
         if not any(s.get("id") == "prop_banana" for s in stickers):
             stickers.append({"id": "prop_banana", "type": "icon", "content": "banana", "x_percent": 78.0, "y_percent": 25.0, "scale": 1.1, "rotation_deg": 8.0, "layer": 2})
+    elif any(k in inst_lower for k in ["bus", "school bus", "校巴"]):
+        if not any(s.get("id") == "prop_bus" for s in stickers):
+            stickers.append({"id": "prop_bus", "type": "icon", "content": "bus", "x_percent": 50.0, "y_percent": 76.0, "scale": 1.15, "rotation_deg": 0.0, "layer": 3})
     elif any(k in inst_lower for k in ["car", "toy car", "車"]):
         if not any(s.get("id") == "prop_toy_car" for s in stickers):
             stickers.append({"id": "prop_toy_car", "type": "icon", "content": "toy_car", "x_percent": 22.0, "y_percent": 26.0, "scale": 1.1, "rotation_deg": -5.0, "layer": 2})

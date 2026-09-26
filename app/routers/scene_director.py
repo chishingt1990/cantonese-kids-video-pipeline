@@ -10,6 +10,7 @@ from app.services.scene_director_service import (
 )
 from app.services.sticker_service import (
     STICKER_CATALOG,
+    get_all_stickers_catalog,
     get_or_render_sticker,
     STICKER_DIR
 )
@@ -66,14 +67,33 @@ def copilot_tweak(req: CopilotTweakRequest):
 # Stickers Router endpoints
 @router.get("/stickers/catalog")
 def list_stickers():
-    """Returns catalog of educational puffy stickers."""
-    return {"stickers": STICKER_CATALOG}
+    """Returns dynamic catalog of all educational puffy stickers and props."""
+    return {"stickers": get_all_stickers_catalog()}
 
 @router.get("/stickers/render/{sticker_id}")
 def render_sticker_image(sticker_id: str):
     """Returns transparent PNG of the requested sticker, generating if needed."""
     clean_id = os.path.basename(sticker_id.split("?")[0].replace(".png", ""))
-    match = next((s for s in STICKER_CATALOG if s["id"] == clean_id), None)
+    
+    no_cache_headers = {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
+    
+    # Check if exact PNG file exists on disk
+    direct_candidates = [
+        os.path.join(STICKER_DIR, f"{clean_id}.png"),
+        os.path.join(STICKER_DIR, f"prop_{clean_id.replace('prop_', '')}.png"),
+        os.path.join(STICKER_DIR, f"badge_{clean_id.replace('badge_', '')}.png"),
+        os.path.join(STICKER_DIR, f"block_{clean_id.replace('block_', '')}.png")
+    ]
+    for cand in direct_candidates:
+        if os.path.exists(cand):
+            return FileResponse(cand, media_type="image/png", headers=no_cache_headers)
+            
+    all_catalog = get_all_stickers_catalog()
+    match = next((s for s in all_catalog if s["id"] == clean_id), None)
     
     if match:
         path = get_or_render_sticker(match)
@@ -82,5 +102,6 @@ def render_sticker_image(sticker_id: str):
         path = get_or_render_sticker({"id": clean_id, "type": "word", "chinese": clean_id, "english": ""})
 
     if os.path.exists(path):
-        return FileResponse(path, media_type="image/png")
+        return FileResponse(path, media_type="image/png", headers=no_cache_headers)
     raise HTTPException(status_code=404, detail="Sticker not found")
+

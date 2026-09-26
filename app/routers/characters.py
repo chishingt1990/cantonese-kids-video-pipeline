@@ -10,6 +10,41 @@ from app.services.character_generator import generate_custom_character_sprite
 
 router = APIRouter(prefix="/api/characters", tags=["characters"])
 
+POSE_LABELS = {
+    "default": "Default Standing",
+    "sad": "😢 Sad / Needing Hug",
+    "holding_book": "📖 Holding Storybook",
+    "playing_blocks": "🧱 Stacking Toy Blocks",
+    "playing_car": "🚗 Pushing Toy Car",
+    "sitting_floor": "🧘 Sitting on Play Mat",
+    "cheering": "🙌 Cheering with Joy",
+    "clapping": "👏 Clapping Happily",
+    "crying": "😭 Crying with Tears",
+    "thinking": "🤔 Curious & Thinking",
+    "waving": "👋 Waving Hello",
+    "pointing": "👉 Pointing Excitedly",
+    "running": "🏃 Skipping & Running",
+    "arms_out_hug": "🤗 Open Arms for Hug",
+    "stretching": "🥱 Stretching & Yawning",
+    "eating": "🥣 Eating Breakfast",
+    "sleeping": "😴 Sleeping (Star PJs)",
+    "holding_toy": "🧸 Hugging Toy",
+    "sitting": "🪑 Sitting on Chair",
+    "kneeling": "🧎 Kneeling at Eye Level",
+    "comforting_hug": "🤗 Open Arms Comforting Hug",
+    "kneeling_hug": "🤗 Open Arms Warm Hug",
+    "holding_fruit": "🍎 Holding Fruit Platter",
+    "holding_bowl": "🥣 Holding Meal Bowl",
+    "teaching": "📖 Teaching & Praising",
+    "drinking": "☕ Drinking Warm Tea/Coffee",
+    "drinking_tea": "🍵 Drinking Warm Tea",
+    "curled_sleeping": "😴 Curled Up Sleeping",
+    "sitting_attentive": "🦮 Sitting Attentively",
+    "dancing_paw": "🐾 Dancing on Paws",
+    "eating_banana": "🍌 Eating Sweet Banana",
+    "playing_ball": "🎾 Playing with Ball",
+}
+
 @router.get("/")
 @router.get("/all")
 def list_characters():
@@ -22,13 +57,21 @@ def list_characters():
             "hair": "Naturally curves upward (quiff)",
             "poses": [
                 {"id": "default", "label": "Default Standing", "sprite": "levi_default.png"},
-                {"id": "waving", "label": "Waving Hello", "sprite": "levi_waving.png"},
-                {"id": "running", "label": "Skipping & Running", "sprite": "levi_running.png"},
-                {"id": "pointing", "label": "Pointing Excitedly", "sprite": "levi_pointing.png"},
-                {"id": "sleeping", "label": "Sleeping (Star PJs)", "sprite": "levi_sleeping.png"},
-                {"id": "eating", "label": "Eating Oatmeal", "sprite": "levi_eating.png"},
-                {"id": "stretching", "label": "Stretching / Yawning", "sprite": "levi_stretching.png"},
-                {"id": "arms_out_hug", "label": "Arms Out for Hug", "sprite": "levi_arms_out_hug.png"},
+                {"id": "sad", "label": "😢 Sad / Needing Hug", "sprite": "levi_sad.png"},
+                {"id": "holding_book", "label": "📖 Holding Storybook", "sprite": "levi_holding_book.png"},
+                {"id": "playing_blocks", "label": "🧱 Stacking Toy Blocks", "sprite": "levi_playing_blocks.png"},
+                {"id": "playing_car", "label": "🚗 Pushing Toy Car", "sprite": "levi_playing_car.png"},
+                {"id": "sitting_floor", "label": "🧘 Sitting on Play Mat", "sprite": "levi_sitting_floor.png"},
+                {"id": "cheering", "label": "🙌 Cheering with Joy", "sprite": "levi_cheering.png"},
+                {"id": "clapping", "label": "👏 Clapping Happily", "sprite": "levi_clapping.png"},
+                {"id": "thinking", "label": "🤔 Curious & Thinking", "sprite": "levi_thinking.png"},
+                {"id": "waving", "label": "👋 Waving Hello", "sprite": "levi_waving.png"},
+                {"id": "pointing", "label": "👉 Pointing Excitedly", "sprite": "levi_pointing.png"},
+                {"id": "running", "label": "🏃 Skipping & Running", "sprite": "levi_running.png"},
+                {"id": "arms_out_hug", "label": "🤗 Open Arms for Hug", "sprite": "levi_arms_out_hug.png"},
+                {"id": "stretching", "label": "🥱 Stretching & Yawning", "sprite": "levi_stretching.png"},
+                {"id": "eating", "label": "🥣 Eating Breakfast", "sprite": "levi_eating.png"},
+                {"id": "sleeping", "label": "😴 Sleeping (Star PJs)", "sprite": "levi_sleeping.png"},
             ],
             "sprite_url": "/api/characters/sprite/levi_default.png"
         },
@@ -40,11 +83,19 @@ def list_characters():
             "hair": "Combed down bangs with cowlick",
             "poses": [
                 {"id": "default", "label": "Default Standing", "sprite": "luca_default.png"},
-                {"id": "waving", "label": "Waving Hello", "sprite": "luca_waving.png"},
-                {"id": "clapping", "label": "Clapping with Joy", "sprite": "luca_clapping.png"},
-                {"id": "holding_toy", "label": "Hugging Teddy Bear", "sprite": "luca_holding_toy.png"},
-                {"id": "sleeping", "label": "Sleeping (Star PJs)", "sprite": "luca_sleeping.png"},
-                {"id": "eating", "label": "Eating Fruit", "sprite": "luca_eating.png"},
+                {"id": "crying", "label": "😭 Crying with Tears", "sprite": "luca_crying.png"},
+                {"id": "playing_blocks", "label": "🧱 Stacking Toy Blocks", "sprite": "luca_playing_blocks.png"},
+                {"id": "playing_car", "label": "🚗 Pushing Toy Car", "sprite": "luca_playing_car.png"},
+                {"id": "sitting_floor", "label": "🧘 Sitting on Play Mat", "sprite": "luca_sitting_floor.png"},
+                {"id": "cheering", "label": "🙌 Cheering with Joy", "sprite": "luca_cheering.png"},
+                {"id": "clapping", "label": "👏 Clapping with Joy", "sprite": "luca_clapping.png"},
+                {"id": "pointing", "label": "👉 Pointing Excitedly", "sprite": "luca_pointing.png"},
+                {"id": "arms_out_hug", "label": "🤗 Open Arms for Hug", "sprite": "luca_arms_out_hug.png"},
+                {"id": "waving", "label": "👋 Waving Hello", "sprite": "luca_waving.png"},
+                {"id": "holding_toy", "label": "🧸 Hugging Teddy Bear", "sprite": "luca_holding_toy.png"},
+                {"id": "holding_book", "label": "📖 Holding Storybook", "sprite": "luca_holding_book.png"},
+                {"id": "eating", "label": "🍎 Eating Fruit Snack", "sprite": "luca_eating.png"},
+                {"id": "sleeping", "label": "😴 Sleeping (Star PJs)", "sprite": "luca_sleeping.png"},
             ],
             "sprite_url": "/api/characters/sprite/luca_default.png"
         },
@@ -58,9 +109,12 @@ def list_characters():
                 {"id": "default", "label": "Default Standing", "sprite": "dad_default.png"},
                 {"id": "sitting", "label": "🪑 Sitting on Chair", "sprite": "dad_sitting.png"},
                 {"id": "kneeling", "label": "🧎 Kneeling at Eye Level", "sprite": "dad_kneeling.png"},
-                {"id": "waving", "label": "👋 Waving Warmly", "sprite": "dad_waving.png"},
-                {"id": "drinking", "label": "☕ Drinking Coffee", "sprite": "dad_drinking.png"},
                 {"id": "teaching", "label": "📖 Teaching Storybook", "sprite": "dad_teaching.png"},
+                {"id": "comforting_hug", "label": "🤗 Open Arms Comforting Hug", "sprite": "dad_comforting_hug.png"},
+                {"id": "clapping", "label": "👏 Clapping Proudly", "sprite": "dad_clapping.png"},
+                {"id": "pointing", "label": "👉 Pointing", "sprite": "dad_pointing.png"},
+                {"id": "waving", "label": "👋 Waving Warmly", "sprite": "dad_waving.png"},
+                {"id": "drinking", "label": "☕ Drinking Warm Coffee/Tea", "sprite": "dad_drinking.png"},
             ],
             "sprite_url": "/api/characters/sprite/dad_default.png"
         },
@@ -73,8 +127,11 @@ def list_characters():
             "poses": [
                 {"id": "default", "label": "Default Standing", "sprite": "mom_default.png"},
                 {"id": "kneeling_hug", "label": "🤗 Open Arms Warm Hug", "sprite": "mom_kneeling_hug.png"},
-                {"id": "holding_fruit", "label": "🍎 Holding Fruit Snacks", "sprite": "mom_holding_fruit.png"},
-                {"id": "teaching", "label": "📖 Teaching Storybook", "sprite": "mom_teaching.png"},
+                {"id": "holding_fruit", "label": "🍎 Holding Fruit Platter", "sprite": "mom_holding_fruit.png"},
+                {"id": "holding_bowl", "label": "🥣 Holding Meal Bowl", "sprite": "mom_holding_bowl.png"},
+                {"id": "waving", "label": "👋 Waving Warmly", "sprite": "mom_waving.png"},
+                {"id": "clapping", "label": "👏 Clapping Happily", "sprite": "mom_clapping.png"},
+                {"id": "teaching", "label": "📖 Teaching & Praising", "sprite": "mom_teaching.png"},
             ],
             "sprite_url": "/api/characters/sprite/mom_default.png"
         },
@@ -85,10 +142,13 @@ def list_characters():
             "outfit": "Red Collar with Golden Tag",
             "hair": "Pure white fluffy fur (Japanese Spitz)",
             "poses": [
-                {"id": "default", "label": "Default Sitting", "sprite": "dog_default.png"},
+                {"id": "default", "label": "Default Standing", "sprite": "dog_default.png"},
+                {"id": "playing_ball", "label": "🎾 Playing with Ball", "sprite": "dog_playing_ball.png"},
                 {"id": "running", "label": "🐾 Bouncing & Running", "sprite": "dog_running.png"},
-                {"id": "playing_ball", "label": "🎾 Playing with Red Ball", "sprite": "dog_playing_ball.png"},
-                {"id": "eating_banana", "label": "🍌 Eating Sweet Banana", "sprite": "dog_eating_banana.png"}
+                {"id": "eating_banana", "label": "🍌 Eating Sweet Banana", "sprite": "dog_eating_banana.png"},
+                {"id": "curled_sleeping", "label": "😴 Curled Up Sleeping", "sprite": "dog_curled_sleeping.png"},
+                {"id": "sitting_attentive", "label": "🦮 Sitting Attentively", "sprite": "dog_sitting_attentive.png"},
+                {"id": "dancing_paw", "label": "🐾 Dancing on Paws", "sprite": "dog_dancing_paw.png"},
             ],
             "sprite_url": "/api/characters/sprite/dog_default.png"
         },
@@ -130,24 +190,32 @@ def list_characters():
         }
     ]
     
-    # Dynamically scan sprites for saved custom poses
+    # Dynamically scan sprites for all poses and custom additions
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     sprites_dir = os.path.join(project_root, "assets", "sprites")
     for char in chars:
         cid = char["id"]
-        custom_files = glob.glob(os.path.join(sprites_dir, f"{cid}_custom_*.png"))
-        for cf in sorted(custom_files):
-            fname = os.path.basename(cf)
+        # Filter existing list to only files that exist on disk
+        char["poses"] = [p for p in char["poses"] if os.path.exists(os.path.join(sprites_dir, p.get("sprite", "")))]
+        
+        # Discover all on-disk sprite files for this character
+        sprite_files = glob.glob(os.path.join(sprites_dir, f"{cid}_*.png"))
+        for sf in sorted(sprite_files):
+            fname = os.path.basename(sf)
+            if fname.startswith("temp_") or fname.startswith("test_"):
+                continue
             pid = fname[len(cid)+1:-4]
             # Avoid duplicate if id or sprite filename already registered
             if not any(p["id"] == pid or p.get("sprite") == fname for p in char["poses"]):
+                label = POSE_LABELS.get(pid, f"✨ {pid.replace('_', ' ').title()}")
                 char["poses"].append({
                     "id": pid,
-                    "label": f"✨ {pid.replace('_', ' ').title()}",
+                    "label": label,
                     "sprite": fname
                 })
 
     return {"characters": chars}
+
 
 @router.get("/sprite/{filename}")
 def get_sprite(filename: str):
@@ -167,9 +235,15 @@ def get_sprite(filename: str):
     if clean_name in aliases:
         clean_name = aliases[clean_name]
 
+    no_cache_headers = {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
+
     path = os.path.join(sprites_dir, clean_name)
     if os.path.exists(path):
-        return FileResponse(path, media_type="image/png")
+        return FileResponse(path, media_type="image/png", headers=no_cache_headers)
     
     # Match against multi-word character prefixes
     known_prefixes = [
@@ -192,14 +266,14 @@ def get_sprite(filename: str):
 
     fallback_char = os.path.join(sprites_dir, f"{char_prefix}_default.png")
     if os.path.exists(fallback_char):
-        return FileResponse(fallback_char, media_type="image/png")
+        return FileResponse(fallback_char, media_type="image/png", headers=no_cache_headers)
         
     fallback_char_simple = os.path.join(sprites_dir, f"{char_prefix}.png")
     if os.path.exists(fallback_char_simple):
-        return FileResponse(fallback_char_simple, media_type="image/png")
+        return FileResponse(fallback_char_simple, media_type="image/png", headers=no_cache_headers)
         
     # Global fallback only as absolute last resort
-    return FileResponse(os.path.join(sprites_dir, "levi_default.png"), media_type="image/png")
+    return FileResponse(os.path.join(sprites_dir, "levi_default.png"), media_type="image/png", headers=no_cache_headers)
 
 @router.get("/sprite/{char_id}/{pose_id}")
 def get_sprite_by_char_pose(char_id: str, pose_id: str):
@@ -224,7 +298,9 @@ def list_backgrounds():
         "playground": "🛝 Playground Swings & Slide",
         "farm_field": "🌾 Sunny Farm Meadow & Hills",
         "duck_pond": "🦆 Storybook Duck Pond & Lake",
-        "backyard_garden": "🌻 Family Backyard Garden"
+        "backyard_garden": "🌻 Family Backyard Garden",
+        "art_room": "🎨 Watercolor Art Studio & Easel",
+        "supermarket": "🛒 Preschool Market & Fruit Stand"
     }
     core_ids = set(known_names.keys())
     
@@ -248,7 +324,7 @@ def delete_background(bg_id: str):
     core_ids = {
         "living_room", "nursery", "kitchen", "playroom", "beach", "park", 
         "mountains", "dining", "bathroom", "reading_nook", "playground", 
-        "farm_field", "duck_pond", "backyard_garden"
+        "farm_field", "duck_pond", "backyard_garden", "art_room", "supermarket"
     }
     if clean_id in core_ids:
         raise HTTPException(status_code=400, detail="Core master background presets cannot be deleted.")

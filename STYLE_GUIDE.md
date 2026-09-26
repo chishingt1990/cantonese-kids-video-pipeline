@@ -36,42 +36,28 @@ This style guide documents the canonical visual specifications for backgrounds, 
 
 ---
 
-## 2. Character Canon & Design Congruency
+## 2. Character Canon & Standardized Art Methodology
 
 All characters are rendered in a consistent, clean 2D storybook / preschool animation style with warm, friendly facial expressions, rosy cheeks, and expressive dark eyes.
 
-### 🧒 Levi (哥哥 - Older Twin Brother)
-- **Age**: 2–3 years old.
-- **Hair**: Jet-black hair styled with an **upward curving quiff/tuft** at the crown.
-- **Canonical Outfit**: **Coral Red / Salmon Polo Shirt** with collar and buttons, **Navy Blue Shorts**, **Royal Blue Sneakers** with white soles and white ankle socks.
-- **Personality**: Curious, energetic, expressive, loves exploring and helping his brother.
-- **Congruency Rule**: Levi must **NEVER** wear a solid yellow polo shirt (that is Luca's signature look) and must **NEVER** have light brown hair.
+### Standardized Art Rules & Quality Constraints
+1. **Anchor References**: All new sprite variations must directly ground their facial structure, palette swatches, and line weights from the canonical anchor portraits (`dad.png`, `mom.png`, `dog.png`, `levi.png`, `luca.png`).
+2. **Outlines**: Crisp, bold, solid dark chocolate/charcoal strokes (`#2d1a14` / `#1e293b`). No rough pencil sketch lines or blurry watercolor fringes.
+3. **Color & Shading**: Solid, saturated matte colors with smooth, subtle 2-tone cel-shading.
+4. **No Specular Highlights / Glossiness**: No bright white specular streaks, plastic sheen, or glossy shine on hair or shirts. Hair is solid matte dark charcoal/black (`#1c1917` / `#292524`).
+5. **No Paper Grain / Faded Wash**: Character figures are opaque and vibrant without chalky paper grain or washed-out watercolor textures.
+6. **Organic Props & Anatomy**: Any held prop (storybook, banana, tea cup, toy) must be an organically drawn, fully integrated part of the illustration matching the character's line weight and lighting—never flat geometric CAD shapes pasted over a standing sprite.
+7. **Clean Alpha Cutout**: Sprites must have true transparent backgrounds with smooth anti-aliased edges and tight bounding boxes. Human and animal characters must NOT have white sticker die-cut borders or outer contour halos.
 
-### 👦 Luca (細佬 - Younger Twin Brother)
-- **Age**: 2–3 years old (fraternal/identical twin pair).
-- **Hair**: Jet-black hair with **neat straight bowl-cut bangs** across forehead and a **single curved cowlick tuft** on top.
-- **Canonical Outfit**: **Bright Sunshine Yellow Polo Shirt** with collar and buttons, **Navy Blue Shorts**, **Royal Blue Sneakers** with white soles and white ankle socks.
-- **Personality**: Sweet, gentle, observant, cheerful, giggles easily.
-- **Congruency Rule**: Luca must **NEVER** wear a coral red polo (Levi's signature look).
-
-### 🐕 Doggy (狗狗 - Japanese Spitz)
-- **Breed**: Pure white Japanese Spitz.
-- **Features**: Fluffy pure white cloud fur, bushy curled plume tail over back, alert pointy fox-like ears, black button nose, bright dark eyes, pink tongue.
-- **Collar**: Crimson red collar with a shiny circular golden charm tag.
-- **Signature Poses**: Default sitting attentively, happily holding/eating a sweet yellow peeled banana in mouth, playfully wagging tail.
-
-### 👨 Dad (爸爸)
-- **Features**: Short neat dark hair, black rectangular glasses, warm friendly goatee/stubble, cheerful smiling crescent eyes.
-- **Outfit**: Slate blue-teal crewneck t-shirt with subtle rolled cuffs, dark charcoal grey chinos, grey casual sneakers with white soles.
-
-### 👩 Mom (媽媽)
-- **Features**: Long silky dark hair tied in a gentle side ponytail, warm caring smile, rosy cheeks.
-- **Outfit**: Navy blue and off-white horizontal striped boatneck 3/4-sleeve top, classic blue denim jeans, cream ballet flats.
-
-### 👴👵 Grandparents & Relatives
-- **Paternal Grandparents (爺爺 & 嫲嫲)**: 爺爺 wears a royal blue polo shirt and khaki chinos with glasses; 嫲嫲 wears a soft lavender blouse, navy trousers, and round glasses.
-- **Maternal Grandparents (公公 & 婆婆)**: 公公 wears a light cream t-shirt, grey pants, short cropped grey hair; 婆婆 wears a coral-red floral open blouse over white inner shirt, dark pants, jade bead bracelet.
-- **Auntie & Cousins (姑媽 & 表哥)**: Modern family look; cool green & blue sunglasses, coral v-neck, cargo shorts.
+### Character Specifics:
+- **🧒 Levi (哥哥)**: 2–3 years old. Matte dark hair with upward curving quiff, solid coral-red polo (`#dc2626`), navy shorts (`#1e3a8a`), royal blue sneakers.
+- **👦 Luca (細佬)**: 2–3 years old. Matte dark hair with straight bangs and top cowlick, solid sunshine-yellow polo (`#facc15`), navy shorts, royal blue sneakers.
+- **👨 Dad (爸爸)**: Youthful father (late 20s / early 30s), modern thin rectangular glasses, friendly neat stubble, smiling crescent eyes, slate-blue polo/crewneck (`#475569` / `#3b82f6` blend), khaki chinos, grey canvas sneakers.
+- **👩 Mom (媽媽)**: Silky dark hair in a low side ponytail, gentle caring smile, coral apron or lavender knit with jeans.
+- **🐕 Doggy (狗狗 - Japanese Spitz)**: Pure white fluffy cloud fur, alert prick ears, dark button nose, anime sparkling eyes, rosy blush cheeks, holding items naturally in mouth or sitting attentively.
+- **👴👵 Paternal Grandparents (爺爺 & 嫲嫲)**: 爺爺 wears royal blue polo and glasses; 嫲嫲 wears soft magenta/lavender blouse and glasses.
+- **👴👵 Maternal Grandparents (公公 & 婆婆)**: 公公 wears white tee and buzz cut; 婆婆 wears floral/white blouse and beaded bracelet.
+- **👩👦 Auntie & Cousins (姑媽 & 表哥)**: Modern family look, cool glasses, cargo shorts.
 
 ---
 

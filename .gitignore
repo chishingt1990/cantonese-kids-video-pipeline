@@ -25,6 +25,11 @@ projects/*/frames/
 config/client_secret.json
 config/google_token.json
 config/api_keys.json
+config/studio_settings.json
+temp_*
+test_*
+assets/sprites/test_*
+
 
 # Logs & scratch test files
 *.log
