@@ -67,16 +67,39 @@ class TestCantoneseKidsPipeline(unittest.TestCase):
         luca = chars["luca"]
         self.assertIn("Bright Yellow Polo", luca["outfit"])
         
-        # Verify sprite files exist on disk and have alpha channel
-        for char_id, char_data in [("levi", levi), ("luca", luca)]:
-            for pose in char_data["poses"]:
+        # Verify sprite files exist on disk, have alpha channel, and have solid filled bodies (not hollow outlines)
+        all_char_ids = list(chars.keys())
+        for char_id in all_char_ids:
+            char_data = chars[char_id]
+            for pose in char_data.get("poses", []):
                 fn = pose["sprite"]
                 p = os.path.join("assets", "sprites", fn)
                 self.assertTrue(os.path.exists(p), f"Sprite file missing: {p}")
                 im = Image.open(p)
                 self.assertEqual(im.mode, "RGBA", f"Sprite {fn} is not RGBA: {im.mode}")
+                
+                # Visual Integrity & Solid Fill Density Checks
+                import numpy as np
+                arr = np.array(im)
+                alpha = arr[:, :, 3]
+                opaque_px = int(np.sum(alpha > 0))
+                total_px = arr.shape[0] * arr.shape[1]
+                density = opaque_px / total_px
+                
+                # 1. Detect hollow/empty sprite
+                self.assertGreaterEqual(opaque_px, 70000, f"Sprite {fn} is hollow/empty with only {opaque_px} opaque pixels")
+                self.assertGreaterEqual(density, 0.25, f"Sprite {fn} has sparse wireframe density: {density:.2f}")
+                
+                # 2. Detect uncolored line-art outlines (wireframe check)
+                r = arr[:, :, 0][alpha > 0]
+                g = arr[:, :, 1][alpha > 0]
+                b = arr[:, :, 2][alpha > 0]
+                near_black_lines = (r < 50) & (g < 50) & (b < 50)
+                filled_body_ratio = float((~near_black_lines).mean())
+                self.assertGreaterEqual(filled_body_ratio, 0.65, f"Sprite {fn} is a hollow outline with only {filled_body_ratio*100:.1f}% filled body")
+                
                 im.close()
-        print("[OK] Character congruency verified: Levi strictly coral-red, Luca sunshine-yellow!")
+        print("[OK] Character congruency & Solid Fill Integrity verified across all characters (no hollow outlines)!")
 
     def test_04_word_stickers_snug_centered_proportions(self):
         """Verify all word stickers use the snug pill badge design with no bottom void."""
@@ -284,6 +307,95 @@ class TestCantoneseKidsPipeline(unittest.TestCase):
         self.assertIn("audio_url", data)
         self.assertIn("master_audio_url", data)
         print("[OK] Single TTS synthesis and audio duration sync endpoint verified successfully!")
+
+    def test_12_expanded_asset_library_and_staging_intelligence(self):
+        """Verify expanded poses, props, backgrounds, and emotional empathy staging."""
+        # 1. Verify New Backgrounds Exist as 1920x1080 HD
+        res_bg = client.get("/api/characters/backgrounds")
+        self.assertEqual(res_bg.status_code, 200)
+        bg_ids = {b["id"] for b in res_bg.json()["backgrounds"]}
+        self.assertIn("art_room", bg_ids)
+        self.assertIn("supermarket", bg_ids)
+        for bg in ["art_room", "supermarket"]:
+            im = Image.open(f"assets/backgrounds/bg_{bg}.png")
+            self.assertEqual(im.size, (1920, 1080))
+            im.close()
+
+        # 2. Verify Character Poses in API
+        res_chars = client.get("/api/characters/all")
+        self.assertEqual(res_chars.status_code, 200)
+        char_dict = {c["id"]: {p["id"]: p for p in c["poses"]} for c in res_chars.json()["characters"]}
+        
+        # Levi authentic poses
+        for p in ["sad", "holding_book", "playing_blocks", "playing_car", "waving", "pointing", "running", "stretching", "eating", "sleeping"]:
+            self.assertIn(p, char_dict["levi"])
+            im = Image.open(f"assets/sprites/levi_{p}.png")
+            self.assertEqual(im.mode, "RGBA")
+            im.close()
+            
+        # Luca authentic poses
+        for p in ["crying", "playing_blocks", "playing_car", "waving", "clapping", "holding_toy", "eating", "sleeping"]:
+            self.assertIn(p, char_dict["luca"])
+            im = Image.open(f"assets/sprites/luca_{p}.png")
+            self.assertEqual(im.mode, "RGBA")
+            im.close()
+
+        # Dad & Mom poses
+        self.assertIn("kneeling", char_dict["dad"])
+        self.assertIn("teaching", char_dict["dad"])
+        self.assertIn("sitting", char_dict["dad"])
+        self.assertIn("waving", char_dict["dad"])
+        self.assertIn("drinking", char_dict["dad"])
+        self.assertIn("kneeling_hug", char_dict["mom"])
+        self.assertIn("holding_fruit", char_dict["mom"])
+        self.assertIn("teaching", char_dict["mom"])
+
+        # Dog poses
+        self.assertIn("playing_ball", char_dict["dog"])
+        self.assertIn("running", char_dict["dog"])
+        self.assertIn("eating_banana", char_dict["dog"])
+
+        # 3. Verify New Props and Badges in Catalog
+        res_stk = client.get("/api/scene-director/stickers/catalog")
+        self.assertEqual(res_stk.status_code, 200)
+        stk_ids = {s["id"] for s in res_stk.json()["stickers"]}
+        for prop in ["prop_bus", "prop_fire_truck", "prop_airplane", "prop_duckling", "prop_kitty_cat", "prop_har_gow", "prop_siu_mai", "prop_egg_tart", "prop_watermelon_slice", "prop_balloon_yellow", "badge_calm_down", "badge_well_done"]:
+            self.assertIn(prop, stk_ids)
+
+        # 4. Verify Emotional / Sadness Staging picks crying Luca and comforting Dad/Mom
+        sad_scene = {
+            "scene_number": 3,
+            "title": "Balloon Flew Away",
+            "cantonese": "氣球飛走咗，細佬好唔開心想喊！",
+            "english": "The balloon flew away, little brother feels sad and tearful!",
+            "speaker": "Dad",
+            "vocab_highlight": "唔開心"
+        }
+        sad_directed = client.post("/api/scene-director/auto-direct", json={"project": {"scenes": [sad_scene]}}).json()["scenes"][0]
+        char_poses = {c["name"]: c["pose"] for c in sad_directed["characters"]}
+        self.assertEqual(char_poses.get("luca"), "crying")
+        self.assertEqual(char_poses.get("dad"), "comforting_hug")
+        stk_ids_staged = [s["id"] for s in sad_directed["stickers"]]
+        self.assertIn("prop_comfort_hearts", stk_ids_staged)
+        self.assertIn("badge_calm_down", stk_ids_staged)
+
+        # 5. Verify Celebration Staging picks cheering Levi and Luca + well done badge
+        cheer_scene = {
+            "scene_number": 6,
+            "title": "We Succeeded!",
+            "cantonese": "成功啦！好叻仔，大家一齊拍手慶祝！",
+            "english": "We did it! Clever boys, let's all clap and celebrate!",
+            "speaker": "Dad",
+            "vocab_highlight": "好叻仔"
+        }
+        cheer_directed = client.post("/api/scene-director/auto-direct", json={"project": {"scenes": [cheer_scene]}}).json()["scenes"][0]
+        cheer_poses = {c["name"]: c["pose"] for c in cheer_directed["characters"]}
+        self.assertEqual(cheer_poses.get("levi"), "cheering")
+        self.assertEqual(cheer_poses.get("luca"), "cheering")
+        cheer_stk_ids = [s["id"] for s in cheer_directed["stickers"]]
+        self.assertIn("badge_well_done", cheer_stk_ids)
+
+        print("[OK] Expanded Asset Library & Emotional Empathy Staging Intelligence verified 100%!")
 
 if __name__ == "__main__":
     unittest.main()

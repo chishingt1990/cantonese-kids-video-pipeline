@@ -282,8 +282,257 @@ STICKER_CATALOG = [
         "type": "icon",
         "label": "溫暖愛心 (Warm Hug Hearts)",
         "icon": "comfort_hearts"
+    },
+    # 5. Vehicles & Transport
+    {
+        "id": "prop_bus",
+        "type": "icon",
+        "label": "校巴 (School Bus)",
+        "icon": "bus"
+    },
+    {
+        "id": "prop_fire_truck",
+        "type": "icon",
+        "label": "消防車 (Fire Truck)",
+        "icon": "fire_truck"
+    },
+    {
+        "id": "prop_airplane",
+        "type": "icon",
+        "label": "飛機 (Airplane)",
+        "icon": "airplane"
+    },
+    {
+        "id": "prop_train",
+        "type": "icon",
+        "label": "火車 (Toy Train)",
+        "icon": "train"
+    },
+    # 6. Animals & Nature
+    {
+        "id": "prop_duckling",
+        "type": "icon",
+        "label": "小鴨仔 (Duckling)",
+        "icon": "duckling"
+    },
+    {
+        "id": "prop_kitty_cat",
+        "type": "icon",
+        "label": "貓咪 (Kitty Cat)",
+        "icon": "kitty_cat"
+    },
+    {
+        "id": "prop_bunny",
+        "type": "icon",
+        "label": "小白兔 (Bunny)",
+        "icon": "bunny"
+    },
+    {
+        "id": "prop_frog",
+        "type": "icon",
+        "label": "青蛙 (Little Frog)",
+        "icon": "frog"
+    },
+    {
+        "id": "prop_rainbow",
+        "type": "icon",
+        "label": "彩虹 (Pastel Rainbow)",
+        "icon": "rainbow"
+    },
+    {
+        "id": "prop_sun_smiling",
+        "type": "icon",
+        "label": "太陽 (Smiling Sun)",
+        "icon": "sun_smiling"
+    },
+    # 7. Cantonese Dim Sum & Snacks
+    {
+        "id": "prop_har_gow",
+        "type": "icon",
+        "label": "蝦餃 (Shrimp Dumpling)",
+        "icon": "har_gow"
+    },
+    {
+        "id": "prop_siu_mai",
+        "type": "icon",
+        "label": "燒賣 (Siu Mai)",
+        "icon": "siu_mai"
+    },
+    {
+        "id": "prop_egg_tart",
+        "type": "icon",
+        "label": "蛋撻 (Egg Tart)",
+        "icon": "egg_tart"
+    },
+    {
+        "id": "prop_watermelon_slice",
+        "type": "icon",
+        "label": "西瓜 (Watermelon)",
+        "icon": "watermelon_slice"
+    },
+    {
+        "id": "prop_strawberry",
+        "type": "icon",
+        "label": "士多啤梨 (Strawberry)",
+        "icon": "strawberry"
+    },
+    {
+        "id": "prop_milk_bottle",
+        "type": "icon",
+        "label": "奶樽 (Milk Bottle)",
+        "icon": "milk_bottle"
+    },
+    {
+        "id": "prop_cookie",
+        "type": "icon",
+        "label": "曲奇餅 (Cookie)",
+        "icon": "cookie"
+    },
+    # 8. Celebrations & Balloons
+    {
+        "id": "prop_balloon_yellow",
+        "type": "icon",
+        "label": "黃氣球 (Yellow Balloon)",
+        "icon": "balloon_yellow"
+    },
+    {
+        "id": "prop_balloon_blue",
+        "type": "icon",
+        "label": "藍氣球 (Blue Balloon)",
+        "icon": "balloon_blue"
+    },
+    {
+        "id": "prop_balloon_green",
+        "type": "icon",
+        "label": "綠氣球 (Green Balloon)",
+        "icon": "balloon_green"
+    },
+    {
+        "id": "prop_gift_box",
+        "type": "icon",
+        "label": "禮物盒 (Gift Box)",
+        "icon": "gift_box"
+    },
+    {
+        "id": "prop_party_hat",
+        "type": "icon",
+        "label": "生日帽 (Party Hat)",
+        "icon": "party_hat"
+    },
+    # 9. Colors Badges
+    {
+        "id": "badge_color_red",
+        "type": "word",
+        "label": "紅色 (Red)",
+        "chinese": "紅色",
+        "english": "Red",
+        "color_theme": "rose"
+    },
+    {
+        "id": "badge_color_yellow",
+        "type": "word",
+        "label": "黃色 (Yellow)",
+        "chinese": "黃色",
+        "english": "Yellow",
+        "color_theme": "gold"
+    },
+    {
+        "id": "badge_color_blue",
+        "type": "word",
+        "label": "藍色 (Blue)",
+        "chinese": "藍色",
+        "english": "Blue",
+        "color_theme": "sky"
+    },
+    {
+        "id": "badge_color_green",
+        "type": "word",
+        "label": "綠色 (Green)",
+        "chinese": "綠色",
+        "english": "Green",
+        "color_theme": "emerald"
+    },
+    {
+        "id": "badge_color_orange",
+        "type": "word",
+        "label": "橙色 (Orange)",
+        "chinese": "橙色",
+        "english": "Orange",
+        "color_theme": "amber"
+    },
+    {
+        "id": "badge_color_purple",
+        "type": "word",
+        "label": "紫色 (Purple)",
+        "chinese": "紫色",
+        "english": "Purple",
+        "color_theme": "purple"
+    },
+    # 10. Emotions & Emotional Empathy Badges
+    {
+        "id": "badge_calm_down",
+        "type": "word",
+        "label": "深呼吸 (Deep Breath)",
+        "chinese": "深呼吸",
+        "english": "Deep Breath",
+        "color_theme": "sky"
+    },
+    {
+        "id": "badge_happy",
+        "type": "word",
+        "label": "開開心心 (Very Happy)",
+        "chinese": "開開心心",
+        "english": "Happy & Smiling",
+        "color_theme": "gold"
+    },
+    {
+        "id": "badge_well_done",
+        "type": "word",
+        "label": "好叻仔！ (Well Done!)",
+        "chinese": "好叻仔！",
+        "english": "Well Done!",
+        "color_theme": "emerald"
     }
 ]
+
+def get_all_stickers_catalog() -> List[Dict[str, Any]]:
+    """Returns all stickers by merging the static catalog with any extra sticker PNG files found in assets/stickers/."""
+    catalog_map = {s["id"]: dict(s) for s in STICKER_CATALOG}
+    
+    if os.path.exists(STICKER_DIR):
+        for f in sorted(os.listdir(STICKER_DIR)):
+            if not f.endswith(".png"):
+                continue
+            s_id = f[:-4]
+            if s_id in catalog_map:
+                continue
+                
+            # Determine type & label
+            if s_id.startswith("badge_") or s_id.startswith("word_") or s_id.startswith("vocab_"):
+                s_type = "word"
+                clean_name = s_id.replace("badge_", "").replace("word_", "").replace("vocab_", "").replace("_", " ").title()
+                label = f"🏷️ {clean_name}"
+            elif s_id.startswith("block_"):
+                s_type = "letter" if not s_id[-1].isdigit() else "number"
+                clean_name = s_id.replace("block_", "").upper()
+                label = f"🧱 Block {clean_name}"
+            elif s_id.startswith("prop_") or s_id.startswith("sticker_"):
+                s_type = "icon"
+                clean_name = s_id.replace("prop_", "").replace("sticker_", "").replace("_", " ").title()
+                label = f"✨ {clean_name}"
+            else:
+                s_type = "icon"
+                label = f"✨ {s_id.replace('_', ' ').title()}"
+                
+            catalog_map[s_id] = {
+                "id": s_id,
+                "type": s_type,
+                "label": label,
+                "icon": s_id
+            }
+            
+    return list(catalog_map.values())
+
 
 THEME_COLORS = {
     "amber": {"bg": (255, 251, 235), "border": (245, 158, 11), "text": (180, 83, 9), "dark": (40, 30, 20)},
@@ -666,10 +915,15 @@ def generate_prop_icon(icon_name: str, size: int = 180) -> Image.Image:
 def get_or_render_sticker(sticker_info: Dict[str, Any], force: bool = False) -> str:
     """Returns absolute file path to the transparent sticker PNG, generating if not present."""
     s_id = sticker_info.get("id") or "sticker_custom"
-    file_path = os.path.join(STICKER_DIR, f"{s_id}.png")
+    clean_id = s_id.replace(".png", "")
+    file_path = os.path.join(STICKER_DIR, f"{clean_id}.png")
     
     if os.path.exists(file_path) and not force:
         return file_path
+        
+    prop_candidate = os.path.join(STICKER_DIR, f"prop_{clean_id.replace('prop_', '')}.png")
+    if os.path.exists(prop_candidate) and not force:
+        return prop_candidate
 
     s_type = sticker_info.get("type", "word")
     if s_type == "letter":
