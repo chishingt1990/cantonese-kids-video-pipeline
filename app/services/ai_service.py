@@ -482,106 +482,98 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
     v2 = vocab[1]["chinese"] if len(vocab) > 1 else "多謝"
     v3 = vocab[2]["chinese"] if len(vocab) > 2 else "一齊玩"
 
-    scenes = [
-        {
-            "scene_number": 1,
-            "title": "Introduction & Warm Greeting",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "dad", "pose": "waving", "position": "left"},
-                {"name": "levi", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"早晨呀兩個BB！今日爸爸同你哋一齊睇下：{title_cn}！",
-            "english": f"Good morning sweet babies! Today Dad will explore: {title_en} with you!",
-            "vocab_highlight": v1,
-            "duration_sec": 7
-        },
-        {
-            "scene_number": 2,
-            "title": "Discovering Something New",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "levi", "pose": "pointing", "position": "left"},
-                {"name": "luca", "pose": "default", "position": "right"}
-            ],
-            "cantonese": f"Levi 哥哥細心睇下，真係好特別喎！{v1}呀！",
-            "english": f"Levi brother looks closely, this is so special! It's {v1}!",
-            "vocab_highlight": v1,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 3,
-            "title": "The Story Event & Gentle Emotions",
-            "background": primary_bg,
-            "speaker": "Mom",
-            "characters": [
-                {"name": "mom", "pose": "kneeling_hug", "position": "left"},
-                {"name": "luca", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"哎呀，唔緊要㗎！細佬唔好唔開心，媽媽喺度抱抱你。",
-            "english": "Oh, it's alright! Little brother don't feel sad, Mommy is right here to give you a warm hug.",
-            "vocab_highlight": v2,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 4,
-            "title": "Kindness & Brotherly Comfort",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "levi", "pose": "arms_out_hug", "position": "left"},
-                {"name": "luca", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"哥哥抱住細佬，拍拍背脊！我哋學識咗{v2}，真係好乖呀！",
-            "english": f"Big brother hugs little brother and pats his back! We learned {v2}, such sweet boys!",
-            "vocab_highlight": v2,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 5,
-            "title": "Joyful Action & Puppy Play",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "dog", "pose": "running", "position": "left"},
-                {"name": "luca", "pose": "clapping", "position": "right"}
-            ],
-            "cantonese": f"睇下！狗狗都跑過嚟一齊搖尾巴，笑瞇瞇好開心！",
-            "english": "Look! Doggy is bouncing over wagging his tail happily, beaming with joy!",
-            "vocab_highlight": v3,
-            "duration_sec": 7
-        },
-        {
-            "scene_number": 6,
-            "title": "Shared Celebration & Practicing Words",
-            "background": primary_bg,
-            "speaker": "Mom",
-            "characters": [
-                {"name": "mom", "pose": "holding_fruit", "position": "left"},
-                {"name": "levi", "pose": "running", "position": "right"}
-            ],
-            "cantonese": f"大家都笑得好甜呀！我哋一齊講多次：{v3}！",
-            "english": f"Everyone has sweet smiles! Let's say it together one more time: {v3}!",
-            "vocab_highlight": v3,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 7,
-            "title": "Family Hug & Moral Recap",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "dad", "pose": "kneeling", "position": "left"},
-                {"name": "levi", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"今日我哋學到：{lesson}！揮手講拜拜，多謝大家！",
-            "english": f"Today we learned: {lesson}! Wave goodbye, thank you everyone!",
-            "vocab_highlight": "多謝",
-            "duration_sec": 8
-        }
+    # 18-scene beat sheet: every beat weaves the chosen topic/title + vocab words
+    # into Dad's lines, so the offline script still matches what the parent picked.
+    beats = [
+        ("Warm Morning Greeting",
+         f"早晨呀兩個BB！今日爸爸同你哋一齊玩：{title_cn}！",
+         f"Good morning my babies! Today Dad explores {title_en} with you!", v1,
+         [("dad", "waving", "left"), ("levi", "waving", "right")]),
+        ("What Is It, Daddy?",
+         f"爸爸話你知，{title_cn}係咩嚟㗎！一齊睇下啦！",
+         f"Dad will show you what {title_en} is all about! Let's look together!", v1,
+         [("dad", "kneeling", "left"), ("luca", "default", "right")]),
+        ("Levi Points It Out",
+         f"Levi 哥哥指住話：爸爸，呢個係{v1}呀！",
+         f"Big brother Levi points and says: Dad, this is {v1}!", v1,
+         [("levi", "pointing", "left"), ("dad", "default", "right")]),
+        ("Luca's Turn to Try",
+         f"Luca 細佬都試下啦，Daddy 幫你！好叻仔！",
+         f"Little Luca, you try too — Daddy helps you! So clever!", v1,
+         [("dad", "kneeling", "left"), ("luca", "clapping", "right")]),
+        ("Touch and Feel",
+         f"摸下佢，軟綿綿㗎！{v1}真係好得意！",
+         f"Touch it — so soft! {v1} is really cute!", v1,
+         [("levi", "default", "left"), ("luca", "default", "right")]),
+        ("Puppy Joins the Fun",
+         f"狗狗都跑過嚟聞下{v2}，汪汪叫，好開心！",
+         f"Doggy runs over to sniff the {v2}, woof woof — so happy!", v2,
+         [("dog", "running", "left"), ("levi", "running", "right")]),
+        ("Count Together",
+         f"一齊數：一、二、三！{v2}有三個呀！",
+         f"Let's count together: one, two, three! There are three {v2}!", v2,
+         [("dad", "default", "left"), ("levi", "pointing", "right")]),
+        ("Sing a Little Song",
+         f"爸爸唱首歌：{v3}，{v3}，真開心！",
+         f"Dad sings a little song: {v3}, {v3}, so happy!", v3,
+         [("dad", "waving", "left"), ("luca", "clapping", "right")]),
+        ("Snack Break Chat",
+         f"食啖嘢飲啖水，爸爸問：你最鍾意邊個{v1}呀？",
+         f"Snack time! Dad asks: which {v1} do you like best?", v1,
+         [("dad", "sitting", "left"), ("levi", "eating", "right")]),
+        ("A Tricky Bit",
+         f"哎呀，{title_cn}有啲難喎！唔緊要，慢慢嚟，Daddy 同你一齊！",
+         f"Oops, {title_en} is a bit tricky! No worries — take it slow, Daddy is right here!", v2,
+         [("dad", "kneeling", "left"), ("luca", "default", "right")]),
+        ("Daddy's Comfort Hug",
+         f"唔好唔開心，爸爸抱抱！深呼吸，我哋再試過！",
+         f"Don't be sad — Daddy hugs you! Deep breath, let's try again!", v2,
+         [("dad", "kneeling", "left"), ("luca", "waving", "right")]),
+        ("Try Again Slowly",
+         f"好啦，慢慢嚟，一步一步嚟學{v3}，你得㗎！",
+         f"Okay — slowly, step by step, learning {v3}. You can do it!", v3,
+         [("dad", "default", "left"), ("levi", "default", "right")]),
+        ("We Did It!",
+         f"得咗啦！叻仔叻仔！拍拍手！我哋識得{title_cn}啦！",
+         f"We did it! Clever boys! Clap clap! We know {title_en} now!", v3,
+         [("levi", "clapping", "left"), ("luca", "clapping", "right")]),
+        ("Brother High-Five",
+         f"哥哥同細佬 high five！一齊學{title_cn}真係最開心！",
+         f"Big brother and little brother high five! Learning {title_en} together is the best!", v1,
+         [("levi", "arms_out_hug", "left"), ("luca", "waving", "right")]),
+        ("Show and Tell",
+         f"拎去畀公公婆婆睇！睇下我哋學識咗{v2}！",
+         f"Let's show Grandpa and Grandma! Look what we learned — {v2}!", v2,
+         [("dad", "clapping", "left"), ("levi", "running", "right")]),
+        ("Word Review Time",
+         f"複習下今日學嘅字：{v1}，{v2}，{v3}！",
+         f"Let's review today's words: {v1}, {v2}, {v3}!", v3,
+         [("dad", "default", "left"), ("levi", "pointing", "right")]),
+        ("Tidy Up Together",
+         f"玩完要收拾好，多謝{title_cn}陪我哋玩！",
+         f"After playing we tidy up. Thank you, {title_en}, for playing with us!", "多謝",
+         [("dad", "kneeling", "left"), ("luca", "holding_toy", "right")]),
+        ("Goodbye Wave",
+         f"今日我哋學到：{lesson}揮手講拜拜，下次再玩{title_cn}！",
+         f"Today we learned: {lesson} Wave goodbye — let's play {title_en} again!", "拜拜",
+         [("dad", "waving", "left"), ("levi", "waving", "right")]),
     ]
+
+    scenes = []
+    for i, (beat_title, cantonese, english, vocab_hl, chars) in enumerate(beats, start=1):
+        scenes.append({
+            "scene_number": i,
+            "title": beat_title,
+            "background": primary_bg,
+            "characters": [
+                {"name": n, "pose": pose, "position": pos} for (n, pose, pos) in chars
+            ],
+            "speaker": "Dad",
+            "cantonese": cantonese,
+            "english": english,
+            "vocab_highlight": vocab_hl,
+            "duration_sec": 9
+        })
 
     return {
         "title_cantonese": title_cn,
@@ -591,7 +583,7 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
         "scenes": scenes
     }
 
-def generate_full_script(idea: dict, characters: list) -> dict:
+def generate_full_script(idea: dict, characters: list, topic: str = "", age_group: str = "") -> dict:
     system_prompt = (
         "You are an award-winning preschool scriptwriter creating gentle, dual-language Cantonese educational episodes. "
         "Every line must feature authentic conversational Cantonese parentese in Traditional Chinese characters (粵語口語: 唔, 喺, 嘅, 啦, 呀, 哋) "
@@ -603,8 +595,11 @@ def generate_full_script(idea: dict, characters: list) -> dict:
     lesson = idea.get('moral_lesson', '')
     vocab = idea.get('target_vocab', [])
     previews = idea.get('scenes_preview', [])
+    topic = (topic or '').strip() or title_en or title_cn
 
-    user_prompt = f"""Create an engaging 7-scene preschool episode script based directly on this idea:
+    user_prompt = f"""Create a LONG-FORM preschool episode script of 18 to 22 scenes, based directly on this idea:
+CHOSEN TOPIC (the parent picked this — every single scene must teach or play with it): {topic}
+CHILD AGE: {age_group}
 Title: {title_cn} ({title_en})
 Story Concept & Arc: {desc}
 Moral Lesson: {lesson}
@@ -613,26 +608,22 @@ Scenes Preview Guide: {json.dumps(previews, ensure_ascii=False)}
 Available characters: {', '.join(characters)}
 
 CRITICAL MANDATORY RULES:
-1. STRICT THEME COHERENCE: The entire 7-scene script MUST strictly follow the story concept described above.
-   - For example, if the story is about a balloon floating away and sadness, the scenes must show the balloon floating away, comforting the sad child, and resolving happily with family support.
-2. EXACTLY 7 SCENES: Produce exactly 7 sequential scenes (Numbered 1 to 7) providing full 1-2 minute video content:
-   - Scene 1: Introduction, morning greeting & discovering the subject
-   - Scene 2: Closer observation & 1st target vocab word
-   - Scene 3: The inciting event / emotional challenge (e.g. lost object, sadness, sharing dilemma)
-   - Scene 4: Parent / sibling comfort, guidance & 2nd target vocab word
-   - Scene 5: Gentle resolution & active brotherly play / puppy interaction
-   - Scene 6: Celebration, clapping & 3rd target vocab word
-   - Scene 7: Warm group hug, takeaway moral lesson & waving goodbye
-3. Presets for background: living_room, nursery, kitchen, playroom, beach, park, mountains, dining, bathroom, reading_nook, playground, farm_field, duck_pond, backyard_garden.
-4. Available character poses:
-   - levi: default, waving, sleeping, eating, stretching, arms_out_hug, pointing, running
-   - luca: default, waving, sleeping, eating, clapping, holding_toy
-   - dad: default, kneeling, waving, drinking, sitting
-   - mom: default, kneeling_hug, holding_fruit
-   - dog: default, running, playing_ball, eating_banana
-   - grandparents_paternal: default, drinking_tea
-   - grandparents_maternal: default, waving
-   - auntie_cousins: default, waving
+1. STRICT THEME COHERENCE: EVERY scene MUST be about the chosen topic "{topic}".
+   - Each scene must mention, show, or teach the topic. If a scene does not, rewrite it until it does.
+   - Do NOT drift into generic family stories. The topic is the star of every scene.
+2. LENGTH: Produce 18 to 22 sequential scenes, about 8-10 seconds of speech each, for a total of roughly 2.5 to 3.5 minutes.
+   - Arc for a long episode: warm opening & topic reveal → explore the topic from several playful angles (look, touch, count, sing) →
+     a small gentle challenge → Dad comforts and encourages → try again and succeed → celebrate & review the words → tidy up → goodbye with the moral.
+   - Spread the target vocabulary across the episode; repeat each key word in at least 2 different scenes.
+3. DAD IS THE NARRATOR: The speaker of EVERY scene is "Dad" (爸爸). Dad is on screen talking to Levi and Luca in every scene.
+   - Write in Dad's real voice: warm Chinglish parentese, e.g. "Levi, come here, Daddy 幫你！". Cantonese lines say 爸爸, never 媽媽.
+4. Presets for background: living_room, nursery, kitchen, playroom, beach, park, mountains, dining, bathroom, reading_nook, playground, farm_field, duck_pond, backyard_garden.
+5. Available character poses (use ONLY these exact pose names):
+   - levi: default, waving, clapping, cheering, pointing, running, sleeping, eating, stretching, arms_out_hug, playing_blocks, playing_car, holding_book, thinking, sad
+   - luca: default, waving, clapping, cheering, pointing, running, sleeping, eating, crying, sad, holding_toy, holding_book, playing_blocks, playing_car, thinking, arms_out_hug
+   - dad: default, waving, clapping, kneeling, sitting, pointing, teaching, drinking, comforting_hug
+   - mom: default, waving, clapping, kneeling_hug, holding_fruit, holding_bowl, teaching
+   - dog: default, running, playing_ball, eating_banana, dancing_paw, curled_sleeping, sitting_attentive
 
 Return ONLY valid JSON matching this schema:
 {{
@@ -653,7 +644,7 @@ Return ONLY valid JSON matching this schema:
       "cantonese": "早晨呀！",
       "english": "Good morning!",
       "vocab_highlight": "早晨",
-      "duration_sec": 8
+      "duration_sec": 9
     }}
   ]
 }}
@@ -668,12 +659,15 @@ Return ONLY valid JSON matching this schema:
         if cleaned.endswith("```"):
             cleaned = cleaned[:-3]
         parsed = json.loads(cleaned.strip())
-        if isinstance(parsed, dict) and "scenes" in parsed and len(parsed["scenes"]) >= 5:
+        if isinstance(parsed, dict) and "scenes" in parsed and len(parsed["scenes"]) >= 14:
             # Ensure moral_lesson & vocab_words exist
             parsed.setdefault("moral_lesson", lesson)
             parsed.setdefault("vocab_words", vocab)
+            parsed["meta"] = {"offline": False}
             return parsed
     except Exception as e:
-        print(f"AI Script Generation notice ({e}), synthesizing rich grounded 7-scene script...")
-    
-    return _generate_dynamic_fallback_script(idea, characters)
+        print(f"AI Script Generation notice ({e}), synthesizing rich grounded 18-scene script...")
+
+    fb = _generate_dynamic_fallback_script(idea, characters)
+    fb["meta"] = {"offline": True}
+    return fb

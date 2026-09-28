@@ -91,23 +91,23 @@
       <nav class="space-y-1.5 font-semibold text-xs">
         <button onclick="setStep(1)" id="side-step-1" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition bg-amber-500 text-white font-bold shadow-sm shadow-amber-200">
           <span class="text-sm">💡</span>
-          <span>1. Theme & Ideas</span>
+          <span>1. Story</span>
         </button>
         <button onclick="setStep(2)" id="side-step-2" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
           <span class="text-sm">📝</span>
-          <span>2. Script & Vocab</span>
+          <span>2. Script</span>
         </button>
         <button onclick="setStep(3)" id="side-step-3" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
-          <span class="text-sm">🎨</span>
-          <span>3. Picture Book Studio</span>
+          <span class="text-sm">🎙️</span>
+          <span>3. Voice</span>
         </button>
         <button onclick="setStep(4)" id="side-step-4" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
-          <span class="text-sm">🎙️</span>
-          <span>4. Voice & Sound</span>
+          <span class="text-sm">🎨</span>
+          <span>4. Staging</span>
         </button>
         <button onclick="setStep(5)" id="side-step-5" class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50">
           <span class="text-sm">🎬</span>
-          <span>5. Render & Video</span>
+          <span>5. Render</span>
         </button>
       </nav>
 
@@ -148,7 +148,7 @@
     <!-- STEP 1: IDEA & THEME -->
     <div id="step-1" class="step-view space-y-6">
       <div class="space-y-1">
-        <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 1: Ideation</span>
+        <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 1: Story</span>
         <h2 class="text-3xl font-extrabold text-stone-900 tracking-tight">What do we want to teach today?</h2>
         <p class="text-stone-500 text-sm">Pick a gentle, wholesome theme tailored for your little ones without the addictive frenzy of YouTube.</p>
       </div>
@@ -191,29 +191,94 @@
     <div id="step-2" class="step-view hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 2: Scripting</span>
-          <h2 id="script-episode-title" class="text-2xl font-extrabold text-stone-900 mt-1">Episode Script & Vocabulary</h2>
-          <p class="text-stone-500 text-xs">Review and refine spoken Cantonese parentese dialogue and English bilingual context.</p>
+          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 2: Script</span>
+          <h2 id="script-episode-title" class="text-2xl font-extrabold text-stone-900 mt-1">The Full Story Script</h2>
+          <p class="text-stone-500 text-xs">This is the entire story in one piece — read it through and edit anything you like. Dad will read exactly this in Step 3.</p>
         </div>
         <button onclick="setStep(3)" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
-          Next: Picture Book Studio ➔
+          Next: Voice ➔
         </button>
       </div>
 
+      <div id="script-offline-note" class="hidden bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-xs text-amber-800 font-semibold">
+        ⚠️ The story helper was unreachable, so this is a draft script — feel free to edit it, or check your internet connection and generate the story again in Step 1.
+      </div>
+
       <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
-        <h4 class="text-xs font-extrabold text-stone-500 uppercase tracking-wider">Target Vocabulary Flashcards</h4>
+        <h4 class="text-xs font-extrabold text-stone-500 uppercase tracking-wider">Key Words We'll Learn</h4>
         <div id="vocab-cards-list" class="flex flex-wrap gap-3"></div>
       </div>
 
-      <div id="scenes-list" class="space-y-4"></div>
+      <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Full script — everything Dad will say</span>
+          <span id="full-script-meta" class="text-[11px] text-stone-400"></span>
+        </div>
+        <textarea id="full-script-text" rows="20" class="w-full text-sm tc-font text-stone-800 bg-amber-50/40 border border-amber-100 rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-amber-300 leading-relaxed" placeholder="Pick a story idea in Step 1 and the full script will appear here…"></textarea>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="saveFullScript()" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm transition">💾 Save Script</button>
+          <button onclick="resetFullScript()" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm transition">↩ Reset to Generated</button>
+          <span class="text-[11px] text-stone-400">Tip: keep the <span class="font-mono font-bold">--- Scene N ---</span> lines so each picture stays matched to its words.</span>
+        </div>
+        <p id="full-script-status" class="text-[11px] text-stone-500 font-bold"></p>
+      </div>
     </div>
 
     <!-- STEP 3: PICTURE BOOK STUDIO & SCENE DIRECTOR -->
     <div id="step-3" class="step-view hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 3: Picture Book Studio 🎨</span>
-          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Autonomous Scene Director & Co-pilot</h2>
+          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 3: Voice</span>
+          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Dad Reads the Story</h2>
+          <p class="text-stone-500 text-xs">Your voice reads the whole script in one take — one voice request for the entire video.</p>
+        </div>
+        <button onclick="setStep(4)" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
+          Next: Staging ➔
+        </button>
+      </div>
+
+      <div class="bg-white rounded-3xl p-6 border border-emerald-200 shadow-sm space-y-5">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-emerald-100 flex items-center justify-center text-xl">👨</div>
+          <div>
+            <h3 class="font-extrabold text-stone-800 text-sm">Reading voice</h3>
+            <p id="voice-step-voice-name" class="text-[11px] text-stone-500">Checking your saved voice…</p>
+          </div>
+        </div>
+
+        <div>
+          <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">How should Dad sound?</span>
+          <div id="voice-style-chips" class="flex flex-wrap gap-2 mt-2">
+            <button onclick="setVoiceStyle('calm')" data-style="calm" class="voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition">😌 Calm</button>
+            <button onclick="setVoiceStyle('warm')" data-style="warm" class="voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition">☀️ Warm &amp; playful</button>
+            <button onclick="setVoiceStyle('excited')" data-style="excited" class="voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition">🎉 Excited</button>
+          </div>
+        </div>
+
+        <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+          <span id="voice-step-script-meta" class="text-[11px] text-stone-500 font-semibold">No script yet — write it in Step 2 first.</span>
+          <button onclick="setStep(2)" class="text-[11px] font-bold text-emerald-700 underline">Edit the script</button>
+        </div>
+
+        <div>
+          <button id="btn-voice-narrate" onclick="narrateStory()" class="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-sm shadow-md shadow-emerald-200 flex items-center justify-center gap-2 transition">
+            <span>🎙️</span> Narrate My Story
+          </button>
+          <p class="text-[11px] text-stone-400 mt-2 text-center">Uses 1 voice request. If you change the script afterwards, narrating again uses another request.</p>
+        </div>
+
+        <p id="narration-status" class="text-[11px] text-stone-500 font-bold"></p>
+        <div class="flex flex-wrap items-center gap-3">
+          <audio id="narration-audio-player" controls class="h-9 w-full max-w-[340px]"></audio>
+          <div id="narration-sections" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+    </div>
+    <div id="step-4" class="step-view hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 4: Staging 🎨</span>
+          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Staging Studio</h2>
           <p class="text-stone-500 text-xs">AI reads your script, selects warm pastel backgrounds, poses characters, and places 3D stickers automatically.</p>
         </div>
         <div class="flex items-center gap-2">
@@ -223,8 +288,8 @@
           <button onclick="openCustomOutfitModal()" class="px-3.5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 font-bold text-xs flex items-center gap-1.5 transition">
             <span>🎨</span> Custom Outfit
           </button>
-          <button onclick="setStep(4)" class="px-6 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-md flex items-center gap-1.5 transition">
-            Next: Voice Studio ➔
+          <button onclick="setStep(5)" class="px-6 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-md flex items-center gap-1.5 transition">
+            Next: Render Video ➔
           </button>
         </div>
       </div>
@@ -410,136 +475,6 @@
     </div>
 
     <!-- STEP 4: VOICE & SOUND STUDIO -->
-    <div id="step-4" class="step-view hidden space-y-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 4: Voiceover & Sound</span>
-          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Audio Studio & Teleprompter</h2>
-          <p class="text-stone-500 text-xs">Generate instant Cantonese neural voices with 1 click, or record your personal voice via microphone.</p>
-        </div>
-        <button onclick="setStep(5)" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
-          Next: Render Video ➔
-        </button>
-      </div>
-
-      <!-- PARENT VOICE CLONING (GEMINI) -->
-      <div class="bg-white rounded-3xl p-5 border border-violet-200 shadow-sm space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div class="space-y-1 max-w-xl">
-            <h3 class="font-extrabold text-stone-800 text-sm flex items-center gap-2">
-              <span>🧬</span> Parent Voice Cloning (Google Gemini)
-            </h3>
-            <p id="voice-clone-status" class="text-[11px] text-stone-500">Checking Gemini connection…</p>
-            <p class="text-[11px] text-stone-400">
-              Google requires two clips from the <strong>same person</strong> recorded on the same mic:
-              a 10–30s voice sample and a consent recording reciting word for word:
-              <span class="text-stone-600 font-semibold">"I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model."</span>
-            </p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <select id="cloned-voice-select" onchange="selectClonedVoice(this.value)" class="text-stone-800 text-xs font-bold px-3 py-2 rounded-xl bg-violet-50 border border-violet-200 focus:outline-none shadow-sm max-w-[220px]">
-              <option value="">No cloned voice yet</option>
-            </select>
-            <label class="flex items-center gap-1.5 text-xs font-bold text-violet-700 bg-violet-50 px-3 py-2 rounded-xl border border-violet-200 cursor-pointer">
-              <input type="checkbox" id="use-cloned-voice" class="w-4 h-4 accent-violet-600" checked>
-              Use parent voice for AI generation
-            </label>
-          </div>
-        </div>
-
-        <!-- CLONE NEW VOICE COLLAPSIBLE FORM -->
-        <div class="pt-2 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex flex-wrap items-center gap-2">
-            <label class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition cursor-pointer" title="Attach voice sample clip (10-30s)">
-              <span>🎙️</span> <span id="sample-file-name">Voice Sample (10–30s)</span>
-              <input type="file" id="sample-file-input" accept="audio/*" class="hidden" onchange="updateSampleFileName(this)">
-            </label>
-            <label class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition cursor-pointer" title="Attach consent recording">
-              <span>📜</span> <span id="consent-file-name">Consent Recording</span>
-              <input type="file" id="consent-file-input" accept="audio/*" class="hidden" onchange="updateConsentFileName(this)">
-            </label>
-            <button id="btn-clone-voice" onclick="cloneParentVoice()" class="px-4 py-1.5 rounded-xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
-              <span>🧬</span> Train New Voice Model
-            </button>
-          </div>
-          <span class="text-[11px] text-stone-400 italic">Pre-trained models are saved in config/cloned_voices.json</span>
-        </div>
-      </div>
-
-      <!-- SINGLE-TAKE NARRATION (quota saver) -->
-      <div class="bg-white rounded-3xl p-5 border border-emerald-200 shadow-sm space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div class="space-y-1 max-w-xl">
-            <h3 class="font-extrabold text-stone-800 text-sm flex items-center gap-2">
-              <span>🎙️</span> Single-Take Narration <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] rounded-full">saves voice quota</span>
-            </h3>
-            <p class="text-[11px] text-stone-500">
-              Reads the <strong>entire script in one go</strong> using your cloned parent voice —
-              <strong>1 voice request</strong> for the whole video instead of one per scene.
-              Afterwards the app listens back and marks where each scene starts, so pictures land on the right words.
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button id="btn-narration-generate" onclick="generateFullNarration()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
-              <span>🎙️</span> Generate Full Narration (1 request)
-            </button>
-            <button id="btn-narration-align" onclick="alignNarrationToScenes()" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
-              <span>📍</span> Auto-Align Scenes
-            </button>
-          </div>
-        </div>
-        <div>
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Full script that will be narrated</span>
-            <span id="narration-script-meta" class="text-[11px] text-stone-400"></span>
-          </div>
-          <textarea id="narration-script-text" rows="6" class="w-full text-sm tc-font text-stone-800 bg-emerald-50/50 border border-emerald-100 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-300" placeholder="Your scenes' Cantonese lines will appear here…"></textarea>
-        </div>
-        <p id="narration-status" class="text-[11px] text-stone-500 font-bold"></p>
-        <div class="flex flex-wrap items-center gap-3">
-          <audio id="narration-audio-player" controls class="h-8 max-w-[280px]"></audio>
-          <div id="narration-sections" class="flex flex-wrap gap-1.5"></div>
-        </div>
-      </div>
-
-      <!-- 1-CLICK BULK GENERATION BANNER -->
-      <div class="bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 rounded-3xl p-6 text-white shadow-md flex flex-wrap items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">⚡</span>
-            <h3 class="text-lg font-extrabold">1-Click Generate All Scene Voices (Cantonese AI)</h3>
-          </div>
-          <p class="text-amber-100 text-xs">Instantly synthesizes high-fidelity Hong Kong Cantonese neural speech for all 7 scenes and mixes acoustic ukulele BGM.</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <select id="bulk-persona-selector" class="text-stone-800 text-xs font-bold px-3 py-2 rounded-xl bg-white focus:outline-none shadow-sm">
-            <option value="dad">👨 Narrator: Warm Dad (Wan Lung)</option>
-            <option value="mom">👩 Narrator: Gentle Mom (Hiu Maan)</option>
-            <option value="child">🧒 Narrator: Cheerful Child (Hiu Gaai)</option>
-          </select>
-          <button id="btn-bulk-tts" onclick="generateAllVoicesAI()" class="px-5 py-2.5 rounded-xl bg-white text-stone-900 hover:bg-amber-50 font-extrabold text-xs shadow-sm flex items-center gap-1.5 transition">
-            <span>✨</span> Generate All Scenes
-          </button>
-        </div>
-      </div>
-
-      <!-- MASTER SOUNDTRACK PREVIEW -->
-      <div class="bg-white rounded-3xl p-4 border border-amber-100 shadow-sm flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-lg">
-            🎵
-          </div>
-          <div>
-            <h4 class="font-bold text-stone-800 text-xs">Master Soundtrack (Voice + Ukulele BGM + Auto-Ducking)</h4>
-            <p class="text-[11px] text-stone-400">Re-mixed automatically whenever you record or generate voice clips</p>
-          </div>
-        </div>
-        <audio id="master-audio-player" controls class="h-8 max-w-[280px]" src="/api/audio/master"></audio>
-      </div>
-
-      <div id="audio-scenes-list" class="space-y-4"></div>
-    </div>
-
     <!-- STEP 5: RENDER & PREVIEW -->
     <div id="step-5" class="step-view hidden space-y-6">
       <div class="space-y-1">

@@ -4,7 +4,7 @@ import subprocess
 import threading
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-from app.services.audio_service import mix_scene_audio, get_audio_duration
+from app.services.audio_service import mix_scene_audio, mix_narration_with_bgm, get_audio_duration
 from app.services.sticker_service import get_or_render_sticker
 
 # In-memory job registry
@@ -212,7 +212,14 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
         # 1. Audio track: single narration file in narration mode, otherwise
         #    mix the per-scene voice clips as before.
         if narration_mode:
-            audio_path = narr_audio
+            # Auto BGM: the one-take narration gets the same soft ukulele music
+            # bed as the classic flow, with auto-ducking under Dad's voice.
+            bgm_mix_path = os.path.join(project_root, "assets", "outputs", f"episode_{job_id}_master.wav")
+            try:
+                audio_path = mix_narration_with_bgm(narr_audio, bgm_mix_path)
+            except Exception as e:
+                print(f"Warning: narration BGM mix failed, using raw narration: {e}")
+                audio_path = narr_audio
         else:
             voice_paths = []
             durations = []

@@ -184,13 +184,13 @@ function setStep(step) {
 
   // Render step specific data
   if (step === 2) renderScriptStep();
-  if (step === 3) {
+  if (step === 3) renderVoiceStep();
+  if (step === 4) {
     renderVisualStageStep();
     if (!currentProject._autoDirected) {
       triggerAutoDirectAllScenes({ silent: true });
     }
   }
-  if (step === 4) renderAudioStep();
   if (step === 5) renderRenderStep();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -288,7 +288,7 @@ function renderIdeas(ideas) {
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-extrabold uppercase tracking-wider">Concept ${idx + 1}</span>
-          <span class="text-xs text-stone-400 font-medium">1-2 min lesson</span>
+          <span class="text-xs text-stone-400 font-medium">2½–3 min lesson</span>
         </div>
         <div>
           <h3 class="font-extrabold text-stone-900 text-lg tc-font leading-tight">${idea.title_cantonese}</h3>
@@ -340,13 +340,16 @@ async function selectIdeaAndBuildScript(idx) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idea: idea,
-        characters: activeRoster
+        characters: activeRoster,
+        topic: (document.getElementById('input-topic') || {}).value ? document.getElementById('input-topic').value.trim() : '',
+        age_group: selectedAge
       })
     });
     const data = await res.json();
     const script = data.script;
 
     if (script && script.scenes && script.scenes.length > 0) {
+      currentProject.scriptMeta = script.meta || {};
       currentProject.title_cantonese = script.title_cantonese || idea.title_cantonese;
       currentProject.title_english = script.title_english || idea.title_english;
       currentProject.vocab_words = script.vocab_words || idea.target_vocab || [];
@@ -390,71 +393,95 @@ async function selectIdeaAndBuildScript(idx) {
   }
 }
 
-// Step 2: Script & Vocabulary
-function renderScriptStep() {
-  document.getElementById('script-episode-title').innerText = `${currentProject.title_cantonese} (${currentProject.title_english})`;
-
-  const vocabContainer = document.getElementById('vocab-cards-list');
-  vocabContainer.innerHTML = currentProject.vocab_words.map(v => `
-    <div class="px-4 py-2.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-center gap-2">
-      <span class="text-base font-extrabold text-stone-900 tc-font">${v.chinese}</span>
-      <span class="text-xs text-stone-600 font-semibold">· ${v.english}</span>
-    </div>
-  `).join('');
-
-  const scenesContainer = document.getElementById('scenes-list');
-  scenesContainer.innerHTML = currentProject.scenes.map((s, idx) => {
-    const speaker = s.speaker || 'Dad';
-    return `
-    <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-3">
-        <div class="flex items-center gap-2.5 flex-1 min-w-[200px]">
-          <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
-          <input type="text" value="${s.title || `Scene ${idx + 1}`}" onchange="updateSceneText(${idx}, 'title', this.value)" class="font-bold text-stone-800 text-sm px-2.5 py-1 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 w-full" placeholder="Scene Title">
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 text-xs text-stone-500 font-semibold">
-            <span>Speaker:</span>
-            <select onchange="updateSceneText(${idx}, 'speaker', this.value)" class="px-2 py-1 rounded-lg border border-stone-200 bg-stone-50 text-stone-800 font-bold text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
-              <option value="Dad" ${speaker === 'Dad' ? 'selected' : ''}>Dad (爸爸)</option>
-              <option value="Mom" ${speaker === 'Mom' ? 'selected' : ''}>Mom (媽媽)</option>
-              <option value="Child" ${speaker === 'Child' ? 'selected' : ''}>Child (小朋友)</option>
-              <option value="Narrator" ${speaker === 'Narrator' ? 'selected' : ''}>Narrator (旁白)</option>
-            </select>
-          </div>
-          <div class="flex items-center gap-1.5 text-xs text-stone-500 font-semibold">
-            <span>Duration:</span>
-            <input type="number" min="3" max="30" step="1" value="${s.duration_sec || 7}" onchange="updateSceneText(${idx}, 'duration_sec', this.value)" class="w-16 px-2 py-1 rounded-lg border border-stone-200 text-center font-bold text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
-            <span>s</span>
-          </div>
-          <span class="text-xs text-stone-400 font-medium">BG: <strong>${s.background}</strong></span>
-        </div>
-      </div>
-
-      <!-- Clean 2-Column Bilingual Layout (No Jyutping) -->
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-[10px] font-extrabold text-stone-400 uppercase tracking-wider mb-1">Spoken Cantonese (Parentese)</label>
-          <input type="text" value="${s.cantonese}" onchange="updateSceneText(${idx}, 'cantonese', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 font-bold tc-font text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
-        </div>
-        <div>
-          <label class="block text-[10px] font-extrabold text-stone-400 uppercase tracking-wider mb-1">English Translation</label>
-          <input type="text" value="${s.english}" onchange="updateSceneText(${idx}, 'english', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
-        </div>
-      </div>
-    </div>
-  `}).join('');
+// Step 2: Script — the whole story as one flowing, editable script.
+// Scene breaks ("--- Scene N ---") are preserved so pictures stay matched to words.
+function buildEditableScriptText() {
+  return (currentProject.scenes || []).map((s, idx) =>
+    `--- Scene ${idx + 1} ---\nCantonese: ${s.cantonese || ''}\nEnglish: ${s.english || ''}`
+  ).join('\n\n');
 }
 
-function updateSceneText(idx, field, value) {
-  if (currentProject.scenes[idx]) {
-    if (field === 'duration_sec') {
-      currentProject.scenes[idx][field] = Math.max(2, parseFloat(value) || 6);
-    } else {
-      currentProject.scenes[idx][field] = value;
-    }
-    if (typeof markProjectDirty === 'function') markProjectDirty();
+function renderScriptStep() {
+  const titleEl = document.getElementById('script-episode-title');
+  if (titleEl) titleEl.innerText = `${currentProject.title_cantonese || ''} (${currentProject.title_english || ''})`;
+
+  const vocabContainer = document.getElementById('vocab-cards-list');
+  if (vocabContainer) {
+    vocabContainer.innerHTML = (currentProject.vocab_words || []).map(v => `
+      <div class="px-4 py-2.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-center gap-2">
+        <span class="text-base font-extrabold text-stone-900 tc-font">${v.chinese}</span>
+        <span class="text-xs text-stone-600 font-semibold">· ${v.english}</span>
+      </div>
+    `).join('');
   }
+
+  const note = document.getElementById('script-offline-note');
+  if (note) note.classList.toggle('hidden', !(currentProject.scriptMeta && currentProject.scriptMeta.offline));
+
+  const box = document.getElementById('full-script-text');
+  const sceneCount = String((currentProject.scenes || []).length);
+  // Don't clobber the textarea while the user is typing — refresh only when the
+  // scene list itself changed (new story generated) or the box is empty.
+  if (box && (box.dataset.sceneCount !== sceneCount || !box.value)) {
+    box.value = buildEditableScriptText();
+    box.dataset.sceneCount = sceneCount;
+  }
+
+  const meta = document.getElementById('full-script-meta');
+  if (meta) {
+    const n = (currentProject.scenes || []).length;
+    const chars = (currentProject.scenes || []).reduce((a, s) => a + (s.cantonese || '').length, 0);
+    const estMin = (chars / 160).toFixed(1);
+    meta.innerText = n ? `${n} scenes · ~${estMin} min of narration` : '';
+  }
+  setScriptStatus('');
+}
+
+function setScriptStatus(msg, ok) {
+  const el = document.getElementById('full-script-status');
+  if (!el) return;
+  el.innerText = msg || '';
+  el.className = 'text-[11px] font-bold ' + (ok === true ? 'text-emerald-600' : ok === false ? 'text-rose-500' : 'text-stone-500');
+}
+
+function parseEditableScriptText(text) {
+  const parts = (text || '').split(/^--- Scene \d+ ---$/m).map(p => p.trim()).filter(Boolean);
+  const out = [];
+  for (const part of parts) {
+    const cant = (part.match(/^Cantonese:(.*)$/m) || [])[1];
+    const eng = (part.match(/^English:(.*)$/m) || [])[1];
+    out.push({ cantonese: (cant || '').trim(), english: (eng || '').trim() });
+  }
+  return out;
+}
+
+function saveFullScript() {
+  const box = document.getElementById('full-script-text');
+  const parsed = parseEditableScriptText(box ? box.value : '');
+  const n = (currentProject.scenes || []).length;
+  if (parsed.length !== n) {
+    setScriptStatus(`⚠️ I found ${parsed.length} scene blocks but the story has ${n} scenes — please keep every "--- Scene N ---" line and try again.`, false);
+    return;
+  }
+  parsed.forEach((p, i) => {
+    if (currentProject.scenes[i]) {
+      currentProject.scenes[i].cantonese = p.cantonese;
+      currentProject.scenes[i].english = p.english;
+    }
+  });
+  if (currentProject.narration) currentProject.narration.outOfSync = true;
+  if (typeof markProjectDirty === 'function') markProjectDirty();
+  renderScriptStep();
+  setScriptStatus('✅ Script saved. Step 3 will read this version.', true);
+}
+
+function resetFullScript() {
+  const box = document.getElementById('full-script-text');
+  if (box) {
+    box.value = buildEditableScriptText();
+    box.dataset.sceneCount = String((currentProject.scenes || []).length);
+  }
+  setScriptStatus('↩ Back to the generated script.', true);
 }
 
 // Step 3: Picture Book Studio & Visual Scene Director
@@ -520,6 +547,15 @@ async function loadBackgroundsList() {
   }
 }
 
+function sceneTimingChip(idx) {
+  const secs = (currentProject.narration && currentProject.narration.sections) || [];
+  const m = secs.find(s => (s.scene_number || s.scene_idx) === idx + 1);
+  if (m && m.start != null && m.end != null) {
+    return `<span class="opacity-80 font-semibold">· ${m.start.toFixed(0)}s–${m.end.toFixed(0)}s</span>`;
+  }
+  return '';
+}
+
 function renderSceneTabs() {
   const tabsContainer = document.getElementById('stage-scene-tabs');
   tabsContainer.innerHTML = currentProject.scenes.map((s, idx) => {
@@ -530,7 +566,7 @@ function renderSceneTabs() {
           ? 'bg-amber-500 text-white shadow-sm' 
           : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
       }">
-        <span>Scene ${idx + 1}</span>
+        <span>Scene ${idx + 1}</span>${sceneTimingChip(idx)}
       </button>
     `;
   }).join('');
@@ -2141,7 +2177,7 @@ async function alignNarrationToScenes() {
       currentProject.narration.method = data.method;
       renderNarrationSections();
       setNarrationStatus(
-        `✅ ${data.sections.length} scenes aligned to the narration (${data.method === 'whisper' ? 'true word timings — karaoke will be exact' : 'estimated timings'}). Ready for Step 5 Render.`,
+        `✅ ${data.sections.length} scenes aligned to the narration (${data.method === 'whisper' ? 'true word timings — karaoke will be exact' : 'estimated timings'}). On to Step 4 Staging!`,
         true
       );
     } else {
@@ -2207,6 +2243,150 @@ async function toggleRecord(sceneIdx) {
   } catch (err) {
     console.error("Microphone error:", err);
     alert("Could not access microphone. Please check browser permissions.");
+  }
+}
+
+// ---- Step 3: Voice (simplified) ----
+// One saved voice, one button. Extra voices / training live in a future voice studio.
+const VOICE_STYLES = {
+  calm: 'calm and gentle dad speaking softly and slowly to his toddlers',
+  warm: 'warm and gentle dad speaking Cantonese to his toddlers, natural and playful',
+  excited: 'excited and energetic dad storyteller, animated and cheerful for young children'
+};
+let currentVoiceStyle = 'warm';
+let simpleVoiceId = null;
+let simpleVoiceName = '';
+
+function setVoiceStyle(key) {
+  currentVoiceStyle = VOICE_STYLES[key] ? key : 'warm';
+  document.querySelectorAll('.voice-style-chip').forEach(chip => {
+    const active = chip.dataset.style === currentVoiceStyle;
+    chip.className = 'voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition ' +
+      (active ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm' : 'bg-white text-stone-600 border-stone-200 hover:border-emerald-300');
+  });
+  if (currentProject.narration) currentProject.narration.style_key = currentVoiceStyle;
+}
+
+function renderVoiceStep() {
+  setVoiceStyle(currentProject.narration && currentProject.narration.style_key ? currentProject.narration.style_key : currentVoiceStyle);
+  refreshSimpleVoiceStatus();
+  updateVoiceScriptMeta();
+  updateNarrateButton();
+  renderNarrationSections();
+  const narr = currentProject.narration;
+  const player = document.getElementById('narration-audio-player');
+  if (player && narr && narr.audio_url) player.src = narr.audio_url;
+}
+
+async function refreshSimpleVoiceStatus() {
+  const label = document.getElementById('voice-step-voice-name');
+  try {
+    const res = await fetch('/api/audio/voice-clone/status');
+    const data = await res.json();
+    const voices = data.voices || [];
+    if (data.available && voices.length) {
+      const v = voices[voices.length - 1];
+      simpleVoiceId = v.voice_id;
+      simpleVoiceName = v.name || 'My Voice';
+      if (label) label.innerText = `✅ ${simpleVoiceName} — your saved voice will read the story.`;
+    } else if (data.available) {
+      simpleVoiceId = null;
+      if (label) label.innerText = '⚠️ No saved voice found yet — ask Muse to set up your voice, then come back here.';
+    } else {
+      simpleVoiceId = null;
+      if (label) label.innerText = '⚠️ Voice service not connected — add your Gemini key in Settings to enable narration.';
+    }
+  } catch (e) {
+    console.error(e);
+    simpleVoiceId = null;
+    if (label) label.innerText = '⚠️ Could not reach the voice service — try again in a moment.';
+  }
+  updateNarrateButton();
+}
+
+function updateVoiceScriptMeta() {
+  const meta = document.getElementById('voice-step-script-meta');
+  if (!meta) return;
+  const n = (currentProject.scenes || []).length;
+  if (!n) {
+    meta.innerText = 'No script yet — write it in Step 2 first.';
+    return;
+  }
+  const chars = (currentProject.scenes || []).reduce((a, s) => a + (s.cantonese || '').length, 0);
+  const estMin = (chars / 160).toFixed(1);
+  meta.innerText = `${n} scenes · ~${estMin} min of narration · Dad reads every scene`;
+}
+
+function narrationIsStale() {
+  const narr = currentProject.narration;
+  if (!narr || !narr.full_text) return false;
+  return narr.full_text !== buildFullNarrationText() || narr.style_key !== currentVoiceStyle;
+}
+
+function updateNarrateButton() {
+  const btn = document.getElementById('btn-voice-narrate');
+  if (!btn || btn.disabled) return;
+  const narr = currentProject.narration;
+  if (narr && narr.audio_url && !narrationIsStale()) {
+    btn.innerHTML = '<span>✅</span> Narration Ready — Listen Above';
+  } else if (narr && narr.audio_url) {
+    btn.innerHTML = '<span>🔁</span> Narrate Again (script or style changed)';
+  } else {
+    btn.innerHTML = '<span>🎙️</span> Narrate My Story';
+  }
+}
+
+async function narrateStory() {
+  const btn = document.getElementById('btn-voice-narrate');
+  if (!simpleVoiceId) {
+    setNarrationStatus('⚠️ No saved voice found yet — ask Muse to set up your voice first.', false);
+    return;
+  }
+  const fullText = buildFullNarrationText();
+  if (!fullText) {
+    setNarrationStatus('⚠️ There is no script to narrate yet — write the story in Step 2 first.', false);
+    return;
+  }
+  btn.innerHTML = '<span class="animate-spin">⏳</span> Dad is reading your story… (1 voice request)';
+  btn.disabled = true;
+  setNarrationStatus('🎙️ Sending the whole script in ONE voice request — this can take a minute for a 2–3 min story…');
+  try {
+    const res = await fetch('/api/narration/synthesize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        project_id: narrationProjectId(),
+        voice_id: simpleVoiceId,
+        full_text: fullText,
+        style: VOICE_STYLES[currentVoiceStyle]
+      })
+    });
+    const data = await res.json();
+    if (res.ok && data.status === 'success') {
+      currentProject.narration = Object.assign(currentProject.narration || {}, {
+        audio_path: data.path,
+        audio_url: data.audio_url,
+        duration: data.duration,
+        voice_id: data.voice_id,
+        voice_name: simpleVoiceName,
+        full_text: fullText,
+        style_key: currentVoiceStyle,
+        outOfSync: false
+      });
+      if (typeof markProjectDirty === 'function') markProjectDirty();
+      const player = document.getElementById('narration-audio-player');
+      if (player) { player.src = data.audio_url; player.play().catch(() => {}); }
+      setNarrationStatus(`✅ Narration ready: ${data.duration.toFixed(1)}s from a single request. Now marking where each scene starts…`, true);
+      await alignNarrationToScenes();
+    } else {
+      setNarrationStatus('❌ Narration failed: ' + (data.detail || 'server error'), false);
+    }
+  } catch (e) {
+    console.error(e);
+    setNarrationStatus('❌ Narration request failed — check server logs.', false);
+  } finally {
+    btn.disabled = false;
+    updateNarrateButton();
   }
 }
 
