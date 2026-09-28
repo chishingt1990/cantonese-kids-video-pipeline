@@ -1919,6 +1919,8 @@ function renderAudioStep() {
     `;
   }).join('');
   refreshVoiceCloneStatus();
+  refreshNarrationScriptBox();
+  renderNarrationSections();
 }
 
 function updateSceneSpeaker(idx, val) {
@@ -2026,6 +2028,130 @@ async function generateAllVoicesAI() {
   } finally {
     btn.innerHTML = '<span>✨</span> Generate All Scenes';
     btn.disabled = false;
+  }
+}
+
+// ---- Single-take narration (narration-first pipeline) ----
+function narrationProjectId() {
+  return currentProject.episode_id || currentProject.id || 'project';
+}
+
+function buildFullNarrationText() {
+  return (currentProject.scenes || [])
+    .map(s => (s.cantonese || '').trim())
+    .filter(Boolean)
+    .join('\n\n');
+}
+
+function refreshNarrationScriptBox() {
+  const box = document.getElementById('narration-script-text');
+  const meta = document.getElementById('narration-script-meta');
+  if (!box) return;
+  // Don't clobber while the user is editing after a generation
+  if (document.activeElement !== box) box.value = buildFullNarrationText();
+  if (meta) {
+    const chars = box.value.replace(/\s/g, '').length;
+    const estMin = (chars / 300).toFixed(1);
+    meta.innerText = `${chars} chars · ~${estMin} min of narration`;
+  }
+}
+
+function setNarrationStatus(msg, ok) {
+  const el = document.getElementById('narration-status');
+  if (!el) return;
+  el.innerText = msg;
+  el.className = 'text-[11px] font-bold ' + (ok === true ? 'text-emerald-600' : ok === false ? 'text-rose-500' : 'text-stone-500');
+}
+
+function renderNarrationSections() {
+  const wrap = document.getElementById('narration-sections');
+  if (!wrap) return;
+  const narr = currentProject.narration;
+  if (!narr || !narr.sections || !narr.sections.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = narr.sections.map(s =>
+    `<span class="px-2 py-1 bg-emerald-50 border border-emerald-200 rounded-lg text-[10px] font-bold text-emerald-700">Scene ${s.scene_number}: ${s.start.toFixed(1)}s → ${s.end.toFixed(1)}s</span>`
+  ).join('') + (narr.method ? `<span class="px-2 py-1 bg-stone-100 rounded-lg text-[10px] font-bold text-stone-500">aligned via ${narr.method}</span>` : '');
+}
+
+async function generateFullNarration() {
+  const btn = document.getElementById('btn-narration-generate');
+  const voiceId = parentVoiceState.selectedVoiceId;
+  if (!parentVoiceState.available || !voiceId) {
+    setNarrationStatus('⚠️ Pick a cloned parent voice above first (or set your Gemini key in Settings).', false);
+    return;
+  }
+  const fullText = (document.getElementById('narration-script-text').value || '').trim() || buildFullNarrationText();
+  if (!fullText) {
+    setNarrationStatus('⚠️ There is no script text to narrate yet — write the script in Step 2 first.', false);
+    return;
+  }
+  btn.innerHTML = '<span class="animate-spin">⏳</span> Narrating full script… (1 request)';
+  btn.disabled = true;
+  setNarrationStatus('🎙️ Sending the whole script in ONE voice request — this can take a minute for a 2–3 min narration…');
+  try {
+    const res = await fetch('/api/narration/synthesize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_id: narrationProjectId(), voice_id: voiceId, full_text: fullText })
+    });
+    const data = await res.json();
+    if (res.ok && data.status === 'success') {
+      currentProject.narration = Object.assign(currentProject.narration || {}, {
+        audio_path: data.path,
+        duration: data.duration,
+        voice_id: data.voice_id,
+        full_text: fullText
+      });
+      const player = document.getElementById('narration-audio-player');
+      if (player) { player.src = data.audio_url; player.play().catch(() => {}); }
+      setNarrationStatus(`✅ Narration ready: ${data.duration.toFixed(1)}s from a single request. Now aligning scenes…`, true);
+      await alignNarrationToScenes();
+    } else {
+      setNarrationStatus('❌ Narration failed: ' + (data.detail || 'server error'), false);
+    }
+  } catch (e) {
+    console.error(e);
+    setNarrationStatus('❌ Narration request failed — check server logs.', false);
+  } finally {
+    btn.innerHTML = '<span>🎙️</span> Generate Full Narration (1 request)';
+    btn.disabled = false;
+  }
+}
+
+async function alignNarrationToScenes() {
+  const btn = document.getElementById('btn-narration-align');
+  const narr = currentProject.narration;
+  if (!narr || !narr.audio_path) {
+    setNarrationStatus('⚠️ Generate the narration first, then align.', false);
+    return;
+  }
+  if (btn) { btn.innerHTML = '<span class="animate-spin">⏳</span> Aligning…'; btn.disabled = true; }
+  setNarrationStatus('📍 Listening back to the narration to stamp where each scene starts…');
+  try {
+    const sections = (currentProject.scenes || []).map(s => ({ scene_number: s.scene_number, cantonese: s.cantonese || '' }));
+    const res = await fetch('/api/narration/align', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_id: narrationProjectId(), sections })
+    });
+    const data = await res.json();
+    if (res.ok && data.status === 'success') {
+      currentProject.narration.sections = data.sections;
+      currentProject.narration.words = data.words;
+      currentProject.narration.method = data.method;
+      renderNarrationSections();
+      setNarrationStatus(
+        `✅ ${data.sections.length} scenes aligned to the narration (${data.method === 'whisper' ? 'true word timings — karaoke will be exact' : 'estimated timings'}). Ready for Step 5 Render.`,
+        true
+      );
+    } else {
+      setNarrationStatus('❌ Alignment failed: ' + (data.detail || 'server error'), false);
+    }
+  } catch (e) {
+    console.error(e);
+    setNarrationStatus('❌ Alignment request failed — check server logs.', false);
+  } finally {
+    if (btn) { btn.innerHTML = '<span>📍</span> Auto-Align Scenes'; btn.disabled = false; }
   }
 }
 

@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube
+from app.routers import settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube, narration
 
 app = FastAPI(title="Kids Video Studio", version="1.0.0")
 
@@ -25,6 +25,7 @@ app.include_router(render.router)
 app.include_router(scene_director.router)
 app.include_router(projects.router)
 app.include_router(youtube.router)
+app.include_router(narration.router)
 
 static_path = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=static_path), name="static")

@@ -466,6 +466,42 @@
         </div>
       </div>
 
+      <!-- SINGLE-TAKE NARRATION (quota saver) -->
+      <div class="bg-white rounded-3xl p-5 border border-emerald-200 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="space-y-1 max-w-xl">
+            <h3 class="font-extrabold text-stone-800 text-sm flex items-center gap-2">
+              <span>🎙️</span> Single-Take Narration <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] rounded-full">saves voice quota</span>
+            </h3>
+            <p class="text-[11px] text-stone-500">
+              Reads the <strong>entire script in one go</strong> using your cloned parent voice —
+              <strong>1 voice request</strong> for the whole video instead of one per scene.
+              Afterwards the app listens back and marks where each scene starts, so pictures land on the right words.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-narration-generate" onclick="generateFullNarration()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+              <span>🎙️</span> Generate Full Narration (1 request)
+            </button>
+            <button id="btn-narration-align" onclick="alignNarrationToScenes()" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+              <span>📍</span> Auto-Align Scenes
+            </button>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">Full script that will be narrated</span>
+            <span id="narration-script-meta" class="text-[11px] text-stone-400"></span>
+          </div>
+          <textarea id="narration-script-text" rows="6" class="w-full text-sm tc-font text-stone-800 bg-emerald-50/50 border border-emerald-100 rounded-2xl p-3 focus:outline-none focus:ring-2 focus:ring-emerald-300" placeholder="Your scenes' Cantonese lines will appear here…"></textarea>
+        </div>
+        <p id="narration-status" class="text-[11px] text-stone-500 font-bold"></p>
+        <div class="flex flex-wrap items-center gap-3">
+          <audio id="narration-audio-player" controls class="h-8 max-w-[280px]"></audio>
+          <div id="narration-sections" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+
       <!-- 1-CLICK BULK GENERATION BANNER -->
       <div class="bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 rounded-3xl p-6 text-white shadow-md flex flex-wrap items-center justify-between gap-4">
         <div class="space-y-1">
