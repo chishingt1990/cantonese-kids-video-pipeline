@@ -19,8 +19,8 @@ def call_gemini(prompt: str, system_instruction: str = "", model: str = "") -> s
     models_to_try = [primary_model] + [m for m in fallback_models if m != primary_model]
     
     from google import genai
-    # 30-second timeout prevents the request from hanging the application indefinitely
-    client = genai.Client(api_key=api_key, http_options={"timeout": 30.0})
+    # Long timeout: an 18-22 scene JSON script can take over a minute to stream back
+    client = genai.Client(api_key=api_key, http_options={"timeout": 120.0})
     
     last_error = None
     for try_model in models_to_try:
@@ -486,7 +486,7 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
     # into Dad's lines, so the offline script still matches what the parent picked.
     beats = [
         ("Warm Morning Greeting",
-         f"早晨呀兩個BB！今日爸爸同你哋一齊玩：{title_cn}！",
+         f"早晨呀兩個寶寶！今日爸爸同你哋一齊玩：{title_cn}！",
          f"Good morning my babies! Today Dad explores {title_en} with you!", v1,
          [("dad", "waving", "left"), ("levi", "waving", "right")]),
         ("What Is It, Daddy?",
@@ -494,11 +494,11 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
          f"Dad will show you what {title_en} is all about! Let's look together!", v1,
          [("dad", "kneeling", "left"), ("luca", "default", "right")]),
         ("Levi Points It Out",
-         f"Levi 哥哥指住話：爸爸，呢個係{v1}呀！",
+         f"哥哥指住話：爸爸，呢個係{v1}呀！",
          f"Big brother Levi points and says: Dad, this is {v1}!", v1,
          [("levi", "pointing", "left"), ("dad", "default", "right")]),
         ("Luca's Turn to Try",
-         f"Luca 細佬都試下啦，Daddy 幫你！好叻仔！",
+         f"細佬都試下啦，爸爸幫你！好叻仔！",
          f"Little Luca, you try too — Daddy helps you! So clever!", v1,
          [("dad", "kneeling", "left"), ("luca", "clapping", "right")]),
         ("Touch and Feel",
@@ -522,7 +522,7 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
          f"Snack time! Dad asks: which {v1} do you like best?", v1,
          [("dad", "sitting", "left"), ("levi", "eating", "right")]),
         ("A Tricky Bit",
-         f"哎呀，{title_cn}有啲難喎！唔緊要，慢慢嚟，Daddy 同你一齊！",
+         f"哎呀，{title_cn}有啲難喎！唔緊要，慢慢嚟，爸爸同你一齊！",
          f"Oops, {title_en} is a bit tricky! No worries — take it slow, Daddy is right here!", v2,
          [("dad", "kneeling", "left"), ("luca", "default", "right")]),
         ("Daddy's Comfort Hug",
@@ -538,7 +538,7 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
          f"We did it! Clever boys! Clap clap! We know {title_en} now!", v3,
          [("levi", "clapping", "left"), ("luca", "clapping", "right")]),
         ("Brother High-Five",
-         f"哥哥同細佬 high five！一齊學{title_cn}真係最開心！",
+         f"哥哥同細佬擊掌！一齊學{title_cn}真係最開心！",
          f"Big brother and little brother high five! Learning {title_en} together is the best!", v1,
          [("levi", "arms_out_hug", "left"), ("luca", "waving", "right")]),
         ("Show and Tell",
@@ -554,7 +554,7 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
          f"After playing we tidy up. Thank you, {title_en}, for playing with us!", "多謝",
          [("dad", "kneeling", "left"), ("luca", "holding_toy", "right")]),
         ("Goodbye Wave",
-         f"今日我哋學到：{lesson}揮手講拜拜，下次再玩{title_cn}！",
+         f"今日我哋學咗好多嘢，真係好開心！揮手講拜拜，下次再玩{title_cn}！",
          f"Today we learned: {lesson} Wave goodbye — let's play {title_en} again!", "拜拜",
          [("dad", "waving", "left"), ("levi", "waving", "right")]),
     ]
@@ -617,6 +617,11 @@ CRITICAL MANDATORY RULES:
    - Spread the target vocabulary across the episode; repeat each key word in at least 2 different scenes.
 3. DAD IS THE NARRATOR: The speaker of EVERY scene is "Dad" (爸爸). Dad is on screen talking to Levi and Luca in every scene.
    - Write in Dad's real voice: warm Chinglish parentese, e.g. "Levi, come here, Daddy 幫你！". Cantonese lines say 爸爸, never 媽媽.
+4. CLEAN LANGUAGE SPLIT — this is critical, the parent explicitly asked for it:
+   - The "cantonese" field must contain ONLY Traditional Chinese characters and Chinese punctuation (，。！？；：、…—). ZERO Latin letters, ZERO English words, ZERO Arabic numerals.
+   - No English names in Cantonese lines: write 哥哥 for Levi and 細佬 for Luca. No "Daddy" (use 爸爸), no "BB" (use 寶寶), no "high five" (use 擊掌), no English interjections.
+   - The "english" field carries the full English translation (names Levi/Luca welcome there).
+   - Titles may keep topic letters (e.g. "ABC字母歌") since the letters ARE the lesson.
 4. Presets for background: living_room, nursery, kitchen, playroom, beach, park, mountains, dining, bathroom, reading_nook, playground, farm_field, duck_pond, backyard_garden.
 5. Available character poses (use ONLY these exact pose names):
    - levi: default, waving, clapping, cheering, pointing, running, sleeping, eating, stretching, arms_out_hug, playing_blocks, playing_car, holding_book, thinking, sad
@@ -649,6 +654,7 @@ Return ONLY valid JSON matching this schema:
   ]
 }}
 """
+    fallback_reason = ""
     try:
         raw = generate_ai_text(user_prompt, system_prompt)
         cleaned = raw.strip()
@@ -667,7 +673,8 @@ Return ONLY valid JSON matching this schema:
             return parsed
     except Exception as e:
         print(f"AI Script Generation notice ({e}), synthesizing rich grounded 18-scene script...")
+        fallback_reason = str(e)[:200]
 
     fb = _generate_dynamic_fallback_script(idea, characters)
-    fb["meta"] = {"offline": True}
+    fb["meta"] = {"offline": True, "reason": fallback_reason}
     return fb

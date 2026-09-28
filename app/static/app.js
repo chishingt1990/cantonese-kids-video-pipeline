@@ -416,7 +416,26 @@ function renderScriptStep() {
   }
 
   const note = document.getElementById('script-offline-note');
-  if (note) note.classList.toggle('hidden', !(currentProject.scriptMeta && currentProject.scriptMeta.offline));
+  const scriptMetaInfo = currentProject.scriptMeta || {};
+  if (note) {
+    if (scriptMetaInfo.offline) {
+      const reason = String(scriptMetaInfo.reason || '').toLowerCase();
+      let msg;
+      if (reason.includes('api key') || reason.includes('not configured')) {
+        msg = "⚠️ Your Gemini key isn't set up, so this is a built-in draft script — add your key in Settings, then generate the story again in Step 1.";
+      } else if (reason.includes('timeout') || reason.includes('timed out')) {
+        msg = "⚠️ The story helper took too long to answer, so this is a built-in draft script — check your internet connection and generate the story again in Step 1.";
+      } else if (!reason) {
+        msg = "⚠️ The story helper's answer was too short, so this is a built-in draft script — feel free to edit it, or generate the story again in Step 1.";
+      } else {
+        msg = "⚠️ The story helper was unreachable, so this is a draft script — feel free to edit it, or check your internet connection and generate the story again in Step 1.";
+      }
+      note.textContent = msg;
+      note.classList.remove('hidden');
+    } else {
+      note.classList.add('hidden');
+    }
+  }
 
   const box = document.getElementById('full-script-text');
   const sceneCount = String((currentProject.scenes || []).length);
