@@ -151,6 +151,12 @@ let currentProject = {
 
 // Wizard Step Navigation (fixes active sidebar highlight)
 function setStep(step) {
+  // Auto-save script edits when leaving Step 2 so nothing is silently lost.
+  // If the save fails (e.g. a deleted "--- Scene N ---" line), stay on Step 2
+  // and show the error so the parent can fix it.
+  if (currentStep === 2 && step !== 2) {
+    if (!saveFullScript()) return;
+  }
   currentStep = step;
   
   // Toggle step containers
@@ -480,7 +486,7 @@ function saveFullScript() {
   const n = (currentProject.scenes || []).length;
   if (parsed.length !== n) {
     setScriptStatus(`⚠️ I found ${parsed.length} scene blocks but the story has ${n} scenes — please keep every "--- Scene N ---" line and try again.`, false);
-    return;
+    return false;
   }
   parsed.forEach((p, i) => {
     if (currentProject.scenes[i]) {
@@ -492,6 +498,7 @@ function saveFullScript() {
   if (typeof markProjectDirty === 'function') markProjectDirty();
   renderScriptStep();
   setScriptStatus('✅ Script saved. Step 3 will read this version.', true);
+  return true;
 }
 
 function resetFullScript() {
@@ -1918,7 +1925,7 @@ async function cloneParentVoice() {
     }
   } catch (e) {
     console.error(e);
-    statusEl.innerText = '❌ Cloning request failed — please check server logs.';
+    statusEl.innerText = '❌ The voice request didn\'t go through — check your internet connection and try again.';
     statusEl.className = 'text-[11px] text-rose-500 font-bold';
   } finally {
     btn.innerHTML = '<span>🧬</span> Train New Voice Model';
@@ -2079,7 +2086,7 @@ async function generateAllVoicesAI() {
     }
   } catch (e) {
     console.error(e);
-    alert("Voice generation failed. Please check server logs.");
+    alert("Dad's voice couldn't be generated — check your internet connection and try again.");
   } finally {
     btn.innerHTML = '<span>✨</span> Generate All Scenes';
     btn.disabled = false;
@@ -2116,6 +2123,39 @@ function setNarrationStatus(msg, ok) {
   if (!el) return;
   el.innerText = msg;
   el.className = 'text-[11px] font-bold ' + (ok === true ? 'text-emerald-600' : ok === false ? 'text-rose-500' : 'text-stone-500');
+}
+
+// ---- Plain-language guards & errors (parent-friendly) ----
+function narrationReady() {
+  const n = currentProject.narration;
+  return !!(n && (n.audio_path || n.audio_url));
+}
+
+function guardLeaveVoiceStep() {
+  if (!narrationReady()) {
+    const ok = confirm("Your video has no voice yet — the finished video would be silent.\n\nTap OK to continue without voice, or Cancel to stay here and tap “Narrate My Story”.");
+    if (!ok) return;
+  }
+  setStep(4);
+}
+
+function guardStartRender() {
+  if (!narrationReady()) {
+    const ok = confirm("⚠️ Your video has no voice yet — it will render silent.\n\nTap OK to render anyway, or Cancel to go back to Step 3 and tap “Narrate My Story”.");
+    if (!ok) { setStep(3); return; }
+  }
+  startRender();
+}
+
+function friendlyVoiceError(detail) {
+  const d = String(detail || '');
+  if (/timeout|timed out/i.test(d)) {
+    return "❌ The voice service took too long to answer — check your internet connection and try again. If it keeps happening, try a shorter script.";
+  }
+  if (/api key|not configured|unauthorized|401|403|invalid key/i.test(d)) {
+    return "❌ Your Gemini key is missing or not working — add it under “🔑 Your Gemini Key” in the sidebar, then try again.";
+  }
+  return "❌ Something went wrong making Dad's voice — try again. If it keeps failing, tell Muse exactly what you saw here.";
 }
 
 function renderNarrationSections() {
@@ -2162,11 +2202,11 @@ async function generateFullNarration() {
       setNarrationStatus(`✅ Narration ready: ${data.duration.toFixed(1)}s from a single request. Now aligning scenes…`, true);
       await alignNarrationToScenes();
     } else {
-      setNarrationStatus('❌ Narration failed: ' + (data.detail || 'server error'), false);
+      setNarrationStatus(friendlyVoiceError(data.detail), false);
     }
   } catch (e) {
     console.error(e);
-    setNarrationStatus('❌ Narration request failed — check server logs.', false);
+    setNarrationStatus(friendlyVoiceError(''), false);
   } finally {
     btn.innerHTML = '<span>🎙️</span> Generate Full Narration (1 request)';
     btn.disabled = false;
@@ -2200,11 +2240,11 @@ async function alignNarrationToScenes() {
         true
       );
     } else {
-      setNarrationStatus('❌ Alignment failed: ' + (data.detail || 'server error'), false);
+      setNarrationStatus("❌ Couldn't line up the scenes with the voice — tap Auto-Align again.", false);
     }
   } catch (e) {
     console.error(e);
-    setNarrationStatus('❌ Alignment request failed — check server logs.', false);
+    setNarrationStatus("❌ Couldn't reach the studio to line up the scenes — check your internet and try again.", false);
   } finally {
     if (btn) { btn.innerHTML = '<span>📍</span> Auto-Align Scenes'; btn.disabled = false; }
   }
@@ -2304,7 +2344,8 @@ async function refreshSimpleVoiceStatus() {
     const data = await res.json();
     const voices = data.voices || [];
     if (data.available && voices.length) {
-      const v = voices[voices.length - 1];
+      // Prefer the working Dad voice; never let a diagnostic voice replace it.
+      const v = voices.find(x => x.voice_id === 'voice_6k5rt0208uou') || voices[voices.length - 1];
       simpleVoiceId = v.voice_id;
       simpleVoiceName = v.name || 'My Voice';
       if (label) label.innerText = `✅ ${simpleVoiceName} — your saved voice will read the story.`;
@@ -2398,11 +2439,11 @@ async function narrateStory() {
       setNarrationStatus(`✅ Narration ready: ${data.duration.toFixed(1)}s from a single request. Now marking where each scene starts…`, true);
       await alignNarrationToScenes();
     } else {
-      setNarrationStatus('❌ Narration failed: ' + (data.detail || 'server error'), false);
+      setNarrationStatus(friendlyVoiceError(data.detail), false);
     }
   } catch (e) {
     console.error(e);
-    setNarrationStatus('❌ Narration request failed — check server logs.', false);
+    setNarrationStatus(friendlyVoiceError(''), false);
   } finally {
     btn.disabled = false;
     updateNarrateButton();
@@ -2561,7 +2602,8 @@ async function saveSettings() {
   });
 
   toggleSettingsModal();
-  alert("Settings & API keys saved locally on your computer!");
+  updateStoryHelperStatus();
+  alert("Your Gemini key is saved locally on your computer!");
 }
 
 async function quickSwitchModel(modelName) {
@@ -2574,6 +2616,44 @@ async function quickSwitchModel(modelName) {
   } catch (e) {
     console.error("Failed to switch model:", e);
   }
+}
+
+// ---- Story helper status (plain-language replacement for the model picker) ----
+async function updateStoryHelperStatus() {
+  const label = document.getElementById('story-helper-status');
+  const dot = document.getElementById('story-helper-dot');
+  const fix = document.getElementById('story-helper-fix');
+  if (!label) return;
+  try {
+    const res = await fetch('/api/settings/');
+    const data = await res.json();
+    const model = String(data.active_model || 'gemini-3.6-flash').toLowerCase();
+    const isGemini = model.includes('gemini');
+    const hasKey = !!(data.gemini_api_key && data.gemini_api_key.length > 4);
+    const setDot = (cls) => { if (dot) dot.className = 'w-2 h-2 rounded-full ' + cls; };
+    if (isGemini && hasKey) {
+      label.innerText = '✅ Connected — ready to write stories';
+      setDot('bg-emerald-500 animate-pulse');
+      if (fix) fix.classList.add('hidden');
+    } else if (!isGemini) {
+      label.innerText = '⚠️ Set to an unavailable helper';
+      setDot('bg-amber-500');
+      if (fix) fix.classList.remove('hidden');
+    } else {
+      label.innerText = '⚠️ Needs your Gemini key — tap “🔑 Your Gemini Key” in the sidebar';
+      setDot('bg-amber-500');
+      if (fix) fix.classList.add('hidden');
+    }
+  } catch (e) {
+    label.innerText = "Couldn't reach the studio — is it running?";
+  }
+}
+
+async function resetStoryHelper() {
+  await quickSwitchModel('gemini-3.6-flash');
+  const picker = document.getElementById('main-model-picker');
+  if (picker) picker.value = 'gemini-3.6-flash';
+  updateStoryHelperStatus();
 }
 
 // ========================================================
@@ -3257,6 +3337,7 @@ function pollYouTubeUploadStatus(jobId) {
 // Initial render with URL step and active project support
 window.addEventListener('DOMContentLoaded', async () => {
   await initProjects();
+  updateStoryHelperStatus();
 
   const urlParams = new URLSearchParams(window.location.search);
   const stepParam = parseInt(urlParams.get('step'));
