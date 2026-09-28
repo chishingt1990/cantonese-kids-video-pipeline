@@ -308,7 +308,122 @@ def get_grounded_topic_ideas(topic: str, age_group: str) -> list:
             }
         ]
 
-    # 4. Default dynamic synthesis strictly matching user's custom topic
+    # 4. Vehicles / Cars (the twins' current obsession)
+    if any(k in t for k in ["car", "cars", "vehicle", "truck", "fire truck", "ambulance",
+                            "digger", "excavator", "police car", "bus", "train",
+                            "車", "汽車", "消防車", "救護車", "警車", "挖土機", "巴士"]):
+        return [
+            {
+                "id": "idea_car_1",
+                "title_cantonese": "消防車出動！紅色英雄嚟啦",
+                "title_english": "Fire Truck to the Rescue! The Red Hero Arrives",
+                "description": "Levi and Luca hear a wee-oo wee-oo! Dad shows them the big red fire truck — its long ladder, loud siren, and how it sprays water to help people.",
+                "target_vocab": [
+                    {"chinese": "消防車", "english": "Fire truck"},
+                    {"chinese": "紅色", "english": "Red"},
+                    {"chinese": "救火", "english": "Put out fires"}
+                ],
+                "moral_lesson": "Helpers like firefighters keep everyone safe — we can say thank you to helpers.",
+                "scenes_preview": [
+                    "A wee-oo wee-oo siren sounds in the distance",
+                    "The big red fire truck rolls in with its tall ladder",
+                    "Dad and the boys count the truck's six big wheels",
+                    "Whoosh! Water sprays from the hose to put out the pretend fire"
+                ]
+            },
+            {
+                "id": "idea_car_2",
+                "title_cantonese": "挖土機大力士！黃色巨人開工",
+                "title_english": "Excavator Power! The Yellow Giant at Work",
+                "description": "A giant yellow excavator swings its big arm — dig, scoop, dump! Levi and Luca learn what each part does and copy the digging motions.",
+                "target_vocab": [
+                    {"chinese": "挖土機", "english": "Excavator"},
+                    {"chinese": "黃色", "english": "Yellow"},
+                    {"chinese": "挖泥", "english": "Dig dirt"}
+                ],
+                "moral_lesson": "Big machines help builders build our homes and roads.",
+                "scenes_preview": [
+                    "The yellow excavator rumbles onto the building site",
+                    "Its long arm scoops up a mountain of dirt",
+                    "Dad shows the tracks that help it roll over bumps",
+                    "Levi and Luca pretend their arms are digger arms — dig dig dig!"
+                ]
+            },
+            {
+                "id": "idea_car_3",
+                "title_cantonese": "救護車快啲嚟！白色天使",
+                "title_english": "Hurry, Ambulance! The White Angel",
+                "description": "The white ambulance with its red stripe rushes past — wee-oo! Dad explains how it hurries sick people to the hospital, and the boys practice the siren sound.",
+                "target_vocab": [
+                    {"chinese": "救護車", "english": "Ambulance"},
+                    {"chinese": "白色", "english": "White"},
+                    {"chinese": "醫院", "english": "Hospital"}
+                ],
+                "moral_lesson": "When someone is hurt, helpers rush to take care of them.",
+                "scenes_preview": [
+                    "Wee-oo wee-oo! The white ambulance speeds down the road",
+                    "Dad points out the red stripe and flashing lights",
+                    "Inside: the stretcher bed that carries patients safely",
+                    "The boys wave as the ambulance hurries to the hospital"
+                ]
+            },
+            {
+                "id": "idea_car_4",
+                "title_cantonese": "警車巡邏！藍色守護者",
+                "title_english": "Police Car on Patrol! The Blue Guardian",
+                "description": "The blue-and-white police car cruises the neighborhood keeping streets safe. Levi and Luca learn its flashing lights, learn to stop and look, and say hello to the officer.",
+                "target_vocab": [
+                    {"chinese": "警車", "english": "Police car"},
+                    {"chinese": "藍色", "english": "Blue"},
+                    {"chinese": "保護", "english": "Protect"}
+                ],
+                "moral_lesson": "Police officers protect our neighborhood and help lost people find their way.",
+                "scenes_preview": [
+                    "The police car rolls slowly down the street, lights flashing",
+                    "Dad teaches: red light stop, green light go!",
+                    "The friendly officer waves to Levi and Luca",
+                    "Everyone practices looking left and right before crossing"
+                ]
+            },
+            {
+                "id": "idea_car_5",
+                "title_cantonese": "垃圾車收垃圾！綠色大力士",
+                "title_english": "Garbage Truck Pickup! The Green Strongman",
+                "description": "The big green garbage truck lifts the bins high — up, tip, rumble! The boys learn what it collects, its colors, and why keeping streets clean matters.",
+                "target_vocab": [
+                    {"chinese": "垃圾車", "english": "Garbage truck"},
+                    {"chinese": "綠色", "english": "Green"},
+                    {"chinese": "倒垃圾", "english": "Empty the bins"}
+                ],
+                "moral_lesson": "Keeping our streets clean is teamwork — everyone can tidy up.",
+                "scenes_preview": [
+                    "Rumble rumble! The green garbage truck arrives in the morning",
+                    "Its big arm grabs the bin and lifts it way up high",
+                    "Crash! The trash tumbles into the truck",
+                    "Levi and Luca help Dad sort recycling at home"
+                ]
+            },
+            {
+                "id": "idea_car_6",
+                "title_cantonese": "賽車快快快！彩色跑車比賽",
+                "title_english": "Race Cars Go Vroom! The Colorful Car Race",
+                "description": "Vroom vroom! Red, blue, and yellow race cars zoom around the track — fast and slow, big and small. The boys rev their engines and cheer for their favorite color.",
+                "target_vocab": [
+                    {"chinese": "賽車", "english": "Race car"},
+                    {"chinese": "快", "english": "Fast"},
+                    {"chinese": "慢", "english": "Slow"}
+                ],
+                "moral_lesson": "Racing is fun, but the best part is playing together — win or lose.",
+                "scenes_preview": [
+                    "Three colorful race cars line up at the starting line",
+                    "Ready, set, GO! Vroom vroom vroom!",
+                    "The red car zooms fast, the blue car putt-putts slow",
+                    "Everyone gets a trophy sticker for finishing the race"
+                ]
+            }
+        ]
+
+    # 5. Default dynamic synthesis strictly matching user's custom topic
     clean_topic = topic.strip() if topic else "快樂成長"
     return [
         {
