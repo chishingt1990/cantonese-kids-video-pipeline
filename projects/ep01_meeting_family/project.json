@@ -1,31 +1,27 @@
 {
   "id": "ep01_meeting_family",
   "episode_id": "ep01_meeting_family",
-  "title_cantonese": "見到屋企人",
-  "title_english": "Meeting the Family",
+  "title_cantonese": "好叻仔！我哋一齊Saying Polite Words 多謝 and 唔該",
+  "title_english": "Little Champions! Doing Saying Polite Words 多謝 and 唔該 Together",
   "target_age": "1-2 years",
-  "theme": "Family & Greetings",
-  "moral_lesson": "Family members give us love, warm hugs, and comfort every day.",
+  "theme": "Little Champions! Doing Saying Polite Words 多謝 and 唔該 Together",
+  "moral_lesson": "Patience and encouraging our siblings when learning something new.",
   "created_at": "2026-09-01T10:00:00Z",
-  "updated_at": "2026-09-20T12:00:00Z",
+  "updated_at": "2026-09-28T07:18:09.375222+00:00",
   "version": 1,
   "_autoDirected": true,
   "vocab_words": [
     {
-      "chinese": "屋企人",
-      "english": "Family"
+      "chinese": "好叻仔",
+      "english": "So smart / clever"
     },
     {
-      "chinese": "爸爸 / 媽媽",
-      "english": "Dad / Mom"
+      "chinese": "慢慢嚟",
+      "english": "Take it slow"
     },
     {
-      "chinese": "哥哥 / 細佬",
-      "english": "Big Brother / Little Brother"
-    },
-    {
-      "chinese": "狗狗",
-      "english": "Doggy"
+      "chinese": "成功啦",
+      "english": "We did it!"
     }
   ],
   "subtitle_options": {
@@ -36,18 +32,292 @@
   "scenes": [
     {
       "scene_number": 1,
-      "title": "Hello Sweet Babies!",
+      "title": "Introduction & Warm Greeting",
+      "background": "living_room",
+      "speaker": "Dad",
+      "characters": [
+        {
+          "name": "levi",
+          "pose": "cheering",
+          "scale": 1,
+          "x_percent": 34,
+          "y_percent": 88,
+          "flip": false,
+          "layer": 1
+        },
+        {
+          "name": "luca",
+          "pose": "cheering",
+          "scale": 1,
+          "x_percent": 66,
+          "y_percent": 88,
+          "flip": true,
+          "layer": 1
+        },
+        {
+          "name": "dad",
+          "pose": "clapping",
+          "scale": 1,
+          "x_percent": 18,
+          "y_percent": 86,
+          "flip": false,
+          "layer": 1
+        }
+      ],
+      "stickers": [
+        {
+          "id": "prop_sparkle_cluster",
+          "type": "icon",
+          "content": "sparkle_cluster",
+          "x_percent": 50,
+          "y_percent": 38,
+          "scale": 1.1,
+          "rotation_deg": 0,
+          "layer": 2
+        },
+        {
+          "id": "badge_well_done",
+          "type": "word",
+          "content": "好叻仔！",
+          "english": "Well Done!",
+          "color_theme": "emerald",
+          "x_percent": 50,
+          "y_percent": 22,
+          "scale": 1.05,
+          "rotation_deg": 0,
+          "layer": 2
+        }
+      ],
+      "cantonese": "早晨呀兩個BB！今日爸爸同你哋一齊睇下：好叻仔！我哋一齊Saying Polite Words 多謝 and 唔該！",
+      "english": "Good morning sweet babies! Today Dad will explore: Little Champions! Doing Saying Polite Words 多謝 and 唔該 Together with you!",
+      "vocab_highlight": "好叻仔",
+      "duration_sec": 7,
+      "audio_url": "/api/audio/clip/scene_01_voice.wav"
+    },
+    {
+      "scene_number": 2,
+      "title": "Discovering Something New",
+      "background": "living_room",
+      "speaker": "Dad",
+      "characters": [
+        {
+          "name": "levi",
+          "pose": "cheering",
+          "scale": 1,
+          "x_percent": 34,
+          "y_percent": 88,
+          "flip": false,
+          "layer": 1
+        },
+        {
+          "name": "luca",
+          "pose": "cheering",
+          "scale": 1,
+          "x_percent": 66,
+          "y_percent": 88,
+          "flip": true,
+          "layer": 1
+        },
+        {
+          "name": "dad",
+          "pose": "clapping",
+          "scale": 1,
+          "x_percent": 18,
+          "y_percent": 86,
+          "flip": false,
+          "layer": 1
+        }
+      ],
+      "stickers": [
+        {
+          "id": "prop_sparkle_cluster",
+          "type": "icon",
+          "content": "sparkle_cluster",
+          "x_percent": 50,
+          "y_percent": 38,
+          "scale": 1.1,
+          "rotation_deg": 0,
+          "layer": 2
+        },
+        {
+          "id": "badge_well_done",
+          "type": "word",
+          "content": "好叻仔！",
+          "english": "Well Done!",
+          "color_theme": "emerald",
+          "x_percent": 50,
+          "y_percent": 22,
+          "scale": 1.05,
+          "rotation_deg": 0,
+          "layer": 2
+        }
+      ],
+      "cantonese": "Levi 哥哥細心睇下，真係好特別喎！好叻仔呀！",
+      "english": "Levi brother looks closely, this is so special! It's 好叻仔!",
+      "vocab_highlight": "好叻仔",
+      "duration_sec": 8,
+      "audio_url": "/api/audio/clip/scene_02_voice.wav"
+    },
+    {
+      "scene_number": 3,
+      "title": "The Story Event & Gentle Emotions",
+      "background": "living_room",
+      "speaker": "Mom",
+      "characters": [
+        {
+          "name": "luca",
+          "pose": "crying",
+          "scale": 1,
+          "x_percent": 64,
+          "y_percent": 88,
+          "flip": true,
+          "layer": 1
+        },
+        {
+          "name": "mom",
+          "pose": "kneeling_hug",
+          "scale": 1,
+          "x_percent": 28,
+          "y_percent": 86,
+          "flip": false,
+          "layer": 1
+        }
+      ],
+      "stickers": [
+        {
+          "id": "prop_comfort_hearts",
+          "type": "icon",
+          "content": "comfort_hearts",
+          "x_percent": 50,
+          "y_percent": 38,
+          "scale": 1,
+          "rotation_deg": 0,
+          "layer": 2
+        },
+        {
+          "id": "badge_calm_down",
+          "type": "word",
+          "content": "深呼吸",
+          "english": "Deep Breath & Hug",
+          "color_theme": "sky",
+          "x_percent": 50,
+          "y_percent": 22,
+          "scale": 1.05,
+          "rotation_deg": 0,
+          "layer": 2
+        }
+      ],
+      "cantonese": "哎呀，唔緊要㗎！細佬唔好唔開心，媽媽喺度抱抱你。",
+      "english": "Oh, it's alright! Little brother don't feel sad, Mommy is right here to give you a warm hug.",
+      "vocab_highlight": "慢慢嚟",
+      "duration_sec": 8,
+      "audio_url": "/api/audio/clip/scene_03_voice.wav"
+    },
+    {
+      "scene_number": 4,
+      "title": "Kindness & Brotherly Comfort",
       "background": "living_room",
       "speaker": "Dad",
       "characters": [
         {
           "name": "dad",
-          "pose": "default",
-          "scale": 1.0,
-          "x_percent": 50,
-          "y_percent": 88,
+          "pose": "kneeling",
+          "scale": 1,
+          "x_percent": 26,
+          "y_percent": 86,
           "flip": false,
           "layer": 1
+        },
+        {
+          "name": "levi",
+          "pose": "arms_out_hug",
+          "scale": 1,
+          "x_percent": 54,
+          "y_percent": 88,
+          "flip": false,
+          "layer": 2
+        },
+        {
+          "name": "luca",
+          "pose": "arms_out_hug",
+          "scale": 1,
+          "x_percent": 76,
+          "y_percent": 88,
+          "flip": true,
+          "layer": 2
+        }
+      ],
+      "stickers": [
+        {
+          "id": "prop_comfort_hearts",
+          "type": "icon",
+          "content": "comfort_hearts",
+          "x_percent": 50,
+          "y_percent": 42,
+          "scale": 1,
+          "rotation_deg": 0,
+          "layer": 2
+        },
+        {
+          "id": "badge_big_hug",
+          "type": "word",
+          "content": "抱抱",
+          "english": "Big Warm Hug",
+          "color_theme": "pink",
+          "x_percent": 50,
+          "y_percent": 22,
+          "scale": 1.05,
+          "rotation_deg": 0,
+          "layer": 2
+        }
+      ],
+      "cantonese": "哥哥抱住細佬，拍拍背脊！我哋學識咗慢慢嚟，真係好乖呀！",
+      "english": "Big brother hugs little brother and pats his back! We learned 慢慢嚟, such sweet boys!",
+      "vocab_highlight": "慢慢嚟",
+      "duration_sec": 8,
+      "audio_url": "/api/audio/clip/scene_04_voice.wav"
+    },
+    {
+      "scene_number": 5,
+      "title": "Joyful Action & Puppy Play",
+      "background": "living_room",
+      "speaker": "Dad",
+      "characters": [
+        {
+          "name": "dad",
+          "pose": "kneeling",
+          "scale": 1,
+          "x_percent": 26,
+          "y_percent": 86,
+          "flip": false,
+          "layer": 1
+        },
+        {
+          "name": "levi",
+          "pose": "waving",
+          "scale": 1,
+          "x_percent": 54,
+          "y_percent": 88,
+          "flip": false,
+          "layer": 2
+        },
+        {
+          "name": "luca",
+          "pose": "waving",
+          "scale": 1,
+          "x_percent": 76,
+          "y_percent": 88,
+          "flip": true,
+          "layer": 2
+        },
+        {
+          "name": "dog",
+          "pose": "sitting_attentive",
+          "scale": 1,
+          "x_percent": 50,
+          "y_percent": 90,
+          "flip": false,
+          "layer": 3
         }
       ],
       "stickers": [
@@ -64,22 +334,22 @@
           "layer": 2
         }
       ],
-      "cantonese": "Hello 兩個BB！今日爸爸同你哋一齊見下屋企人啦！",
-      "english": "Hello sweet babies! Today Dad will introduce our whole family to you!",
-      "vocab_highlight": "屋企人",
+      "cantonese": "睇下！狗狗都跑過嚟一齊搖尾巴，笑瞇瞇好開心！",
+      "english": "Look! Doggy is bouncing over wagging his tail happily, beaming with joy!",
+      "vocab_highlight": "成功啦",
       "duration_sec": 7,
-      "audio_url": "/api/audio/clip/scene_01_voice.wav"
+      "audio_url": "/api/audio/clip/scene_05_voice.wav"
     },
     {
-      "scene_number": 2,
-      "title": "Gentle Morning Hugs",
+      "scene_number": 6,
+      "title": "Shared Celebration & Practicing Words",
       "background": "living_room",
       "speaker": "Mom",
       "characters": [
         {
           "name": "levi",
-          "pose": "arms_out_hug",
-          "scale": 1.0,
+          "pose": "cheering",
+          "scale": 1,
           "x_percent": 34,
           "y_percent": 88,
           "flip": false,
@@ -87,20 +357,103 @@
         },
         {
           "name": "luca",
-          "pose": "waving",
-          "scale": 1.0,
+          "pose": "cheering",
+          "scale": 1,
           "x_percent": 66,
           "y_percent": 88,
+          "flip": true,
+          "layer": 1
+        },
+        {
+          "name": "mom",
+          "pose": "clapping",
+          "scale": 1,
+          "x_percent": 84,
+          "y_percent": 86,
           "flip": true,
           "layer": 1
         }
       ],
       "stickers": [
         {
+          "id": "prop_sparkle_cluster",
+          "type": "icon",
+          "content": "sparkle_cluster",
+          "x_percent": 50,
+          "y_percent": 38,
+          "scale": 1.1,
+          "rotation_deg": 0,
+          "layer": 2
+        },
+        {
+          "id": "badge_well_done",
+          "type": "word",
+          "content": "好叻仔！",
+          "english": "Well Done!",
+          "color_theme": "emerald",
+          "x_percent": 50,
+          "y_percent": 22,
+          "scale": 1.05,
+          "rotation_deg": 0,
+          "layer": 2
+        }
+      ],
+      "cantonese": "大家都笑得好甜呀！我哋一齊講多次：成功啦！",
+      "english": "Everyone has sweet smiles! Let's say it together one more time: 成功啦!",
+      "vocab_highlight": "成功啦",
+      "duration_sec": 8,
+      "audio_url": "/api/audio/clip/scene_06_voice.wav"
+    },
+    {
+      "scene_number": 7,
+      "title": "Family Hug & Moral Recap",
+      "background": "living_room",
+      "speaker": "Dad",
+      "characters": [
+        {
+          "name": "dad",
+          "pose": "kneeling",
+          "scale": 1,
+          "x_percent": 26,
+          "y_percent": 86,
+          "flip": false,
+          "layer": 1
+        },
+        {
+          "name": "levi",
+          "pose": "arms_out_hug",
+          "scale": 1,
+          "x_percent": 54,
+          "y_percent": 88,
+          "flip": false,
+          "layer": 2
+        },
+        {
+          "name": "luca",
+          "pose": "arms_out_hug",
+          "scale": 1,
+          "x_percent": 76,
+          "y_percent": 88,
+          "flip": true,
+          "layer": 2
+        }
+      ],
+      "stickers": [
+        {
+          "id": "prop_comfort_hearts",
+          "type": "icon",
+          "content": "comfort_hearts",
+          "x_percent": 50,
+          "y_percent": 42,
+          "scale": 1,
+          "rotation_deg": 0,
+          "layer": 2
+        },
+        {
           "id": "badge_big_hug",
           "type": "word",
           "content": "抱抱",
-          "english": "Big hug",
+          "english": "Big Warm Hug",
           "color_theme": "pink",
           "x_percent": 50,
           "y_percent": 22,
@@ -109,146 +462,19 @@
           "layer": 2
         }
       ],
-      "cantonese": "早晨呀 Levi 同 Luca！哥哥同細佬抱抱啦！",
-      "english": "Good morning Levi and Luca! Big brother and little brother give warm hugs!",
-      "vocab_highlight": "哥哥 / 細佬",
-      "duration_sec": 7,
-      "audio_url": "/api/audio/clip/scene_02_voice.wav"
-    },
-    {
-      "scene_number": 3,
-      "title": "Friendly Puppy Waves",
-      "background": "living_room",
-      "speaker": "Child",
-      "characters": [
-        {
-          "name": "dog",
-          "pose": "default",
-          "scale": 1.0,
-          "x_percent": 50,
-          "y_percent": 88,
-          "flip": false,
-          "layer": 1
-        }
-      ],
-      "stickers": [
-        {
-          "id": "badge_dog",
-          "type": "word",
-          "content": "狗狗",
-          "english": "Doggy",
-          "color_theme": "amber",
-          "x_percent": 50,
-          "y_percent": 22,
-          "scale": 1.05,
-          "rotation_deg": 0,
-          "layer": 2
-        }
-      ],
-      "cantonese": "汪汪！狗狗搖尾巴，好開心咁行埋嚟同大家打招呼！",
-      "english": "Woof woof! Doggy wags tail happily coming over to say hello to everyone!",
-      "vocab_highlight": "狗狗",
-      "duration_sec": 6,
-      "audio_url": "/api/audio/clip/scene_03_voice.wav"
-    },
-    {
-      "scene_number": 4,
-      "title": "Paternal Grandparents Smile",
-      "background": "living_room",
-      "speaker": "Dad",
-      "characters": [
-        {
-          "name": "grandparents_paternal",
-          "pose": "drinking_tea",
-          "scale": 1.0,
-          "x_percent": 50,
-          "y_percent": 88,
-          "flip": false,
-          "layer": 1
-        }
-      ],
-      "stickers": [
-        {
-          "id": "badge_grandparents",
-          "type": "word",
-          "content": "爺爺 嫲嫲",
-          "english": "Grandparents",
-          "color_theme": "rose",
-          "x_percent": 50,
-          "y_percent": 22,
-          "scale": 1.05,
-          "rotation_deg": 0,
-          "layer": 2
-        }
-      ],
-      "cantonese": "爺爺同嫲嫲飲緊熱茶，笑瞇瞇咁望住兩個乖孫！",
-      "english": "Grandpa and Grandma are sipping warm tea, smiling warmly at their sweet grandsons!",
-      "vocab_highlight": "屋企人",
+      "cantonese": "今日我哋學到：Patience and encouraging our siblings when learning something new.！揮手講拜拜，多謝大家！",
+      "english": "Today we learned: Patience and encouraging our siblings when learning something new.! Wave goodbye, thank you everyone!",
+      "vocab_highlight": "多謝",
       "duration_sec": 8,
-      "audio_url": "/api/audio/clip/scene_04_voice.wav"
-    },
-    {
-      "scene_number": 5,
-      "title": "Big Warm Family Hug",
-      "background": "living_room",
-      "speaker": "Mom",
-      "characters": [
-        {
-          "name": "levi",
-          "pose": "waving",
-          "scale": 1.0,
-          "x_percent": 22,
-          "y_percent": 88,
-          "flip": false,
-          "layer": 1
-        },
-        {
-          "name": "dad",
-          "pose": "kneeling",
-          "scale": 1.0,
-          "x_percent": 40,
-          "y_percent": 88,
-          "flip": false,
-          "layer": 1
-        },
-        {
-          "name": "mom",
-          "pose": "kneeling_hug",
-          "scale": 1.0,
-          "x_percent": 60,
-          "y_percent": 88,
-          "flip": true,
-          "layer": 1
-        },
-        {
-          "name": "luca",
-          "pose": "clapping",
-          "scale": 1.0,
-          "x_percent": 78,
-          "y_percent": 88,
-          "flip": true,
-          "layer": 1
-        }
-      ],
-      "stickers": [
-        {
-          "id": "badge_family_love",
-          "type": "word",
-          "content": "幸福一家",
-          "english": "Happy Family",
-          "color_theme": "gold",
-          "x_percent": 50,
-          "y_percent": 22,
-          "scale": 1.1,
-          "rotation_deg": 0,
-          "layer": 2
-        }
-      ],
-      "cantonese": "一家人齊齊整整、相親相愛，一齊講聲：我愛你！",
-      "english": "The whole family united in warmth and love, saying together: We love you!",
-      "vocab_highlight": "屋企人",
-      "duration_sec": 8,
-      "audio_url": "/api/audio/clip/scene_05_voice.wav"
+      "audio_url": "/api/audio/clip/scene_07_voice.wav"
     }
-  ]
+  ],
+  "description": "An engaging musical episode teaching practical Cantonese parentese words about Saying Polite Words 多謝 and 唔該.",
+  "caption_options": {
+    "enabled": true
+  },
+  "rendered_video": {
+    "filename": "episode_06fec529.mp4",
+    "rendered_at": "2026-09-28T07:18:09.368Z"
+  }
 }

@@ -26,6 +26,7 @@ config/client_secret.json
 config/google_token.json
 config/api_keys.json
 config/studio_settings.json
+config/cloned_voices.json
 temp_*
 test_*
 assets/sprites/test_*

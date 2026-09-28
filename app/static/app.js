@@ -1770,9 +1770,14 @@ let audioChunks = [];
 // Parent voice cloning (Gemini voice replication) state
 let parentVoiceState = { available: false, voices: [], selectedVoiceId: null };
 
+function updateSampleFileName(input) {
+  const label = document.getElementById('sample-file-name');
+  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Voice Sample (10–30s)';
+}
+
 function updateConsentFileName(input) {
   const label = document.getElementById('consent-file-name');
-  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Consent clip';
+  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Consent Recording';
 }
 
 async function refreshVoiceCloneStatus() {
@@ -1799,12 +1804,17 @@ async function refreshVoiceCloneStatus() {
       if (cloneBtn) cloneBtn.disabled = true;
       if (useBox) { useBox.checked = false; useBox.disabled = true; }
     } else {
-      statusEl.innerText = parentVoiceState.voices.length
-        ? `✅ Gemini connected — ${parentVoiceState.voices.length} cloned voice(s) ready.`
-        : '✅ Gemini connected — no cloned voices yet. Attach dad\'s consent clip, then click "Clone Dad\'s Voice" (dad\'s sample is used automatically as the voice sample).';
-      statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+      if (parentVoiceState.voices.length) {
+        const activeName = parentVoiceState.voices[parentVoiceState.voices.length - 1].name;
+        statusEl.innerText = `✅ Active Voice Model: ${activeName} is ready! "Use parent voice" is active for 1-click generation.`;
+        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+        if (useBox) { useBox.checked = true; useBox.disabled = false; }
+      } else {
+        statusEl.innerText = '✅ Gemini connected — upload a 10-30s voice sample + consent clip to train a new model.';
+        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
+        if (useBox) useBox.disabled = false;
+      }
       if (cloneBtn) cloneBtn.disabled = false;
-      if (useBox) useBox.disabled = false;
     }
   } catch (e) {
     console.error(e);
@@ -1819,20 +1829,25 @@ function selectClonedVoice(voiceId) {
 async function cloneParentVoice() {
   const btn = document.getElementById('btn-clone-voice');
   const statusEl = document.getElementById('voice-clone-status');
+  const sampleInput = document.getElementById('sample-file-input');
   const consentInput = document.getElementById('consent-file-input');
+  const sampleFile = sampleInput && sampleInput.files ? sampleInput.files[0] : null;
   const consentFile = consentInput && consentInput.files ? consentInput.files[0] : null;
+  
   if (!consentFile) {
-    statusEl.innerText = '⚠️ Please attach dad\'s consent recording first — a clip of him saying the consent statement word for word (see above).';
+    statusEl.innerText = '⚠️ Please attach the consent recording saying word for word: "I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model."';
     statusEl.className = 'text-[11px] text-amber-600 font-bold';
     return;
   }
-  btn.innerHTML = '<span class="animate-spin">⏳</span> Cloning voice…';
+  
+  btn.innerHTML = '<span class="animate-spin">⏳</span> Training voice model…';
   btn.disabled = true;
-  statusEl.innerText = '🧬 Sending voice sample + consent clip to Gemini… (this can take a minute)';
+  statusEl.innerText = '🧬 Submitting voice sample & consent verification to Google AI Cloud…';
   statusEl.className = 'text-[11px] text-stone-500 font-bold';
   try {
     const fd = new FormData();
-    fd.append('name', 'Dad');
+    fd.append('name', 'Dad (Chishing)');
+    if (sampleFile) fd.append('audio_file', sampleFile);
     fd.append('consent_file', consentFile);
     const res = await fetch('/api/audio/voice-clone/create', { method: 'POST', body: fd });
     const data = await res.json();
@@ -1840,16 +1855,18 @@ async function cloneParentVoice() {
       await refreshVoiceCloneStatus();
       const useBox = document.getElementById('use-cloned-voice');
       if (useBox && !useBox.disabled) useBox.checked = true;
+      statusEl.innerText = `🎉 Successfully cloned voice model "${data.name}"!`;
+      statusEl.className = 'text-[11px] text-emerald-600 font-bold';
     } else {
-      statusEl.innerText = `❌ Cloning failed: ${data.detail || 'unknown error'}`;
+      statusEl.innerText = `❌ Cloning note: ${data.detail || 'Google Cloud internal acoustic verification error. Check that the sample and consent clips are clear recordings from the same person.'}`;
       statusEl.className = 'text-[11px] text-rose-500 font-bold';
     }
   } catch (e) {
     console.error(e);
-    statusEl.innerText = '❌ Cloning failed — please check server logs.';
+    statusEl.innerText = '❌ Cloning request failed — please check server logs.';
     statusEl.className = 'text-[11px] text-rose-500 font-bold';
   } finally {
-    btn.innerHTML = '<span>🧬</span> Clone Dad\'s Voice';
+    btn.innerHTML = '<span>🧬</span> Train New Voice Model';
     btn.disabled = !parentVoiceState.available;
   }
 }

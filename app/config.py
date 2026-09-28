@@ -16,11 +16,20 @@ class StudioSettings(BaseModel):
     project_dir: str = os.path.dirname(os.path.dirname(__file__))
 
 def load_settings() -> StudioSettings:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except Exception:
+        pass
+
     if os.path.exists(CONFIG_FILE):
         try:
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                return StudioSettings(**data)
+                s = StudioSettings(**data)
+                if not s.gemini_api_key:
+                    s.gemini_api_key = os.environ.get("GEMINI_API_KEY", "") or os.environ.get("GOOGLE_API_KEY", "")
+                return s
         except Exception:
             pass
     

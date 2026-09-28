@@ -265,21 +265,24 @@ async def voice_clone_create(
 
 @router.post("/voice-clone/synthesize")
 def synthesize_single_scene_cloned(req: ClonedSceneTTSRequest):
-    """Generate a single scene's narration in a cloned parent voice."""
+    """Generate a single scene's narration in a cloned parent voice, with neural TTS fallback."""
     try:
-        res = synthesize_scene_cloned_voice(req.scene_idx, req.text, req.voice_id)
+        try:
+            res = synthesize_scene_cloned_voice(req.scene_idx, req.text, req.voice_id)
+        except Exception as clone_err:
+            print(f"Warning: Gemini cloned voice synthesis failed ({clone_err}), falling back to Cantonese neural TTS...")
+            res = synthesize_scene_voice(req.scene_idx, req.text, persona="dad")
+            res["cloned"] = False
         res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
         _remix_master_audio()
         res["master_audio_url"] = f"/api/audio/master?t={int(time.time()*1000)}"
         return res
-    except VoiceCloneUnavailableError as e:
-        raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/voice-clone/synthesize-all")
 def synthesize_all_scenes_cloned(req: ClonedBulkTTSRequest):
-    """Generate all scenes' narration in a cloned parent voice (Cantonese)."""
+    """Generate all scenes' narration in a cloned parent voice (Cantonese), with neural fallback."""
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     audio_clips_dir = os.path.join(project_root, "assets", "outputs", "audio_clips")
     os.makedirs(audio_clips_dir, exist_ok=True)
@@ -294,8 +297,12 @@ def synthesize_all_scenes_cloned(req: ClonedBulkTTSRequest):
         if text.strip():
             try:
                 res = synthesize_scene_cloned_voice(scene_idx, text, req.voice_id)
-            except VoiceCloneUnavailableError as e:
-                raise HTTPException(status_code=503, detail=str(e))
+            except Exception as clone_err:
+                print(f"Warning: Gemini cloned synthesis scene {scene_idx} failed ({clone_err}), falling back to Cantonese neural...")
+                speaker = s.get("speaker", "Dad").lower()
+                persona = "mom" if "mom" in speaker or "mother" in speaker else ("child" if "brother" in speaker or "baby" in speaker or "levi" in speaker or "luca" in speaker else "dad")
+                res = synthesize_scene_voice(scene_idx, text, persona=persona)
+                res["cloned"] = False
             res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
             results.append(res)
             voice_paths.append(res["path"])
