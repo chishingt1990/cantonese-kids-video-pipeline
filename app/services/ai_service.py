@@ -3,8 +3,12 @@ import time
 import logging
 import requests
 from app.config import load_settings
+from app.models import Idea, GeneratedScript
 
 logger = logging.getLogger(__name__)
+
+class GenerationError(RuntimeError):
+    pass
 
 def call_gemini(prompt: str, system_instruction: str = "", model: str = "") -> str:
     settings = load_settings()
@@ -12,15 +16,15 @@ def call_gemini(prompt: str, system_instruction: str = "", model: str = "") -> s
     if not api_key:
         raise ValueError("Google Gemini API Key is not configured. Please enter it in Settings.")
     
-    primary_model = model or settings.active_model or "gemini-3.8-flash"
-    fallback_models = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-flash-latest"]
+    primary_model = model or settings.active_model or "gemini-3.6-flash"
+    fallback_models = []
     
     # Try primary model first, then fallback models if 503/404/429 occurs
     models_to_try = [primary_model] + [m for m in fallback_models if m != primary_model]
     
     from google import genai
     # 30-second timeout prevents the request from hanging the application indefinitely
-    client = genai.Client(api_key=api_key, http_options={"timeout": 30.0})
+    client = genai.Client(api_key=api_key, http_options={"timeout": 30_000})
     
     last_error = None
     for try_model in models_to_try:
@@ -36,7 +40,7 @@ def call_gemini(prompt: str, system_instruction: str = "", model: str = "") -> s
             except Exception as e:
                 err_msg = str(e)
                 last_error = err_msg
-                logger.warning(f"Gemini API issue ({try_model}, attempt {attempt + 1}): {err_msg}")
+                logger.warning("Gemini generation failed (%s)", type(e).__name__)
                 
                 # Check for rate limiting / quota exhaustion (429)
                 is_rate_limited = any(indicator in err_msg for indicator in ["429", "RESOURCE_EXHAUSTED", "quota", "Quota"])
@@ -110,22 +114,40 @@ def call_ollama(prompt: str, system_instruction: str = "", model: str = "") -> s
         "system": system_instruction,
         "stream": False
     }
-    r = requests.post(url, json=payload, timeout=60)
+    r = requests.post(url, json=payload, timeout=60, allow_redirects=False)
     r.raise_for_status()
+    if r.is_redirect:
+        raise GenerationError("Ollama redirects are not allowed")
     return r.json().get("response", "")
+
+def call_azure(prompt: str, system_instruction: str = "", model: str = "") -> str:
+    from urllib.parse import quote
+    settings = load_settings()
+    if not settings.azure_endpoint or not settings.azure_api_key:
+        raise GenerationError("Azure OpenAI is not configured")
+    deployment = quote(model or settings.active_model, safe="")
+    messages = [{"role": "user", "content": prompt}]
+    if system_instruction:
+        messages.insert(0, {"role": "system", "content": system_instruction})
+    response = requests.post(
+        f"{settings.azure_endpoint}/openai/deployments/{deployment}/chat/completions",
+        params={"api-version": "2024-10-21"},
+        headers={"api-key": settings.azure_api_key},
+        json={"messages": messages}, timeout=60, allow_redirects=False,
+    )
+    response.raise_for_status()
+    if response.is_redirect:
+        raise GenerationError("Azure endpoint redirects are not allowed")
+    return response.json()["choices"][0]["message"]["content"]
 
 def generate_ai_text(prompt: str, system_instruction: str = "") -> str:
     settings = load_settings()
-    model = settings.active_model
-    
-    if "claude" in model.lower():
-        return call_anthropic(prompt, system_instruction, model)
-    elif "gpt" in model.lower() or "o1" in model.lower() or "o3" in model.lower():
-        return call_openai(prompt, system_instruction, model)
-    elif "llama" in model.lower() or "qwen" in model.lower() or "deepseek" in model.lower():
-        return call_ollama(prompt, system_instruction, model)
-    else:
-        return call_gemini(prompt, system_instruction, model)
+    providers = {"gemini": call_gemini, "openai": call_openai, "anthropic": call_anthropic, "azure": call_azure, "ollama": call_ollama}
+    try:
+        return providers[settings.active_provider](prompt, system_instruction, settings.active_model)
+    except Exception as exc:
+        logger.warning("Text generation failed for %s (%s)", settings.active_provider, type(exc).__name__)
+        raise GenerationError("AI generation failed. Check the selected provider and credentials; no content was substituted.") from exc
 
 def get_grounded_topic_ideas(topic: str, age_group: str) -> list:
     """Smart deterministic template generator matching any custom topic (e.g. ABCs, Counting, Animals)."""
@@ -415,12 +437,11 @@ Return ONLY valid JSON matching this schema:
         if cleaned.endswith("```"):
             cleaned = cleaned[:-3]
         parsed = json.loads(cleaned.strip())
-        if isinstance(parsed, list) and len(parsed) > 0:
-            return parsed
+        if not isinstance(parsed, list) or len(parsed) != 3:
+            raise ValueError("Expected three ideas")
+        return [Idea.model_validate(item).model_dump(mode="json") for item in parsed]
     except Exception as e:
-        print(f"AI Generation warning ({e}), providing rich wholesome templates...")
-    
-    return get_grounded_topic_ideas(topic, age_group)
+        raise GenerationError("AI idea generation failed or returned invalid content.") from e
 
 def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
     """
@@ -667,13 +688,9 @@ Return ONLY valid JSON matching this schema:
             cleaned = cleaned[3:]
         if cleaned.endswith("```"):
             cleaned = cleaned[:-3]
-        parsed = json.loads(cleaned.strip())
-        if isinstance(parsed, dict) and "scenes" in parsed and len(parsed["scenes"]) >= 5:
-            # Ensure moral_lesson & vocab_words exist
-            parsed.setdefault("moral_lesson", lesson)
-            parsed.setdefault("vocab_words", vocab)
-            return parsed
+        parsed = GeneratedScript.model_validate(json.loads(cleaned.strip()))
+        if [scene.scene_number for scene in parsed.scenes] != list(range(1, 8)):
+            raise ValueError("Scene numbers must be sequential")
+        return parsed.model_dump(mode="json", exclude_none=True)
     except Exception as e:
-        print(f"AI Script Generation notice ({e}), synthesizing rich grounded 7-scene script...")
-    
-    return _generate_dynamic_fallback_script(idea, characters)
+        raise GenerationError("AI script generation failed or returned invalid content.") from e

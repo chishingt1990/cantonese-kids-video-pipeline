@@ -1,68 +1,73 @@
 import os
 import shutil
-from PIL import Image, ImageDraw, ImageFont
+import re
+from pathlib import Path
+from PIL import Image
 import numpy as np
+from app.services.asset_manifest import MASTER_ASSETS, get_character_poses, resolve_sprite
 
 def generate_custom_character_sprite(character_id: str, prompt: str, output_path: str) -> str:
     """
-    Generates a custom character sprite variation based on natural language prompt:
-    - Exact high-fidelity AI sprites for known key requests (e.g. Dog eating banana, Levi yellow shirt eating banana)
-    - Semantic base pose selection (eating, waving, sleeping, stretching, hugging, crouching, standing)
-    - Torso-bounded shirt recoloring (yellow, red, blue, green, purple, orange, white)
-    - Prop placement at mouth, hands, or head (bananas, apples, cookies, caps, crowns, party hats, cape)
-    Outputs high quality RGBA transparent PNG.
+    Select approved poses and apply supported clothing recolors.
+
+    This is a deterministic image transformation, not an image-model generation.
+    New accessories require approved artwork rather than geometric overlays.
     """
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    sprites_dir = os.path.join(project_root, "assets", "sprites")
+    if Path(output_path).resolve().is_relative_to(MASTER_ASSETS.resolve()):
+        raise ValueError("Master artwork is read-only; use a preview or candidate output.")
+    poses = get_character_poses().get(character_id)
+    if not poses:
+        raise ValueError(f"Unknown character: {character_id}")
     prompt_lower = prompt.lower()
+    def matches(*words):
+        return any(re.search(r"(?<!\w)" + re.escape(word) + r"(?!\w)", prompt_lower) for word in words)
+    if matches("cape", "superhero", "party hat", "birthday", "crown"):
+        raise ValueError("No approved accessory variant is available. Choose an existing pose or shirt recolor.")
 
     # 1. Exact High-Fidelity Match: Dog eating banana
-    if character_id == "dog" and ("banana" in prompt_lower or ("eat" in prompt_lower and "fruit" in prompt_lower)):
-        dog_banana = os.path.join(sprites_dir, "dog_eating_banana.png")
-        if os.path.exists(dog_banana):
+    if character_id == "dog" and (matches("banana") or (matches("eat") and matches("fruit"))):
+        if "eating_banana" in poses:
+            dog_banana = resolve_sprite(character_id, "eating_banana")
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             shutil.copyfile(dog_banana, output_path)
             return output_path
 
     # 2. Base Pose Selection
     pose_suffix = "default"
-    if any(k in prompt_lower for k in ["teach", "book", "read", "story"]):
-        pose_suffix = "teaching"
-    elif any(k in prompt_lower for k in ["drink", "tea", "coffee", "mug"]):
-        pose_suffix = "drinking"
-    elif any(k in prompt_lower for k in ["sit", "chair"]):
-        pose_suffix = "sitting"
-    elif any(k in prompt_lower for k in ["kneel"]):
-        pose_suffix = "kneeling"
-    elif any(k in prompt_lower for k in ["point"]):
+    if matches("teach", "teaching", "book", "read", "reading", "story", "storybook"):
+        pose_suffix = "holding_book" if "holding_book" in poses else "teaching"
+    elif matches("drink", "drinking", "tea", "coffee", "mug"):
+        pose_suffix = "drinking_tea" if "drinking_tea" in poses else "drinking"
+    elif matches("sit", "sitting", "chair"):
+        pose_suffix = "sitting_attentive" if character_id == "dog" else "sitting"
+    elif matches("kneel", "kneeling"):
+        pose_suffix = "kneeling_hug" if character_id == "mom" else "kneeling"
+    elif matches("point", "pointing"):
         pose_suffix = "pointing"
-    elif any(k in prompt_lower for k in ["run", "play"]):
+    elif matches("run", "running", "play", "playing"):
         pose_suffix = "running"
-    elif any(k in prompt_lower for k in ["eat", "banana", "apple", "fruit", "cookie", "food", "hungry", "snack"]):
+    elif matches("eat", "eating", "banana", "apple", "fruit", "cookie", "food", "hungry", "snack"):
         pose_suffix = "eating"
-    elif any(k in prompt_lower for k in ["wave", "hello", "hi", "greet"]):
+    elif matches("wave", "waving", "hello", "hi", "greet"):
         pose_suffix = "waving"
-    elif any(k in prompt_lower for k in ["sleep", "nap", "bed", "pajama", "pj"]):
-        pose_suffix = "sleeping"
-    elif any(k in prompt_lower for k in ["stretch", "yawn", "wake up"]):
+    elif matches("sleep", "sleeping", "nap", "bed", "pajama", "pj"):
+        pose_suffix = "curled_sleeping" if character_id == "dog" else "sleeping"
+    elif matches("stretch", "stretching", "yawn", "yawning", "wake up"):
         pose_suffix = "stretching"
-    elif any(k in prompt_lower for k in ["hug", "arms out", "cuddle"]):
-        pose_suffix = "arms_out_hug"
+    elif matches("hug", "hugging", "arms out", "cuddle", "cuddling"):
+        pose_suffix = {"dad": "comforting_hug", "mom": "kneeling_hug"}.get(character_id, "arms_out_hug")
 
-    base_candidate = os.path.join(sprites_dir, f"{character_id}_{pose_suffix}.png")
-    if not os.path.exists(base_candidate) and pose_suffix == "drinking":
-        base_candidate = os.path.join(sprites_dir, f"{character_id}_tea.png")
-    if not os.path.exists(base_candidate):
-        base_candidate = os.path.join(sprites_dir, f"{character_id}_default.png")
-    if not os.path.exists(base_candidate):
-        base_candidate = os.path.join(sprites_dir, f"{character_id}.png")
+    if pose_suffix not in poses:
+        raise ValueError(f"No approved {character_id} pose for '{pose_suffix}'. Choose an available pose.")
+    base_candidate = resolve_sprite(character_id, pose_suffix)
 
     base_im = Image.open(base_candidate).convert("RGBA")
     w, h = base_im.size
 
     # 3. Shirt Recoloring (torso-bounded to avoid touching facial blush or lips)
     arr = np.array(base_im)
-    r, g, b, a = arr[:,:,0], arr[:,:,1], arr[:,:,2], arr[:,:,3]
+    source = arr.astype(np.int16)
+    r, g, b, a = source[:,:,0], source[:,:,1], source[:,:,2], source[:,:,3]
     y_coords = np.arange(h)[:, None]
 
     # Torso region: 32% to 67% of height
@@ -76,26 +81,22 @@ def generate_custom_character_sprite(character_id: str, prompt: str, output_path
     if character_id == "levi":
         if any(k in prompt_lower for k in ["yellow", "gold", "amber"]):
             # Recolor red shirt to bright yellow
-            arr[is_red_shirt, 0] = np.clip(arr[is_red_shirt, 0].astype(int) + 20, 0, 255)
-            arr[is_red_shirt, 1] = np.clip(arr[is_red_shirt, 0] * 0.85, 0, 255).astype(np.uint8)
-            arr[is_red_shirt, 2] = np.clip(arr[is_red_shirt, 2] * 0.25, 0, 60).astype(np.uint8)
+            arr[is_red_shirt, :3] = np.stack([np.clip(r[is_red_shirt] + 20, 0, 255),
+                np.clip(r[is_red_shirt] * 0.85, 0, 255), np.clip(b[is_red_shirt] * 0.25, 0, 60)], axis=-1)
         elif "green" in prompt_lower:
-            arr[is_red_shirt, 0] = np.clip(arr[is_red_shirt, 2] * 0.4, 0, 50).astype(np.uint8)
-            arr[is_red_shirt, 1] = np.clip(arr[is_red_shirt, 0] * 0.9, 0, 255).astype(np.uint8)
-            arr[is_red_shirt, 2] = np.clip(arr[is_red_shirt, 2] * 0.5, 0, 70).astype(np.uint8)
+            arr[is_red_shirt, :3] = np.stack([np.clip(b[is_red_shirt] * .4, 0, 50),
+                np.clip(r[is_red_shirt] * .9, 0, 255), np.clip(b[is_red_shirt] * .5, 0, 70)], axis=-1)
         elif "blue" in prompt_lower:
-            arr[is_red_shirt, 0] = np.clip(arr[is_red_shirt, 2] * 0.3, 0, 50).astype(np.uint8)
-            arr[is_red_shirt, 1] = np.clip(arr[is_red_shirt, 1] * 0.7, 0, 150).astype(np.uint8)
-            arr[is_red_shirt, 2] = np.clip(arr[is_red_shirt, 0] * 0.95, 0, 255).astype(np.uint8)
+            arr[is_red_shirt, :3] = np.stack([np.clip(b[is_red_shirt] * .3, 0, 50),
+                np.clip(g[is_red_shirt] * .7, 0, 150), np.clip(r[is_red_shirt] * .95, 0, 255)], axis=-1)
     elif character_id == "luca":
         if any(k in prompt_lower for k in ["red", "coral"]):
-            arr[is_yellow_shirt, 0] = np.clip(arr[is_yellow_shirt, 0].astype(int) + 10, 0, 255)
-            arr[is_yellow_shirt, 1] = np.clip(arr[is_yellow_shirt, 1] * 0.4, 0, 90).astype(np.uint8)
-            arr[is_yellow_shirt, 2] = np.clip(arr[is_yellow_shirt, 2] * 0.6, 0, 80).astype(np.uint8)
+            arr[is_yellow_shirt, :3] = np.stack([np.clip(r[is_yellow_shirt] + 10, 0, 255),
+                np.clip(g[is_yellow_shirt] * .4, 0, 90), np.clip(b[is_yellow_shirt] * .6, 0, 80)], axis=-1)
         elif "blue" in prompt_lower:
             arr[is_yellow_shirt, 0] = 30
-            arr[is_yellow_shirt, 1] = np.clip(arr[is_yellow_shirt, 1] * 0.6, 0, 140).astype(np.uint8)
-            arr[is_yellow_shirt, 2] = np.clip(arr[is_yellow_shirt, 0] * 0.95, 0, 255).astype(np.uint8)
+            arr[is_yellow_shirt, 1] = np.clip(g[is_yellow_shirt] * 0.6, 0, 140).astype(np.uint8)
+            arr[is_yellow_shirt, 2] = np.clip(r[is_yellow_shirt] * 0.95, 0, 255).astype(np.uint8)
 
     base_im = Image.fromarray(arr)
 
@@ -105,22 +106,7 @@ def generate_custom_character_sprite(character_id: str, prompt: str, output_path
     out = Image.new("RGBA", (canvas_w, canvas_h), (0, 0, 0, 0))
     char_x = 30
     char_y = 40
-    out.paste(base_im, (char_x, char_y), base_im)
-    draw = ImageDraw.Draw(out, "RGBA")
-
-    # 6. Superhero Cape
-    if "cape" in prompt_lower or "superhero" in prompt_lower:
-        cape_color = (220, 38, 38) if "blue" not in prompt_lower else (37, 99, 235)
-        draw.polygon([(char_x + 30, char_y + 140), (0, canvas_h - 90), (char_x + 40, canvas_h - 50), (char_x + 55, char_y + 180)], fill=cape_color, outline=(30, 41, 59), width=2)
-        draw.polygon([(char_x + w - 40, char_y + 140), (char_x + w + 50, canvas_h - 90), (char_x + w, canvas_h - 50), (char_x + w - 50, char_y + 180)], fill=cape_color, outline=(30, 41, 59), width=2)
-
-    # 8. Party Hat / Crown (on Head)
-    if "party hat" in prompt_lower or "birthday" in prompt_lower or "crown" in prompt_lower:
-        hat_top = (char_x + w // 2 - 10, char_y - 25)
-        hat_left = (char_x + w // 2 - 45, char_y + 25)
-        hat_right = (char_x + w // 2 + 25, char_y + 25)
-        draw.polygon([hat_top, hat_left, hat_right], fill=(244, 63, 94), outline=(30, 41, 59), width=3)
-        draw.ellipse([hat_top[0]-8, hat_top[1]-8, hat_top[0]+8, hat_top[1]+8], fill=(250, 204, 21), outline=(30, 41, 59), width=2)
+    out.alpha_composite(base_im, (char_x, char_y))
 
     # Crop to tight bounding box with padding
     bbox = out.getbbox()

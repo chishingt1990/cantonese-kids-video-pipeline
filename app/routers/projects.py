@@ -1,20 +1,21 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional
 from app.services import project_service
+from app.models import ProjectData
 
 router = APIRouter(prefix="/api/projects", tags=["projects"])
 
 class ProjectSaveRequest(BaseModel):
-    project_data: Dict[str, Any]
+    project_data: ProjectData
 
 class ProjectCreateRequest(BaseModel):
-    title_cantonese: str
-    title_english: str
-    target_age: str = "1-2 years"
-    theme: Optional[str] = ""
-    moral_lesson: Optional[str] = ""
+    title_cantonese: str = Field(max_length=1000)
+    title_english: str = Field(max_length=1000)
+    target_age: str = Field(default="1-2 years", max_length=100)
+    theme: str = Field(default="", max_length=2000)
+    moral_lesson: str = Field(default="", max_length=5000)
 
 @router.get("/")
 def get_all_projects():
@@ -62,7 +63,7 @@ def create_project(req: ProjectCreateRequest):
 @router.put("/{project_id}")
 def update_project(project_id: str, req: ProjectSaveRequest):
     """Saves or updates project state."""
-    saved = project_service.save_project(project_id, req.project_data)
+    saved = project_service.save_project(project_id, req.project_data.model_dump(mode="json", exclude_none=True))
     return {"status": "saved", "project": saved}
 
 @router.post("/{project_id}/duplicate")

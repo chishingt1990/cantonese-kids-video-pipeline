@@ -1,5 +1,10 @@
 # scripts/generate_extended_characters.py
-import os
+try:
+    from scripts.maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+except ModuleNotFoundError as exc:
+    if exc.name not in {"scripts", "scripts.maintenance_guard"}:
+        raise
+    from maintenance_guard import PROJECT_ROOT, configure_cli, output_path
 
 EXTENDED_SVG = {
     "grandparents_paternal": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 320" width="100%" height="100%">
@@ -168,8 +173,14 @@ EXTENDED_SVG = {
 </svg>"""
 }
 
-for k, v in EXTENDED_SVG.items():
-    p = f"assets/characters/{k}.svg"
-    with open(p, "w", encoding="utf-8") as f:
-        f.write(v.strip())
-    print(f"Generated {p}")
+def main(argv=None):
+    configure_cli(argv)
+    for k, v in EXTENDED_SVG.items():
+        p = PROJECT_ROOT / "assets" / "characters" / f"{k}.svg"
+        with open(output_path(p), "w", encoding="utf-8") as f:
+            f.write(v.strip())
+        print(f"Generated {f.name}")
+
+
+if __name__ == "__main__":
+    main()

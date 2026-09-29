@@ -3,11 +3,22 @@ import json
 import shutil
 import datetime
 import uuid
+import copy
+import logging
 from typing import List, Dict, Any, Optional
 from PIL import Image, ImageDraw
+from app.storage import PROJECTS_DIR, project_path, project_lock, project_is_busy, atomic_write_json, validate_id, contained_path
+from app.models import ProjectData
 
-PROJECTS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "projects")
-os.makedirs(PROJECTS_DIR, exist_ok=True)
+logger = logging.getLogger(__name__)
+
+
+class RevisionConflict(ValueError):
+    pass
+
+
+class ProjectCorruptError(ValueError):
+    pass
 
 DEFAULT_EP01_DATA = {
     "id": "ep01_meeting_family",
@@ -126,18 +137,12 @@ DEFAULT_EP01_DATA = {
 }
 
 def ensure_seed_project():
-    """Initializes ep01_meeting_family if projects directory is empty."""
-    ep01_dir = os.path.join(PROJECTS_DIR, "ep01_meeting_family")
-    p_file = os.path.join(ep01_dir, "project.json")
-    if not os.path.exists(p_file):
-        os.makedirs(ep01_dir, exist_ok=True)
-        with open(p_file, "w", encoding="utf-8") as f:
-            json.dump(DEFAULT_EP01_DATA, f, indent=2, ensure_ascii=False)
-        _render_simple_thumbnail(ep01_dir, "見到屋企人", "Meeting the Family")
+    """Compatibility hook: reads never seed or restore deleted user projects."""
+    return None
 
 def _render_simple_thumbnail(proj_dir: str, title_cn: str, title_en: str):
     """Renders a warm 640x360 cover card for the project."""
-    thumb_path = os.path.join(proj_dir, "thumbnail.png")
+    thumb_path = contained_path(proj_dir, "thumbnail.png")
     if os.path.exists(thumb_path):
         return
     img = Image.new("RGB", (640, 360), (255, 251, 235))
@@ -147,133 +152,134 @@ def _render_simple_thumbnail(proj_dir: str, title_cn: str, title_en: str):
     img.save(thumb_path, "PNG")
 
 def list_projects() -> List[Dict[str, Any]]:
-    """Returns metadata summary for all projects on disk, sorted by updated_at descending."""
-    ensure_seed_project()
+    if not PROJECTS_DIR.exists():
+        return []
     projects = []
-    
-    for item in os.listdir(PROJECTS_DIR):
-        item_path = os.path.join(PROJECTS_DIR, item)
-        if os.path.isdir(item_path):
-            p_file = os.path.join(item_path, "project.json")
-            if os.path.exists(p_file):
-                try:
-                    with open(p_file, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-                    p_id = data.get("id") or data.get("episode_id") or item
-                    scenes = data.get("scenes", [])
-                    has_video = False
-                    
-                    # Check if rendered video exists
-                    rendered_video = data.get("rendered_video", {})
-                    if rendered_video and rendered_video.get("filename"):
-                        has_video = True
-                    
-                    thumb_path = os.path.join(item_path, "thumbnail.png")
-                    has_thumb = os.path.exists(thumb_path)
-                    
-                    projects.append({
-                        "id": p_id,
-                        "title_cantonese": data.get("title_cantonese", "未命名項目"),
-                        "title_english": data.get("title_english", "Untitled Project"),
-                        "target_age": data.get("target_age", "1-2 years"),
-                        "theme": data.get("theme", ""),
-                        "scene_count": len(scenes),
-                        "created_at": data.get("created_at", ""),
-                        "updated_at": data.get("updated_at", ""),
-                        "has_thumbnail": has_thumb,
-                        "thumbnail_url": f"/api/projects/{p_id}/thumbnail" if has_thumb else None,
-                        "has_rendered_video": has_video,
-                        "rendered_video": rendered_video
-                    })
-                except Exception:
-                    continue
-                    
-    projects.sort(key=lambda p: p.get("updated_at", ""), reverse=True)
-    return projects
+    for item in PROJECTS_DIR.iterdir():
+        if not item.is_dir():
+            continue
+        try:
+            data = get_project(item.name)
+            if data is None:
+                continue
+            has_thumb = get_thumbnail_path(item.name) is not None
+            projects.append({
+                **{key: data.get(key, "") for key in ("id", "title_cantonese", "title_english", "target_age", "theme", "created_at", "updated_at", "revision")},
+                "scene_count": len(data["scenes"]),
+                "has_thumbnail": has_thumb,
+                "thumbnail_url": f"/api/projects/{item.name}/thumbnail" if has_thumb else None,
+                "has_rendered_video": bool(data.get("rendered_video")),
+                "rendered_video": data.get("rendered_video"),
+                "migration_warnings": data.get("migration_warnings", []),
+            })
+        except (ValueError, OSError):
+            projects.append({"id": item.name, "title_english": "Unreadable project — original preserved", "error": "project_unreadable", "scene_count": 0, "updated_at": ""})
+    return sorted(projects, key=lambda p: p.get("updated_at", ""), reverse=True)
 
-def get_project(project_id: str) -> Optional[Dict[str, Any]]:
-    """Retrieves full project data by ID."""
-    ensure_seed_project()
-    p_dir = os.path.join(PROJECTS_DIR, project_id)
-    p_file = os.path.join(p_dir, "project.json")
-    if os.path.exists(p_file):
-        with open(p_file, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return None
 
-def save_project(project_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
-    """Saves or updates project state on disk."""
-    ensure_seed_project()
-    p_dir = os.path.join(PROJECTS_DIR, project_id)
-    os.makedirs(p_dir, exist_ok=True)
-    
-    # Ensure ID consistency and timestamp update
-    data["id"] = project_id
-    data["episode_id"] = project_id
-    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    if not data.get("created_at"):
-        data["created_at"] = now_iso
-    data["updated_at"] = now_iso
-    
-    p_file = os.path.join(p_dir, "project.json")
-    with open(p_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-        
-    _render_simple_thumbnail(p_dir, data.get("title_cantonese", ""), data.get("title_english", ""))
+def _sanitize_media(data: dict, project_id: str) -> dict:
+    data = copy.deepcopy(data)
+    warnings = list(data.get("migration_warnings", [])) if isinstance(data.get("migration_warnings"), list) else []
+
+    def clean(value):
+        if isinstance(value, dict):
+            for key in list(value):
+                item = value[key]
+                if key in {"audio_url", "master_audio_url", "video_url"} and item:
+                    prefix = f"/api/render/video/{project_id}/" if key == "video_url" else f"/api/audio/clip/{project_id}/"
+                    valid = isinstance(item, str) and item.startswith(prefix)
+                    if valid:
+                        try:
+                            filename = item[len(prefix):]
+                            if any(c in filename for c in "\\%?#") or "/" in filename:
+                                raise ValueError()
+                            folder = "audio" if item.startswith("/api/audio/") else "renders"
+                            valid = project_path(project_id, folder, filename).is_file()
+                        except ValueError:
+                            valid = False
+                    if not valid:
+                        value.pop(key, None)
+                        warnings.append("Unowned or missing legacy media reference removed; regenerate this project's audio/render.")
+                else:
+                    clean(item)
+        elif isinstance(value, list):
+            for item in value:
+                clean(item)
+
+    clean(data)
+    rendered = data.get("rendered_video")
+    if rendered:
+        try:
+            filename = rendered["filename"]
+            if not isinstance(filename, str) or any(c in filename for c in "/\\"):
+                raise ValueError()
+            if not rendered.get("input_fingerprint") or not project_path(project_id, "renders", filename).is_file():
+                raise ValueError()
+        except (ValueError, KeyError, TypeError):
+            data.pop("rendered_video", None)
+            warnings.append("Legacy or missing render removed; render this project before publishing.")
+    if warnings:
+        data["migration_warnings"] = list(dict.fromkeys(str(w) for w in warnings))
     return data
 
+def get_project(project_id: str) -> Optional[Dict[str, Any]]:
+    with project_lock(project_id):
+        path = project_path(project_id, "project.json")
+        if not path.is_file():
+            return None
+        try:
+            raw = json.loads(path.read_text(encoding="utf-8"))
+            raw = _sanitize_media(raw, project_id)
+            data = ProjectData.model_validate(raw).model_dump(mode="json", exclude_none=True)
+            data["id"] = data["episode_id"] = project_id
+            return data
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ProjectCorruptError("Project data is unreadable; the original file has been preserved") from exc
+
+def save_project(project_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+    with project_lock(project_id):
+        data = ProjectData.model_validate(_sanitize_media(data, project_id)).model_dump(mode="json", exclude_none=True)
+        current = get_project(project_id)
+        revision = current.get("revision", 0) if current else 0
+        if data["revision"] != revision:
+            raise RevisionConflict("Project changed since it was loaded. Reload before saving.")
+        data["id"] = data["episode_id"] = project_id
+        data["revision"] = revision + 1
+        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        data["created_at"] = (current or {}).get("created_at") or data.get("created_at") or now_iso
+        data["updated_at"] = now_iso
+        atomic_write_json(project_path(project_id, "project.json"), data)
+        try:
+            _render_simple_thumbnail(str(project_path(project_id)), data["title_cantonese"], data["title_english"])
+        except (OSError, ValueError):
+            logger.warning("Project saved, but thumbnail creation failed")
+        return data
+
 def duplicate_project(project_id: str) -> Optional[Dict[str, Any]]:
-    """Clones an existing project into a new folder."""
     original = get_project(project_id)
     if not original:
         return None
-        
-    now = datetime.datetime.now(datetime.timezone.utc)
-    new_id = f"proj_{now.strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:4]}"
-    new_dir = os.path.join(PROJECTS_DIR, new_id)
-    os.makedirs(new_dir, exist_ok=True)
-    
-    clone_data = dict(original)
-    clone_data["id"] = new_id
-    clone_data["episode_id"] = new_id
+    new_id = f"proj_{uuid.uuid4().hex}"
+    clone_data = copy.deepcopy(original)
     clone_data["title_english"] = f"{original.get('title_english', 'Untitled')} (Copy)"
-    clone_data["created_at"] = now.isoformat()
-    clone_data["updated_at"] = now.isoformat()
-    # Reset rendered video on clone
+    clone_data["revision"] = 0
+    clone_data["created_at"] = ""
     clone_data.pop("rendered_video", None)
-    
-    p_file = os.path.join(new_dir, "project.json")
-    with open(p_file, "w", encoding="utf-8") as f:
-        json.dump(clone_data, f, indent=2, ensure_ascii=False)
-        
-    orig_thumb = os.path.join(PROJECTS_DIR, project_id, "thumbnail.png")
-    copied = False
-    if os.path.exists(orig_thumb):
-        try:
-            with open(orig_thumb, "rb") as rf:
-                thumb_bytes = rf.read()
-            with open(os.path.join(new_dir, "thumbnail.png"), "wb") as wf:
-                wf.write(thumb_bytes)
-            copied = True
-        except Exception as e:
-            logger.warning(f"Could not copy thumbnail directly: {e}")
-            
-    if not copied:
-        _render_simple_thumbnail(new_dir, clone_data.get("title_cantonese", ""), clone_data.get("title_english", ""))
-        
-    return clone_data
+    return save_project(new_id, clone_data)
 
 def delete_project(project_id: str) -> bool:
-    """Deletes a project folder from disk."""
-    p_dir = os.path.join(PROJECTS_DIR, project_id)
-    if os.path.exists(p_dir) and os.path.isdir(p_dir):
-        shutil.rmtree(p_dir)
-        return True
-    return False
+    with project_lock(project_id):
+        if project_is_busy(project_id):
+            raise RevisionConflict("This project has active media work. Wait for completion or cancel it before deleting.")
+        p_dir = project_path(project_id)
+        if p_dir.is_dir():
+            # A local recoverable trash folder avoids irrevocable accidental deletion.
+            trash = contained_path(PROJECTS_DIR.parent, "trash", f"{project_id}_{uuid.uuid4().hex}")
+            trash.parent.mkdir(parents=True, exist_ok=True)
+            p_dir.rename(trash)
+            return True
+        return False
 
 def get_thumbnail_path(project_id: str) -> Optional[str]:
-    """Returns absolute path to project thumbnail if it exists."""
-    thumb_path = os.path.join(PROJECTS_DIR, project_id, "thumbnail.png")
-    if os.path.exists(thumb_path):
-        return thumb_path
-    return None
+    path = project_path(project_id, "thumbnail.png")
+    return str(path) if path.is_file() else None

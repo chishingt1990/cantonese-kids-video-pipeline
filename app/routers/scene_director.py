@@ -12,7 +12,8 @@ from app.services.sticker_service import (
     STICKER_CATALOG,
     get_all_stickers_catalog,
     get_or_render_sticker,
-    STICKER_DIR
+    STICKER_DIR,
+    resolve_sticker_image,
 )
 
 router = APIRouter(prefix="/api/scene-director", tags=["scene-director"])
@@ -29,6 +30,8 @@ def auto_direct_project(req: ProjectDirectRequest):
             "status": "success",
             "scenes": directed_scenes
         }
+    except (ValueError, FileNotFoundError) as e:
+        raise HTTPException(status_code=422, detail=str(e)) from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -45,6 +48,8 @@ def direct_scene(req: SingleSceneDirectRequest):
             "status": "success",
             "plan": plan
         }
+    except (ValueError, FileNotFoundError) as e:
+        raise HTTPException(status_code=422, detail=str(e)) from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -61,6 +66,8 @@ def copilot_tweak(req: CopilotTweakRequest):
             "status": "success",
             "scene": updated_scene
         }
+    except (ValueError, FileNotFoundError) as e:
+        raise HTTPException(status_code=422, detail=str(e)) from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -73,35 +80,12 @@ def list_stickers():
 @router.get("/stickers/render/{sticker_id}")
 def render_sticker_image(sticker_id: str):
     """Returns transparent PNG of the requested sticker, generating if needed."""
-    clean_id = os.path.basename(sticker_id.split("?")[0].replace(".png", ""))
-    
-    no_cache_headers = {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0"
-    }
-    
-    # Check if exact PNG file exists on disk
-    direct_candidates = [
-        os.path.join(STICKER_DIR, f"{clean_id}.png"),
-        os.path.join(STICKER_DIR, f"prop_{clean_id.replace('prop_', '')}.png"),
-        os.path.join(STICKER_DIR, f"badge_{clean_id.replace('badge_', '')}.png"),
-        os.path.join(STICKER_DIR, f"block_{clean_id.replace('block_', '')}.png")
-    ]
-    for cand in direct_candidates:
-        if os.path.exists(cand):
-            return FileResponse(cand, media_type="image/png", headers=no_cache_headers)
-            
-    all_catalog = get_all_stickers_catalog()
-    match = next((s for s in all_catalog if s["id"] == clean_id), None)
-    
-    if match:
-        path = get_or_render_sticker(match)
-    else:
-        # Custom on-the-fly badge
-        path = get_or_render_sticker({"id": clean_id, "type": "word", "chinese": clean_id, "english": ""})
-
-    if os.path.exists(path):
-        return FileResponse(path, media_type="image/png", headers=no_cache_headers)
-    raise HTTPException(status_code=404, detail="Sticker not found")
+    try:
+        path = resolve_sticker_image(sticker_id)
+        return FileResponse(path, media_type="image/png",
+                            headers={"Cache-Control": "private, max-age=3600"})
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
 

@@ -1,4 +1,8 @@
 // Kids Video Studio — Reactive Frontend Application Logic
+const fetch = window.studioFetch;
+const esc = StudioAPI.escapeHTML;
+const arg = StudioAPI.handlerArg;
+const safeURL = StudioAPI.safeURL;
 let currentStep = 1;
 let selectedAge = '1-2 years (Toddlers)';
 let currentIdeas = [];
@@ -10,147 +14,23 @@ let draggedCharacterId = null;
 let draggedStickerId = null;
 let copilotUndoStack = [];
 
-// Preloaded with Episode 1 so the user never starts from scratch
-let currentProject = {
-  episode_id: "ep01_meeting_family",
-  title_cantonese: "見到屋企人",
-  title_english: "Meeting the Family",
-  target_age: "1-2 years",
-  _autoDirected: false,
-  vocab_words: [
-    { chinese: "屋企人", english: "Family" },
-    { chinese: "爸爸 / 媽媽", english: "Dad / Mom" },
-    { chinese: "哥哥 / 細佬", english: "Big Brother / Little Brother" },
-    { chinese: "狗狗", english: "Doggy" }
-  ],
-  scenes: [
-    {
-      scene_number: 1,
-      title: "Hello Sweet Babies!",
-      background: "living_room",
-      speaker: "Dad",
-      characters: [
-        { name: "dad", pose: "default", scale: 1.0, x_percent: 50, y_percent: 88, flip: false, layer: 1 }
-      ],
-      stickers: [
-        { id: "badge_good_morning", type: "word", content: "早晨", english: "Good morning", color_theme: "gold", x_percent: 50, y_percent: 22, scale: 1.05, rotation_deg: 0, layer: 2 }
-      ],
-      cantonese: "Hello 兩個BB！今日爸爸同你哋一齊見下屋企人啦！",
-      english: "Hello sweet babies! Today Dad will introduce our whole family to you!",
-      vocab_highlight: "屋企人",
-      duration_sec: 7,
-      audio_url: "/api/audio/clip/scene_01_voice.wav"
-    },
-    {
-      scene_number: 2,
-      title: "Gentle Morning Hugs",
-      background: "living_room",
-      speaker: "Mom",
-      characters: [
-        { name: "levi", pose: "arms_out_hug", scale: 1.0, x_percent: 34, y_percent: 88, flip: false, layer: 1 },
-        { name: "luca", pose: "waving", scale: 1.0, x_percent: 66, y_percent: 88, flip: true, layer: 1 }
-      ],
-      stickers: [
-        { id: "badge_big_hug", type: "word", content: "抱抱", english: "Big hug", color_theme: "pink", x_percent: 50, y_percent: 22, scale: 1.05, rotation_deg: 0, layer: 2 }
-      ],
-      cantonese: "早晨呀 Levi 同 Luca！哥哥同細佬抱抱啦！",
-      english: "Good morning Levi and Luca! Big brother and little brother give warm hugs!",
-      vocab_highlight: "哥哥 / 細佬",
-      duration_sec: 7,
-      audio_url: "/api/audio/clip/scene_02_voice.wav"
-    },
-    {
-      scene_number: 3,
-      title: "Friendly Puppy Waves",
-      background: "living_room",
-      speaker: "Dad",
-      characters: [
-        { name: "dog", pose: "eating_banana", scale: 1.0, x_percent: 50, y_percent: 90, flip: false, layer: 1 }
-      ],
-      stickers: [
-        { id: "prop_banana", type: "icon", content: "banana", x_percent: 78, y_percent: 25, scale: 1.1, rotation_deg: 8, layer: 2 }
-      ],
-      cantonese: "望下呢度，波波狗狗搖尾巴呀！汪汪！",
-      english: "Look over here, our puppy is wagging his tail! Woof woof!",
-      vocab_highlight: "狗狗",
-      duration_sec: 7,
-      audio_url: "/api/audio/clip/scene_03_voice.wav"
-    },
-    {
-      scene_number: 4,
-      title: "Paternal Grandparents Smile",
-      background: "living_room",
-      speaker: "Dad",
-      characters: [
-        { name: "grandparents_paternal", pose: "default", scale: 1.0, x_percent: 50, y_percent: 88, flip: false, layer: 1 }
-      ],
-      stickers: [
-        { id: "badge_good_job", type: "word", content: "好乖！", english: "Good job!", color_theme: "rose", x_percent: 50, y_percent: 22, scale: 1.05, rotation_deg: 0, layer: 2 }
-      ],
-      cantonese: "爺爺嫲嫲笑瞇瞇，最疼錫乖孫孫！",
-      english: "Grandpa and Grandma are beaming with smiles, they love their little grandsons so much!",
-      vocab_highlight: "爺爺嫲嫲",
-      duration_sec: 8,
-      audio_url: "/api/audio/clip/scene_04_voice.wav"
-    },
-    {
-      scene_number: 5,
-      title: "Maternal Grandparents Cheer",
-      background: "living_room",
-      speaker: "Mom",
-      characters: [
-        { name: "grandparents_maternal", pose: "default", scale: 1.0, x_percent: 50, y_percent: 88, flip: false, layer: 1 }
-      ],
-      stickers: [
-        { id: "block_a", type: "letter", content: "A", color_theme: "rose", x_percent: 22, y_percent: 24, scale: 1.0, rotation_deg: -5, layer: 2 },
-        { id: "block_b", type: "letter", content: "B", color_theme: "sky", x_percent: 78, y_percent: 24, scale: 1.0, rotation_deg: 5, layer: 2 }
-      ],
-      cantonese: "公公婆婆拍拍手，祝兩個BB快高長大！",
-      english: "Grandpa and Grandma are clapping, wishing both babies grow up healthy and tall!",
-      vocab_highlight: "公公婆婆",
-      duration_sec: 8,
-      audio_url: "/api/audio/clip/scene_05_voice.wav"
-    },
-    {
-      scene_number: 6,
-      title: "Playful Cousins",
-      background: "park",
-      speaker: "Dad",
-      characters: [
-        { name: "auntie_cousins", pose: "default", scale: 1.0, x_percent: 50, y_percent: 88, flip: false, layer: 1 }
-      ],
-      stickers: [
-        { id: "badge_sharing", type: "word", content: "分享", english: "Share toys", color_theme: "sky", x_percent: 50, y_percent: 22, scale: 1.05, rotation_deg: 0, layer: 2 }
-      ],
-      cantonese: "姑媽同表哥嚟探你哋，一齊滾積木！",
-      english: "Auntie and cousin are here to visit, rolling toy blocks together!",
-      vocab_highlight: "姑媽表哥",
-      duration_sec: 7,
-      audio_url: "/api/audio/clip/scene_06_voice.wav"
-    },
-    {
-      scene_number: 7,
-      title: "Big Warm Family Hug",
-      background: "living_room",
-      speaker: "Dad",
-      characters: [
-        { name: "levi", pose: "arms_out_hug", scale: 1.0, x_percent: 34, y_percent: 88, flip: false, layer: 1 },
-        { name: "luca", pose: "waving", scale: 1.0, x_percent: 66, y_percent: 88, flip: true, layer: 1 }
-      ],
-      stickers: [
-        { id: "badge_thank_you", type: "word", content: "多謝", english: "Thank you", color_theme: "amber", x_percent: 50, y_percent: 22, scale: 1.05, rotation_deg: 0, layer: 2 }
-      ],
-      cantonese: "屋企人齊聚一堂，大家相親相愛，我哋係幸福的一家！",
-      english: "Our family is together, loving and caring for each other, what a happy family!",
-      vocab_highlight: "幸福一家",
-      duration_sec: 8,
-      audio_url: "/api/audio/clip/scene_07_voice.wav"
-    }
-  ]
-};
+let projectReady = false;
+let currentProject = emptyProject();
+
+function emptyProject() {
+  return { id: null, episode_id: null, title_cantonese: '', title_english: '', vocab_words: [], scenes: [] };
+}
+
+function requireProject() {
+  if (projectReady && currentProject.id) return true;
+  showToast('Create or open an episode first.');
+  return false;
+}
 
 // Wizard Step Navigation (fixes active sidebar highlight)
 function setStep(step) {
+  if (!projectReady) { updateProjectAvailability(); return; }
+  if (currentStep === 4 && step !== 4) stopRecording();
   currentStep = step;
   
   // Toggle step containers
@@ -259,6 +139,7 @@ function setTopicChip(btn, topic) {
 }
 
 async function generateIdeas() {
+  if (!requireProject()) return;
   const btn = document.getElementById('btn-gen-ideas');
   btn.innerHTML = '<span class="animate-spin">⏳</span> AI is Crafting Concepts...';
   btn.disabled = true;
@@ -291,18 +172,18 @@ function renderIdeas(ideas) {
           <span class="text-xs text-stone-400 font-medium">1-2 min lesson</span>
         </div>
         <div>
-          <h3 class="font-extrabold text-stone-900 text-lg tc-font leading-tight">${idea.title_cantonese}</h3>
-          <h4 class="text-xs font-bold text-amber-700">${idea.title_english}</h4>
+          <h3 class="font-extrabold text-stone-900 text-lg tc-font leading-tight">${esc(idea.title_cantonese)}</h3>
+          <h4 class="text-xs font-bold text-amber-700">${esc(idea.title_english)}</h4>
         </div>
-        <p class="text-xs text-stone-600 leading-relaxed">${idea.description}</p>
+        <p class="text-xs text-stone-600 leading-relaxed">${esc(idea.description)}</p>
         
         <div class="space-y-1.5 pt-1">
           <span class="text-[10px] font-extrabold text-stone-400 uppercase tracking-wider">Target Vocabulary</span>
           <div class="flex flex-wrap gap-1.5">
             ${(idea.target_vocab || []).map(v => `
               <span class="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 border border-amber-200/80 text-xs font-bold tc-font flex items-center gap-1.5">
-                <span>${v.chinese}</span>
-                ${v.english ? `<span class="text-[10px] text-stone-500 font-medium">· ${v.english}</span>` : ''}
+                <span>${esc(v.chinese)}</span>
+                ${v.english ? `<span class="text-[10px] text-stone-500 font-medium">· ${esc(v.english)}</span>` : ''}
               </span>
             `).join('')}
           </div>
@@ -318,6 +199,8 @@ function renderIdeas(ideas) {
 
 // Seamlessly passes the selected idea into AI Script Generator and replaces currentProject!
 async function selectIdeaAndBuildScript(idx) {
+  if (!requireProject()) return;
+  const operation = StudioState.capture(currentProject);
   const idea = currentIdeas[idx];
   if (!idea) {
     setStep(2);
@@ -345,6 +228,7 @@ async function selectIdeaAndBuildScript(idx) {
     });
     const data = await res.json();
     const script = data.script;
+    if (!StudioState.matches(operation, currentProject)) return;
 
     if (script && script.scenes && script.scenes.length > 0) {
       currentProject.title_cantonese = script.title_cantonese || idea.title_cantonese;
@@ -354,6 +238,7 @@ async function selectIdeaAndBuildScript(idx) {
       currentProject.description = idea.description || "";
       currentProject.theme = idea.theme || idea.title_english || "";
       currentProject._autoDirected = false; // Mark for automatic scene directing when advancing to Step 3!
+      copilotUndoStack = [];
       
       // Map scenes ensuring x_percent positioning exists
       currentProject.scenes = script.scenes.map((s, sIdx) => ({
@@ -375,18 +260,21 @@ async function selectIdeaAndBuildScript(idx) {
         english: s.english || "",
         vocab_highlight: s.vocab_highlight || "",
         duration_sec: s.duration_sec || 7,
-        audio_url: `/api/audio/clip/scene_${String(sIdx + 1).padStart(2, '0')}_voice.wav`
+        audio_url: null
       }));
+      activeStageSceneIdx = 0;
+      setStep(2);
+    } else {
+      throw new Error('No scenes were returned. Your existing script has been kept.');
     }
   } catch (err) {
     console.error("Failed to generate custom script:", err);
+    showToast(err.message || 'Could not generate a script. Your existing scenes have been kept.');
   } finally {
     if (btn) {
       btn.innerHTML = '<span>🎬</span> Build Episode Script ➔';
       btn.disabled = false;
     }
-    activeStageSceneIdx = 0;
-    setStep(2);
   }
 }
 
@@ -397,8 +285,8 @@ function renderScriptStep() {
   const vocabContainer = document.getElementById('vocab-cards-list');
   vocabContainer.innerHTML = currentProject.vocab_words.map(v => `
     <div class="px-4 py-2.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-center gap-2">
-      <span class="text-base font-extrabold text-stone-900 tc-font">${v.chinese}</span>
-      <span class="text-xs text-stone-600 font-semibold">· ${v.english}</span>
+      <span class="text-base font-extrabold text-stone-900 tc-font">${esc(v.chinese)}</span>
+      <span class="text-xs text-stone-600 font-semibold">· ${esc(v.english)}</span>
     </div>
   `).join('');
 
@@ -410,7 +298,7 @@ function renderScriptStep() {
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-3">
         <div class="flex items-center gap-2.5 flex-1 min-w-[200px]">
           <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
-          <input type="text" value="${s.title || `Scene ${idx + 1}`}" onchange="updateSceneText(${idx}, 'title', this.value)" class="font-bold text-stone-800 text-sm px-2.5 py-1 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 w-full" placeholder="Scene Title">
+          <input type="text" value="${esc(s.title || `Scene ${idx + 1}`)}" oninput="updateSceneText(${idx}, 'title', this.value)" class="font-bold text-stone-800 text-sm px-2.5 py-1 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 w-full" placeholder="Scene Title">
         </div>
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 text-xs text-stone-500 font-semibold">
@@ -424,10 +312,10 @@ function renderScriptStep() {
           </div>
           <div class="flex items-center gap-1.5 text-xs text-stone-500 font-semibold">
             <span>Duration:</span>
-            <input type="number" min="3" max="30" step="1" value="${s.duration_sec || 7}" onchange="updateSceneText(${idx}, 'duration_sec', this.value)" class="w-16 px-2 py-1 rounded-lg border border-stone-200 text-center font-bold text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
+            <input type="number" min="3" max="30" step="1" value="${esc(s.duration_sec || 7)}" onchange="updateSceneText(${idx}, 'duration_sec', this.value)" class="w-16 px-2 py-1 rounded-lg border border-stone-200 text-center font-bold text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
             <span>s</span>
           </div>
-          <span class="text-xs text-stone-400 font-medium">BG: <strong>${s.background}</strong></span>
+          <span class="text-xs text-stone-400 font-medium">BG: <strong>${esc(s.background)}</strong></span>
         </div>
       </div>
 
@@ -435,11 +323,11 @@ function renderScriptStep() {
       <div class="grid md:grid-cols-2 gap-4">
         <div>
           <label class="block text-[10px] font-extrabold text-stone-400 uppercase tracking-wider mb-1">Spoken Cantonese (Parentese)</label>
-          <input type="text" value="${s.cantonese}" onchange="updateSceneText(${idx}, 'cantonese', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 font-bold tc-font text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+          <input type="text" value="${esc(s.cantonese)}" oninput="updateSceneText(${idx}, 'cantonese', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 font-bold tc-font text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
         </div>
         <div>
           <label class="block text-[10px] font-extrabold text-stone-400 uppercase tracking-wider mb-1">English Translation</label>
-          <input type="text" value="${s.english}" onchange="updateSceneText(${idx}, 'english', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
+          <input type="text" value="${esc(s.english)}" oninput="updateSceneText(${idx}, 'english', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
         </div>
       </div>
     </div>
@@ -486,14 +374,14 @@ function renderStorybookStickersPalette() {
   if (!container) return;
   container.innerHTML = allStickers.map(st => `
     <div 
-      onclick="addStickerToActiveScene('${st.id}')"
+      onclick="addStickerToActiveScene('${arg(st.id)}')"
       draggable="true"
-      ondragstart="handleStickerPaletteDragStart(event, '${st.id}')"
-      title="${st.label || st.id} (Click or drag to place)"
+      ondragstart="handleStickerPaletteDragStart(event, '${arg(st.id)}')"
+      title="${esc(st.label || st.id)} (Click or drag to place)"
       class="p-1.5 bg-stone-50 hover:bg-amber-50 rounded-2xl border border-stone-200 hover:border-amber-400 cursor-pointer transition flex flex-col items-center justify-center gap-1 group shadow-xs hover:shadow-sm"
     >
-      <img src="/api/scene-director/stickers/render/${st.id}.png" class="h-10 w-auto object-contain pointer-events-none group-hover:scale-105 transition-transform" alt="${st.label || st.id}">
-      <span class="text-[9px] font-bold text-stone-700 text-center leading-tight truncate w-full px-1">${st.chinese || st.letter || st.number || st.label || st.id}</span>
+      <img src="/api/scene-director/stickers/render/${esc(encodeURIComponent(st.id))}.png" class="h-10 w-auto object-contain pointer-events-none group-hover:scale-105 transition-transform" alt="${esc(st.label || st.id)}">
+      <span class="text-[9px] font-bold text-stone-700 text-center leading-tight truncate w-full px-1">${esc(st.chinese || st.letter || st.number || st.label || st.id)}</span>
     </div>
   `).join('');
 }
@@ -554,15 +442,15 @@ function renderBackgroundPresets() {
     const isCore = bg.is_core !== false && coreIds.includes(bg.id);
     return `
       <div class="relative group/bg">
-        <button onclick="applyBackgroundToActiveScene('${bg.id}')" class="p-1.5 rounded-2xl border-2 transition text-left flex items-center gap-2 w-full ${
+        <button onclick="applyBackgroundToActiveScene('${arg(bg.id)}')" class="p-1.5 rounded-2xl border-2 transition text-left flex items-center gap-2 w-full ${
           isSelected ? 'border-amber-500 bg-amber-50 shadow-xs' : 'border-stone-200 hover:border-amber-300 bg-white'
         }">
-          <img src="${bg.url}" class="w-12 h-8 object-cover rounded-xl border border-stone-200 shrink-0">
-          <span class="text-[11px] font-bold text-stone-800 leading-tight truncate">${bg.name}</span>
+          <img src="${esc(safeURL(bg.url))}" class="w-12 h-8 object-cover rounded-xl border border-stone-200 shrink-0">
+          <span class="text-[11px] font-bold text-stone-800 leading-tight truncate">${esc(bg.name)}</span>
         </button>
         ${!isCore ? `
           <button 
-            onclick="event.stopPropagation(); deleteCustomBackground('${bg.id}')" 
+            onclick="event.stopPropagation(); deleteCustomBackground('${arg(bg.id)}')"
             title="Delete this custom background"
             class="opacity-0 group-hover/bg:opacity-100 transition-opacity absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center shadow-sm cursor-pointer z-10"
           >
@@ -625,8 +513,10 @@ let bgStudioState = {
   activeVersionIdx: 0,
   currentName: 'Custom Room'
 };
+let bgStudioGeneration = 0;
 
 function openBgStudioModal() {
+  if (!requireProject()) return;
   const modal = document.getElementById('modal-bg-studio');
   if (!modal) return;
   modal.classList.remove('hidden');
@@ -671,6 +561,9 @@ function setBgStudioRefine(text) {
 }
 
 async function generateBgStudioInitial() {
+  if (!requireProject()) return;
+  const project = currentProject;
+  const generation = ++bgStudioGeneration;
   const prompt = document.getElementById('bg-studio-initial-prompt')?.value.trim();
   if (!prompt) {
     showToast('Please describe the setting first!');
@@ -703,12 +596,17 @@ async function generateBgStudioInitial() {
       })
     });
     const data = await res.json();
+    if (project !== currentProject || generation !== bgStudioGeneration) return;
     if (data.status === 'preview_ready') {
       bgStudioState.versions = [{
         iteration: 1,
         label: 'v1: Initial Setting',
         prompt: prompt,
-        url: data.preview_url
+        url: safeURL(data.preview_url),
+        preview_id: data.preview_id,
+        sourcePrompt: prompt,
+        generation_method: data.generation_method,
+        history: []
       }];
       bgStudioState.activeVersionIdx = 0;
       updateBgStudioPreview();
@@ -728,6 +626,9 @@ async function generateBgStudioInitial() {
 }
 
 async function refineBgStudio() {
+  if (!requireProject()) return;
+  const project = currentProject;
+  const generation = bgStudioGeneration;
   const refineInput = document.getElementById('bg-studio-refine-input');
   const tweak = refineInput ? refineInput.value.trim() : '';
   if (!tweak) {
@@ -742,6 +643,9 @@ async function refineBgStudio() {
   }
 
   const iteration = bgStudioState.versions.length + 1;
+  const sourcePrompt = bgStudioState.initialPrompt;
+  const history = [...bgStudioState.history];
+  const name = bgStudioState.currentName;
   const loading = document.getElementById('bg-studio-loading');
   const loadingText = document.getElementById('bg-studio-loading-text');
   const btn = document.getElementById('btn-bg-studio-refine');
@@ -757,19 +661,24 @@ async function refineBgStudio() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: bgStudioState.currentName,
-        prompt: bgStudioState.initialPrompt,
-        history: bgStudioState.history,
+        name: name,
+        prompt: sourcePrompt,
+        history: history,
         iteration: iteration
       })
     });
     const data = await res.json();
+    if (project !== currentProject || generation !== bgStudioGeneration) return;
     if (data.status === 'preview_ready') {
       bgStudioState.versions.push({
         iteration: iteration,
         label: `v${iteration}: ${tweak.substring(0, 16)}...`,
         prompt: tweak,
-        url: data.preview_url
+        url: safeURL(data.preview_url),
+        preview_id: data.preview_id,
+        sourcePrompt: sourcePrompt,
+        generation_method: data.generation_method,
+        history: history
       });
       bgStudioState.activeVersionIdx = bgStudioState.versions.length - 1;
       updateBgStudioPreview();
@@ -795,7 +704,7 @@ function updateBgStudioPreview() {
   const img = document.getElementById('bg-studio-preview-img');
   if (img) img.src = cur.url;
   const badge = document.getElementById('bg-studio-preview-badge');
-  if (badge) badge.innerText = `✨ ${cur.label} (Preview)`;
+  if (badge) badge.innerText = `✨ ${cur.label} (${cur.generation_method === 'preset_transformation' ? 'Preset transformation preview' : 'Preview'})`;
   renderBgStudioVersions();
 }
 
@@ -812,7 +721,7 @@ function renderBgStudioVersions() {
         isSel ? 'bg-amber-500 text-white border-amber-600 shadow-sm' : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border-stone-200'
       }">
         <span>${isSel ? '👉' : '🖼️'}</span>
-        <span>${ver.label || 'v' + ver.iteration}</span>
+        <span>${esc(ver.label || 'v' + ver.iteration)}</span>
       </button>
     `;
   }).join('');
@@ -830,52 +739,66 @@ function renderBgStudioHistory() {
     list.innerHTML = '<div class="text-stone-400 italic text-center py-2">Generate an initial setting first to start refining!</div>';
     return;
   }
-  let html = `<div class="p-1.5 bg-amber-50/80 rounded-lg text-amber-900 font-semibold text-[10px]"><strong>Base:</strong> ${bgStudioState.initialPrompt}</div>`;
+  let html = `<div class="p-1.5 bg-amber-50/80 rounded-lg text-amber-900 font-semibold text-[10px]"><strong>Base:</strong> ${esc(bgStudioState.initialPrompt)}</div>`;
   bgStudioState.history.forEach((t, i) => {
-    html += `<div class="p-1.5 bg-white rounded-lg text-stone-800 border border-stone-200/60 text-[10px]"><strong>Tweak ${i + 1}:</strong> ${t}</div>`;
+    html += `<div class="p-1.5 bg-white rounded-lg text-stone-800 border border-stone-200/60 text-[10px]"><strong>Tweak ${i + 1}:</strong> ${esc(t)}</div>`;
   });
   list.innerHTML = html;
   list.scrollTop = list.scrollHeight;
 }
 
 async function applyBgStudioToCurrentScene() {
+  if (!requireProject()) return;
+  const sceneIdx = activeStageSceneIdx;
+  const scene = currentProject.scenes[sceneIdx];
+  const operation = StudioState.capture(currentProject, scene);
   const cur = bgStudioState.versions[bgStudioState.activeVersionIdx];
-  if (!cur) return;
+  if (!cur?.preview_id) { showToast('Generate and review a background preview first.'); return; }
   
   const saveRes = await fetch('/api/characters/save_background', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       name: bgStudioState.currentName || 'Custom Scene',
-      prompt: bgStudioState.initialPrompt,
-      iteration: cur.iteration
+      prompt: cur.sourcePrompt,
+      iteration: cur.iteration,
+      preview_id: cur.preview_id,
+      history: cur.history
     })
   });
   const data = await saveRes.json();
   if (data.status === 'saved') {
     await loadBackgroundsList();
-    applyBackgroundToActiveScene(data.background_id);
+    if (!StudioState.matches(operation, currentProject)) return;
+    scene.background = data.background_id;
+    renderBackgroundPresets();
+    renderStageScene(activeStageSceneIdx);
     closeBgStudioModal();
-    showToast(`✓ Applied "${data.name}" to Scene ${activeStageSceneIdx + 1}!`);
+    showToast(`✓ Applied "${data.name}" to Scene ${sceneIdx + 1}!`);
   }
 }
 
 async function applyBgStudioToAllScenes() {
+  if (!requireProject()) return;
+  const operation = StudioState.capture(currentProject);
   const cur = bgStudioState.versions[bgStudioState.activeVersionIdx];
-  if (!cur) return;
+  if (!cur?.preview_id) { showToast('Generate and review a background preview first.'); return; }
   
   const saveRes = await fetch('/api/characters/save_background', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       name: bgStudioState.currentName || 'Custom Scene',
-      prompt: bgStudioState.initialPrompt,
-      iteration: cur.iteration
+      prompt: cur.sourcePrompt,
+      iteration: cur.iteration,
+      preview_id: cur.preview_id,
+      history: cur.history
     })
   });
   const data = await saveRes.json();
   if (data.status === 'saved') {
     await loadBackgroundsList();
+    if (!StudioState.matches(operation, currentProject)) return;
     currentProject.scenes.forEach(s => s.background = data.background_id);
     renderStageScene(activeStageSceneIdx);
     closeBgStudioModal();
@@ -884,8 +807,9 @@ async function applyBgStudioToAllScenes() {
 }
 
 async function saveBgStudioPreset() {
+  if (!requireProject()) return;
   const cur = bgStudioState.versions[bgStudioState.activeVersionIdx];
-  if (!cur) return;
+  if (!cur?.preview_id) { showToast('Generate and review a background preview first.'); return; }
   
   const customName = prompt('Enter a name for this custom background preset:', bgStudioState.currentName || 'My Custom Room');
   if (!customName) return;
@@ -895,8 +819,10 @@ async function saveBgStudioPreset() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       name: customName,
-      prompt: bgStudioState.initialPrompt,
-      iteration: cur.iteration
+      prompt: cur.sourcePrompt,
+      iteration: cur.iteration,
+      preview_id: cur.preview_id,
+      history: cur.history
     })
   });
   const data = await saveRes.json();
@@ -954,8 +880,8 @@ function renderStageScene(idx) {
     }
 
     const cScale = c.scale !== undefined ? parseFloat(c.scale) : 1.0;
-    const xPos = c.x_percent !== undefined ? c.x_percent : (c.position === 'left' ? 30 : (c.position === 'right' ? 70 : 50));
-    const yPos = c.y_percent !== undefined ? c.y_percent : 88;
+    const xPos = c.x_percent !== undefined ? Number(c.x_percent) : (c.position === 'left' ? 30 : (c.position === 'right' ? 70 : 50));
+    const yPos = c.y_percent !== undefined ? Number(c.y_percent) : 88;
     const flipStyle = c.flip ? 'scaleX(-1)' : 'scaleX(1)';
 
     return `
@@ -969,7 +895,7 @@ function renderStageScene(idx) {
         <!-- Floating Action Bubble with Size & Pose Controls (with bridge padding to prevent mouseout) -->
         <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-11 pt-2 bg-transparent z-30 pointer-events-auto shrink-0">
           <div class="bg-white/95 backdrop-blur-xs rounded-xl shadow-lg border border-amber-300 px-2 py-1 flex items-center gap-1.5 whitespace-nowrap">
-            <span class="text-[10px] font-bold text-stone-800">${charMeta.name.split('/')[0].trim()}</span>
+            <span class="text-[10px] font-bold text-stone-800">${esc(charMeta.name.split('/')[0].trim())}</span>
             <button onclick="event.stopPropagation(); changeCharScale(${idx}, ${cIdx}, -0.1)" title="Smaller Size" class="text-xs px-1.5 py-0.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold">🔍-</button>
             <span class="text-[9px] font-mono text-stone-600 font-extrabold select-none">${Math.round(cScale * 100)}%</span>
             <button onclick="event.stopPropagation(); changeCharScale(${idx}, ${cIdx}, 0.1)" title="Larger Size" class="text-xs px-1.5 py-0.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold">🔍+</button>
@@ -981,10 +907,10 @@ function renderStageScene(idx) {
 
         <!-- Sprite Image -->
         <img 
-          src="${spriteUrl}" 
+          src="${esc(safeURL(spriteUrl))}"
           class="h-full object-contain filter drop-shadow-md select-none pointer-events-none" 
           style="transform: ${flipStyle};"
-          alt="${c.name}"
+          alt="${esc(c.name)}"
         >
       </div>
     `;
@@ -998,9 +924,10 @@ function renderStageScene(idx) {
     stickerLayer.innerHTML = activeStickers.map((s, sIdx) => {
       const sScale = s.scale !== undefined ? parseFloat(s.scale) : 1.0;
       const sRot = s.rotation_deg !== undefined ? parseFloat(s.rotation_deg) : (s.rotation !== undefined ? parseFloat(s.rotation) : 0);
-      const xPos = s.x_percent !== undefined ? s.x_percent : 50;
-      const yPos = s.y_percent !== undefined ? s.y_percent : 24;
-      const stickerId = s.id || s.sticker_id || 'badge_thank_you';
+      const xPos = s.x_percent !== undefined ? Number(s.x_percent) : 50;
+      const yPos = s.y_percent !== undefined ? Number(s.y_percent) : 24;
+      const stickerId = s.id || s.sticker_id;
+      if (!stickerId) return '';
 
       return `
         <div 
@@ -1023,9 +950,9 @@ function renderStageScene(idx) {
 
           <!-- Sticker Graphic -->
           <img 
-            src="/api/scene-director/stickers/render/${stickerId}.png" 
+            src="/api/scene-director/stickers/render/${esc(encodeURIComponent(stickerId))}.png"
             class="h-16 w-auto max-w-[140px] object-contain filter drop-shadow-md select-none pointer-events-none" 
-            alt="${s.content || stickerId}"
+            alt="${esc(s.content || stickerId)}"
           >
         </div>
       `;
@@ -1045,10 +972,10 @@ function renderStageScene(idx) {
       <div class="p-2.5 bg-stone-50 rounded-2xl border border-stone-200 flex flex-col gap-2">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">
-            <img src="/api/characters/sprite/${spriteFile}" class="w-8 h-8 object-contain rounded-lg bg-white border border-stone-200">
+            <img src="/api/characters/sprite/${esc(encodeURIComponent(spriteFile))}" class="w-8 h-8 object-contain rounded-lg bg-white border border-stone-200">
             <div>
-              <div class="font-bold text-xs text-stone-800">${charMeta.name.split('/')[0].trim()}</div>
-              <div class="text-[9px] text-stone-400 font-medium">Position: (${c.x_percent || 50}%, ${c.y_percent || 88}%) · Layer ${cIdx + 1}</div>
+              <div class="font-bold text-xs text-stone-800">${esc(charMeta.name.split('/')[0].trim())}</div>
+              <div class="text-[9px] text-stone-400 font-medium">Position: (${esc(c.x_percent || 50)}%, ${esc(c.y_percent || 88)}%) · Layer ${cIdx + 1}</div>
             </div>
           </div>
           <div class="flex items-center gap-1">
@@ -1056,7 +983,7 @@ function renderStageScene(idx) {
             <button onclick="moveCharLayer(${idx}, ${cIdx}, 1)" title="Move Layer Forward" class="w-6 h-6 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center">▲</button>
             <button onclick="toggleCharFlip(${idx}, ${cIdx})" title="Flip Direction" class="w-6 h-6 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center justify-center">↔️</button>
             <select onchange="updateCharacterPose(${idx}, ${cIdx}, this.value)" class="text-xs font-semibold px-2 py-1 rounded-xl border border-stone-300 bg-white focus:outline-none">
-              ${poses.map(p => `<option value="${p.id}" ${p.id === c.pose ? 'selected' : ''}>${p.label}</option>`).join('')}
+              ${poses.map(p => `<option value="${esc(p.id)}" ${p.id === c.pose ? 'selected' : ''}>${esc(p.label)}</option>`).join('')}
             </select>
             <button onclick="removeCharacterFromScene(${idx}, ${cIdx})" title="Remove from scene" class="w-6 h-6 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold flex items-center justify-center">✕</button>
           </div>
@@ -1265,6 +1192,8 @@ function removeStickerFromScene(sceneIdx, sIdx) {
 // ========================================================
 
 async function triggerAutoDirectAllScenes(options = {}) {
+  if (!requireProject()) return;
+  const operation = StudioState.capture(currentProject);
   const btn = document.getElementById('btn-auto-direct-all');
   if (btn) {
     btn.innerHTML = '<span class="animate-spin">⏳</span> AI Directing Scenes...';
@@ -1278,6 +1207,7 @@ async function triggerAutoDirectAllScenes(options = {}) {
       body: JSON.stringify({ project: currentProject })
     });
     const data = await res.json();
+    if (!StudioState.matches(operation, currentProject)) return;
     if (data.status === 'success' && data.scenes) {
       data.scenes.forEach((dirScene, i) => {
         if (currentProject.scenes[i]) {
@@ -1307,8 +1237,10 @@ async function triggerAutoDirectAllScenes(options = {}) {
 }
 
 async function triggerAutoDirectSingleScene(sceneIdx) {
+  if (!requireProject()) return;
   const scene = currentProject.scenes[sceneIdx];
   if (!scene) return;
+  const operation = StudioState.capture(currentProject, scene);
 
   pushCopilotUndoState(sceneIdx);
 
@@ -1325,12 +1257,13 @@ async function triggerAutoDirectSingleScene(sceneIdx) {
       })
     });
     const data = await res.json();
+    if (!StudioState.matches(operation, currentProject)) return;
     if (data.status === 'success' && data.plan) {
       scene.background = data.plan.background;
       scene.characters = data.plan.characters;
       scene.stickers = data.plan.stickers;
       renderBackgroundPresets();
-      renderStageScene(sceneIdx);
+      renderStageScene(activeStageSceneIdx);
       showToast(`✨ Re-directed Scene ${sceneIdx + 1}!`);
     }
   } catch (err) {
@@ -1342,8 +1275,12 @@ function pushCopilotUndoState(sceneIdx) {
   const scene = currentProject.scenes[sceneIdx];
   if (!scene) return;
   copilotUndoStack.push({
+    project: currentProject,
+    scene: scene,
     sceneIdx: sceneIdx,
-    sceneSnapshot: JSON.parse(JSON.stringify(scene))
+    sceneSnapshot: StudioState.clone({
+      background: scene.background, characters: scene.characters, stickers: scene.stickers
+    })
   });
   const undoBtn = document.getElementById('btn-copilot-undo');
   if (undoBtn) undoBtn.disabled = false;
@@ -1352,9 +1289,10 @@ function pushCopilotUndoState(sceneIdx) {
 function undoCopilotTweak() {
   if (copilotUndoStack.length === 0) return;
   const lastState = copilotUndoStack.pop();
-  currentProject.scenes[lastState.sceneIdx] = lastState.sceneSnapshot;
+  if (lastState.project !== currentProject || currentProject.scenes[lastState.sceneIdx] !== lastState.scene) return;
+  Object.assign(currentProject.scenes[lastState.sceneIdx], lastState.sceneSnapshot);
   renderBackgroundPresets();
-  renderStageScene(lastState.sceneIdx);
+  renderStageScene(activeStageSceneIdx);
   showToast("↩️ Reverted last scene change");
 
   const undoBtn = document.getElementById('btn-copilot-undo');
@@ -1364,6 +1302,7 @@ function undoCopilotTweak() {
 }
 
 async function executeCopilotTweak(promptOverride) {
+  if (!requireProject()) return;
   const inputEl = document.getElementById('copilot-input');
   const instruction = (promptOverride || inputEl?.value || '').trim();
   if (!instruction) {
@@ -1377,8 +1316,10 @@ async function executeCopilotTweak(promptOverride) {
     btn.disabled = true;
   }
 
-  const scene = currentProject.scenes[activeStageSceneIdx];
-  pushCopilotUndoState(activeStageSceneIdx);
+  const sceneIdx = activeStageSceneIdx;
+  const scene = currentProject.scenes[sceneIdx];
+  const operation = StudioState.capture(currentProject, scene);
+  pushCopilotUndoState(sceneIdx);
 
   try {
     const res = await fetch('/api/scene-director/copilot-tweak', {
@@ -1390,10 +1331,11 @@ async function executeCopilotTweak(promptOverride) {
       })
     });
     const data = await res.json();
+    if (!StudioState.matches(operation, currentProject)) return;
     if (data.status === 'success' && data.scene) {
-      currentProject.scenes[activeStageSceneIdx].background = data.scene.background;
-      currentProject.scenes[activeStageSceneIdx].characters = data.scene.characters;
-      currentProject.scenes[activeStageSceneIdx].stickers = data.scene.stickers;
+      scene.background = data.scene.background;
+      scene.characters = data.scene.characters;
+      scene.stickers = data.scene.stickers;
 
       renderBackgroundPresets();
       renderStageScene(activeStageSceneIdx);
@@ -1506,14 +1448,14 @@ function renderDraggableFamilyRoster() {
   container.innerHTML = allCharacters.map(char => `
     <div 
       draggable="true" 
-      ondragstart="handleRosterDragStart(event, '${char.id}')"
-      onclick="clickToDropFamilyMember('${char.id}')"
+      ondragstart="handleRosterDragStart(event, '${arg(char.id)}')"
+      onclick="clickToDropFamilyMember('${arg(char.id)}')"
       class="p-2 rounded-2xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50/60 transition flex items-center gap-2 cursor-grab active:cursor-grabbing select-none"
     >
-      <img src="${char.sprite_url}" class="w-8 h-8 object-contain rounded-lg bg-white pointer-events-none">
+      <img src="${esc(safeURL(char.sprite_url))}" class="w-8 h-8 object-contain rounded-lg bg-white pointer-events-none">
       <div>
-        <div class="font-bold text-[11px] text-stone-800 leading-tight">${char.name.split('/')[0].trim()}</div>
-        <div class="text-[9px] text-stone-400 leading-tight">${char.role}</div>
+        <div class="font-bold text-[11px] text-stone-800 leading-tight">${esc(char.name.split('/')[0].trim())}</div>
+        <div class="text-[9px] text-stone-400 leading-tight">${esc(char.role)}</div>
       </div>
     </div>
   `).join('');
@@ -1541,8 +1483,11 @@ function clickToDropFamilyMember(charId) {
 
 // AI Custom Outfit & Pose Studio
 let activeOutfitModalChar = 'levi';
+let outfitPreview = null;
+let outfitRequest = 0;
 
 function openCustomOutfitModal() {
+  if (!requireProject()) return;
   const modal = document.getElementById('modal-custom-outfit');
   if (!modal) return;
   modal.classList.remove('hidden');
@@ -1553,11 +1498,11 @@ function openCustomOutfitModal() {
     picker.innerHTML = allCharacters.map(char => {
       const isSel = char.id === (activeOutfitModalChar || 'levi');
       return `
-        <button type="button" onclick="selectOutfitModalChar('${char.id}')" id="opt-char-${char.id}" class="p-2 rounded-2xl border-2 transition flex flex-col items-center gap-1 shrink-0 ${
+        <button type="button" onclick="selectOutfitModalChar('${arg(char.id)}')" id="opt-char-${esc(char.id)}" class="p-2 rounded-2xl border-2 transition flex flex-col items-center gap-1 shrink-0 ${
           isSel ? 'border-amber-500 bg-amber-50 shadow-xs' : 'border-stone-200 hover:border-amber-300 bg-stone-50'
         }">
-          <img src="/api/characters/sprite/${char.id}_default.png" class="w-9 h-9 object-contain rounded-lg bg-white">
-          <span class="text-[10px] font-extrabold text-stone-800 truncate w-full text-center">${char.name.split('/')[0].trim()}</span>
+          <img src="/api/characters/sprite/${esc(encodeURIComponent(char.id))}_default.png" class="w-9 h-9 object-contain rounded-lg bg-white">
+          <span class="text-[10px] font-extrabold text-stone-800 truncate w-full text-center">${esc(char.name.split('/')[0].trim())}</span>
         </button>
       `;
     }).join('');
@@ -1572,6 +1517,8 @@ function closeCustomOutfitModal() {
 }
 
 function selectOutfitModalChar(charId) {
+  outfitPreview = null;
+  outfitRequest++;
   activeOutfitModalChar = charId;
   const input = document.getElementById('modal-outfit-char');
   if (input) input.value = charId;
@@ -1605,9 +1552,7 @@ function selectOutfitModalChar(charId) {
       chips = [
         { label: '🍌 Eating Sweet Yellow Banana', text: 'eating sweet yellow banana' },
         { label: '🎾 Playing with Red Ball', text: 'playing with red ball' },
-        { label: '🥳 Birthday Party Hat', text: 'wearing colorful birthday party hat' },
-        { label: '😴 Sleeping on Soft Rug', text: 'sleeping peacefully on soft rug' },
-        { label: '🦸 Superhero Cape', text: 'wearing red superhero cape' }
+        { label: '😴 Sleeping on Soft Rug', text: 'sleeping peacefully on soft rug' }
       ];
     } else if (charId === 'levi') {
       chips = [
@@ -1615,7 +1560,6 @@ function selectOutfitModalChar(charId) {
         { label: '👋 Waving in Green Polo', text: 'wearing green polo waving hello' },
         { label: '😴 Star Pajamas Sleeping', text: 'sleeping in cozy star pajamas' },
         { label: '🚗 Red Toy Car', text: 'crouched playing with red toy car' },
-        { label: '🦸 Superhero Cape', text: 'wearing red superhero cape' },
         { label: '🎈 Yellow Balloon', text: 'holding bright yellow balloon' }
       ];
     } else if (charId === 'luca') {
@@ -1651,6 +1595,9 @@ function setOutfitPreset(text) {
 }
 
 async function generateOutfitPreview() {
+  if (!requireProject()) return;
+  const request = ++outfitRequest;
+  outfitPreview = null;
   const charId = document.getElementById('modal-outfit-char')?.value || activeOutfitModalChar;
   const promptText = document.getElementById('modal-outfit-prompt')?.value.trim();
   if (!promptText) {
@@ -1676,10 +1623,13 @@ async function generateOutfitPreview() {
       body: JSON.stringify({ character_id: charId, prompt: promptText })
     });
     const data = await res.json();
+    if (request !== outfitRequest || charId !== activeOutfitModalChar
+        || promptText !== document.getElementById('modal-outfit-prompt')?.value.trim()) return;
     if (data.status === 'preview_ready') {
-      if (img) img.src = data.preview_url;
+      outfitPreview = { character_id: charId, prompt: promptText, preview_id: data.preview_id };
+      if (img) img.src = safeURL(data.preview_url);
       if (badge) {
-        badge.innerText = '✅ Preview Generated';
+        badge.innerText = data.generation_method === 'preset_transformation' ? '✅ Preset Transformation Preview' : '✅ Preview Generated';
         badge.className = 'text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full';
       }
     }
@@ -1695,10 +1645,18 @@ async function generateOutfitPreview() {
 }
 
 async function saveAndEquipCustomOutfit() {
+  if (!requireProject()) return;
+  const sceneIdx = activeStageSceneIdx;
+  const scene = currentProject.scenes[sceneIdx];
+  const operation = StudioState.capture(currentProject, scene);
   const charId = document.getElementById('modal-outfit-char')?.value || activeOutfitModalChar;
   const promptText = document.getElementById('modal-outfit-prompt')?.value.trim();
   if (!promptText) {
     alert('Please enter an outfit prompt first!');
+    return;
+  }
+  if (!outfitPreview?.preview_id || outfitPreview.character_id !== charId || outfitPreview.prompt !== promptText) {
+    showToast('Generate and review a preview for this character and prompt first.');
     return;
   }
 
@@ -1710,7 +1668,7 @@ async function saveAndEquipCustomOutfit() {
     const res = await fetch('/api/characters/save_outfit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ character_id: charId, prompt: promptText })
+      body: JSON.stringify({ character_id: charId, prompt: promptText, preview_id: outfitPreview.preview_id })
     });
     const data = await res.json();
 
@@ -1724,7 +1682,7 @@ async function saveAndEquipCustomOutfit() {
       }
 
       // 2. Automatically equip this new outfit/pose to the active scene
-      const scene = currentProject.scenes[activeStageSceneIdx];
+      if (!StudioState.matches(operation, currentProject)) return;
       if (scene) {
         let existing = scene.characters.find(c => c.name === charId);
         if (existing) {
@@ -1750,7 +1708,7 @@ async function saveAndEquipCustomOutfit() {
       // Clean success notification
       const toast = document.createElement('div');
       toast.className = 'fixed bottom-6 right-6 z-50 bg-stone-900 text-white font-bold text-xs px-5 py-3 rounded-2xl shadow-xl border border-amber-400/40 flex items-center gap-2 animate-bounce';
-      toast.innerHTML = `<span>🎉</span> Added & equipped <strong>${data.label}</strong> to <strong>${charId.toUpperCase()}</strong>!`;
+      toast.innerHTML = `<span>🎉</span> Added & equipped <strong>${esc(data.label)}</strong> to <strong>${esc(charId.toUpperCase())}</strong>!`;
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 4000);
     }
@@ -1768,7 +1726,7 @@ let mediaRecorder;
 let audioChunks = [];
 
 // Parent voice cloning (Gemini voice replication) state
-let parentVoiceState = { available: false, voices: [], selectedVoiceId: null };
+let parentVoiceState = { ready: false, available: false, voices: [], selectedVoiceId: null };
 
 function updateSampleFileName(input) {
   const label = document.getElementById('sample-file-name');
@@ -1781,6 +1739,8 @@ function updateConsentFileName(input) {
 }
 
 async function refreshVoiceCloneStatus() {
+  const project = currentProject;
+  parentVoiceState.ready = false;
   const statusEl = document.getElementById('voice-clone-status');
   const selectEl = document.getElementById('cloned-voice-select');
   const cloneBtn = document.getElementById('btn-clone-voice');
@@ -1789,26 +1749,28 @@ async function refreshVoiceCloneStatus() {
   try {
     const res = await fetch('/api/audio/voice-clone/status');
     const data = await res.json();
+    if (project !== currentProject) return;
+    parentVoiceState.ready = true;
     parentVoiceState.available = !!data.available;
     parentVoiceState.voices = data.voices || [];
+    if (useBox) { useBox.checked = !!currentProject.voice_options?.use_cloned; useBox.disabled = false; }
     selectEl.innerHTML = parentVoiceState.voices.length
-      ? parentVoiceState.voices.map(v => `<option value="${v.voice_id}">${v.name} (cloned)</option>`).join('')
+      ? parentVoiceState.voices.map(v => `<option value="${esc(v.voice_id)}">${esc(v.name)} (cloned)</option>`).join('')
       : '<option value="">No cloned voice yet</option>';
     if (parentVoiceState.voices.length) {
-      parentVoiceState.selectedVoiceId = parentVoiceState.voices[parentVoiceState.voices.length - 1].voice_id;
+      parentVoiceState.selectedVoiceId = currentProject.voice_options?.voice_id || parentVoiceState.selectedVoiceId;
       selectEl.value = parentVoiceState.selectedVoiceId;
     }
     if (!data.available) {
-      statusEl.innerText = '⚠️ Gemini API key not set — add it in Settings (or GEMINI_API_KEY in your .env) to enable cloning. The built-in Cantonese AI voices still work.';
+      statusEl.innerText = data.reason || 'Parent voice cloning is unavailable. Select a built-in voice explicitly to continue.';
       statusEl.className = 'text-[11px] text-amber-600 font-bold';
       if (cloneBtn) cloneBtn.disabled = true;
-      if (useBox) { useBox.checked = false; useBox.disabled = true; }
     } else {
       if (parentVoiceState.voices.length) {
-        const activeName = parentVoiceState.voices[parentVoiceState.voices.length - 1].name;
-        statusEl.innerText = `✅ Active Voice Model: ${activeName} is ready! "Use parent voice" is active for 1-click generation.`;
+        const activeName = parentVoiceState.voices.find(v => v.voice_id === parentVoiceState.selectedVoiceId)?.name;
+        statusEl.innerText = activeName ? `✅ Selected voice: ${activeName}` : 'Choose a saved parent voice.';
         statusEl.className = 'text-[11px] text-emerald-600 font-bold';
-        if (useBox) { useBox.checked = true; useBox.disabled = false; }
+        if (useBox) { useBox.checked = !!currentProject.voice_options?.use_cloned; useBox.disabled = false; }
       } else {
         statusEl.innerText = '✅ Gemini connected — upload a 10-30s voice sample + consent clip to train a new model.';
         statusEl.className = 'text-[11px] text-emerald-600 font-bold';
@@ -1817,6 +1779,9 @@ async function refreshVoiceCloneStatus() {
       if (cloneBtn) cloneBtn.disabled = false;
     }
   } catch (e) {
+    if (project !== currentProject) return;
+    parentVoiceState.ready = false;
+    parentVoiceState.available = false;
     console.error(e);
     statusEl.innerText = 'Could not reach the voice-clone service.';
   }
@@ -1824,9 +1789,26 @@ async function refreshVoiceCloneStatus() {
 
 function selectClonedVoice(voiceId) {
   parentVoiceState.selectedVoiceId = voiceId || null;
+  updateVoiceOptions();
+}
+
+function updateVoiceOptions() {
+  const next = {
+    voice_id: parentVoiceState.selectedVoiceId,
+    use_cloned: !!document.getElementById('use-cloned-voice')?.checked
+  };
+  if (JSON.stringify(next) === JSON.stringify(currentProject.voice_options)) return;
+  currentProject.voice_options = next;
+  currentProject.scenes.forEach(scene => {
+    delete scene.audio_url; delete scene.audio_fingerprint; delete scene.voice_provenance;
+  });
+  delete currentProject.master_audio_url;
+  renderAudioStep();
 }
 
 async function cloneParentVoice() {
+  if (!requireProject()) return;
+  const project = currentProject;
   const btn = document.getElementById('btn-clone-voice');
   const statusEl = document.getElementById('voice-clone-status');
   const sampleInput = document.getElementById('sample-file-input');
@@ -1834,8 +1816,8 @@ async function cloneParentVoice() {
   const sampleFile = sampleInput && sampleInput.files ? sampleInput.files[0] : null;
   const consentFile = consentInput && consentInput.files ? consentInput.files[0] : null;
   
-  if (!consentFile) {
-    statusEl.innerText = '⚠️ Please attach the consent recording saying word for word: "I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model."';
+  if (!sampleFile || !consentFile) {
+    statusEl.innerText = '⚠️ Attach both a voice sample and the consent recording: "I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model."';
     statusEl.className = 'text-[11px] text-amber-600 font-bold';
     return;
   }
@@ -1847,14 +1829,18 @@ async function cloneParentVoice() {
   try {
     const fd = new FormData();
     fd.append('name', 'Dad (Chishing)');
+    fd.append('project_id', currentProject.id);
     if (sampleFile) fd.append('audio_file', sampleFile);
     fd.append('consent_file', consentFile);
     const res = await fetch('/api/audio/voice-clone/create', { method: 'POST', body: fd });
     const data = await res.json();
+    if (project !== currentProject) return;
     if (res.ok && data.status === 'success') {
       await refreshVoiceCloneStatus();
+      if (project !== currentProject) return;
+      selectClonedVoice(data.voice_id);
       const useBox = document.getElementById('use-cloned-voice');
-      if (useBox && !useBox.disabled) useBox.checked = true;
+      if (useBox && !useBox.disabled) { useBox.checked = true; updateVoiceOptions(); }
       statusEl.innerText = `🎉 Successfully cloned voice model "${data.name}"!`;
       statusEl.className = 'text-[11px] text-emerald-600 font-bold';
     } else {
@@ -1863,7 +1849,7 @@ async function cloneParentVoice() {
     }
   } catch (e) {
     console.error(e);
-    statusEl.innerText = '❌ Cloning request failed — please check server logs.';
+    statusEl.innerText = `❌ ${e.message}`;
     statusEl.className = 'text-[11px] text-rose-500 font-bold';
   } finally {
     btn.innerHTML = '<span>🧬</span> Train New Voice Model';
@@ -1872,32 +1858,41 @@ async function cloneParentVoice() {
 }
 
 function useClonedParentVoice() {
-  const useBox = document.getElementById('use-cloned-voice');
-  return !!(useBox && useBox.checked && parentVoiceState.selectedVoiceId && parentVoiceState.available);
+  const options = currentProject.voice_options || {};
+  if (!options.use_cloned) return false;
+  if (!parentVoiceState.ready) {
+    throw new Error('Parent voice availability is still loading. Please wait; no fallback was used.');
+  }
+  if (!options.voice_id || !parentVoiceState.available
+      || !parentVoiceState.voices.some(v => v.voice_id === options.voice_id)) {
+    throw new Error('Selected parent voice is unavailable. Choose a supported voice; no fallback was used.');
+  }
+  return true;
 }
 
 function renderAudioStep() {
   const container = document.getElementById('audio-scenes-list');
   container.innerHTML = currentProject.scenes.map((s, idx) => {
-    const defaultAudio = s.audio_url || `/api/audio/clip/scene_${String(idx + 1).padStart(2, '0')}_voice.wav`;
+    const defaultAudio = s.audio_url || '';
 
     return `
       <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
         <div class="flex items-center justify-between border-b border-stone-100 pb-2">
-          <span class="font-extrabold text-xs text-stone-400 uppercase tracking-wider">Scene ${idx + 1} Teleprompter · ${s.title}</span>
+          <span class="font-extrabold text-xs text-stone-400 uppercase tracking-wider">Scene ${idx + 1} Teleprompter · ${esc(s.title)}</span>
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold text-stone-600">Voice Persona:</span>
             <select id="persona-select-${idx}" onchange="updateSceneSpeaker(${idx}, this.value)" class="text-xs font-bold px-2.5 py-1 rounded-xl border border-stone-200 bg-stone-50">
               <option value="dad" ${s.speaker === 'Dad' ? 'selected' : ''}>👨 Warm Dad (Wan Lung)</option>
               <option value="mom" ${s.speaker === 'Mom' ? 'selected' : ''}>👩 Gentle Mom (Hiu Maan)</option>
               <option value="child" ${s.speaker === 'Child' ? 'selected' : ''}>🧒 Cheerful Child (Hiu Gaai)</option>
+              <option value="narrator" ${s.speaker === 'Narrator' ? 'selected' : ''}>Narrator</option>
             </select>
           </div>
         </div>
 
         <div class="bg-amber-50/60 rounded-2xl p-4 text-center space-y-1">
-          <div class="text-xl font-extrabold text-stone-900 tc-font tracking-wide">${s.cantonese}</div>
-          <div class="text-xs text-stone-600 font-medium">"${s.english}"</div>
+          <div class="text-xl font-extrabold text-stone-900 tc-font tracking-wide">${esc(s.cantonese)}</div>
+          <div class="text-xs text-stone-600 font-medium">"${esc(s.english)}"</div>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
@@ -1911,9 +1906,9 @@ function renderAudioStep() {
             <button id="rec-btn-${idx}" onclick="toggleRecord(${idx})" class="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
               <span>🎤</span> Record My Voice
             </button>
-            <span id="rec-status-${idx}" class="text-[11px] text-emerald-600 font-bold">● Clean Voice Ready</span>
+            <span id="rec-status-${idx}" class="text-[11px] text-emerald-600 font-bold">${defaultAudio ? '● Voice Ready' : 'Generate or record narration'}</span>
           </div>
-          <audio id="audio-preview-${idx}" controls class="h-8 max-w-[220px]" src="${defaultAudio}"></audio>
+          <audio id="audio-preview-${idx}" controls class="h-8 max-w-[220px]" ${defaultAudio ? `src="${esc(safeURL(defaultAudio))}"` : ''}></audio>
         </div>
       </div>
     `;
@@ -1923,13 +1918,17 @@ function renderAudioStep() {
 
 function updateSceneSpeaker(idx, val) {
   if (currentProject.scenes[idx]) {
-    currentProject.scenes[idx].speaker = val === 'mom' ? 'Mom' : (val === 'child' ? 'Child' : 'Dad');
+    currentProject.scenes[idx].speaker = val === 'mom' ? 'Mom' : (val === 'child' ? 'Child' : val === 'narrator' ? 'Narrator' : 'Dad');
+    renderAudioStep();
   }
 }
 
 async function generateSingleVoiceAI(sceneIdx) {
+  if (!requireProject()) return;
   const scene = currentProject.scenes[sceneIdx];
   if (!scene) return;
+  const operation = StudioState.capture(currentProject, scene);
+  const voiceOptions = StudioState.fingerprint(currentProject.voice_options);
 
   const btn = document.getElementById(`ai-tts-btn-${sceneIdx}`);
   const status = document.getElementById(`rec-status-${sceneIdx}`);
@@ -1942,23 +1941,27 @@ async function generateSingleVoiceAI(sceneIdx) {
     const cloned = useClonedParentVoice();
     const url = cloned ? '/api/audio/voice-clone/synthesize' : '/api/audio/tts/scene';
     const payload = cloned
-      ? { scene_idx: sceneIdx + 1, text: scene.cantonese, voice_id: parentVoiceState.selectedVoiceId }
-      : { scene_idx: sceneIdx + 1, text: scene.cantonese, persona: persona };
+      ? { scene_idx: scene.scene_number || sceneIdx + 1, text: scene.cantonese, voice_id: currentProject.voice_options.voice_id }
+      : { scene_idx: scene.scene_number || sceneIdx + 1, text: scene.cantonese, persona: persona };
+    payload.project_id = operation.project.id;
+    payload.duration_sec = scene.duration_sec;
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
     const data = await res.json();
+    if (!StudioState.matches(operation, currentProject)
+        || voiceOptions !== StudioState.fingerprint(currentProject.voice_options)) return;
     if (data.status === 'success') {
+      StudioState.validateAudio(currentProject, data);
       scene.audio_url = data.audio_url;
-      if (data.duration) {
-        scene.duration_sec = Math.max(6, Math.ceil(data.duration + 1.2));
-      }
+      if (data.voice_provenance) scene.voice_provenance = data.voice_provenance;
+      scene.duration_sec = data.duration_sec;
       const audioEl = document.getElementById(`audio-preview-${sceneIdx}`);
-      audioEl.src = data.audio_url;
-      audioEl.play().catch(() => {});
-      status.innerText = `✨ AI Voice (${data.duration.toFixed(1)}s, Scene: ${scene.duration_sec}s) Ready!`;
+      if (data.audio_url) { audioEl.src = data.audio_url; audioEl.play().catch(() => {}); }
+      else audioEl.removeAttribute('src');
+      status.innerText = data.audio_url ? `✨ AI Voice (${Number(data.duration || 0).toFixed(1)}s, Scene: ${scene.duration_sec}s) Ready!` : 'Silent scene — no narration generated.';
       status.className = 'text-[11px] text-emerald-600 font-bold';
 
       if (data.master_audio_url) {
@@ -1968,7 +1971,7 @@ async function generateSingleVoiceAI(sceneIdx) {
     }
   } catch (e) {
     console.error(e);
-    status.innerText = 'Synthesis failed';
+    status.innerText = `Synthesis failed: ${e.message}`;
     status.className = 'text-[11px] text-rose-500 font-bold';
   } finally {
     btn.innerHTML = '<span>✨</span> Generate Cantonese AI Voice';
@@ -1977,6 +1980,8 @@ async function generateSingleVoiceAI(sceneIdx) {
 }
 
 async function generateAllVoicesAI() {
+  if (!requireProject()) return;
+  const operation = StudioState.capture(currentProject);
   const btn = document.getElementById('btn-bulk-tts');
   const persona = document.getElementById('bulk-persona-selector').value;
 
@@ -1987,53 +1992,73 @@ async function generateAllVoicesAI() {
     const cloned = useClonedParentVoice();
     const url = cloned ? '/api/audio/voice-clone/synthesize-all' : '/api/audio/tts/all';
     const payload = cloned
-      ? { scenes: currentProject.scenes, voice_id: parentVoiceState.selectedVoiceId }
+      ? { scenes: currentProject.scenes, voice_id: currentProject.voice_options.voice_id }
       : { scenes: currentProject.scenes, default_persona: persona };
+    payload.project_id = operation.project.id;
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
     const data = await res.json();
+    if (!StudioState.matches(operation, currentProject)) return;
     if (data.status === 'success') {
+      StudioState.validateAudio(currentProject, data);
+      data.scenes.forEach(item => StudioState.validateAudio(currentProject, item));
       data.scenes.forEach(item => {
-        const idx = item.scene_idx - 1;
+        const idx = currentProject.scenes.findIndex((scene, index) => (scene.scene_number || index + 1) === item.scene_idx);
         if (currentProject.scenes[idx]) {
           currentProject.scenes[idx].audio_url = item.audio_url;
-          if (item.duration) {
-            currentProject.scenes[idx].duration_sec = Math.max(6, Math.ceil(item.duration + 1.2));
-          }
+          if (item.voice_provenance) currentProject.scenes[idx].voice_provenance = item.voice_provenance;
+          currentProject.scenes[idx].duration_sec = item.duration_sec;
           const audioEl = document.getElementById(`audio-preview-${idx}`);
-          if (audioEl) audioEl.src = item.audio_url;
+          if (audioEl) {
+            if (item.audio_url) audioEl.src = item.audio_url;
+            else audioEl.removeAttribute('src');
+          }
           const status = document.getElementById(`rec-status-${idx}`);
           if (status) {
-            status.innerText = `✨ AI Voice (${item.duration.toFixed(1)}s, Scene: ${currentProject.scenes[idx].duration_sec}s) Ready!`;
+            status.innerText = item.audio_url ? `✨ AI Voice (${Number(item.duration || 0).toFixed(1)}s, Scene: ${currentProject.scenes[idx].duration_sec}s) Ready!` : 'Silent scene — no narration generated.';
             status.className = 'text-[11px] text-emerald-600 font-bold';
           }
         }
       });
 
       const masterAudio = document.getElementById('master-audio-player');
-      if (masterAudio) {
+      if (masterAudio && data.master_audio_url) {
         masterAudio.src = data.master_audio_url;
         masterAudio.play().catch(() => {});
       }
-      alert("✨ All Cantonese scene voiceovers and master soundtrack generated successfully!");
+      showToast("✨ Scene narration ready. The soundtrack will be assembled during rendering.");
     }
   } catch (e) {
     console.error(e);
-    alert("Voice generation failed. Please check server logs.");
+    alert(`Voice generation failed: ${e.message}`);
   } finally {
     btn.innerHTML = '<span>✨</span> Generate All Scenes';
     btn.disabled = false;
   }
 }
 
+let recordingPending = false;
+let recordingCancelled = false;
+function stopRecording() {
+  recordingCancelled = true;
+  if (mediaRecorder) mediaRecorder.cancelled = true;
+  if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+  mediaRecorder?.stream?.getTracks().forEach(track => track.stop());
+}
+
 async function toggleRecord(sceneIdx) {
+  if (!requireProject()) return;
   const btn = document.getElementById(`rec-btn-${sceneIdx}`);
   const status = document.getElementById(`rec-status-${sceneIdx}`);
 
   if (mediaRecorder && mediaRecorder.state === "recording") {
+    if (mediaRecorder.sceneIdx !== sceneIdx) {
+      showToast('Stop the current scene recording first.');
+      return;
+    }
     mediaRecorder.stop();
     btn.innerHTML = '<span>🎤</span> Record My Voice';
     btn.className = 'px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition';
@@ -2041,36 +2066,55 @@ async function toggleRecord(sceneIdx) {
     return;
   }
 
+  if (recordingPending) return;
+  const operation = StudioState.capture(currentProject, currentProject.scenes[sceneIdx]);
+  recordingPending = true;
+  recordingCancelled = false;
+  let stream;
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (recordingCancelled || !StudioState.matches(operation, currentProject)) {
+      stream.getTracks().forEach(track => track.stop());
+      return;
+    }
     mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
+    const recorder = mediaRecorder;
+    recorder.sceneIdx = sceneIdx;
+    const chunks = [];
 
-    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-    mediaRecorder.onstop = async () => {
-      const blob = new Blob(audioChunks, { type: 'audio/wav' });
-      const audioUrl = URL.createObjectURL(blob);
-      document.getElementById(`audio-preview-${sceneIdx}`).src = audioUrl;
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onerror = () => { stopRecording(); showToast('Microphone recording failed. Please retry.'); };
+    recorder.onstop = async () => {
+      stream.getTracks().forEach(track => track.stop());
+      if (recorder.cancelled || !StudioState.matches(operation, currentProject)) return;
+      const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
 
       const fd = new FormData();
-      fd.append('scene_idx', sceneIdx + 1);
-      fd.append('audio_file', blob, `scene_${sceneIdx + 1}.wav`);
+      fd.append('project_id', operation.project.id);
+      fd.append('scene_idx', operation.scene.scene_number || sceneIdx + 1);
+      fd.append('duration_sec', operation.scene.duration_sec);
+      const extension = blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm';
+      fd.append('audio_file', blob, `scene_${sceneIdx + 1}.${extension}`);
 
       try {
         const res = await fetch('/api/audio/upload_scene', { method: 'POST', body: fd });
         const data = await res.json();
+        if (!StudioState.matches(operation, currentProject)) return;
+        StudioState.validateAudio(currentProject, data);
         currentProject.scenes[sceneIdx].audio_url = data.audio_url;
-        if (data.duration) {
-          currentProject.scenes[sceneIdx].duration_sec = Math.max(6, Math.ceil(data.duration + 1.2));
-        }
+        if (data.voice_provenance) currentProject.scenes[sceneIdx].voice_provenance = data.voice_provenance;
+        currentProject.scenes[sceneIdx].duration_sec = data.duration_sec;
         status.innerText = `✓ Voice Normalized (${data.duration ? data.duration.toFixed(1) + 's' : 'Saved'}, Scene: ${currentProject.scenes[sceneIdx].duration_sec}s)!`;
         status.className = 'text-[11px] text-emerald-600 font-bold';
         if (data.master_audio_url) {
           const masterAudio = document.getElementById('master-audio-player');
           if (masterAudio) masterAudio.src = data.master_audio_url;
         }
+        const audio = document.getElementById(`audio-preview-${sceneIdx}`);
+        if (audio) audio.src = data.audio_url;
       } catch (err) {
         console.error("Upload error:", err);
+        status.innerText = `Recording not saved: ${err.message}`;
       }
     };
 
@@ -2079,25 +2123,36 @@ async function toggleRecord(sceneIdx) {
     btn.className = 'px-4 py-2 rounded-xl bg-rose-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition pulse-record';
     status.innerText = 'Listening to your voice...';
   } catch (err) {
+    stream?.getTracks().forEach(track => track.stop());
     console.error("Microphone error:", err);
     alert("Could not access microphone. Please check browser permissions.");
+  } finally {
+    recordingPending = false;
   }
 }
 
 // Step 5: Render & Preview
+function showCaptionTiming(mode) {
+  const label = document.getElementById('render-caption-timing');
+  if (label) label.textContent = mode === 'estimated'
+    ? 'Sing-along timing is estimated by character weight, not aligned to spoken words.'
+    : mode === 'disabled' ? 'Sing-along highlighting is disabled.' : '';
+}
+
 function renderRenderStep() {
   document.getElementById('render-pre').classList.remove('hidden');
   document.getElementById('render-progress-box').classList.add('hidden');
   
   if (currentProject.rendered_video && currentProject.rendered_video.filename) {
+    showCaptionTiming(currentProject.rendered_video.caption_timing);
     const videoEl = document.getElementById('video-player') || document.getElementById('final-video-player');
     if (videoEl) {
-      videoEl.src = `/api/render/video/${currentProject.rendered_video.filename}`;
+      videoEl.src = `/api/render/video/${encodeURIComponent(currentProject.id)}/${encodeURIComponent(currentProject.rendered_video.filename)}`;
       videoEl.load();
     }
     const dlBtn = document.getElementById('btn-download-mp4') || document.getElementById('download-video-btn');
     if (dlBtn) {
-      dlBtn.href = `/api/render/video/${currentProject.rendered_video.filename}`;
+      dlBtn.href = `/api/render/video/${encodeURIComponent(currentProject.id)}/${encodeURIComponent(currentProject.rendered_video.filename)}`;
       dlBtn.download = currentProject.rendered_video.filename || "Episode.mp4";
     }
     document.getElementById('render-player-box').classList.remove('hidden');
@@ -2107,6 +2162,9 @@ function renderRenderStep() {
 }
 
 async function startRender() {
+  if (!requireProject()) return;
+  if (renderInProgress) return;
+  renderInProgress = true;
   document.getElementById('render-pre').classList.add('hidden');
   document.getElementById('render-progress-box').classList.remove('hidden');
 
@@ -2126,61 +2184,90 @@ async function startRender() {
   };
 
   try {
+    if (!await flushProject()) throw new Error('Save your project before rendering.');
+    const operation = StudioState.capture(currentProject);
     const res = await fetch('/api/render/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ project_data: currentProject })
     });
     const data = await res.json();
-    pollRenderStatus(data.job_id);
+    pollRenderStatus(data.job_id, operation, data.input_fingerprint);
   } catch (e) {
     console.error(e);
+    renderInProgress = false;
+    showToast(e.message);
+    renderRenderStep();
   }
 }
 
-function pollRenderStatus(jobId) {
+let renderInProgress = false;
+function pollRenderStatus(jobId, operation, inputFingerprint) {
   const bar = document.getElementById('render-progress-bar');
   const txt = document.getElementById('render-percent');
 
-  const interval = setInterval(async () => {
+  let attempts = 0;
+  async function poll() {
     try {
-      const res = await fetch(`/api/render/status/${jobId}`);
+      if (!StudioState.matches(operation, currentProject)) {
+        renderInProgress = false;
+        renderRenderStep();
+        showToast('The project changed. Render again to preview the latest version.');
+        return;
+      }
+      if (++attempts > 1800) throw new Error('Render status timed out. Try again later.');
+      const res = await fetch(`/api/render/status/${jobId}?project_id=${encodeURIComponent(operation.project.id)}`);
       const data = await res.json();
+      if (!StudioState.matches(operation, currentProject)) {
+        renderInProgress = false;
+        return;
+      }
+      if (data.project_id !== operation.project.id) throw new Error('Render project identity mismatch.');
+      if (data.input_fingerprint !== inputFingerprint) throw new Error('Render input identity mismatch.');
 
       bar.style.width = `${data.progress}%`;
       txt.innerText = `${data.progress}%`;
 
       if (data.status === 'done') {
-        clearInterval(interval);
+        renderInProgress = false;
+        if (!data.video_filename || !data.video_url || !data.input_fingerprint) throw new Error('Render result is missing artifact identity.');
         document.getElementById('render-progress-box').classList.add('hidden');
         document.getElementById('render-player-box').classList.remove('hidden');
 
         const videoEl = document.getElementById('video-player') || document.getElementById('final-video-player');
         if (videoEl) {
-          videoEl.src = `/api/render/video/${data.video_filename}`;
+          videoEl.src = safeURL(data.video_url);
           videoEl.load();
         }
         const dlBtn = document.getElementById('btn-download-mp4') || document.getElementById('download-video-btn');
         if (dlBtn) {
-          dlBtn.href = `/api/render/video/${data.video_filename}`;
+          dlBtn.href = safeURL(data.video_url);
           dlBtn.download = data.video_filename || "Episode.mp4";
         }
 
         currentProject.rendered_video = {
           filename: data.video_filename,
+          input_fingerprint: data.input_fingerprint,
+          caption_timing: data.caption_timing,
           rendered_at: new Date().toISOString()
         };
+        showCaptionTiming(data.caption_timing);
         if (typeof manualSaveProject === 'function') {
           manualSaveProject({ silent: true });
         }
-      } else if (data.status === 'error') {
-        clearInterval(interval);
-        alert(`Rendering error: ${data.error}`);
+        return;
+      } else if (['error', 'cancelled'].includes(data.status)) {
+        throw new Error(`Rendering error: ${data.error}`);
       }
+      setTimeout(poll, 1000);
     } catch (e) {
       console.error(e);
+      renderInProgress = false;
+      renderRenderStep();
+      showToast(e.message);
     }
-  }, 1000);
+  }
+  return poll();
 }
 
 // Settings Modal
@@ -2198,14 +2285,28 @@ async function loadSettingsIntoModal() {
   try {
     const res = await fetch('/api/settings/');
     const data = await res.json();
-    document.getElementById('setting-gemini-key').value = data.gemini_api_key || '';
-    document.getElementById('setting-openai-key').value = data.openai_api_key || '';
-    document.getElementById('setting-anthropic-key').value = data.anthropic_api_key || '';
-    document.getElementById('setting-azure-key').value = data.azure_api_key || '';
+    ['gemini', 'openai', 'anthropic', 'azure'].forEach(provider => {
+      const input = document.getElementById(`setting-${provider}-key`);
+      input.value = '';
+      input.placeholder = data[`${provider}_api_key_configured`] || data[`${provider}_configured`]
+        ? 'Configured — leave blank to keep' : 'Not configured';
+    });
     document.getElementById('setting-azure-endpoint').value = data.azure_endpoint || '';
     document.getElementById('setting-ollama-url').value = data.ollama_url || 'http://localhost:11434';
     if (data.active_model) {
-      document.getElementById('main-model-picker').value = data.active_model;
+      const picker = document.getElementById('main-model-picker');
+      let option = Array.from(picker.options || []).find(option =>
+        (option.dataset.model || option.value) === data.active_model
+        && (option.dataset.provider || option.parentElement?.dataset.provider) === data.active_provider);
+      if (!option) {
+        option = document.createElement('option');
+        option.value = `configured:${data.active_provider}:${data.active_model}`;
+        option.dataset.model = data.active_model;
+        option.dataset.provider = data.active_provider;
+        option.textContent = `${data.active_provider}: ${data.active_model} (configured)`;
+        picker.appendChild(option);
+      }
+      picker.value = option.value;
     }
   } catch (e) {
     console.error("Failed to load settings:", e);
@@ -2221,22 +2322,39 @@ async function saveSettings() {
   const ollamaUrl = document.getElementById('setting-ollama-url').value;
   const activeModel = document.getElementById('main-model-picker').value;
 
-  await fetch('/api/settings/', {
+  const payload = {
+    azure_endpoint: azureEndpoint, ollama_url: ollamaUrl,
+    active_model: selectedModelName(activeModel), active_provider: modelProvider(activeModel)
+  };
+  Object.entries({ gemini_api_key: geminiKey, openai_api_key: openaiKey,
+    anthropic_api_key: anthropicKey, azure_api_key: azureKey }).forEach(([key, value]) => {
+    if (value.trim()) payload[key] = value.trim();
+  });
+  try {
+    await fetch('/api/settings/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      gemini_api_key: geminiKey,
-      openai_api_key: openaiKey,
-      anthropic_api_key: anthropicKey,
-      azure_api_key: azureKey,
-      azure_endpoint: azureEndpoint,
-      ollama_url: ollamaUrl,
-      active_model: activeModel
-    })
+    body: JSON.stringify(payload)
   });
 
   toggleSettingsModal();
   alert("Settings & API keys saved locally on your computer!");
+  } catch (error) { showToast(error.message); }
+}
+
+function modelProvider(model) {
+  const option = document.getElementById('main-model-picker')?.selectedOptions?.[0];
+  const provider = option?.dataset.provider || option?.parentElement?.dataset.provider;
+  if (option?.value === model && provider) return provider;
+  if (model.startsWith('gemini')) return 'gemini';
+  if (model.startsWith('gpt')) return 'openai';
+  if (model.startsWith('claude')) return 'anthropic';
+  return 'ollama';
+}
+
+function selectedModelName(value) {
+  const option = document.getElementById('main-model-picker')?.selectedOptions?.[0];
+  return option?.value === value ? option.dataset.model || value : value;
 }
 
 async function quickSwitchModel(modelName) {
@@ -2244,10 +2362,11 @@ async function quickSwitchModel(modelName) {
     await fetch('/api/settings/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ active_model: modelName })
+      body: JSON.stringify({ active_model: selectedModelName(modelName), active_provider: modelProvider(modelName) })
     });
   } catch (e) {
     console.error("Failed to switch model:", e);
+    await loadSettingsIntoModal();
   }
 }
 
@@ -2258,47 +2377,149 @@ async function quickSwitchModel(modelName) {
 let allProjectsList = [];
 let projectAutoSaveTimer = null;
 let isProjectDirty = false;
+let projectEditVersion = 0;
 let activeFilterAge = 'all';
 let activeYouTubeThumbnail = null;
 
-async function initProjects() {
-  try {
-    const savedActiveId = localStorage.getItem('kids_studio_active_project_id') || 'ep01_meeting_family';
-    const res = await fetch(`/api/projects/${savedActiveId}`);
-    if (res.ok) {
-      const data = await res.json();
-      currentProject = data;
-    } else {
-      const listRes = await fetch('/api/projects/');
-      if (listRes.ok) {
-        const list = await listRes.json();
-        if (list && list.length > 0) {
-          const firstProjRes = await fetch(`/api/projects/${list[0].id}`);
-          if (firstProjRes.ok) {
-            currentProject = await firstProjRes.json();
-          }
-        }
-      }
-    }
-  } catch (err) {
-    console.warn("Could not load persisted project, using in-memory default:", err);
+function activateProject(project) {
+  if (!project || !(project.id || project.episode_id)) throw new Error('The selected episode has no project identity.');
+  stopRecording();
+  clearTimeout(projectAutoSaveTimer);
+  currentProject = StudioState.observe(StudioState.normalize(project), () => {
+    projectEditVersion++;
+    markProjectDirty();
+  });
+  projectReady = true;
+  isProjectDirty = false;
+  projectEditVersion++;
+  const warning = document.getElementById('project-migration-warning');
+  if (warning) {
+    const messages = Array.isArray(currentProject.migration_warnings) ? currentProject.migration_warnings : [];
+    warning.textContent = messages.map(String).join(' ');
+    warning.classList.toggle('hidden', messages.length === 0);
   }
-
-  if (!currentProject.id && currentProject.episode_id) {
-    currentProject.id = currentProject.episode_id;
-  }
-  if (!currentProject.episode_id && currentProject.id) {
-    currentProject.episode_id = currentProject.id;
-  }
-
-  updateProjectUiHeaders();
+  copilotUndoStack = [];
+  activeYouTubeThumbnail = null;
+  bgStudioState.versions = [];
+  bgStudioGeneration++;
+  outfitPreview = null;
+  outfitRequest++;
+  parentVoiceState = {
+    ready: false, available: false, voices: [],
+    selectedVoiceId: currentProject.voice_options?.voice_id || null
+  };
+  const useParentVoice = document.getElementById('use-cloned-voice');
+  if (useParentVoice) useParentVoice.checked = !!currentProject.voice_options?.use_cloned;
+  const voicePicker = document.getElementById('cloned-voice-select');
+  if (voicePicker) voicePicker.value = parentVoiceState.selectedVoiceId || '';
+  const masterAudio = document.getElementById('master-audio-player');
+  if (masterAudio) { masterAudio.pause?.(); masterAudio.removeAttribute('src'); }
+  const player = document.getElementById('video-player') || document.getElementById('final-video-player');
+  if (player) { player.pause?.(); player.removeAttribute('src'); }
+  const subtitle = currentProject.subtitle_options || {};
+  [['sub-pill-style', subtitle.pill_style || 'warm_cream'],
+    ['sub-font-cn', subtitle.font_size_cn || 52],
+    ['sub-font-en', subtitle.font_size_en || 26]].forEach(([id, value]) => {
+      const input = document.getElementById(id);
+      if (input) input.value = value;
+    });
+  const singalong = document.getElementById('caption-singalong');
+  if (singalong) singalong.checked = currentProject.caption_options?.enabled !== false;
+  ['yt-input-title', 'yt-input-desc', 'yt-input-tags'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.value = '';
+  });
+  closeYouTubePublishModal();
+  updateProjectAvailability();
   setProjectSyncBadge('saved');
+}
+
+function updateProjectAvailability(message) {
+  const emptyState = document.getElementById('project-empty-state');
+  if (emptyState) emptyState.classList.toggle('hidden', projectReady);
+  const description = document.getElementById('project-empty-description');
+  if (description && message) description.textContent = message;
+  const save = document.getElementById('btn-save-project');
+  if (save) save.disabled = !projectReady;
+  for (let step = 1; step <= 5; step++) {
+    const button = document.getElementById(`side-step-${step}`);
+    if (button) button.disabled = !projectReady;
+  }
+  document.querySelectorAll('.step-view').forEach(view => {
+    view.inert = !projectReady;
+    if (!projectReady) view.classList.add('hidden');
+  });
+}
+
+function clearActiveProject(message) {
+  stopRecording();
+  clearTimeout(projectAutoSaveTimer);
+  currentProject = emptyProject();
+  projectReady = false;
+  isProjectDirty = false;
+  projectEditVersion++;
+  currentIdeas = [];
+  copilotUndoStack = [];
+  activeStageSceneIdx = 0;
+  updateProjectUiHeaders();
+  updateProjectAvailability(message);
+  setProjectSyncBadge('none');
+}
+
+const saveQueuedProject = StudioState.createSaveQueue(async snapshot => {
+  const response = await fetch(`/api/projects/${encodeURIComponent(snapshot.id)}`, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ project_data: snapshot })
+  });
+  const data = await response.json();
+  return data.project || data;
+});
+
+async function flushProject() {
+  while (isProjectDirty) {
+    if (!await manualSaveProject({ silent: true })) return false;
+  }
+  return true;
+}
+
+async function initProjects() {
+  clearActiveProject('Loading saved episodes…');
+  const initialVersion = projectEditVersion;
+  try {
+    const list = await (await fetch('/api/projects/')).json();
+    if (projectEditVersion !== initialVersion) return;
+    if (!Array.isArray(list)) throw new Error('Invalid project library response.');
+    allProjectsList = list;
+    const available = list.filter(project => project.id && !project.error);
+    const savedActiveId = localStorage.getItem('kids_studio_active_project_id');
+    const selected = available.find(project => project.id === savedActiveId) || available[0];
+    if (!selected) {
+      localStorage.removeItem('kids_studio_active_project_id');
+      updateProjectAvailability(list.length
+        ? 'No readable episodes are available. Open the library for details, or create a new episode.'
+        : 'Create your first episode to begin. Nothing is saved until you choose Create.');
+      if (!list.length) openNewProjectModal();
+      return;
+    }
+    const project = await (await fetch(`/api/projects/${encodeURIComponent(selected.id)}`)).json();
+    if (projectEditVersion !== initialVersion) return;
+    activateProject(project);
+    localStorage.setItem('kids_studio_active_project_id', currentProject.id);
+    updateProjectUiHeaders();
+    setProjectSyncBadge('saved');
+  } catch (err) {
+    if (projectEditVersion !== initialVersion) return;
+    console.warn("Could not load saved episodes:", err);
+    updateProjectAvailability('Could not load saved episodes. Open the library to retry or create a new episode.');
+    showToast(`Could not load saved episodes: ${err.message}`);
+  }
 }
 
 function updateProjectUiHeaders() {
   const sideTitle = document.getElementById('side-project-title');
   if (sideTitle) {
-    sideTitle.innerText = `${currentProject.title_cantonese || ''} (${currentProject.title_english || ''})`;
+    sideTitle.innerText = projectReady
+      ? `${currentProject.title_cantonese || ''} (${currentProject.title_english || ''})` : 'No episode selected';
   }
   const sideScenes = document.getElementById('side-project-scenes');
   if (sideScenes && currentProject.scenes) {
@@ -2306,7 +2527,8 @@ function updateProjectUiHeaders() {
   }
   const scriptTitle = document.getElementById('script-episode-title');
   if (scriptTitle) {
-    scriptTitle.innerText = `${currentProject.title_cantonese || ''} (${currentProject.title_english || ''})`;
+    scriptTitle.innerText = projectReady
+      ? `${currentProject.title_cantonese || ''} (${currentProject.title_english || ''})` : 'Episode Script & Vocabulary';
   }
 }
 
@@ -2314,7 +2536,10 @@ function setProjectSyncBadge(status) {
   const badge = document.getElementById('project-sync-badge');
   if (!badge) return;
 
-  if (status === 'saving') {
+  if (status === 'none') {
+    badge.className = 'text-[9px] font-bold text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded-full';
+    badge.textContent = 'No project';
+  } else if (status === 'saving') {
     badge.className = 'text-[9px] font-bold text-amber-800 bg-amber-100/90 px-1.5 py-0.5 rounded-full flex items-center gap-1';
     badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span> Saving...';
   } else if (status === 'unsaved') {
@@ -2327,6 +2552,7 @@ function setProjectSyncBadge(status) {
 }
 
 function markProjectDirty() {
+  if (!projectReady) return;
   isProjectDirty = true;
   setProjectSyncBadge('unsaved');
   scheduleAutoSave(2500);
@@ -2342,37 +2568,25 @@ function scheduleAutoSave(delayMs = 2500) {
 }
 
 async function manualSaveProject(options = { silent: false }) {
-  const pId = currentProject.id || currentProject.episode_id || 'ep01_meeting_family';
-  currentProject.id = pId;
-  currentProject.episode_id = pId;
-
+  if (!requireProject()) return false;
+  clearTimeout(projectAutoSaveTimer);
+  const project = currentProject;
   setProjectSyncBadge('saving');
   try {
-    const res = await fetch(`/api/projects/${pId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ project_data: currentProject })
+    await saveQueuedProject(project, () => projectEditVersion, unchanged => {
+      if (currentProject !== project) return;
+      isProjectDirty = !unchanged;
+      setProjectSyncBadge(unchanged ? 'saved' : 'unsaved');
+      localStorage.setItem('kids_studio_active_project_id', project.id);
     });
-
-    if (res.ok) {
-      isProjectDirty = false;
-      setProjectSyncBadge('saved');
-      localStorage.setItem('kids_studio_active_project_id', pId);
-      if (!options.silent) {
-        showToast('💾 Project saved successfully!');
-      }
-    } else {
-      setProjectSyncBadge('unsaved');
-      if (!options.silent) {
-        showToast('⚠️ Could not save project.');
-      }
-    }
+    if (!options.silent) showToast('💾 Project saved successfully!');
+    return true;
   } catch (e) {
     console.error("Save project error:", e);
     setProjectSyncBadge('unsaved');
-    if (!options.silent) {
-      showToast('⚠️ Could not save project.');
-    }
+    isProjectDirty = true;
+    showToast(`⚠️ Not saved: ${e.message}`);
+    return false;
   }
 }
 
@@ -2467,10 +2681,10 @@ function renderProjectLibraryCards(projects) {
           <!-- Thumbnail & Active Badge -->
           <div class="relative aspect-video bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl overflow-hidden border border-stone-200 flex items-center justify-center">
             <img 
-              src="/api/projects/${p.id}/thumbnail" 
+              src="/api/projects/${esc(encodeURIComponent(p.id))}/thumbnail"
               onerror="this.onerror=null; this.src='/api/characters/background/bg_living_room.png';" 
               class="w-full h-full object-cover" 
-              alt="${p.title_cantonese}"
+              alt="${esc(p.title_cantonese)}"
             >
             ${isActive ? `
               <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-emerald-500 text-white font-extrabold text-[10px] shadow-sm flex items-center gap-1">
@@ -2481,13 +2695,13 @@ function renderProjectLibraryCards(projects) {
 
           <!-- Titles & Metadata -->
           <div>
-            <h4 class="font-extrabold text-stone-900 text-sm tc-font leading-tight truncate">${p.title_cantonese || '未命名'}</h4>
-            <h5 class="text-xs font-bold text-amber-700 truncate">${p.title_english || 'Untitled Episode'}</h5>
+            <h4 class="font-extrabold text-stone-900 text-sm tc-font leading-tight truncate">${esc(p.title_cantonese || '未命名')}</h4>
+            <h5 class="text-xs font-bold text-amber-700 truncate">${esc(p.title_english || 'Untitled Episode')}</h5>
           </div>
 
           <div class="flex flex-wrap items-center gap-1.5 text-[10px]">
-            <span class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">${p.target_age || '2-3 years'}</span>
-            <span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-600 font-semibold">${p.scene_count || 0} Scenes</span>
+            <span class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold">${esc(p.target_age || '2-3 years')}</span>
+            <span class="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-600 font-semibold">${esc(p.scene_count || 0)} Scenes</span>
             <span class="text-stone-400 ml-auto">${dateFormatted}</span>
           </div>
         </div>
@@ -2499,14 +2713,14 @@ function renderProjectLibraryCards(projects) {
               Current Project
             </button>
           ` : `
-            <button type="button" onclick="loadProjectById('${p.id}')" class="flex-1 py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition shadow-xs">
+            <button type="button" onclick="loadProjectById('${arg(p.id)}')" class="flex-1 py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold transition shadow-xs">
               Open Episode
             </button>
           `}
-          <button type="button" onclick="duplicateProject('${p.id}')" title="Duplicate Project" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold transition">
+          <button type="button" onclick="duplicateProject('${arg(p.id)}')" title="Duplicate Project" class="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold transition">
             📋
           </button>
-          <button type="button" onclick="deleteProject('${p.id}')" title="Delete Project" class="p-1.5 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-400 hover:text-rose-600 font-bold transition">
+          <button type="button" onclick="deleteProject('${arg(p.id)}')" title="Delete Project" class="p-1.5 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-400 hover:text-rose-600 font-bold transition">
             🗑️
           </button>
         </div>
@@ -2516,14 +2730,15 @@ function renderProjectLibraryCards(projects) {
 }
 
 async function loadProjectById(projectId) {
-  if (isProjectDirty) {
-    await manualSaveProject({ silent: true });
-  }
+  if (!await flushProject()) return false;
+  const prior = StudioState.capture(currentProject);
 
   try {
     const res = await fetch(`/api/projects/${projectId}`);
     if (!res.ok) throw new Error("Could not load project");
-    currentProject = await res.json();
+    const project = await res.json();
+    if (!StudioState.matches(prior, currentProject) || !await flushProject()) return false;
+    activateProject(project);
     if (!currentProject.id) currentProject.id = projectId;
     currentProject.episode_id = projectId;
 
@@ -2556,16 +2771,16 @@ async function duplicateProject(projectId) {
 }
 
 async function deleteProject(projectId) {
+  if (projectId === currentProject.id) {
+    showToast('Open another episode before deleting this project.');
+    return;
+  }
   if (!confirm("Are you sure you want to delete this project? This cannot be undone.")) return;
 
   try {
     const res = await fetch(`/api/projects/${projectId}`, { method: 'DELETE' });
     if (res.ok) {
       showToast("🗑️ Project deleted.");
-      const currentId = currentProject.id || currentProject.episode_id;
-      if (projectId === currentId) {
-        await loadProjectById('ep01_meeting_family');
-      }
       await openProjectLibraryModal();
     } else {
       showToast("Failed to delete project.");
@@ -2590,6 +2805,8 @@ function closeNewProjectModal() {
 }
 
 async function submitCreateNewProject() {
+  if (!await flushProject()) return;
+  const prior = StudioState.capture(currentProject);
   const titleCn = document.getElementById('new-proj-title-cn').value.trim();
   const titleEn = document.getElementById('new-proj-title-en').value.trim();
   const age = document.getElementById('new-proj-age').value;
@@ -2614,7 +2831,8 @@ async function submitCreateNewProject() {
 
     if (res.ok) {
       const data = await res.json();
-      currentProject = data.project;
+      if (!StudioState.matches(prior, currentProject) || !await flushProject()) return;
+      activateProject(data.project);
       localStorage.setItem('kids_studio_active_project_id', currentProject.id);
       closeNewProjectModal();
       closeProjectLibraryModal();
@@ -2636,6 +2854,20 @@ async function submitCreateNewProject() {
 // ========================================================
 
 async function openYouTubePublishModal() {
+  if (!requireProject()) return;
+  if (!await flushProject()) return;
+  if (!currentProject.rendered_video?.input_fingerprint) {
+    showToast('Render and review the current episode before uploading.');
+    return;
+  }
+  publishSelection = {
+    project: currentProject,
+    filename: currentProject.rendered_video.filename,
+    input_fingerprint: currentProject.rendered_video.input_fingerprint
+  };
+  document.getElementById('yt-selected-artifact').textContent = `Selected video: ${publishSelection.filename}`;
+  document.getElementById('yt-confirm-artifact').checked = false;
+  document.getElementById('yt-visibility').value = 'private';
   const modal = document.getElementById('modal-youtube-publish');
   if (!modal) return;
   modal.classList.remove('hidden');
@@ -2673,7 +2905,7 @@ async function checkYouTubeConnection() {
 
     if (data.connected) {
       if (data.thumbnail && avatarEl) {
-        avatarEl.innerHTML = `<img src="${data.thumbnail}" class="w-full h-full rounded-full object-cover">`;
+        avatarEl.innerHTML = `<img src="${esc(safeURL(data.thumbnail))}" class="w-full h-full rounded-full object-cover">`;
       } else if (avatarEl) {
         avatarEl.innerText = '✅';
       }
@@ -2721,6 +2953,8 @@ async function disconnectYouTubeChannel() {
 }
 
 async function generateYouTubeAiMetadata(options = { silent: false }) {
+  if (!requireProject()) return;
+  const operation = StudioState.capture(currentProject);
   const btn = document.getElementById('btn-ai-gen-yt-meta');
   if (btn) {
     btn.disabled = true;
@@ -2736,6 +2970,7 @@ async function generateYouTubeAiMetadata(options = { silent: false }) {
 
     if (res.ok) {
       const data = await res.json();
+      if (!StudioState.matches(operation, currentProject)) return;
       if (data.title) {
         document.getElementById('yt-input-title').value = data.title;
       }
@@ -2763,28 +2998,31 @@ async function generateYouTubeAiMetadata(options = { silent: false }) {
 }
 
 async function loadSceneThumbnailCandidates() {
+  if (!requireProject()) return;
+  const project = currentProject;
   const container = document.getElementById('yt-thumbnail-candidates');
   if (!container) return;
 
-  const projId = currentProject.id || currentProject.episode_id || 'ep01_meeting_family';
+  const projId = currentProject.id;
   try {
     const res = await fetch(`/api/youtube/scene-frames/${projId}`);
     if (res.ok) {
       const data = await res.json();
+      if (project !== currentProject) return;
       const frames = data.frames || [];
       if (frames.length > 0) {
         container.innerHTML = frames.map((fr, idx) => {
-          const isSelected = activeYouTubeThumbnail === fr.filename || (!activeYouTubeThumbnail && idx === 0);
-          if (isSelected) activeYouTubeThumbnail = fr.filename;
+          const isSelected = activeYouTubeThumbnail === fr.url || (!activeYouTubeThumbnail && idx === 0);
+          if (isSelected) activeYouTubeThumbnail = fr.url;
 
           return `
             <div 
-              onclick="selectYouTubeThumbnail('${fr.filename}', this)"
+              onclick="selectYouTubeThumbnail('${arg(fr.url)}', this)"
               id="yt-frame-thumb-${idx}"
               class="yt-thumb-box aspect-video bg-stone-900 rounded-xl overflow-hidden border-2 ${isSelected ? 'border-amber-500 ring-2 ring-amber-300' : 'border-stone-200 hover:border-amber-300'} cursor-pointer relative group transition"
             >
-              <img src="${fr.url}" class="w-full h-full object-cover" alt="Scene frame">
-              <span class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/75 text-white text-[9px] font-bold">${fr.timestamp || 'Frame'}</span>
+              <img src="${esc(safeURL(fr.url))}" class="w-full h-full object-cover" alt="Scene frame">
+              <span class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/75 text-white text-[9px] font-bold">${esc(fr.timestamp || 'Frame')}</span>
             </div>
           `;
         }).join('');
@@ -2813,12 +3051,25 @@ function selectYouTubeThumbnail(filename, element) {
   }
 }
 
+let publishSelection = null;
 async function submitYouTubeUpload() {
+  if (!requireProject()) return;
+  if (!publishSelection || publishSelection.project !== currentProject
+      || publishSelection.filename !== currentProject.rendered_video?.filename
+      || publishSelection.input_fingerprint !== currentProject.rendered_video?.input_fingerprint
+      || !document.getElementById('yt-confirm-artifact')?.checked) {
+    showToast('Review and confirm the selected current video before uploading.');
+    return;
+  }
+  if (!await flushProject()) return;
+  const selection = { ...publishSelection };
+  if (selection.project !== currentProject || selection.filename !== currentProject.rendered_video?.filename
+      || selection.input_fingerprint !== currentProject.rendered_video?.input_fingerprint) return;
   const title = document.getElementById('yt-input-title')?.value.trim();
   const description = document.getElementById('yt-input-desc')?.value.trim();
   const tagsRaw = document.getElementById('yt-input-tags')?.value || '';
   const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
-  const visibility = document.getElementById('yt-visibility')?.value || 'unlisted';
+  const visibility = document.getElementById('yt-visibility')?.value || 'private';
   const madeForKids = document.getElementById('yt-made-for-kids')?.checked !== false;
 
   if (!title) {
@@ -2847,12 +3098,14 @@ async function submitYouTubeUpload() {
   if (percentText) percentText.innerText = '10%';
 
   try {
-    const projId = currentProject.id || currentProject.episode_id || 'ep01_meeting_family';
+    const projId = currentProject.id;
     const res = await fetch('/api/youtube/upload', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         project_id: projId,
+        video_filename: selection.filename,
+        input_fingerprint: selection.input_fingerprint,
         title: title,
         description: description,
         tags: tags,
@@ -2867,7 +3120,7 @@ async function submitYouTubeUpload() {
       throw new Error(data.detail || 'Upload request failed');
     }
 
-    pollYouTubeUploadStatus(data.job_id);
+    pollYouTubeUploadStatus(data.job_id, selection.project);
   } catch (err) {
     console.error("YouTube upload error:", err);
     if (statusText) statusText.innerText = `Upload Error: ${err.message}`;
@@ -2879,32 +3132,40 @@ async function submitYouTubeUpload() {
   }
 }
 
-function pollYouTubeUploadStatus(jobId) {
+function pollYouTubeUploadStatus(jobId, project) {
   const statusText = document.getElementById('yt-upload-status-text');
   const percentText = document.getElementById('yt-upload-percent');
   const progressBar = document.getElementById('yt-upload-bar');
   const successLink = document.getElementById('yt-upload-success-link');
   const btn = document.getElementById('btn-submit-yt-upload');
 
+  let busy = false;
+  let attempts = 0;
   const pollInterval = setInterval(async () => {
+    if (busy) return;
+    if (currentProject !== project) { clearInterval(pollInterval); return; }
+    busy = true;
     try {
+      if (++attempts > 1800) throw new Error('Upload status timed out. Check your YouTube channel before retrying.');
       const res = await fetch(`/api/youtube/upload-status/${jobId}`);
       if (!res.ok) return;
       const job = await res.json();
+      if (currentProject !== project) { clearInterval(pollInterval); return; }
+      if (job.project_id && job.project_id !== project.id) throw new Error('Upload project identity mismatch.');
 
       const pct = job.progress || 0;
       if (progressBar) progressBar.style.width = `${pct}%`;
       if (percentText) percentText.innerText = `${pct}%`;
       if (statusText && job.message) statusText.innerText = job.message;
 
-      if (job.status === 'done') {
+      if (['done', 'complete'].includes(job.status)) {
         clearInterval(pollInterval);
         if (statusText) statusText.innerText = '🎉 Video Published to YouTube!';
         if (successLink) {
           successLink.innerHTML = `
             <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-800 space-y-1">
               <div class="font-bold">✨ Upload Successful!</div>
-              <div><a href="https://youtu.be/${job.video_id}" target="_blank" class="text-rose-600 hover:text-rose-700 underline font-extrabold flex items-center justify-center gap-1"><span>▶️</span> https://youtu.be/${job.video_id}</a></div>
+              <div><a href="https://youtu.be/${esc(encodeURIComponent(job.video_id))}" target="_blank" rel="noopener noreferrer" class="text-rose-600 hover:text-rose-700 underline font-extrabold flex items-center justify-center gap-1"><span>▶️</span> https://youtu.be/${esc(job.video_id)}</a></div>
             </div>
           `;
           successLink.classList.remove('hidden');
@@ -2914,9 +3175,12 @@ function pollYouTubeUploadStatus(jobId) {
           btn.classList.remove('opacity-50', 'pointer-events-none');
         }
         showToast("🚀 Video successfully uploaded to YouTube!");
-      } else if (job.status === 'error') {
+      } else if (['error', 'interrupted'].includes(job.status)) {
         clearInterval(pollInterval);
-        if (statusText) statusText.innerText = `Upload Failed: ${job.error}`;
+        if (statusText) statusText.innerText = job.status === 'interrupted'
+          ? 'Upload outcome unconfirmed. Check your YouTube channel before retrying to avoid duplicates.'
+          : `Upload did not start: ${job.error || 'Check your connection and retry.'}`;
+        if (job.status === 'interrupted') document.getElementById('yt-confirm-artifact').checked = false;
         if (progressBar) progressBar.className = 'bg-rose-500 h-full rounded-full w-full';
         if (btn) {
           btn.disabled = false;
@@ -2924,7 +3188,12 @@ function pollYouTubeUploadStatus(jobId) {
         }
       }
     } catch (e) {
+      clearInterval(pollInterval);
+      if (statusText) statusText.innerText = `Upload status unavailable: ${e.message}. Check your YouTube channel before retrying to avoid duplicates.`;
+      if (btn) { btn.disabled = false; btn.classList.remove('opacity-50', 'pointer-events-none'); }
       console.warn("Poll status error:", e);
+    } finally {
+      busy = false;
     }
   }, 1200);
 }
@@ -2932,6 +3201,19 @@ function pollYouTubeUploadStatus(jobId) {
 // Initial render with URL step and active project support
 window.addEventListener('DOMContentLoaded', async () => {
   await initProjects();
+  await fetch('/api/session').catch(() => {});
+  await loadSettingsIntoModal();
+  ['sub-pill-style', 'sub-font-cn', 'sub-font-en', 'caption-singalong'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', () => {
+      currentProject.subtitle_options = {
+        pill_style: document.getElementById('sub-pill-style').value,
+        font_size_cn: Number(document.getElementById('sub-font-cn').value),
+        font_size_en: Number(document.getElementById('sub-font-en').value)
+      };
+      currentProject.caption_options = { enabled: document.getElementById('caption-singalong').checked };
+      if (currentStep === 5) renderRenderStep();
+    });
+  });
 
   const urlParams = new URLSearchParams(window.location.search);
   const stepParam = parseInt(urlParams.get('step'));
@@ -2947,11 +3229,20 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 // Window Listeners for YouTube OAuth popup message & Ctrl+S project saving
 window.addEventListener('message', (event) => {
-  if (event.data === 'yt_connected') {
+  if (event.origin === window.location.origin && event.data === 'yt_connected') {
     checkYouTubeConnection();
     showToast('🎉 YouTube Channel Connected!');
   }
 });
+
+window.addEventListener('beforeunload', event => {
+  stopRecording();
+  if (isProjectDirty) {
+    event.preventDefault();
+    event.returnValue = '';
+  }
+});
+window.addEventListener('pagehide', () => stopRecording());
 
 window.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {

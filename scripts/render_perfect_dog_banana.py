@@ -1,9 +1,13 @@
 import os
-import math
-import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from scripts.maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+
 SPRITES_DIR = os.path.join(PROJECT_ROOT, "assets", "sprites")
 
 def create_cartoon_banana_spitz():
@@ -65,9 +69,13 @@ def create_cartoon_banana_spitz():
     big_down = big.resize((w, h), Image.Resampling.LANCZOS)
     combined = Image.alpha_composite(dog, big_down)
 
-    out_path = os.path.join(SPRITES_DIR, "dog_eating_banana.png")
+    out_path = output_path(os.path.join(SPRITES_DIR, "dog_eating_banana.png"))
     combined.save(out_path, "PNG", optimize=True)
     print(f"Saved {out_path} ({combined.width}x{combined.height})")
 
-if __name__ == "__main__":
+def main(argv=None):
+    configure_cli(argv)
     create_cartoon_banana_spitz()
+
+if __name__ == "__main__":
+    main()

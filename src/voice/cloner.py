@@ -85,17 +85,17 @@ def clone_dad_voice(sample_filename="dad_cantonese.wav"):
             "description": "Warm, animated parentese Cantonese voice for twin boys educational videos",
             "labels": '{"accent": "Hong Kong", "language": "yue", "gender": "male", "target": "kids"}'
         }
-        response = requests.post(url, headers=headers, data=data, files=files)
+        response = requests.post(url, headers=headers, data=data, files=files, timeout=180)
 
     if response.status_code == 200:
         result = response.json()
         voice_id = result.get("voice_id")
+        if not voice_id:
+            raise RuntimeError("Voice provider returned no voice identifier")
         print(f"🎉 Voice clone created successfully! Voice ID: {voice_id}")
 
         # Update config.yaml
         config["voice"]["clones"]["dad_cantonese"]["voice_id"] = voice_id
-        # Also map mom to dad's voice profile as requested
-        config["voice"]["clones"]["mom_cantonese"]["voice_id"] = voice_id
 
         with open(CONFIG_PATH, "w", encoding="utf-8") as f:
             yaml.safe_dump(config, f, allow_unicode=True, sort_keys=False)

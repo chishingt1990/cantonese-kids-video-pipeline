@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 """
-Master Orchestration CLI for the Personalized Cantonese & Mandarin Educational Video Pipeline.
-Runs pipeline stages:
-  1. auth: Verifies or establishes Google OAuth for Photos and YouTube
-  2. styles: Lists and configures selected cartoon style
-  3. voice-check: Validates Dad & Mom audio samples
-  4. script: Displays and validates lesson scripts with Jyutping / Pinyin
-  5. run-lesson: Coordinates end-to-end generation of a video lesson
+Read-only status and lesson-preview CLI.
+Generation, voice selection, and rendering are provided by the web studio;
+this command does not implement an end-to-end generation pipeline.
 """
 
 import os
@@ -72,7 +68,9 @@ def cmd_lesson(lesson_id: str, locale: str = "yue-Hant-HK"):
     with open(lesson_file, "r", encoding="utf-8") as f:
         lesson = yaml.safe_load(f)
 
-    is_mandarin = locale.startswith("cmn") or locale.startswith("zh")
+    if locale not in {"yue-Hant-HK", "yue-HK", "zh-HK", "cmn-Hans-CN", "cmn-CN", "zh-CN"}:
+        raise ValueError(f"Unsupported lesson locale: {locale}")
+    is_mandarin = locale in {"cmn-Hans-CN", "cmn-CN", "zh-CN"}
     print("=" * 70)
     print(f"Episode: {lesson['title_cantonese']} ({lesson['title_english']})")
     print(f"Target Duration: {lesson['duration_target_seconds']}s | Mode: {'Mandarin' if is_mandarin else 'Cantonese'}")

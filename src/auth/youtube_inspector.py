@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-YouTube Cantonese Children's Content & Watch History Inspector.
-Connects to YouTube Data API to analyze watched or popular Cantonese educational videos,
-extracting animation styles, visual framing, vocabulary pacing, and musical elements.
+YouTube metadata inspector with an explicitly curated style knowledge base.
+Does not retrieve watch history, download videos, or analyze audiovisual sources.
 """
 
 import sys
 import json
+import argparse
 from pathlib import Path
 
 # Add project root to sys.path
@@ -19,7 +19,9 @@ try:
 except ImportError:
     pass
 
-OUTPUT_STYLES_FILE = PROJECT_ROOT / "config" / "youtube_style_insights.json"
+from app.storage import DATA_DIR, atomic_write_json
+
+OUTPUT_STYLES_FILE = DATA_DIR / "config" / "private" / "youtube_style_insights.json"
 
 
 # Curated benchmark knowledge base of top Cantonese preschool animation channels on YouTube
@@ -172,19 +174,16 @@ def inspect_youtube_user_data(creds):
 
 def save_insights(data):
     """Saves style insights to JSON."""
-    OUTPUT_STYLES_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_STYLES_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-    print(f"Style insights written to: {OUTPUT_STYLES_FILE}")
+    atomic_write_json(OUTPUT_STYLES_FILE, data)
+    print("Metadata insights saved to local private storage; do not publish account-derived insights.")
 
 
 if __name__ == "__main__":
-    creds = None
-    try:
-        from src.auth.google_oauth import get_credentials
-        creds = get_credentials()
-    except Exception:
-        pass
-
+    parser = argparse.ArgumentParser(description="Inspect explicitly authorized YouTube metadata, not watch history or video sources")
+    parser.add_argument("--account-metadata", action="store_true", help="Query subscriptions, playlists and liked-video metadata using cached credentials")
+    args = parser.parse_args()
+    creds = get_credentials() if args.account_metadata else None
+    if args.account_metadata and not creds:
+        parser.error("Connect YouTube first; no browser is opened automatically.")
     insights = inspect_youtube_user_data(creds)
     save_insights(insights)

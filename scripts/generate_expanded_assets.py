@@ -3,14 +3,16 @@ import math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from scripts.maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+except ModuleNotFoundError as exc:
+    if exc.name not in {"scripts", "scripts.maintenance_guard"}:
+        raise
+    from maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+
 SPRITES_DIR = os.path.join(PROJECT_ROOT, "assets", "sprites")
 STICKERS_DIR = os.path.join(PROJECT_ROOT, "assets", "stickers")
 BACKGROUNDS_DIR = os.path.join(PROJECT_ROOT, "assets", "backgrounds")
-
-os.makedirs(SPRITES_DIR, exist_ok=True)
-os.makedirs(STICKERS_DIR, exist_ok=True)
-os.makedirs(BACKGROUNDS_DIR, exist_ok=True)
 
 def get_font(size: int, bold: bool = False):
     candidates = [
@@ -44,11 +46,16 @@ def save_sprite(im: Image.Image, filename: str):
     else:
         cropped = im
     out_path = os.path.join(SPRITES_DIR, filename)
-    cropped.save(out_path, format="PNG")
+    cropped.save(output_path(out_path), format="PNG")
     print(f"  [SPRITE] Created {filename} ({cropped.width}x{cropped.height})")
 
 def synthesize_character_sprites():
-    from scripts.generate_high_fidelity_sprites import generate_all_high_fidelity_sprites
+    try:
+        from scripts.generate_high_fidelity_sprites import generate_all_high_fidelity_sprites
+    except ModuleNotFoundError as exc:
+        if exc.name not in {"scripts", "scripts.generate_high_fidelity_sprites"}:
+            raise
+        from generate_high_fidelity_sprites import generate_all_high_fidelity_sprites
     generate_all_high_fidelity_sprites()
 
 # ==========================================
@@ -77,7 +84,7 @@ def draw_die_cut_prop(canvas, cx, cy, draw_fn, size=240):
 
 def save_prop(im: Image.Image, filename: str):
     p = os.path.join(STICKERS_DIR, filename)
-    im.save(p, format="PNG")
+    im.save(output_path(p), format="PNG")
     print(f"  [PROP] Created {filename}")
 
 def generate_all_props():
@@ -355,7 +362,7 @@ def generate_expanded_backgrounds():
     draw.rounded_rectangle([1450, 460, 1820, 480], radius=8, fill=(146, 64, 14))
     for idx, col in enumerate([(239, 68, 68), (250, 204, 21), (59, 130, 246), (34, 197, 94)]):
         draw.rounded_rectangle([1480 + idx * 80, 390, 1530 + idx * 80, 460], radius=10, fill=col, outline=(30, 41, 59), width=3)
-    canvas.save(art_path, format="PNG")
+    canvas.save(output_path(art_path), format="PNG")
     print(f"  [BG] Created bg_art_room.png (1920x1080)")
 
     # 2. Supermarket (bg_supermarket.png)
@@ -380,11 +387,16 @@ def generate_expanded_backgrounds():
     draw2.rounded_rectangle([1460, 520, 1800, 720], radius=16, fill=(217, 119, 6), outline=(146, 64, 14), width=6)
     for bx in [1520, 1600, 1680, 1740]:
         draw2.arc([bx - 30, 580, bx + 30, 680], 30, 180, fill=(250, 204, 21), width=18)
-    canvas2.save(super_path, format="PNG")
+    canvas2.save(output_path(super_path), format="PNG")
     print(f"  [BG] Created bg_supermarket.png (1920x1080)")
 
-if __name__ == "__main__":
+def main(argv=None):
+    configure_cli(argv)
     synthesize_character_sprites()
     generate_all_props()
     generate_expanded_backgrounds()
     print("All assets successfully generated!")
+
+
+if __name__ == "__main__":
+    main()

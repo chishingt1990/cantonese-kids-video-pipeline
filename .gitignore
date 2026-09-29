@@ -17,6 +17,14 @@ assets/raw_photos/
 *.mp4
 *.wav
 projects/*/frames/
+projects/*/audio/
+projects/*/renders/
+projects/*/jobs/
+data/
+/artwork/
+/projects/
+assets/audio_samples/
+test_voice.mp3
 
 # Local Environment, API Keys & OAuth Secrets (NEVER COMMIT TO GITHUB)
 .env
@@ -27,8 +35,11 @@ config/google_token.json
 config/api_keys.json
 config/studio_settings.json
 config/cloned_voices.json
+config/private/
 temp_*
 test_*
+!tests/
+!tests/test_*.py
 assets/sprites/test_*
 
 
@@ -42,6 +53,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+*.tmp
 
 # Agent task / system artifacts
 .system_generated/

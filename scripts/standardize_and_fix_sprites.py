@@ -1,65 +1,25 @@
 import os
-import sys
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
-from collections import deque
+from PIL import Image, ImageDraw
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from scripts.maintenance_guard import PROJECT_ROOT, configure_cli, output_path as guarded_output_path
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from maintenance_guard import PROJECT_ROOT, configure_cli, output_path as guarded_output_path
+
+from app.utils.sprite_isolator import isolate_sprite_from_white_bg
+
 SPRITES_DIR = os.path.join(PROJECT_ROOT, "assets", "sprites")
 BRAIN_ROOT = r"C:\Users\chish\.gemini\antigravity\brain"
 
 def isolate_sprite(image_path: str, output_path: str, threshold: int = 35):
-    im = Image.open(image_path).convert('RGB')
-    arr = np.array(im)
-    h, w, _ = arr.shape
-
-    diff = np.max(np.abs(arr.astype(int) - 255), axis=2)
-    visited = np.zeros((h, w), dtype=bool)
-    is_bg = np.zeros((h, w), dtype=bool)
-
-    queue = deque()
-    for x in range(w):
-        queue.append((0, x))
-        queue.append((h - 1, x))
-    for y in range(h):
-        queue.append((y, 0))
-        queue.append((y, w - 1))
-
-    while queue:
-        y, x = queue.popleft()
-        if visited[y, x]:
-            continue
-        visited[y, x] = True
-
-        if diff[y, x] < threshold or (arr[y, x, 0] > 240 and arr[y, x, 1] > 240 and arr[y, x, 2] > 240):
-            is_bg[y, x] = True
-            for dy, dx in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                ny, nx = y + dy, x + dx
-                if 0 <= ny < h and 0 <= nx < w and not visited[ny, nx]:
-                    if diff[ny, nx] < threshold or (arr[ny, nx, 0] > 242 and arr[ny, nx, 1] > 242 and arr[ny, nx, 2] > 242):
-                        queue.append((ny, nx))
-
-    alpha = np.where(is_bg, 0, 255).astype(np.uint8)
-    alpha_im = Image.fromarray(alpha, mode='L')
-    alpha_smooth = alpha_im.filter(ImageFilter.GaussianBlur(0.8))
-    smooth_arr = np.array(alpha_smooth)
-
-    rgba = np.dstack([arr, smooth_arr])
-    rgba[is_bg, 3] = 0
-
-    out_im = Image.fromarray(rgba, 'RGBA')
-    bbox = out_im.getbbox()
-    if bbox:
-        pad = 8
-        left = max(0, bbox[0] - pad)
-        top = max(0, bbox[1] - pad)
-        right = min(w, bbox[2] + pad)
-        bottom = min(h, bbox[3] + pad)
-        out_im = out_im.crop((left, top, right, bottom))
-
-    out_im.save(output_path, 'PNG', optimize=True)
-    print(f"[STANDARDIZED SPRITE] {os.path.basename(output_path)} -> ({out_im.width}x{out_im.height})")
-    return out_im
+    filename = isolate_sprite_from_white_bg(
+        image_path, str(guarded_output_path(output_path)), threshold=threshold
+    )
+    with Image.open(filename) as image:
+        return image.convert("RGBA")
 
 def fix_dad_teaching():
     """1. Replace Dad teaching with the authentic youthful Dad."""
@@ -89,7 +49,7 @@ def fix_levi_sad_matte():
                     arr[y, x] = hair_color
 
     out = Image.fromarray(arr, "RGBA")
-    out.save(p, "PNG")
+    out.save(guarded_output_path(p), "PNG")
     print("  -> Reverted glossy hair highlights on levi_sad.png to matte cartoon finish!")
 
 def fix_dog_eating_banana():
@@ -129,10 +89,11 @@ def fix_dog_eating_banana():
     im = Image.alpha_composite(im, big_down)
 
     dst_p = os.path.join(SPRITES_DIR, "dog_eating_banana.png")
-    im.save(dst_p, "PNG")
+    im.save(guarded_output_path(dst_p), "PNG")
     print("  -> Fixed dog_eating_banana.png to match canonical cartoon dog style!")
 
-def main():
+def main(argv=None):
+    configure_cli(argv)
     print("=== Standardizing Sprites to Canonical Art Style ===")
     fix_dad_teaching()
     fix_levi_sad_matte()

@@ -1,10 +1,15 @@
 import os
 import math
+import hashlib
+import json
+import uuid
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from typing import Optional, Dict, Any, List
+from app.storage import contained_path, atomic_write_json
+from app.services.asset_manifest import MASTER_ASSETS, image_path
 
-STICKER_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "assets", "stickers")
-os.makedirs(STICKER_DIR, exist_ok=True)
+STICKER_DIR = str(MASTER_ASSETS / "stickers")
 
 def get_font(size: int, bold: bool = False):
     candidates = [
@@ -528,7 +533,8 @@ def get_all_stickers_catalog() -> List[Dict[str, Any]]:
                 "id": s_id,
                 "type": s_type,
                 "label": label,
-                "icon": s_id
+                "icon": s_id.removeprefix("prop_") if s_type == "icon" else s_id,
+                "asset_only": True,
             }
             
     return list(catalog_map.values())
@@ -905,50 +911,110 @@ def generate_prop_icon(icon_name: str, size: int = 180) -> Image.Image:
         draw.ellipse([cx - 65, cy - 65, cx + 65, cy + 65], fill=(255, 255, 255))
         font_s = get_font(76)
         draw.text((cx, cy), "✨", font=font_s, anchor="mm")
-    else:  # Star
+    elif icon_name == "star":
         draw.ellipse([cx - 88, cy - 88, cx + 88, cy + 88], fill=(255, 255, 255))
         font = get_font(130)
         draw.text((cx, cy), "⭐", font=font, fill=(250, 204, 21), anchor="mm")
+    else:
+        raise ValueError(f"No approved artwork or procedural renderer for prop: {icon_name}")
 
     return canvas.resize((size, size), Image.Resampling.LANCZOS)
 
+def resolve_sticker_definition(sticker_info: Dict[str, Any]) -> Dict[str, Any]:
+    """Resolve text from typed data, never from an arbitrary filename."""
+    if not isinstance(sticker_info, dict):
+        raise ValueError("Sticker must be a typed object")
+    s_id = sticker_info.get("id", "")
+    if not isinstance(s_id, str):
+        raise ValueError("Sticker id must be a string")
+    clean_id = s_id.removesuffix(".png")
+    if clean_id:
+        contained_path(Path(STICKER_DIR), clean_id + ".png")
+    definition = next((dict(s) for s in STICKER_CATALOG if s["id"] == clean_id), {})
+    if clean_id.startswith("generated_"):
+        metadata = image_path("stickers", clean_id + ".json")
+        if metadata.is_file():
+            definition = json.loads(metadata.read_text(encoding="utf-8"))
+    definition.update(sticker_info)
+    s_type = definition.get("type")
+    if s_type not in {"word", "letter", "number", "icon"}:
+        raise ValueError("Sticker type must be word, letter, number or icon")
+    field = {"word": "chinese", "letter": "letter", "number": "number", "icon": "icon"}[s_type]
+    content = definition.get("content", definition.get(field))
+    if not isinstance(content, str) or not content.strip() or len(content) > 300:
+        raise ValueError("Sticker content must be nonempty text of at most 300 characters")
+    english = definition.get("english", "")
+    if not isinstance(english, str) or len(english) > 300:
+        raise ValueError("Invalid sticker translation")
+    theme = definition.get("color_theme", "amber")
+    if theme not in THEME_PALETTES:
+        raise ValueError(f"Unknown sticker color theme: {theme}")
+    return {"type": s_type, "content": content, "english": english, "color_theme": theme}
+
+
 def get_or_render_sticker(sticker_info: Dict[str, Any], force: bool = False) -> str:
-    """Returns absolute file path to the transparent sticker PNG, generating if not present."""
-    s_id = sticker_info.get("id") or "sticker_custom"
-    clean_id = s_id.replace(".png", "")
-    file_path = os.path.join(STICKER_DIR, f"{clean_id}.png")
-    
-    if os.path.exists(file_path) and not force:
-        return file_path
-        
-    prop_candidate = os.path.join(STICKER_DIR, f"prop_{clean_id.replace('prop_', '')}.png")
-    if os.path.exists(prop_candidate) and not force:
-        return prop_candidate
-
-    s_type = sticker_info.get("type", "word")
+    """Resolve approved art or content-addressed derived art, without mutating masters."""
+    s_id = sticker_info.get("id", "")
+    if not isinstance(s_id, str):
+        raise ValueError("Sticker id must be a string")
+    clean_id = s_id.removesuffix(".png")
+    if clean_id:
+        approved = contained_path(Path(STICKER_DIR), clean_id + ".png")
+        known = any(s["id"] == clean_id for s in STICKER_CATALOG)
+        # Older approved PNGs have no recoverable text recipe. Reuse their art
+        # rather than treating their filename placeholder as vocabulary.
+        if not known and approved.is_file() and sticker_info.get("content") in (
+                None, "", clean_id, clean_id.removeprefix("prop_")):
+            return str(approved)
+    definition = resolve_sticker_definition(sticker_info)
+    s_type = definition["type"]
+    if s_type == "icon":
+        icon = definition["content"]
+        approved = contained_path(Path(STICKER_DIR), f"prop_{icon}.png")
+        if approved.is_file():
+            return str(approved)
+    payload = json.dumps({"renderer": 2, **definition}, sort_keys=True, ensure_ascii=False)
+    # 128-bit content identity leaves room for atomic-write names on Windows.
+    cache_id = "generated_" + hashlib.sha256(payload.encode("utf-8")).hexdigest()[:32]
+    file_path = image_path("stickers", cache_id + ".png")
+    metadata = image_path("stickers", cache_id + ".json")
+    if file_path.is_file() and metadata.is_file() and not force:
+        return str(file_path)
     if s_type == "letter":
-        letter = sticker_info.get("content") or sticker_info.get("letter") or "A"
-        theme = sticker_info.get("color_theme") or "rose"
-        img = generate_toy_block(letter, theme)
+        img = generate_toy_block(definition["content"], definition["color_theme"])
     elif s_type == "number":
-        num = sticker_info.get("content") or sticker_info.get("number") or "1"
-        theme = sticker_info.get("color_theme") or "amber"
-        img = generate_toy_block(num, theme)
+        img = generate_toy_block(definition["content"], definition["color_theme"])
     elif s_type == "icon":
-        icon = sticker_info.get("content") or sticker_info.get("icon") or "banana"
-        img = generate_prop_icon(icon)
-    else:  # word badge
-        chinese = sticker_info.get("content") or sticker_info.get("chinese") or "多謝"
-        english = sticker_info.get("english") or "Thank you"
-        theme = sticker_info.get("color_theme") or "amber"
-        img = generate_vocab_badge(chinese, english, theme)
+        img = generate_prop_icon(definition["content"])
+    else:
+        img = generate_vocab_badge(definition["content"], definition["english"], definition["color_theme"])
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    pending = image_path("stickers", uuid.uuid4().hex + ".pending.png")
+    try:
+        img.save(pending, format="PNG")
+        atomic_write_json(metadata, definition)
+        os.replace(pending, file_path)
+    finally:
+        pending.unlink(missing_ok=True)
+    return str(file_path)
 
-    img.save(file_path, format="PNG")
-    return file_path
+
+def resolve_sticker_image(sticker_id: str) -> str:
+    clean_id = sticker_id.removesuffix(".png")
+    approved = contained_path(Path(STICKER_DIR), clean_id + ".png")
+    known = next((s for s in STICKER_CATALOG if s["id"] == clean_id), None)
+    if known:
+        return get_or_render_sticker(known)
+    if clean_id.startswith("generated_"):
+        image = image_path("stickers", clean_id + ".png")
+        metadata = image_path("stickers", clean_id + ".json")
+        if image.is_file() and metadata.is_file():
+            return str(image)
+    elif approved.is_file():
+        return str(approved)
+    raise FileNotFoundError(f"Unknown sticker: {clean_id}")
 
 def ensure_base_stickers():
-    """Pre-generates all default catalog stickers on startup."""
+    """Explicitly prepare isolated caches; never invoked during import."""
     for s in STICKER_CATALOG:
         get_or_render_sticker(s)
-
-ensure_base_stickers()

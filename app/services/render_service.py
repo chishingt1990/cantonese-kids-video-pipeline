@@ -2,19 +2,200 @@ import os
 import re
 import subprocess
 import threading
+import copy
+import json
+import math
+import shutil
+import time
+from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-from app.services.audio_service import mix_scene_audio, get_audio_duration
+from app.services.audio_service import (
+    mix_scene_audio, get_audio_duration, resolve_project_audio, MAX_EPISODE_SECONDS,
+    MAX_SCENE_SECONDS, media_binary, require_media_tools, missing_media_tool,
+)
 from app.services.sticker_service import get_or_render_sticker
+from app.services.asset_manifest import resolve_sprite, resolve_background
+from app.storage import (
+    validate_id, project_path, project_operation,
+    atomic_write_json, media_input_fingerprint,
+)
 
-# In-memory job registry
 JOBS = {}
+_CONTROLS = {}
+_JOBS_LOCK = threading.RLock()
+_RENDER_SLOT = threading.BoundedSemaphore(1)
+MAX_JOB_SECONDS = 1800
+
+
+class RenderBusyError(RuntimeError):
+    pass
+
+
+class RenderCancelled(RuntimeError):
+    pass
+
+
+def _update_job(job_id, **fields):
+    with _JOBS_LOCK:
+        JOBS[job_id].update(fields)
+        job = dict(JOBS[job_id])
+        atomic_write_json(project_path(job["project_id"], "jobs", f"render_{job_id}.json"), job)
+
+
+def get_render_job(job_id, project_id=None):
+    validate_id(job_id)
+    with _JOBS_LOCK:
+        if job_id in JOBS:
+            job = dict(JOBS[job_id])
+            if project_id and project_id != job["project_id"]:
+                raise ValueError("Render belongs to another project")
+            return job
+    if not project_id:
+        return {"status": "not_found", "progress": 0,
+                "error": "Supply project_id to retrieve a job after server restart"}
+    path = project_path(project_id, "jobs", f"render_{job_id}.json")
+    if not path.is_file():
+        return {"status": "not_found", "progress": 0}
+    job = json.loads(path.read_text(encoding="utf-8"))
+    if job.get("status") in ("queued", "rendering"):
+        job.update(status="error", error="Render interrupted by server restart; start a new render")
+        atomic_write_json(path, job)
+    return job
+
+
+def cancel_render_job(job_id):
+    with _JOBS_LOCK:
+        control = _CONTROLS.get(job_id)
+        if not control or JOBS[job_id]["status"] not in ("queued", "rendering"):
+            return False
+        control["cancel"].set()
+        proc = control.get("proc")
+        if proc is not None and proc.poll() is None:
+            try:
+                proc.kill()
+            except OSError:
+                pass
+        return True
+
+
+def _asset(path):
+    if not path.is_file():
+        raise ValueError(f"Approved stage asset is missing: {path.name}")
+    return path
+
+
+def _stage_asset(resolver, *identifiers):
+    try:
+        return _asset(resolver(*identifiers))
+    except FileNotFoundError as exc:
+        raise ValueError(f"Approved stage asset is missing: {' / '.join(identifiers)}") from exc
+
+
+def validate_render_snapshot(project_data):
+    if not isinstance(project_data, dict):
+        raise ValueError("Project snapshot must be an object")
+    snapshot = copy.deepcopy(project_data)
+    project_id = validate_id(snapshot.get("id") or snapshot.get("episode_id") or "")
+    if snapshot.get("id") and snapshot.get("episode_id") and snapshot["id"] != snapshot["episode_id"]:
+        raise ValueError("Project identifiers disagree")
+    if not project_path(project_id, "project.json").is_file():
+        raise ValueError("Save the project before rendering")
+    scenes = snapshot.get("scenes")
+    if not isinstance(scenes, list) or not 1 <= len(scenes) <= 100:
+        raise ValueError("Render requires 1–100 scenes")
+    total = 0
+    for index, scene in enumerate(scenes, 1):
+        if not isinstance(scene, dict):
+            raise ValueError("Each scene must be an object")
+        duration = float(scene.get("duration_sec", 6))
+        if not math.isfinite(duration) or not 0 < duration <= MAX_SCENE_SECONDS:
+            raise ValueError("Invalid scene duration")
+        duration = math.ceil(duration * 30) / 30
+        total += duration
+        for field in ("cantonese", "english", "jyutping", "vocab_highlight", "speaker"):
+            if not isinstance(scene.get(field, ""), str) or len(scene.get(field, "")) > 10000:
+                raise ValueError(f"Invalid scene {field}")
+        audio_url = scene.get("audio_url")
+        if audio_url:
+            path = resolve_project_audio(project_id, audio_url)
+            audio_duration = get_audio_duration(str(path))
+            if audio_duration + 1.2 > duration + 1e-6:
+                raise ValueError(f"Scene {index} requires at least {math.ceil(audio_duration + 1.2)} seconds for its narration")
+            scene["_audio_path"] = str(path)
+        elif scene.get("cantonese", "").strip():
+            raise ValueError(f"Scene {index} has narration text but no approved audio")
+        else:
+            scene["_audio_path"] = None
+        scene["duration_sec"] = duration
+        background = validate_id(scene.get("background", "living_room"))
+        scene["_background_path"] = str(_stage_asset(resolve_background, background))
+        for key, limit in (("characters", 30), ("stickers", 50)):
+            items = scene.get(key, [])
+            if not isinstance(items, list) or len(items) > limit:
+                raise ValueError(f"Invalid scene {key}")
+            for item in items:
+                if not isinstance(item, dict):
+                    raise ValueError(f"Invalid {key} entry")
+                for field, default, low, high in (
+                    ("scale", 1, 0.1, 4), ("x_percent", 50, 0, 100),
+                    ("y_percent", 88 if key == "characters" else 24, 0, 100),
+                    ("rotation_deg", item.get("rotation", 0), -360, 360),
+                    ("layer", 1, -100, 100),
+                ):
+                    value = float(item.get(field, default))
+                    if not math.isfinite(value) or not low <= value <= high:
+                        raise ValueError(f"Invalid {key} {field}")
+                if key == "characters":
+                    item["_sprite_path"] = str(_stage_asset(
+                        resolve_sprite, item.get("name", "levi"), item.get("pose", "default")))
+                else:
+                    # Only a local deterministic sticker renderer is used here.
+                    sticker = dict(item)
+                    sticker["id"] = validate_id(item.get("id") or item.get("sticker_id") or "badge_thank_you")
+                    for text_field in ("content", "chinese", "english", "letter", "number", "icon"):
+                        if not isinstance(sticker.get(text_field, ""), str) or len(sticker.get(text_field, "")) > 200:
+                            raise ValueError("Invalid sticker content")
+                    item["_sticker_path"] = str(_asset(Path(get_or_render_sticker(sticker))))
+    if total > MAX_EPISODE_SECONDS:
+        raise ValueError("Episode exceeds maximum duration")
+    options = snapshot.get("subtitle_options", {})
+    if not isinstance(options, dict) or not isinstance(snapshot.get("caption_options", {}), dict):
+        raise ValueError("Invalid subtitle/caption options")
+    for name, default in (("font_size_cn", 52), ("font_size_en", 26)):
+        value = int(options.get(name, default))
+        if not 12 <= value <= 96:
+            raise ValueError("Font sizes must be between 12 and 96")
+    return project_id, snapshot
+
+
+def _freeze_assets(snapshot, workdir):
+    cache = {}
+    def freeze(path):
+        if path is None:
+            return None
+        if path not in cache:
+            source = Path(path)
+            destination = workdir / f"{len(cache):04d}{source.suffix}"
+            shutil.copyfile(source, destination)
+            cache[path] = str(destination)
+        return cache[path]
+    for scene in snapshot["scenes"]:
+        for key in ("_audio_path", "_background_path"):
+            scene[key] = freeze(scene[key])
+        for char in scene.get("characters", []):
+            char["_sprite_path"] = freeze(char["_sprite_path"])
+        for sticker in scene.get("stickers", []):
+            sticker["_sticker_path"] = freeze(sticker["_sticker_path"])
+    return snapshot
 
 def get_font(size: int, bold: bool = False):
     candidates = [
-        "C:/Windows/Fonts/msjhbd.ttc" if bold else "C:/Windows/Fonts/msjh.ttc",
-        "C:/Windows/Fonts/arial.ttf",
-        "C:/Windows/Fonts/seguiemj.ttf"
+        os.environ.get("KIDS_STUDIO_CJK_FONT", ""),
+        r"C:\Windows\Fonts\msjhbd.ttc" if bold else r"C:\Windows\Fonts\msjh.ttc",
+        r"C:\Windows\Fonts\msyh.ttc",
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/System/Library/Fonts/PingFang.ttc",
     ]
     for c in candidates:
         if os.path.exists(c):
@@ -22,7 +203,7 @@ def get_font(size: int, bold: bool = False):
                 return ImageFont.truetype(c, size)
             except Exception:
                 pass
-    return ImageFont.load_default()
+    raise RuntimeError("Install a Cantonese-capable CJK font or set KIDS_STUDIO_CJK_FONT")
 
 
 # ---------------------------------------------------------------------------
@@ -35,26 +216,10 @@ def get_font(size: int, bold: bool = False):
 
 def _split_caption_lines(text: str, max_chars: int = 10) -> list:
     """Split a Cantonese line into short singable phrases at punctuation."""
-    parts = re.split(r'([，。！？；：、,.!?;:\s]+)', text or "")
-    lines, buf = [], ""
-    for p in parts:
-        if not p:
-            continue
-        if re.fullmatch(r'[，。！？；：、,.!?;:\s]+', p):
-            if buf:
-                lines.append(buf)
-                buf = ""
-            continue
-        while buf and len(buf) + len(p) > max_chars:
-            take = max_chars - len(buf)
-            buf += p[:take]
-            p = p[take:]
-            lines.append(buf)
-            buf = ""
-        buf += p
-    if buf:
-        lines.append(buf)
-    return [l for l in lines if l]
+    if max_chars < 1:
+        raise ValueError("Caption width must be positive")
+    parts = re.split(r'[，。！？；：、,.!?;:\s]+', text or "")
+    return [part[i:i + max_chars] for part in parts for i in range(0, len(part), max_chars)]
 
 
 def _build_scene_caption_timeline(scene: dict, project_root: str, font) -> list:
@@ -73,31 +238,15 @@ def _build_scene_caption_timeline(scene: dict, project_root: str, font) -> list:
 
     # Prefer real narration timing: resolve this scene's voice clip and read
     # its actual duration, clamped to the scene length.
-    audio_dur = None
-    s_num = scene.get("scene_number", 1)
-    clip_name = None
-    if scene.get("audio_url"):
-        clip_name = os.path.basename(scene["audio_url"].split("?")[0])
-    for candidate in [clip_name, f"scene_{s_num:02d}_voice.wav"]:
-        if not candidate:
-            continue
-        clip_path = os.path.join(
-            project_root, "assets", "outputs", "audio_clips", candidate
-        )
-        if os.path.exists(clip_path):
-            try:
-                audio_dur = get_audio_duration(clip_path)
-            except Exception:
-                audio_dur = None
-            break
+    audio_dur = get_audio_duration(scene["_audio_path"]) if scene.get("_audio_path") else None
 
     if audio_dur and audio_dur > 0:
-        span = min(duration - 0.6, audio_dur + 0.4)
+        span = min(duration, audio_dur)
     else:
         span = duration - 0.6
-    span = max(1.0, span)
+    span = max(1 / 30, span)
 
-    lead_in = 0.3
+    lead_in = 0.0
     total_chars = max(1, sum(len(l) for l in lines))
     timeline = []
     t = lead_in
@@ -119,47 +268,39 @@ def _build_scene_caption_timeline(scene: dict, project_root: str, font) -> list:
     return timeline
 
 def render_project_video(project_data: dict, job_id: str, output_path: str):
-    JOBS[job_id] = {"status": "rendering", "progress": 0, "error": None}
-    
+    proc = None
+    log = None
+    control = _CONTROLS[job_id]
+    workdir = Path(control["workdir"])
+    complete = threading.Event()
+    def watchdog():
+        if not complete.wait(MAX_JOB_SECONDS):
+            control["timed_out"] = True
+            cancel_render_job(job_id)
+    threading.Thread(target=watchdog, daemon=True).start()
     try:
+        _update_job(job_id, status="rendering", progress=0)
+        if control["cancel"].is_set():
+            raise RenderCancelled("Render cancelled")
         scenes = project_data.get("scenes", [])
         total_duration = sum(s.get("duration_sec", 6) for s in scenes)
         fps = 30
         width, height = 1920, 1080
-        total_frames = int(total_duration * fps)
+        total_frames = sum(round(s["duration_sec"] * fps) for s in scenes)
         
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         
         # 1. Dynamically gather scene voice recordings and mix master audio with ukulele BGM
-        voice_paths = []
-        durations = []
-        for idx, s in enumerate(scenes):
-            s_num = s.get("scene_number", idx + 1)
-            dur = float(s.get("duration_sec", 6))
-            durations.append(dur)
-            
-            # Resolve exact audio filename from audio_url if present
-            clip_name = None
-            if s.get("audio_url"):
-                raw_url = s["audio_url"].split("?")[0]
-                clip_name = os.path.basename(raw_url)
-            if not clip_name:
-                clip_name = f"scene_{s_num:02d}_voice.wav"
-            v_clip = os.path.join(project_root, "assets", "outputs", "audio_clips", clip_name)
-            if not os.path.exists(v_clip):
-                v_clip = os.path.join(project_root, "assets", "outputs", "audio_clips", f"scene_{s_num:02d}_voice.wav")
-            voice_paths.append(v_clip if os.path.exists(v_clip) else None)
-            
-        audio_path = os.path.join(project_root, "assets", "outputs", f"episode_{job_id}_master.wav")
-        try:
-            mix_scene_audio(voice_paths, durations, audio_path)
-        except Exception as e:
-            print(f"Warning: dynamic audio mixing failed, falling back to static audio: {e}")
-            audio_path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
+        voice_paths = [s["_audio_path"] for s in scenes]
+        durations = [s["duration_sec"] for s in scenes]
+        audio_path = workdir / "master.wav"
+        mix_scene_audio(voice_paths, durations, str(audio_path))
+        if control["cancel"].is_set():
+            raise RenderCancelled("Render cancelled")
         
         # 2. Setup FFmpeg pipe
         ffmpeg_cmd = [
-            "ffmpeg", "-y",
+            media_binary("ffmpeg"), "-n",
             "-f", "rawvideo",
             "-vcodec", "rawvideo",
             "-s", f"{width}x{height}",
@@ -168,8 +309,7 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
             "-i", "-",
         ]
         
-        if os.path.exists(audio_path):
-            ffmpeg_cmd.extend(["-i", audio_path, "-c:a", "aac", "-b:a", "192k"])
+        ffmpeg_cmd.extend(["-i", str(audio_path), "-c:a", "aac", "-b:a", "192k"])
             
         ffmpeg_cmd.extend([
             "-c:v", "libx264",
@@ -179,7 +319,13 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
             output_path
         ])
         
-        proc = subprocess.Popen(ffmpeg_cmd, stdin=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        log = (workdir / "ffmpeg.log").open("wb")
+        try:
+            proc = subprocess.Popen(ffmpeg_cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=log)
+        except FileNotFoundError as exc:
+            raise missing_media_tool("ffmpeg") from exc
+        with _JOBS_LOCK:
+            control["proc"] = proc
         
         # Subtitle Options & Fonts
         sub_opts = project_data.get("subtitle_options", {})
@@ -210,45 +356,24 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
         bg_cache = {}
         sprite_cache = {}
         
-        def load_bg(bg_name):
-            if bg_name in bg_cache:
-                return bg_cache[bg_name]
-            bg_file = os.path.join(project_root, "assets", "backgrounds", f"bg_{bg_name}.png")
-            if not os.path.exists(bg_file):
-                bg_file = os.path.join(project_root, "assets", "backgrounds", "bg_living_room.png")
-            if os.path.exists(bg_file):
-                im = Image.open(bg_file).convert("RGB").resize((width, height), Image.Resampling.LANCZOS)
-            else:
-                im = Image.new("RGB", (width, height), (255, 248, 235))
-            bg_cache[bg_name] = im
+        def load_bg(bg_file):
+            if bg_file in bg_cache:
+                return bg_cache[bg_file]
+            with Image.open(bg_file) as source:
+                im = source.convert("RGB").resize((width, height), Image.Resampling.LANCZOS)
+            bg_cache[bg_file] = im
             return im
 
-        def load_sprite(char_name, pose):
-            key = f"{char_name}_{pose}"
-            if key in sprite_cache:
-                return sprite_cache[key]
-            
-            candidates = [
-                os.path.join(project_root, "assets", "sprites", f"{key}.png"),
-                os.path.join(project_root, "assets", "sprites", f"{char_name}_{pose.replace('drinking_', '')}.png") if "drinking" in pose else None,
-                os.path.join(project_root, "assets", "sprites", f"{char_name}_tea.png") if "tea" in pose or "drink" in pose else None,
-                os.path.join(project_root, "assets", "sprites", f"{char_name}_default.png"),
-                os.path.join(project_root, "assets", "sprites", f"{char_name}.png")
-            ]
-            im = None
-            for c_path in candidates:
-                if c_path and os.path.exists(c_path):
-                    try:
-                        im = Image.open(c_path).convert("RGBA")
-                        break
-                    except Exception:
-                        pass
-            sprite_cache[key] = im
+        def load_sprite(path):
+            if path in sprite_cache:
+                return sprite_cache[path]
+            with Image.open(path) as source:
+                im = source.convert("RGBA")
+            sprite_cache[path] = im
             return im
             
         for s_idx, scene in enumerate(scenes):
-            bg_name = scene.get("background", "living_room")
-            bg_base = load_bg(bg_name)
+            bg_base = load_bg(scene["_background_path"])
             
             chars = scene.get("characters", [])
             cantonese = scene.get("cantonese", "")
@@ -258,7 +383,7 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
             speaker = (scene.get("speaker") or "").lower()
             
             scene_duration = scene.get("duration_sec", 6)
-            scene_frames = int(scene_duration * fps)
+            scene_frames = round(scene_duration * fps)
             
             # Speaker bias for Ken Burns subtle camera pan
             speaker_bias_x = 0.0
@@ -268,6 +393,8 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                 speaker_bias_x = 0.08
 
             for f in range(scene_frames):
+                if control["cancel"].is_set():
+                    raise RenderCancelled("Render cancelled")
                 time_sec = f / fps
                 t_norm = f / max(1, scene_frames - 1)
                 
@@ -314,14 +441,14 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                         c_name = c.get("name", "levi")
                         c_pose = c.get("pose", "default")
                         c_pos = c.get("position", "center")
-                        sp = load_sprite(c_name, c_pose)
+                        sp = load_sprite(c["_sprite_path"])
                         if sp:
                             if c_name in ["dad", "mom", "grandparents_paternal", "grandparents_maternal", "auntie_cousins"]:
-                                base_h = 760
+                                base_h = round(height * 0.72)
                             elif c_name in ["dog", "family_dog", "spitz"]:
-                                base_h = 320
+                                base_h = round(height * 0.30)
                             else:
-                                base_h = 520
+                                base_h = round(height * 0.50)
                             
                             c_scale = float(c.get("scale", 1.0))
                             target_h = int(base_h * c_scale * squash_y)
@@ -340,20 +467,16 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                             if "x_percent" in c:
                                 x = int(width * (float(c["x_percent"]) / 100.0) - resized_sp.width / 2)
                             elif c_pos == "left":
-                                x = int(width * 0.28 - resized_sp.width / 2)
+                                x = int(width * 0.30 - resized_sp.width / 2)
                             elif c_pos == "right":
-                                x = int(width * 0.72 - resized_sp.width / 2)
-                            elif c_pos == "far_left":
-                                x = int(width * 0.15 - resized_sp.width / 2)
-                            elif c_pos == "far_right":
-                                x = int(width * 0.85 - resized_sp.width / 2)
+                                x = int(width * 0.70 - resized_sp.width / 2)
                             else:
                                 x = int(width * 0.50 - resized_sp.width / 2)
                                 
                             if "y_percent" in c:
                                 ground_y = int(height * (float(c["y_percent"]) / 100.0))
                             else:
-                                ground_y = 880
+                                ground_y = round(height * 0.88)
                             y = ground_y - resized_sp.height + bob_y
                             frame.paste(resized_sp, (x, y), resized_sp)
 
@@ -371,9 +494,9 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                                 pop_mult = 1.0
                                 
                             try:
-                                st_path = get_or_render_sticker(s)
+                                st_path = s["_sticker_path"]
                                 if st_path and os.path.exists(st_path):
-                                    st_img = Image.open(st_path).convert("RGBA")
+                                    st_img = load_sprite(st_path)
                                     s_scale = float(s.get("scale", 1.0)) * pop_mult
                                     st_w = int(st_img.width * s_scale)
                                     st_h = int(st_img.height * s_scale)
@@ -381,15 +504,15 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                                         resized_st = st_img.resize((st_w, st_h), Image.Resampling.LANCZOS)
                                         # Secondary gentle floating
                                         float_y = int(4.0 * np.sin(2.0 * np.pi * 0.5 * time_sec))
-                                        base_rot = float(s.get("rotation_deg", 0.0))
+                                        base_rot = float(s.get("rotation_deg", s.get("rotation", 0.0)))
                                         rot = base_rot + float(2.0 * np.cos(2.0 * np.pi * 0.4 * time_sec))
                                         if abs(rot) > 0.5:
                                             resized_st = resized_st.rotate(-rot, expand=True, resample=Image.Resampling.BICUBIC)
                                         sx = int(width * (float(s.get("x_percent", 50.0)) / 100.0) - resized_st.width / 2)
                                         sy = int(height * (float(s.get("y_percent", 24.0)) / 100.0) - resized_st.height / 2) + float_y
                                         frame.paste(resized_st, (sx, sy), resized_st)
-                            except Exception:
-                                pass
+                            except Exception as exc:
+                                raise RuntimeError("Approved sticker could not be rendered") from exc
 
                 # 5. Forefront Subtitle Pill with Soft Fade In / Fade Out
                 alpha_sub = min(1.0, f / 8.0)
@@ -494,20 +617,131 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                 proc.stdin.write(frame.tobytes())
                 frame_idx += 1
                 
-                if frame_idx % 15 == 0:
-                    JOBS[job_id]["progress"] = int((frame_idx / total_frames) * 100)
+                if frame_idx % 30 == 0:
+                    _update_job(job_id, progress=min(99, int((frame_idx / total_frames) * 100)))
         
         proc.stdin.close()
-        proc.wait()
-        
-        JOBS[job_id]["status"] = "done"
-        JOBS[job_id]["progress"] = 100
-        JOBS[job_id]["video_path"] = output_path
-        JOBS[job_id]["video_filename"] = os.path.basename(output_path)
+        _verify_encoder_output(proc, output_path)
+        with _JOBS_LOCK:
+            if control["cancel"].is_set():
+                raise RenderCancelled("Render cancelled")
+            job = JOBS[job_id]
+            artifact = {
+                "status": "done", "project_id": job["project_id"],
+                "filename": Path(output_path).name,
+                "video_filename": Path(output_path).name,
+                "video_url": f"/api/render/video/{job['project_id']}/{Path(output_path).name}",
+                "input_fingerprint": job["input_fingerprint"],
+                "caption_timing": "estimated" if singalong_enabled else "disabled",
+                "rendered_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            }
+            atomic_write_json(Path(str(output_path) + ".json"), artifact)
+            _update_job(job_id, **artifact, progress=100)
     except Exception as e:
-        JOBS[job_id]["status"] = "error"
-        JOBS[job_id]["error"] = str(e)
+        cancelled = control["cancel"].is_set()
+        message = "Render exceeded the 30-minute limit" if control.get("timed_out") else (
+            "Render cancelled" if cancelled else str(e))
+        _update_job(job_id, status="cancelled" if cancelled and not control.get("timed_out") else "error",
+                    error=message)
+    finally:
+        complete.set()
+        try:
+            if proc is not None:
+                try:
+                    if proc.poll() is None:
+                        proc.kill()
+                    proc.wait(timeout=10)
+                finally:
+                    if proc.stdin and not proc.stdin.closed:
+                        try:
+                            proc.stdin.close()
+                        except OSError:
+                            pass
+            if log is not None:
+                log.close()
+            if JOBS[job_id]["status"] != "done":
+                Path(output_path).unlink(missing_ok=True)
+                Path(str(output_path) + ".json").unlink(missing_ok=True)
+        finally:
+            shutil.rmtree(workdir, ignore_errors=True)
+            with _JOBS_LOCK:
+                _CONTROLS.pop(job_id, None)
+            try:
+                operation = control.pop("operation", None)
+                if operation is not None:
+                    operation.__exit__(None, None, None)
+            finally:
+                _RENDER_SLOT.release()
 
-def start_render_job(project_data: dict, job_id: str, output_path: str):
-    t = threading.Thread(target=render_project_video, args=(project_data, job_id, output_path), daemon=True)
-    t.start()
+
+def _verify_encoder_output(proc, output_path):
+    result = proc.wait(timeout=60)
+    if result != 0:
+        raise RuntimeError(f"FFmpeg failed with exit code {result}")
+    path = Path(output_path)
+    if not path.is_file() or path.stat().st_size == 0:
+        raise RuntimeError("FFmpeg produced no usable output")
+
+
+def start_render_job(project_data: dict, job_id: str):
+    validate_id(job_id)
+    if not _RENDER_SLOT.acquire(blocking=False):
+        raise RenderBusyError("Another render is active; wait or cancel it before starting another")
+    workdir = None
+    operation = None
+    operation_entered = False
+    started = False
+    try:
+        require_media_tools("ffmpeg")
+        with _JOBS_LOCK:
+            if job_id in JOBS:
+                raise ValueError("Render identifier already exists")
+        original = copy.deepcopy(project_data)
+        project_id = validate_id(original.get("id") or original.get("episode_id") or "")
+        operation = project_operation(project_id)
+        operation.__enter__()
+        operation_entered = True
+        project_id, snapshot = validate_render_snapshot(original)
+        original["id"] = original["episode_id"] = project_id
+        filename = f"episode_{job_id}.mp4"
+        output_path = project_path(project_id, "renders", filename)
+        if output_path.exists():
+            raise ValueError("Render output already exists")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        workdir = project_path(project_id, "renders", f".job_{job_id}")
+        workdir.mkdir()
+        snapshot = _freeze_assets(snapshot, workdir)
+        fingerprint = media_input_fingerprint(original)
+        atomic_write_json(Path(str(output_path) + ".input.json"), original)
+        with _JOBS_LOCK:
+            # Disk records remain available through project-scoped status queries.
+            for old in list(JOBS):
+                if len(JOBS) < 100:
+                    break
+                if old not in _CONTROLS:
+                    JOBS.pop(old)
+            JOBS[job_id] = {"job_id": job_id, "project_id": project_id,
+                            "status": "queued", "progress": 0, "error": None,
+                            "input_fingerprint": fingerprint}
+            _CONTROLS[job_id] = {"cancel": threading.Event(), "proc": None, "workdir": str(workdir),
+                                "operation": operation}
+        _update_job(job_id)
+        thread = threading.Thread(target=render_project_video,
+                                  args=(snapshot, job_id, str(output_path)), daemon=True)
+        thread.start()
+        started = True
+        return get_render_job(job_id)
+    except Exception:
+        if started:
+            raise
+        if workdir is not None:
+            shutil.rmtree(workdir, ignore_errors=True)
+        with _JOBS_LOCK:
+            _CONTROLS.pop(job_id, None)
+            JOBS.pop(job_id, None)
+        try:
+            if operation_entered:
+                operation.__exit__(None, None, None)
+        finally:
+            _RENDER_SLOT.release()
+        raise

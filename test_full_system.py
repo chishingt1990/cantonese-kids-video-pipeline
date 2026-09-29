@@ -1,3 +1,10 @@
+"""Historical asset/live-provider checks; run only in a disposable checkout.
+
+The default offline regression suite is ``python -m unittest discover -s tests``.
+This suite predates project-scoped media and modifies assets in its working
+directory. Explicit opt-in preserves it for migration reference without making
+ordinary test discovery contact providers or overwrite artwork.
+"""
 import os
 import unittest
 from PIL import Image
@@ -11,6 +18,10 @@ from app.services.ai_service import _generate_dynamic_fallback_script
 
 client = TestClient(app)
 
+@unittest.skipUnless(
+    os.environ.get("KIDS_STUDIO_RUN_LEGACY_TESTS") == "1",
+    "Legacy asset/live checks require an explicitly opted-in disposable checkout",
+)
 class TestCantoneseKidsPipeline(unittest.TestCase):
 
     def test_01_master_backgrounds_exist_and_1080p(self):

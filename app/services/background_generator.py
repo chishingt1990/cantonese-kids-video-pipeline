@@ -1,54 +1,71 @@
 import os
+import re
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 import numpy as np
+from app.services.asset_manifest import MASTER_ASSETS, image_path, resolve_background
 
 W, H = 1920, 1080
 
+SETTING_WORDS = {
+    "mountains": ["mountain", "mountains", "hill", "hills", "wildflower", "valley", "hiking", "山"],
+    "beach": ["beach", "sandcastle", "ocean", "sea", "coast", "shore", "island", "waves", "沙灘"],
+    "park": ["park", "picnic", "lawn", "outside", "公園"],
+    "backyard_garden": ["garden", "backyard", "花園"],
+    "playground": ["playground", "swing", "slide", "滑梯"],
+    "kitchen": ["kitchen", "high chair", "cook", "chef", "breakfast", "廚房"],
+    "playroom": ["playroom", "toy", "blocks", "play area", "play mat", "玩具房"],
+    "nursery": ["nursery", "crib", "bedtime", "sleep", "bedroom", "睡房"],
+    "bathroom": ["bathroom", "bath", "tub", "wash", "shower", "浴室"],
+    "dining": ["dining", "dim sum", "banquet", "tea", "meal", "飲茶"],
+    "reading_nook": ["reading", "nook", "book", "story", "library", "bookshelf", "睇書"],
+    "living_room": ["living room", "sofa", "客廳"],
+    "farm_field": ["farm", "field", "農場"],
+    "duck_pond": ["duck pond", "pond", "鴨池"],
+    "art_room": ["art room", "art studio", "easel", "畫室"],
+    "supermarket": ["supermarket", "grocery", "超市"],
+}
+
+
+def _latest_match(text, groups):
+    found = []
+    text = text.lower()
+    for label, words in groups.items():
+        for word in words:
+            pattern = re.escape(word)
+            if word.isascii():
+                pattern = r"(?<!\w)" + pattern + r"(?!\w)"
+            for match in re.finditer(pattern, text):
+                prefix = text[max(0, match.start() - 20):match.start()]
+                if re.search(r"(?:not|no|without|remove|instead of)\s+(?:the\s+)?$", prefix):
+                    continue
+                found.append((match.start(), len(word), label))
+    return max(found)[2] if found else None
+
+
+def background_state(prompt, history=None):
+    setting, lighting = "living_room", ""
+    lighting_words = {
+        "night": ["night", "midnight", "moon", "dark", "twilight", "bedtime", "夜晚"],
+        "sunset": ["sunset", "dusk", "evening", "golden hour", "warm glow", "黃昏"],
+        "sunny": ["sunny", "morning", "bright", "daylight", "sunshine", "daytime", "白天"],
+    }
+    for instruction in [prompt, *(history or [])]:
+        setting = _latest_match(instruction, SETTING_WORDS) or setting
+        lighting = _latest_match(instruction, lighting_words) or lighting
+        if re.search(r"\b(?:remove|no|not)\s+(?:the\s+)?(?:night|moon|stars)\b", instruction.lower()):
+            lighting = "sunny"
+    return setting, lighting
+
 def get_base_archetype(all_text: str, bg_dir: str) -> tuple[str, Image.Image]:
     """Selects the best watercolor picture-book archetype image matching the prompt."""
-    text = all_text.lower()
-    
-    # 1. Mountain / Hills / Outdoor Nature
-    if any(k in text for k in ["mountain", "hill", "wildflower", "valley", "hiking", "meadow", "grassland"]):
-        fn = "bg_mountains.png"
-    # 2. Beach / Ocean / Seaside / Sandcastle
-    elif any(k in text for k in ["beach", "sandcastle", "ocean", "sea", "coast", "shore", "island", "waves"]):
-        fn = "bg_beach.png"
-    # 3. Park / Picnic / Garden / Backyard
-    elif any(k in text for k in ["park", "picnic", "garden", "lawn", "outside", "yard", "playground"]):
-        fn = "bg_park.png"
-    # 4. Kitchen / High Chairs / Cooking
-    elif any(k in text for k in ["kitchen", "high chair", "cook", "chef", "breakfast"]):
-        fn = "bg_kitchen.png"
-    # 5. Playroom / Toys / Blocks / Castle
-    elif any(k in text for k in ["playroom", "toy", "block", "play area", "play mat"]):
-        fn = "bg_playroom.png"
-    # 6. Bedtime Nursery / Night Crib
-    elif any(k in text for k in ["nursery", "crib", "bedtime", "sleep", "bedroom"]):
-        fn = "bg_nursery.png"
-    # 7. Bathroom / Bubble Bath / Tub
-    elif any(k in text for k in ["bathroom", "bath", "tub", "bubble", "duck", "wash", "shower"]):
-        fn = "bg_bathroom.png"
-    # 8. Dining Room / Dim Sum / Family Meal
-    elif any(k in text for k in ["dining", "dim sum", "table", "tea", "banquet", "eat", "meal"]):
-        fn = "bg_dining.png"
-    # 9. Reading Nook / Story Corner
-    elif any(k in text for k in ["reading", "nook", "book", "story", "library", "bookshelf"]):
-        fn = "bg_reading_nook.png"
-    # 10. Default / Living Room
-    else:
-        fn = "bg_living_room.png"
-
-    path = os.path.join(bg_dir, fn)
-    if os.path.exists(path):
-        base_img = Image.open(path).convert("RGB")
-        if base_img.size != (W, H):
-            base_img = base_img.resize((W, H), Image.Resampling.LANCZOS)
-        return fn, base_img
-    
-    # Global fallback if file missing
-    fallback = Image.new("RGB", (W, H), (255, 248, 235))
-    return "fallback", fallback
+    setting, _ = background_state(all_text)
+    path = resolve_background(setting)
+    with Image.open(path) as image:
+        base_img = image.convert("RGB")
+    if base_img.size != (W, H):
+        base_img = base_img.resize((W, H), Image.Resampling.LANCZOS)
+    return path.name, base_img
 
 def apply_storybook_atmosphere(img: Image.Image, all_text: str) -> Image.Image:
     """
@@ -74,11 +91,11 @@ def apply_storybook_atmosphere(img: Image.Image, all_text: str) -> Image.Image:
         
         # Add delicate soft glowing stars and crescent moon if prompted
         draw = ImageDraw.Draw(res, "RGBA")
-        np.random.seed(42)
+        rng = np.random.default_rng(42)
         for _ in range(25):
-            sx = int(np.random.uniform(100, W - 100))
-            sy = int(np.random.uniform(40, 420))
-            r = int(np.random.uniform(2, 5))
+            sx = int(rng.uniform(100, W - 100))
+            sy = int(rng.uniform(40, 420))
+            r = int(rng.uniform(2, 5))
             draw.ellipse([sx - r, sy - r, sx + r, sy + r], fill=(255, 255, 240, 200))
         
         # Soft crescent moon
@@ -119,25 +136,19 @@ def generate_iterative_background(prompt: str, history: list[str] = None, output
     - Applies natural language refinements (lighting, time of day, atmosphere)
     - Preserves high-resolution watercolor line art, paper texture, and open stage ground line
     """
+    if not output_path:
+        raise ValueError("An explicit isolated preview output is required")
+    if Path(output_path).resolve().is_relative_to(MASTER_ASSETS.resolve()):
+        raise ValueError("Master artwork is read-only; use a preview or candidate output.")
     if history is None:
         history = []
     
-    # Accumulated prompt context across all iteration turns
-    all_text = " ".join([prompt] + history).strip()
-    
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    bg_dir = os.path.join(project_root, "assets", "backgrounds")
-    
-    # 1. Select Base Watercolor Archetype
-    _, base_img = get_base_archetype(all_text, bg_dir)
-    
-    # 2. Apply Atmospheric Lighting & Palette Refinements
-    final_img = apply_storybook_atmosphere(base_img, all_text)
+    setting, lighting = background_state(prompt, history)
+    with Image.open(resolve_background(setting)) as image:
+        base_img = image.convert("RGB").resize((W, H), Image.Resampling.LANCZOS)
+    final_img = apply_storybook_atmosphere(base_img, lighting)
     
     # 3. Save Output
-    if not output_path:
-        output_path = os.path.join(bg_dir, "temp_preview_bg.png")
-        
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     final_img.save(output_path, format="PNG")
     return output_path

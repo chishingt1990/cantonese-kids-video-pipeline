@@ -1,5 +1,10 @@
 # scripts/build_vector_characters.py
-import os
+try:
+    from scripts.maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+except ModuleNotFoundError as exc:
+    if exc.name not in {"scripts", "scripts.maintenance_guard"}:
+        raise
+    from maintenance_guard import PROJECT_ROOT, configure_cli, output_path
 
 CHARACTERS_SVG = {
     "levi": """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="100%" height="100%">
@@ -487,11 +492,16 @@ CHARACTERS_SVG = {
 </svg>"""
 }
 
-# Write out SVGs to assets/characters/
-for char_id, svg_code in CHARACTERS_SVG.items():
-    path = f"assets/characters/{char_id}.svg"
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(svg_code.strip())
-    print(f"Generated {path}")
+def main(argv=None):
+    configure_cli(argv)
+    for char_id, svg_code in CHARACTERS_SVG.items():
+        path = PROJECT_ROOT / "assets" / "characters" / f"{char_id}.svg"
+        with open(output_path(path), "w", encoding="utf-8") as f:
+            f.write(svg_code.strip())
+        print(f"Generated {f.name}")
 
-print("Vector character assets generated successfully!")
+    print("Vector character assets generated successfully!")
+
+
+if __name__ == "__main__":
+    main()

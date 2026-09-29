@@ -3,10 +3,15 @@ import math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from scripts.maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+except ModuleNotFoundError as exc:
+    if exc.name not in {"scripts", "scripts.maintenance_guard"}:
+        raise
+    from maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+
 SPRITES_DIR = os.path.join(PROJECT_ROOT, "assets", "sprites")
 CHAR_DIR = os.path.join(PROJECT_ROOT, "assets", "characters")
-os.makedirs(SPRITES_DIR, exist_ok=True)
 
 # -------------------------------------------------------------
 # Canonical Color Constants matching Style Guide & Glossy Finish
@@ -86,7 +91,7 @@ def save_sprite(im: Image.Image, filename: str):
     else:
         cropped = im
     out_path = os.path.join(SPRITES_DIR, filename)
-    cropped.save(out_path, format="PNG", optimize=True)
+    cropped.save(output_path(out_path), format="PNG", optimize=True)
     print(f"  [GLOSSY SOLID SPRITE] Saved {filename} ({cropped.width}x{cropped.height})")
 
 def render_high_res_overlay(size, draw_fn, scale=3):
@@ -625,7 +630,8 @@ def generate_dog_curled_sleeping():
     canvas = Image.alpha_composite(canvas, overlay)
     save_sprite(canvas, "dog_curled_sleeping.png")
 
-def main():
+def main(argv=None):
+    configure_cli(argv)
     print("=== Generating 100% Consistent Glossy Solid Sprites ===")
     generate_levi_sad()
     generate_levi_holding_book()

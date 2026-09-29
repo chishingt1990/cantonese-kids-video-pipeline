@@ -1,497 +1,246 @@
+import json
 import os
-import glob
-import time
 import shutil
+import uuid
+
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
-from app.services.background_generator import generate_pastel_room, generate_iterative_background
+from pydantic import BaseModel, Field, field_validator
+
+from app.storage import atomic_write_json, validate_id
+from app.services import asset_manifest as assets
+from app.services.background_generator import generate_iterative_background
 from app.services.character_generator import generate_custom_character_sprite
 
 router = APIRouter(prefix="/api/characters", tags=["characters"])
 
-POSE_LABELS = {
-    "default": "Default Standing",
-    "sad": "😢 Sad / Needing Hug",
-    "holding_book": "📖 Holding Storybook",
-    "playing_blocks": "🧱 Stacking Toy Blocks",
-    "playing_car": "🚗 Pushing Toy Car",
-    "sitting_floor": "🧘 Sitting on Play Mat",
-    "cheering": "🙌 Cheering with Joy",
-    "clapping": "👏 Clapping Happily",
-    "crying": "😭 Crying with Tears",
-    "thinking": "🤔 Curious & Thinking",
-    "waving": "👋 Waving Hello",
-    "pointing": "👉 Pointing Excitedly",
-    "running": "🏃 Skipping & Running",
-    "arms_out_hug": "🤗 Open Arms for Hug",
-    "stretching": "🥱 Stretching & Yawning",
-    "eating": "🥣 Eating Breakfast",
-    "sleeping": "😴 Sleeping (Star PJs)",
-    "holding_toy": "🧸 Hugging Toy",
-    "sitting": "🪑 Sitting on Chair",
-    "kneeling": "🧎 Kneeling at Eye Level",
-    "comforting_hug": "🤗 Open Arms Comforting Hug",
-    "kneeling_hug": "🤗 Open Arms Warm Hug",
-    "holding_fruit": "🍎 Holding Fruit Platter",
-    "holding_bowl": "🥣 Holding Meal Bowl",
-    "teaching": "📖 Teaching & Praising",
-    "drinking": "☕ Drinking Warm Tea/Coffee",
-    "drinking_tea": "🍵 Drinking Warm Tea",
-    "curled_sleeping": "😴 Curled Up Sleeping",
-    "sitting_attentive": "🦮 Sitting Attentively",
-    "dancing_paw": "🐾 Dancing on Paws",
-    "eating_banana": "🍌 Eating Sweet Banana",
-    "playing_ball": "🎾 Playing with Ball",
-}
+
+def _asset_response(loader, *args):
+    try:
+        path = loader(*args)
+        return FileResponse(path, media_type="image/png")
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
 
 @router.get("/")
 @router.get("/all")
 def list_characters():
-    chars = [
-        {
-            "id": "levi",
-            "name": "Levi (哥哥)",
-            "role": "Older Twin Brother",
-            "outfit": "Coral Red Polo & Navy Shorts",
-            "hair": "Naturally curves upward (quiff)",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "levi_default.png"},
-                {"id": "sad", "label": "😢 Sad / Needing Hug", "sprite": "levi_sad.png"},
-                {"id": "holding_book", "label": "📖 Holding Storybook", "sprite": "levi_holding_book.png"},
-                {"id": "playing_blocks", "label": "🧱 Stacking Toy Blocks", "sprite": "levi_playing_blocks.png"},
-                {"id": "playing_car", "label": "🚗 Pushing Toy Car", "sprite": "levi_playing_car.png"},
-                {"id": "sitting_floor", "label": "🧘 Sitting on Play Mat", "sprite": "levi_sitting_floor.png"},
-                {"id": "cheering", "label": "🙌 Cheering with Joy", "sprite": "levi_cheering.png"},
-                {"id": "clapping", "label": "👏 Clapping Happily", "sprite": "levi_clapping.png"},
-                {"id": "thinking", "label": "🤔 Curious & Thinking", "sprite": "levi_thinking.png"},
-                {"id": "waving", "label": "👋 Waving Hello", "sprite": "levi_waving.png"},
-                {"id": "pointing", "label": "👉 Pointing Excitedly", "sprite": "levi_pointing.png"},
-                {"id": "running", "label": "🏃 Skipping & Running", "sprite": "levi_running.png"},
-                {"id": "arms_out_hug", "label": "🤗 Open Arms for Hug", "sprite": "levi_arms_out_hug.png"},
-                {"id": "stretching", "label": "🥱 Stretching & Yawning", "sprite": "levi_stretching.png"},
-                {"id": "eating", "label": "🥣 Eating Breakfast", "sprite": "levi_eating.png"},
-                {"id": "sleeping", "label": "😴 Sleeping (Star PJs)", "sprite": "levi_sleeping.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/levi_default.png"
-        },
-        {
-            "id": "luca",
-            "name": "Luca (細佬)",
-            "role": "Younger Twin Brother",
-            "outfit": "Bright Yellow Polo & Navy Shorts",
-            "hair": "Combed down bangs with cowlick",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "luca_default.png"},
-                {"id": "crying", "label": "😭 Crying with Tears", "sprite": "luca_crying.png"},
-                {"id": "playing_blocks", "label": "🧱 Stacking Toy Blocks", "sprite": "luca_playing_blocks.png"},
-                {"id": "playing_car", "label": "🚗 Pushing Toy Car", "sprite": "luca_playing_car.png"},
-                {"id": "sitting_floor", "label": "🧘 Sitting on Play Mat", "sprite": "luca_sitting_floor.png"},
-                {"id": "cheering", "label": "🙌 Cheering with Joy", "sprite": "luca_cheering.png"},
-                {"id": "clapping", "label": "👏 Clapping with Joy", "sprite": "luca_clapping.png"},
-                {"id": "pointing", "label": "👉 Pointing Excitedly", "sprite": "luca_pointing.png"},
-                {"id": "arms_out_hug", "label": "🤗 Open Arms for Hug", "sprite": "luca_arms_out_hug.png"},
-                {"id": "waving", "label": "👋 Waving Hello", "sprite": "luca_waving.png"},
-                {"id": "holding_toy", "label": "🧸 Hugging Teddy Bear", "sprite": "luca_holding_toy.png"},
-                {"id": "holding_book", "label": "📖 Holding Storybook", "sprite": "luca_holding_book.png"},
-                {"id": "eating", "label": "🍎 Eating Fruit Snack", "sprite": "luca_eating.png"},
-                {"id": "sleeping", "label": "😴 Sleeping (Star PJs)", "sprite": "luca_sleeping.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/luca_default.png"
-        },
-        {
-            "id": "dad",
-            "name": "Dad (爸爸)",
-            "role": "Father / Narrator",
-            "outfit": "Slate Blue Polo & Khaki Chinos",
-            "hair": "Short neat dark hair",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "dad_default.png"},
-                {"id": "sitting", "label": "🪑 Sitting on Chair", "sprite": "dad_sitting.png"},
-                {"id": "kneeling", "label": "🧎 Kneeling at Eye Level", "sprite": "dad_kneeling.png"},
-                {"id": "teaching", "label": "📖 Teaching Storybook", "sprite": "dad_teaching.png"},
-                {"id": "comforting_hug", "label": "🤗 Open Arms Comforting Hug", "sprite": "dad_comforting_hug.png"},
-                {"id": "clapping", "label": "👏 Clapping Proudly", "sprite": "dad_clapping.png"},
-                {"id": "pointing", "label": "👉 Pointing", "sprite": "dad_pointing.png"},
-                {"id": "waving", "label": "👋 Waving Warmly", "sprite": "dad_waving.png"},
-                {"id": "drinking", "label": "☕ Drinking Warm Coffee/Tea", "sprite": "dad_drinking.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/dad_default.png"
-        },
-        {
-            "id": "mom",
-            "name": "Mom (媽媽)",
-            "role": "Mother / Narrator",
-            "outfit": "Coral Apron & Warm Smile",
-            "hair": "Soft dark hair in low bun",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "mom_default.png"},
-                {"id": "kneeling_hug", "label": "🤗 Open Arms Warm Hug", "sprite": "mom_kneeling_hug.png"},
-                {"id": "holding_fruit", "label": "🍎 Holding Fruit Platter", "sprite": "mom_holding_fruit.png"},
-                {"id": "holding_bowl", "label": "🥣 Holding Meal Bowl", "sprite": "mom_holding_bowl.png"},
-                {"id": "waving", "label": "👋 Waving Warmly", "sprite": "mom_waving.png"},
-                {"id": "clapping", "label": "👏 Clapping Happily", "sprite": "mom_clapping.png"},
-                {"id": "teaching", "label": "📖 Teaching & Praising", "sprite": "mom_teaching.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/mom_default.png"
-        },
-        {
-            "id": "dog",
-            "name": "Doggy (狗狗)",
-            "role": "Family Pet",
-            "outfit": "Red Collar with Golden Tag",
-            "hair": "Pure white fluffy fur (Japanese Spitz)",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "dog_default.png"},
-                {"id": "playing_ball", "label": "🎾 Playing with Ball", "sprite": "dog_playing_ball.png"},
-                {"id": "running", "label": "🐾 Bouncing & Running", "sprite": "dog_running.png"},
-                {"id": "eating_banana", "label": "🍌 Eating Sweet Banana", "sprite": "dog_eating_banana.png"},
-                {"id": "curled_sleeping", "label": "😴 Curled Up Sleeping", "sprite": "dog_curled_sleeping.png"},
-                {"id": "sitting_attentive", "label": "🦮 Sitting Attentively", "sprite": "dog_sitting_attentive.png"},
-                {"id": "dancing_paw", "label": "🐾 Dancing on Paws", "sprite": "dog_dancing_paw.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/dog_default.png"
-        },
-        {
-            "id": "grandparents_paternal",
-            "name": "爺爺 & 嫲嫲",
-            "role": "Paternal Grandparents",
-            "outfit": "Blue Polo & Lavender Blouse",
-            "hair": "Grey hair with warm smiles",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "grandparents_paternal_default.png"},
-                {"id": "drinking_tea", "label": "🍵 Drinking Warm Tea", "sprite": "grandparents_paternal_tea.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/grandparents_paternal_default.png"
-        },
-        {
-            "id": "grandparents_maternal",
-            "name": "公公 & 婆婆",
-            "role": "Maternal Grandparents",
-            "outfit": "White Tee & Floral Top",
-            "hair": "Short grey & dark pixie cuts",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "grandparents_maternal_default.png"},
-                {"id": "waving", "label": "👋 Waving Hello Warmly", "sprite": "grandparents_maternal_waving.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/grandparents_maternal_default.png"
-        },
-        {
-            "id": "auntie_cousins",
-            "name": "姑媽 & 表哥",
-            "role": "Auntie & Cousins",
-            "outfit": "Summer Casual & Cool Glasses",
-            "hair": "Modern family look",
-            "poses": [
-                {"id": "default", "label": "Default Standing", "sprite": "auntie_cousins_default.png"},
-                {"id": "waving", "label": "👋 Waving Energetically", "sprite": "auntie_cousins_waving.png"},
-            ],
-            "sprite_url": "/api/characters/sprite/auntie_cousins_default.png"
-        }
-    ]
-    
-    # Dynamically scan sprites for all poses and custom additions
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    sprites_dir = os.path.join(project_root, "assets", "sprites")
-    for char in chars:
-        cid = char["id"]
-        # Filter existing list to only files that exist on disk
-        char["poses"] = [p for p in char["poses"] if os.path.exists(os.path.join(sprites_dir, p.get("sprite", "")))]
-        
-        # Discover all on-disk sprite files for this character
-        sprite_files = glob.glob(os.path.join(sprites_dir, f"{cid}_*.png"))
-        for sf in sorted(sprite_files):
-            fname = os.path.basename(sf)
-            if fname.startswith("temp_") or fname.startswith("test_"):
-                continue
-            pid = fname[len(cid)+1:-4]
-            # Avoid duplicate if id or sprite filename already registered
-            if not any(p["id"] == pid or p.get("sprite") == fname for p in char["poses"]):
-                label = POSE_LABELS.get(pid, f"✨ {pid.replace('_', ' ').title()}")
-                char["poses"].append({
-                    "id": pid,
-                    "label": label,
-                    "sprite": fname
-                })
-
-    return {"characters": chars}
+    return {"characters": assets.list_characters()}
 
 
 @router.get("/sprite/{filename}")
 def get_sprite(filename: str):
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    sprites_dir = os.path.join(project_root, "assets", "sprites")
-    clean_name = os.path.basename(filename.split("?")[0].lower())
-    if not clean_name.endswith(".png"):
-        clean_name = f"{clean_name}.png"
-    
-    # Direct alias mappings
-    aliases = {
-        "grandparents_paternal_drinking_tea.png": "grandparents_paternal_tea.png",
-        "grandparents_paternal_drinking.png": "grandparents_paternal_tea.png",
-        "grandparents_maternal_drinking_tea.png": "grandparents_maternal_default.png",
-        "mom_drinking.png": "mom_default.png",
-    }
-    if clean_name in aliases:
-        clean_name = aliases[clean_name]
+    return _asset_response(assets.resolve_sprite_filename, filename)
 
-    no_cache_headers = {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0"
-    }
-
-    path = os.path.join(sprites_dir, clean_name)
-    if os.path.exists(path):
-        return FileResponse(path, media_type="image/png", headers=no_cache_headers)
-    
-    # Match against multi-word character prefixes
-    known_prefixes = [
-        "grandparents_paternal",
-        "grandparents_maternal",
-        "auntie_cousins",
-        "dad",
-        "mom",
-        "dog",
-        "levi",
-        "luca"
-    ]
-    char_prefix = None
-    for pfx in known_prefixes:
-        if clean_name.startswith(pfx):
-            char_prefix = pfx
-            break
-    if not char_prefix:
-        char_prefix = clean_name.split("_")[0]
-
-    fallback_char = os.path.join(sprites_dir, f"{char_prefix}_default.png")
-    if os.path.exists(fallback_char):
-        return FileResponse(fallback_char, media_type="image/png", headers=no_cache_headers)
-        
-    fallback_char_simple = os.path.join(sprites_dir, f"{char_prefix}.png")
-    if os.path.exists(fallback_char_simple):
-        return FileResponse(fallback_char_simple, media_type="image/png", headers=no_cache_headers)
-        
-    # Global fallback only as absolute last resort
-    return FileResponse(os.path.join(sprites_dir, "levi_default.png"), media_type="image/png", headers=no_cache_headers)
 
 @router.get("/sprite/{char_id}/{pose_id}")
 def get_sprite_by_char_pose(char_id: str, pose_id: str):
-    return get_sprite(f"{char_id}_{pose_id}.png")
+    return _asset_response(assets.resolve_sprite, char_id, pose_id)
+
 
 @router.get("/backgrounds")
 def list_backgrounds():
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    bg_dir = os.path.join(project_root, "assets", "backgrounds")
-    
-    known_names = {
-        "living_room": "🛋️ Living Room Play Mat",
-        "nursery": "🌙 Bedtime Nursery & Crib",
-        "kitchen": "🥣 Kitchen & High Chairs",
-        "playroom": "🧸 Toy Playroom & Blocks",
-        "beach": "🏖️ Sandcastle Beach",
-        "park": "🌳 Sunny Green Park",
-        "mountains": "⛰️ Gentle Wildflower Hills",
-        "dining": "🥟 Dim Sum Dining Room",
-        "bathroom": "🛁 Bubble Bath & Duckies",
-        "reading_nook": "📚 Storybook Reading Nook",
-        "playground": "🛝 Playground Swings & Slide",
-        "farm_field": "🌾 Sunny Farm Meadow & Hills",
-        "duck_pond": "🦆 Storybook Duck Pond & Lake",
-        "backyard_garden": "🌻 Family Backyard Garden",
-        "art_room": "🎨 Watercolor Art Studio & Easel",
-        "supermarket": "🛒 Preschool Market & Fruit Stand"
-    }
-    core_ids = set(known_names.keys())
-    
-    bgs = []
-    for f in sorted(os.listdir(bg_dir)):
-        if f.startswith("bg_") and f.endswith(".png") and "temp_preview" not in f:
-            bg_id = f[3:-4]
-            name = known_names.get(bg_id, f"🎨 {bg_id.replace('_', ' ').title()}")
-            bgs.append({
-                "id": bg_id,
-                "name": name,
-                "filename": f,
-                "url": f"/api/characters/background/{f}",
-                "is_core": bg_id in core_ids
-            })
-    return {"backgrounds": bgs}
+    backgrounds = assets.list_backgrounds()
+    for bg in backgrounds:
+        if not bg["is_core"]:
+            metadata = assets.image_path("backgrounds", bg["filename"][:-4] + ".json")
+            if metadata.is_file():
+                bg["name"] = json.loads(metadata.read_text(encoding="utf-8"))["name"]
+    return {"backgrounds": backgrounds}
 
-@router.delete("/background/{bg_id}")
-def delete_background(bg_id: str):
-    clean_id = bg_id.replace("bg_", "").replace(".png", "").strip().lower()
-    core_ids = {
-        "living_room", "nursery", "kitchen", "playroom", "beach", "park", 
-        "mountains", "dining", "bathroom", "reading_nook", "playground", 
-        "farm_field", "duck_pond", "backyard_garden", "art_room", "supermarket"
-    }
-    if clean_id in core_ids:
-        raise HTTPException(status_code=400, detail="Core master background presets cannot be deleted.")
-
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    bg_dir = os.path.join(project_root, "assets", "backgrounds")
-    
-    candidates = [
-        os.path.join(bg_dir, f"bg_{clean_id}.png"),
-        os.path.join(bg_dir, f"{clean_id}.png"),
-        os.path.join(bg_dir, f"{bg_id}")
-    ]
-    for c in candidates:
-        if os.path.exists(c):
-            try:
-                os.remove(c)
-                return {"status": "deleted", "bg_id": clean_id}
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=str(e))
-    raise HTTPException(status_code=404, detail="Background preset not found.")
 
 @router.get("/background/{filename}")
 def get_background(filename: str):
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    bg_dir = os.path.join(project_root, "assets", "backgrounds")
-    clean_name = filename.split("?")[0].lower()
-    path = os.path.join(bg_dir, clean_name)
-    if os.path.exists(path):
-        return FileResponse(path, media_type="image/png")
-    # Global fallback
-    fallback = os.path.join(bg_dir, "bg_living_room.png")
-    if os.path.exists(fallback):
-        return FileResponse(fallback, media_type="image/png")
-    return FileResponse(os.path.join(bg_dir, "bg_playroom.png"), media_type="image/png")
+    bid = filename.removesuffix(".png").removeprefix("bg_")
+    return _asset_response(assets.resolve_background, bid)
+
+
+@router.delete("/background/{bg_id}")
+def delete_background(bg_id: str):
+    try:
+        validate_id(bg_id)
+        path = assets.resolve_background(bg_id)
+        if not bg_id.startswith("custom_") or path.parent != assets.image_dir("backgrounds"):
+            raise HTTPException(400, "Approved master artwork cannot be deleted.")
+        path.unlink()
+        assets.image_path("backgrounds", path.stem + ".json").unlink(missing_ok=True)
+        return {"status": "deleted", "bg_id": bg_id}
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc)) from exc
+
 
 class OutfitPromptRequest(BaseModel):
     character_id: str
-    prompt: str
+    prompt: str = Field(min_length=1, max_length=2000)
+
+    @field_validator("prompt")
+    @classmethod
+    def nonblank_prompt(cls, value):
+        if not value.strip():
+            raise ValueError("Describe an available pose or recolor")
+        return value.strip()
+
+
+class SaveOutfitRequest(OutfitPromptRequest):
+    preview_id: str
+
+
+class BgPromptRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    prompt: str = Field(min_length=1, max_length=2000)
+
+    @field_validator("name", "prompt")
+    @classmethod
+    def nonblank_text(cls, value):
+        if not value.strip():
+            raise ValueError("Name and prompt cannot be blank")
+        return value.strip()
+
+
+class IterativeBgRequest(BgPromptRequest):
+    history: list[str] = Field(default_factory=list, max_length=100)
+    iteration: int = Field(default=1, ge=1, le=10000)
+
+
+class SaveBgRequest(BgPromptRequest):
+    preview_id: str
+    iteration: int = Field(default=0, ge=0, le=10000)
+    history: list[str] | None = Field(default=None, max_length=100)
+
+
+def _preview_paths(preview_id):
+    validate_id(preview_id)
+    return (assets.image_path("previews", preview_id + ".png"),
+            assets.image_path("previews", preview_id + ".json"))
+
+
+def _read_preview(preview_id, kind):
+    try:
+        image, metadata = _preview_paths(preview_id)
+        if not image.is_file() or not metadata.is_file():
+            raise HTTPException(404, "Preview no longer exists; generate another preview.")
+        data = json.loads(metadata.read_text(encoding="utf-8"))
+        if data["kind"] != kind or data["preview_id"] != preview_id:
+            raise HTTPException(409, "Preview belongs to a different image request.")
+        return image, data
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+
+@router.get("/preview/{preview_id}")
+def get_preview(preview_id: str):
+    try:
+        image, metadata = _preview_paths(preview_id)
+        if not image.is_file() or not metadata.is_file():
+            raise HTTPException(404, "Preview not found")
+        return FileResponse(image, media_type="image/png",
+                            headers={"Cache-Control": "private, max-age=31536000, immutable"})
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+
+def _generate_preview(kind, metadata, generate):
+    preview_id = uuid.uuid4().hex
+    image, sidecar = _preview_paths(preview_id)
+    image.parent.mkdir(parents=True, exist_ok=True)
+    pending = assets.image_path("previews", preview_id + ".pending.png")
+    try:
+        generate(str(pending))
+        os.replace(pending, image)
+        metadata.update(kind=kind, preview_id=preview_id, asset_id="custom_" + uuid.uuid4().hex)
+        atomic_write_json(sidecar, metadata)
+    except (ValueError, FileNotFoundError) as exc:
+        image.unlink(missing_ok=True)
+        raise HTTPException(422, str(exc)) from exc
+    except Exception:
+        image.unlink(missing_ok=True)
+        raise
+    finally:
+        pending.unlink(missing_ok=True)
+    return {"status": "preview_ready", "preview_id": preview_id,
+            "preview_url": f"/api/characters/preview/{preview_id}",
+            "generation_method": "preset_transformation", **{
+                k: v for k, v in metadata.items() if k in {"name", "character_id", "iteration"}
+            }}
+
 
 @router.post("/preview_outfit")
 def preview_outfit(req: OutfitPromptRequest):
-    """Generates a live preview sprite based on prompt."""
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    sprites_dir = os.path.join(project_root, "assets", "sprites")
-    temp_file = os.path.join(sprites_dir, "temp_preview_sprite.png")
-    
-    generate_custom_character_sprite(req.character_id, req.prompt, temp_file)
-    return {
-        "status": "preview_ready",
-        "character_id": req.character_id,
-        "preview_url": f"/api/characters/sprite/temp_preview_sprite.png?t={int(time.time()*1000)}"
-    }
+    return _generate_preview(
+        "outfit", {"character_id": req.character_id, "prompt": req.prompt.strip()},
+        lambda output: generate_custom_character_sprite(req.character_id, req.prompt, output),
+    )
 
-class SaveOutfitRequest(BaseModel):
-    character_id: str
-    prompt: str
+
+def _copy_immutable(source, destination):
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.is_file():
+        return
+    pending = destination.with_name(uuid.uuid4().hex + ".pending.png")
+    try:
+        shutil.copyfile(source, pending)
+        os.replace(pending, destination)
+    finally:
+        pending.unlink(missing_ok=True)
+
 
 @router.post("/save_outfit")
 def save_outfit(req: SaveOutfitRequest):
-    """Permanently saves the generated preview sprite to the character's pose library."""
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    sprites_dir = os.path.join(project_root, "assets", "sprites")
-    
-    temp_file = os.path.join(sprites_dir, "temp_preview_sprite.png")
-    if not os.path.exists(temp_file):
-        # Generate fresh if not previewed
-        generate_custom_character_sprite(req.character_id, req.prompt, temp_file)
-        
-    safe_name = "".join(c for c in req.prompt.lower() if c.isalnum() or c == " ").strip().replace(" ", "_")[:24] or "custom"
-    pose_id = f"custom_{safe_name}"
-    final_file = os.path.join(sprites_dir, f"{req.character_id}_{pose_id}.png")
-    
-    shutil.copyfile(temp_file, final_file)
-    
-    return {
-        "status": "saved",
-        "character_id": req.character_id,
-        "pose_id": pose_id,
-        "label": f"✨ {req.prompt[:22]}",
-        "sprite_filename": f"{req.character_id}_{pose_id}.png",
-        "sprite_url": f"/api/characters/sprite/{req.character_id}_{pose_id}.png"
-    }
+    image, metadata = _read_preview(req.preview_id, "outfit")
+    if (req.character_id != metadata["character_id"] or req.prompt.strip() != metadata["prompt"]):
+        raise HTTPException(409, "Character or prompt changed after preview; preview again before saving.")
+    pose_id = metadata["asset_id"]
+    filename = f"{req.character_id}_{pose_id}.png"
+    _copy_immutable(image, assets.image_path("sprites", filename))
+    atomic_write_json(assets.image_path("sprites", filename[:-4] + ".json"),
+                      {"label": req.prompt[:80], "preview_id": req.preview_id})
+    return {"status": "saved", "preview_id": req.preview_id, "character_id": req.character_id,
+            "pose_id": pose_id, "label": req.prompt[:80], "sprite_filename": filename,
+            "sprite_url": f"/api/characters/sprite/{filename}"}
 
-class BgPromptRequest(BaseModel):
-    name: str
-    prompt: str
 
 @router.post("/preview_background")
 def preview_background(req: BgPromptRequest):
-    """Generates a live preview pastel background based on prompt."""
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    bg_dir = os.path.join(project_root, "assets", "backgrounds")
-    temp_file = os.path.join(bg_dir, "temp_preview_bg.png")
-    
-    generate_iterative_background(f"{req.name} {req.prompt}", [], temp_file)
-    return {
-        "status": "preview_ready",
-        "name": req.name,
-        "preview_url": f"/api/characters/background/temp_preview_bg.png?t={int(time.time()*1000)}"
-    }
+    return _generate_preview(
+        "background", {"name": req.name, "prompt": req.prompt.strip(), "history": [], "iteration": 0},
+        lambda output: generate_iterative_background(req.prompt, [], output),
+    )
 
-class IterativeBgRequest(BaseModel):
-    name: str
-    prompt: str
-    history: list[str] = []
-    iteration: int = 1
 
 @router.post("/iterate_background")
 def iterate_background(req: IterativeBgRequest):
-    """Generates an iterative background taking into account prompt & revision history."""
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    bg_dir = os.path.join(project_root, "assets", "backgrounds")
-    
-    iter_filename = f"temp_preview_bg_v{req.iteration}.png"
-    iter_file = os.path.join(bg_dir, iter_filename)
-    default_preview = os.path.join(bg_dir, "temp_preview_bg.png")
-    
-    generate_iterative_background(req.prompt, req.history, iter_file)
-    shutil.copyfile(iter_file, default_preview)
-    
-    return {
-        "status": "preview_ready",
-        "name": req.name,
-        "iteration": req.iteration,
-        "preview_url": f"/api/characters/background/{iter_filename}?t={int(time.time()*1000)}"
-    }
+    return _generate_preview(
+        "background", {"name": req.name, "prompt": req.prompt.strip(),
+                       "history": req.history, "iteration": req.iteration},
+        lambda output: generate_iterative_background(req.prompt, req.history, output),
+    )
 
-class SaveBgRequest(BaseModel):
-    name: str
-    prompt: str = ""
-    iteration: int = 0
 
 @router.post("/save_background")
 def save_background(req: SaveBgRequest):
-    """Permanently saves the generated preview background to project presets."""
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    bg_dir = os.path.join(project_root, "assets", "backgrounds")
-    
-    src_file = os.path.join(bg_dir, f"temp_preview_bg_v{req.iteration}.png") if req.iteration > 0 else os.path.join(bg_dir, "temp_preview_bg.png")
-    if not os.path.exists(src_file):
-        src_file = os.path.join(bg_dir, "temp_preview_bg.png")
-    if not os.path.exists(src_file):
-        generate_iterative_background(f"{req.name} {req.prompt}", [], src_file)
-        
-    safe_name = "".join(c for c in req.name.lower() if c.isalnum() or c == " ").strip().replace(" ", "_")[:24] or "custom_room"
-    bg_id = safe_name
-    final_filename = f"bg_{bg_id}.png"
-    final_file = os.path.join(bg_dir, final_filename)
-    
-    shutil.copyfile(src_file, final_file)
-    
-    return {
-        "status": "saved",
-        "background_id": bg_id,
-        "name": f"🎨 {req.name}",
-        "filename": final_filename,
-        "url": f"/api/characters/background/{final_filename}"
-    }
+    image, metadata = _read_preview(req.preview_id, "background")
+    if (req.prompt.strip() != metadata["prompt"] or req.iteration != metadata["iteration"]
+            or (req.history is not None and req.history != metadata["history"])):
+        raise HTTPException(409, "Background prompt or version changed after preview.")
+    bid = metadata["asset_id"]
+    filename = f"bg_{bid}.png"
+    _copy_immutable(image, assets.image_path("backgrounds", filename))
+    atomic_write_json(assets.image_path("backgrounds", f"bg_{bid}.json"),
+                      {"name": req.name, "preview_id": req.preview_id})
+    return {"status": "saved", "preview_id": req.preview_id, "background_id": bid,
+            "name": req.name, "filename": filename, "url": f"/api/characters/background/{filename}"}
+
 
 @router.post("/custom_outfit")
 def custom_outfit_alias(req: SaveOutfitRequest):
     return save_outfit(req)
 
+
 @router.post("/custom_background")
 def custom_background_alias(req: SaveBgRequest):
-    res = save_background(req)
-    res["status"] = "success"
-    return res
-
-
+    return save_background(req)

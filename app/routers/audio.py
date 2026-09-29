@@ -1,329 +1,218 @@
-import os
-import subprocess
-import time
-from typing import List, Optional
+import uuid
+from typing import List, Literal
+
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
-from app.services.tts_service import synthesize_scene_voice
-from app.services.audio_service import mix_scene_audio, get_audio_duration
+from pydantic import BaseModel, Field
+
+from app.storage import PROJECTS_DIR, contained_path, project_path, project_operation, validate_id
+from app.services.tts_service import synthesize_scene_voice, speaker_persona
+from app.services.audio_service import normalize_audio, run_blocking, scene_duration, MediaPrerequisiteError, MAX_SCENE_SECONDS
 from app.services.voice_clone_service import (
-    is_voice_clone_available,
-    list_cloned_voices,
-    create_cloned_voice,
-    synthesize_scene_cloned_voice,
-    default_sample_path,
-    VoiceCloneUnavailableError,
+    is_voice_clone_available, list_cloned_voices, create_cloned_voice,
+    synthesize_scene_cloned_voice, VoiceCloneUnavailableError,
 )
 
 router = APIRouter(prefix="/api/audio", tags=["audio"])
+StockPersona = Literal["dad", "mom", "child", "narrator"]
+MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+
 
 class SceneTTSRequest(BaseModel):
-    scene_idx: int
-    text: str
-    persona: str = "dad"
+    project_id: str
+    scene_idx: int = Field(ge=1, le=100)
+    text: str = Field(max_length=10000)
+    persona: StockPersona
+    duration_sec: float = Field(default=6, gt=0, le=MAX_SCENE_SECONDS)
+
 
 class BulkTTSRequest(BaseModel):
-    scenes: List[dict]
-    default_persona: str = "dad"
+    project_id: str
+    scenes: List[dict] = Field(min_length=1, max_length=100)
+    default_persona: StockPersona
 
-@router.get("/clip/{filename}")
-def get_audio_clip(filename: str):
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    path = os.path.join(project_root, "assets", "outputs", "audio_clips", filename)
-    if os.path.exists(path):
-        return FileResponse(path, media_type="audio/wav")
-    return {"error": "Clip not found"}
 
-@router.get("/master")
-def get_master_audio():
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
-    if os.path.exists(path):
-        return FileResponse(path, media_type="audio/wav")
-    return {"error": "Master audio not found"}
+class ClonedSceneTTSRequest(BaseModel):
+    project_id: str
+    scene_idx: int = Field(ge=1, le=100)
+    text: str = Field(max_length=10000)
+    voice_id: str = Field(min_length=1, max_length=200)
+    duration_sec: float = Field(default=6, gt=0, le=MAX_SCENE_SECONDS)
 
-def _remix_master_audio():
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    audio_clips_dir = os.path.join(project_root, "assets", "outputs", "audio_clips")
-    master_audio_path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
-    voice_paths = []
-    durations = []
-    for s_idx in range(1, 15):
-        clip = os.path.join(audio_clips_dir, f"scene_{s_idx:02d}_voice.wav")
-        if os.path.exists(clip):
-            voice_paths.append(clip)
-            durations.append(max(6.0, get_audio_duration(clip) + 1.2))
-        elif s_idx > 1 and not voice_paths:
-            continue
-        elif voice_paths:
-            break
-    if voice_paths:
-        try:
-            mix_scene_audio(voice_paths, durations, master_audio_path)
-            return True
-        except Exception as e:
-            print(f"Master audio remix notice: {e}")
-    return False
+
+class ClonedBulkTTSRequest(BaseModel):
+    project_id: str
+    scenes: List[dict] = Field(min_length=1, max_length=100)
+    voice_id: str = Field(min_length=1, max_length=200)
+
+
+def _require_project(project_id):
+    try:
+        validate_id(project_id)
+        if not project_path(project_id, "project.json").is_file():
+            raise HTTPException(404, "Save the project before generating audio")
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
+def _error(exc):
+    if isinstance(exc, HTTPException):
+        return exc
+    if isinstance(exc, VoiceCloneUnavailableError):
+        return HTTPException(503, str(exc))
+    if isinstance(exc, MediaPrerequisiteError):
+        return HTTPException(503, str(exc))
+    if isinstance(exc, (ValueError, TypeError)):
+        return HTTPException(400, str(exc))
+    return HTTPException(502, "Audio operation failed; no substitute voice was generated")
+
+
+def _blank(project_id, scene_idx, duration):
+    return {"status": "success", "project_id": project_id, "scene_idx": scene_idx,
+            "audio_url": None, "duration": 0, "duration_sec": scene_duration(duration),
+            "voice_provenance": {"kind": "none"}, "cloned": False}
+
+
+@router.get("/clip/{project_id}/{filename}")
+def get_audio_clip(project_id: str, filename: str):
+    try:
+        validate_id(project_id)
+        path = contained_path(project_path(project_id, "audio"), filename)
+        if not filename.endswith(".wav") or not path.is_file():
+            raise HTTPException(404, "Clip not found")
+        return FileResponse(path, media_type="audio/wav", headers={"Cache-Control": "private, max-age=31536000, immutable"})
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
 
 @router.post("/tts/scene")
 def generate_single_scene_tts(req: SceneTTSRequest):
-    """Generate high quality Cantonese voiceover for a single scene."""
+    _require_project(req.project_id)
     try:
-        res = synthesize_scene_voice(req.scene_idx, req.text, persona=req.persona)
-        res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
-        _remix_master_audio()
-        res["master_audio_url"] = f"/api/audio/master?t={int(time.time()*1000)}"
-        return res
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if not req.text.strip():
+            return _blank(req.project_id, req.scene_idx, req.duration_sec)
+        with project_operation(req.project_id):
+            return synthesize_scene_voice(req.scene_idx, req.text, req.persona,
+                                          project_id=req.project_id, duration_sec=req.duration_sec)
+    except Exception as exc:
+        raise _error(exc) from exc
+
+
+def _bulk(req, cloned=False):
+    _require_project(req.project_id)
+    planned = []
+    seen = set()
+    try:
+        for idx, scene in enumerate(req.scenes, 1):
+            scene_idx = scene.get("scene_number", idx)
+            if isinstance(scene_idx, bool) or not isinstance(scene_idx, int) or not 1 <= scene_idx <= 100 or scene_idx in seen:
+                raise ValueError("Scene numbers must be unique integers between 1 and 100")
+            seen.add(scene_idx)
+            text = scene.get("cantonese") or ""
+            if not isinstance(text, str) or len(text) > 10000:
+                raise ValueError("Invalid narration text")
+            duration = scene_duration(scene.get("duration_sec", 6))
+            planned.append((scene_idx, text, duration, scene.get("speaker")))
+        results = []
+        for scene_idx, text, duration, speaker in planned:
+            if not text.strip():
+                result = _blank(req.project_id, scene_idx, duration)
+            elif cloned:
+                result = synthesize_scene_cloned_voice(
+                    scene_idx, text, req.voice_id, project_id=req.project_id, duration_sec=duration)
+            else:
+                result = synthesize_scene_voice(
+                    scene_idx, text, speaker_persona(speaker, req.default_persona),
+                    project_id=req.project_id, duration_sec=duration)
+            results.append(result)
+        return {"status": "success", "project_id": req.project_id, "scenes": results,
+                "generated_count": sum(bool(r["audio_url"]) for r in results),
+                "cloned": cloned and any(bool(r["audio_url"]) for r in results)}
+    except Exception as exc:
+        raise _error(exc) from exc
+
 
 @router.post("/tts/all")
 def generate_all_scenes_tts(req: BulkTTSRequest):
-    """Generate Cantonese voiceovers for all scenes in the episode and remixes the master audio."""
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    audio_clips_dir = os.path.join(project_root, "assets", "outputs", "audio_clips")
-    os.makedirs(audio_clips_dir, exist_ok=True)
-    
-    results = []
-    voice_paths = []
-    durations = []
-    
-    for idx, s in enumerate(req.scenes):
-        scene_idx = s.get("scene_number", idx + 1)
-        text = s.get("cantonese", "")
-        speaker = s.get("speaker", "Dad").lower()
-        persona = "mom" if "mom" in speaker or "mother" in speaker else ("child" if "brother" in speaker or "baby" in speaker or "levi" in speaker or "luca" in speaker else req.default_persona)
-        
-        if text.strip():
-            res = synthesize_scene_voice(scene_idx, text, persona=persona)
-            res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
-            results.append(res)
-            v_path = res["path"]
-            voice_paths.append(v_path)
-            dur = max(res["duration"] + 1.2, float(s.get("duration_sec", 6)))
-            durations.append(dur)
-        else:
-            filename = f"scene_{scene_idx:02d}_voice.wav"
-            v_path = os.path.join(audio_clips_dir, filename)
-            voice_paths.append(v_path if os.path.exists(v_path) else None)
-            durations.append(float(s.get("duration_sec", 6)))
+    _require_project(req.project_id)
+    with project_operation(req.project_id):
+        return _bulk(req)
 
-    # Automatically re-mix master audio with soft ukulele BGM
-    master_audio_path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
-    try:
-        mix_scene_audio(voice_paths, durations, master_audio_path)
-    except Exception as e:
-        print(f"Warning: master audio mix failed: {e}")
-        
-    return {
-        "status": "success",
-        "generated_count": len(results),
-        "scenes": results,
-        "master_audio_url": f"/api/audio/master?t={int(time.time()*1000)}"
-    }
+
+async def _save_upload(upload, destination):
+    contents = await upload.read(MAX_UPLOAD_BYTES + 1)
+    if not contents or len(contents) > MAX_UPLOAD_BYTES:
+        raise HTTPException(413, "Recording must be nonempty and at most 25 MB")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    await run_blocking(destination.write_bytes, contents)
+
 
 @router.post("/upload_scene")
-async def upload_scene_voice(
-    scene_idx: int = Form(...),
-    audio_file: UploadFile = File(...)
-):
-    """
-    Receives recorded microphone audio (from browser WebM/WAV)
-    and transcodes to clean 16-bit 44.1kHz mono PCM WAV via FFmpeg.
-    """
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    out_dir = os.path.join(project_root, "assets", "outputs", "audio_clips")
-    os.makedirs(out_dir, exist_ok=True)
-    
-    temp_raw = os.path.join(out_dir, f"temp_upload_{scene_idx}.raw")
-    filename = f"scene_{scene_idx:02d}_voice.wav"
-    final_path = os.path.join(out_dir, filename)
-    
-    contents = await audio_file.read()
-    with open(temp_raw, "wb") as f:
-        f.write(contents)
-        
+async def upload_scene_voice(project_id: str = Form(...), scene_idx: int = Form(...),
+                             duration_sec: float = Form(6), audio_file: UploadFile = File(...)):
+    _require_project(project_id)
+    if not 1 <= scene_idx <= 100:
+        raise HTTPException(400, "Invalid scene number")
+    filename = f"{uuid.uuid4().hex}.wav"
+    output = project_path(project_id, "audio", filename)
+    source = output.with_suffix(".upload")
     try:
-        # Transcode any browser audio container to true 44.1kHz PCM s16 WAV
-        cmd = [
-            "ffmpeg", "-y",
-            "-i", temp_raw,
-            "-ar", "44100",
-            "-ac", "1",
-            "-c:a", "pcm_s16le",
-            final_path
-        ]
-        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        requested = scene_duration(duration_sec)
+        with project_operation(project_id):
+            await _save_upload(audio_file, source)
+            duration = await run_blocking(normalize_audio, source, output, max_seconds=MAX_SCENE_SECONDS - 1.2)
+            return {"status": "saved", "project_id": project_id, "scene_idx": scene_idx,
+                    "duration": duration, "duration_sec": scene_duration(requested, duration),
+                    "audio_url": f"/api/audio/clip/{project_id}/{filename}",
+                    "voice_provenance": {"kind": "recorded"}}
+    except Exception as exc:
+        raise _error(exc) from exc
     finally:
-        if os.path.exists(temp_raw):
-            try:
-                os.remove(temp_raw)
-            except Exception:
-                pass
-                
-    dur = get_audio_duration(final_path)
-    _remix_master_audio()
-    return {
-        "status": "saved",
-        "path": final_path,
-        "scene_idx": scene_idx,
-        "duration": dur,
-        "audio_url": f"/api/audio/clip/{filename}?t={int(time.time()*1000)}",
-        "master_audio_url": f"/api/audio/master?t={int(time.time()*1000)}"
-    }
+        source.unlink(missing_ok=True)
 
-
-# ---------------------------------------------------------------------------
-# Parent-voice cloning (Gemini voice replication). New routes only — existing
-# routes above are untouched. All of these degrade gracefully when no Gemini
-# API key is configured (503 with a friendly message, never a crash).
-# ---------------------------------------------------------------------------
-
-class ClonedSceneTTSRequest(BaseModel):
-    scene_idx: int
-    text: str
-    voice_id: str
-
-class ClonedBulkTTSRequest(BaseModel):
-    scenes: List[dict]
-    voice_id: str
 
 @router.get("/voice-clone/status")
 def voice_clone_status():
-    """Whether cloning is configured, plus previously created cloned voices."""
-    return {
-        "available": is_voice_clone_available(),
-        "voices": list_cloned_voices(),
-    }
+    return {"available": is_voice_clone_available(), "capability_verified": False,
+            "voices": list_cloned_voices()}
+
 
 @router.post("/voice-clone/create")
-async def voice_clone_create(
-    name: str = Form("Dad"),
-    audio_file: UploadFile = File(None),
-    consent_file: UploadFile = File(None),
-):
-    """
-    Creates a Gemini replicated voice from a parent voice sample + consent clip.
-    If no reference audio file is uploaded, uses assets/audio_samples/dad_cantonese.mp3.
-    The consent clip is REQUIRED by Google: the same speaker reciting the
-    consent statement word for word (en-US:
-    "I am the owner of this voice and I consent to Google using this voice to
-    create a synthetic voice model.").
-    """
-    if not is_voice_clone_available():
-        raise HTTPException(
-            status_code=503,
-            detail="Gemini is not configured. Add your Gemini API key in the studio Settings page (or set GEMINI_API_KEY in your .env file), then try again.",
-        )
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    sample_path = None
-    temp_sample = None
-    temp_consent = None
+async def voice_clone_create(name: str = Form("Dad"), audio_file: UploadFile = File(...),
+                             consent_file: UploadFile = File(...)):
+    workdir = PROJECTS_DIR.parent / "voice_uploads" / uuid.uuid4().hex
+    sample = workdir / "reference.upload"
+    consent = workdir / "consent.upload"
     try:
-        if audio_file is not None:
-            temp_sample = os.path.join(project_root, "assets", "outputs", "audio_clips", "temp_clone_sample.mp3")
-            os.makedirs(os.path.dirname(temp_sample), exist_ok=True)
-            contents = await audio_file.read()
-            with open(temp_sample, "wb") as f:
-                f.write(contents)
-            sample_path = temp_sample
-        else:
-            sample_path = default_sample_path()
-
-        if consent_file is None:
-            raise HTTPException(
-                status_code=400,
-                detail="A consent recording is required by Google. Record the same speaker saying, "
-                'word for word: "I am the owner of this voice and I consent to Google using '
-                'this voice to create a synthetic voice model."',
-            )
-        temp_consent = os.path.join(project_root, "assets", "outputs", "audio_clips", "temp_clone_consent")
-        os.makedirs(os.path.dirname(temp_consent), exist_ok=True)
-        consent_contents = await consent_file.read()
-        with open(temp_consent, "wb") as f:
-            f.write(consent_contents)
-
-        return create_cloned_voice(
-            sample_path=sample_path, consent_path=temp_consent, name=name
-        )
-    except VoiceCloneUnavailableError as e:
-        raise HTTPException(status_code=503, detail=str(e))
-    except HTTPException:
-        raise
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if not is_voice_clone_available():
+            raise VoiceCloneUnavailableError("Configure the parent-voice provider first")
+        await _save_upload(audio_file, sample)
+        await _save_upload(consent_file, consent)
+        return await run_blocking(create_cloned_voice, str(sample), str(consent), name)
+    except Exception as exc:
+        raise _error(exc) from exc
     finally:
-        for tmp in (temp_sample, temp_consent):
-            if tmp and os.path.exists(tmp):
-                try:
-                    os.remove(tmp)
-                except Exception:
-                    pass
+        sample.unlink(missing_ok=True)
+        consent.unlink(missing_ok=True)
+        if workdir.exists():
+            workdir.rmdir()
+
 
 @router.post("/voice-clone/synthesize")
 def synthesize_single_scene_cloned(req: ClonedSceneTTSRequest):
-    """Generate a single scene's narration in a cloned parent voice, with neural TTS fallback."""
+    _require_project(req.project_id)
     try:
-        try:
-            res = synthesize_scene_cloned_voice(req.scene_idx, req.text, req.voice_id)
-        except Exception as clone_err:
-            print(f"Warning: Gemini cloned voice synthesis failed ({clone_err}), falling back to Cantonese neural TTS...")
-            res = synthesize_scene_voice(req.scene_idx, req.text, persona="dad")
-            res["cloned"] = False
-        res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
-        _remix_master_audio()
-        res["master_audio_url"] = f"/api/audio/master?t={int(time.time()*1000)}"
-        return res
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if not req.text.strip():
+            return _blank(req.project_id, req.scene_idx, req.duration_sec)
+        with project_operation(req.project_id):
+            return synthesize_scene_cloned_voice(req.scene_idx, req.text, req.voice_id,
+                                                 project_id=req.project_id, duration_sec=req.duration_sec)
+    except Exception as exc:
+        raise _error(exc) from exc
+
 
 @router.post("/voice-clone/synthesize-all")
 def synthesize_all_scenes_cloned(req: ClonedBulkTTSRequest):
-    """Generate all scenes' narration in a cloned parent voice (Cantonese), with neural fallback."""
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    audio_clips_dir = os.path.join(project_root, "assets", "outputs", "audio_clips")
-    os.makedirs(audio_clips_dir, exist_ok=True)
-
-    results = []
-    voice_paths = []
-    durations = []
-
-    for idx, s in enumerate(req.scenes):
-        scene_idx = s.get("scene_number", idx + 1)
-        text = s.get("cantonese", "")
-        if text.strip():
-            try:
-                res = synthesize_scene_cloned_voice(scene_idx, text, req.voice_id)
-            except Exception as clone_err:
-                print(f"Warning: Gemini cloned synthesis scene {scene_idx} failed ({clone_err}), falling back to Cantonese neural...")
-                speaker = s.get("speaker", "Dad").lower()
-                persona = "mom" if "mom" in speaker or "mother" in speaker else ("child" if "brother" in speaker or "baby" in speaker or "levi" in speaker or "luca" in speaker else "dad")
-                res = synthesize_scene_voice(scene_idx, text, persona=persona)
-                res["cloned"] = False
-            res["audio_url"] = f"/api/audio/clip/{res['filename']}?t={int(time.time()*1000)}"
-            results.append(res)
-            voice_paths.append(res["path"])
-            dur = max(res["duration"] + 1.2, float(s.get("duration_sec", 6)))
-            durations.append(dur)
-        else:
-            filename = f"scene_{scene_idx:02d}_voice.wav"
-            v_path = os.path.join(audio_clips_dir, filename)
-            voice_paths.append(v_path if os.path.exists(v_path) else None)
-            durations.append(float(s.get("duration_sec", 6)))
-
-    master_audio_path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
-    try:
-        mix_scene_audio(voice_paths, durations, master_audio_path)
-    except Exception as e:
-        print(f"Warning: master audio mix failed: {e}")
-
-    return {
-        "status": "success",
-        "generated_count": len(results),
-        "scenes": results,
-        "cloned": True,
-        "master_audio_url": f"/api/audio/master?t={int(time.time()*1000)}"
-    }
+    _require_project(req.project_id)
+    with project_operation(req.project_id):
+        return _bulk(req, cloned=True)

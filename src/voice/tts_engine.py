@@ -20,7 +20,7 @@ class TTSEngine:
         with open(config_path, "r", encoding="utf-8") as f:
             self.config = yaml.safe_load(f)
 
-        self.api_key = os.environ.get("ELEVENLABS_API_KEY", "")
+        self.api_key = os.environ.get("ELEVENLABS_API_KEY") or self.config["voice"].get("api_key", "")
         self.model_id = self.config["voice"].get("model_id", "eleven_multilingual_v2")
         self.voice_settings = self.config["voice"].get("voice_settings", {
             "stability": 0.55,
@@ -35,7 +35,7 @@ class TTSEngine:
         """
         clones = self.config["voice"].get("clones", {})
         profile = clones.get(voice_profile_key, {})
-        voice_id = profile.get("voice_id") or os.environ.get("DEFAULT_VOICE_ID", "")
+        voice_id = profile.get("voice_id")
 
         output_dir = PROJECT_ROOT / "assets" / "outputs" / "audio_clips"
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -46,10 +46,7 @@ class TTSEngine:
         output_path = output_dir / output_filename
 
         if not self.api_key or not voice_id:
-            print(f"Notice: ElevenLabs API Key or Voice ID not set. Generating mock audio timing marker for: '{text}'")
-            # Create a placeholder silent audio or log for testing
-            output_path.write_bytes(b"MOCK_MP3_AUDIO_HEADER" + b"\x00" * 4096)
-            return output_path
+            raise RuntimeError("ElevenLabs credentials and an explicit voice profile are required; no audio was generated")
 
         url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
         headers = {
@@ -64,8 +61,8 @@ class TTSEngine:
         }
 
         print(f"Synthesizing [{voice_profile_key}]: {text}")
-        response = requests.post(url, json=data, headers=headers)
-        if response.status_code == 200:
+        response = requests.post(url, json=data, headers=headers, timeout=120)
+        if response.status_code == 200 and response.content:
             with open(output_path, "wb") as f:
                 f.write(response.content)
             print(f"✅ Audio saved to: {output_path}")

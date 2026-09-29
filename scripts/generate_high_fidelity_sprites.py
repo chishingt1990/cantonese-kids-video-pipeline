@@ -3,9 +3,14 @@ import math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from scripts.maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+except ModuleNotFoundError as exc:
+    if exc.name not in {"scripts", "scripts.maintenance_guard"}:
+        raise
+    from maintenance_guard import PROJECT_ROOT, configure_cli, output_path
+
 SPRITES_DIR = os.path.join(PROJECT_ROOT, "assets", "sprites")
-os.makedirs(SPRITES_DIR, exist_ok=True)
 
 # -------------------------------------------------------------
 # Color Constants matching Watercolor Storybook Palette
@@ -66,7 +71,7 @@ def save_sprite(im: Image.Image, filename: str):
     else:
         cropped = im
     out_path = os.path.join(SPRITES_DIR, filename)
-    cropped.save(out_path, format="PNG")
+    cropped.save(output_path(out_path), format="PNG")
     print(f"  [HIGH-FIDELITY] Created {filename} ({cropped.width}x{cropped.height})")
 
 def render_high_res_overlay(size, draw_fn, scale=3):
@@ -784,5 +789,10 @@ def generate_all_high_fidelity_sprites():
 
     print("=== All 14 High-Fidelity Sprites Successfully Generated! ===")
 
-if __name__ == "__main__":
+def main(argv=None):
+    configure_cli(argv)
     generate_all_high_fidelity_sprites()
+
+
+if __name__ == "__main__":
+    main()

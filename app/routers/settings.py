@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from typing import Optional
-from pydantic import BaseModel
-from app.config import load_settings, save_settings, StudioSettings
+from pydantic import BaseModel, ValidationError
+from app.config import load_settings, save_settings, StudioSettings, public_settings
+from app.storage import project_lock
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
 
@@ -17,16 +18,16 @@ class SettingsUpdateRequest(BaseModel):
 
 @router.get("/")
 def get_settings():
-    return load_settings()
+    return public_settings(load_settings())
 
 @router.post("/")
 def update_settings(req: SettingsUpdateRequest):
-    current = load_settings()
-    data = req.model_dump(exclude_unset=True)
-    for k, v in data.items():
-        if v is not None and v != "":
-            setattr(current, k, v)
-        elif v == "":
-            setattr(current, k, "")
-    save_settings(current)
-    return {"status": "saved", "settings": current}
+    with project_lock("studio-settings"):
+        data = load_settings().model_dump()
+        data.update(req.model_dump(exclude_unset=True, exclude_none=True))
+        try:
+            current = StudioSettings.model_validate(data)
+        except ValidationError:
+            raise HTTPException(422, "Invalid provider or endpoint settings")
+        save_settings(current)
+        return {"status": "saved", "settings": public_settings(current)}

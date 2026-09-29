@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Audio Ingest & Voice Normalization.
-Validates uploaded Dad/Mom voice samples, trims silence, checks duration,
-and coordinates Instant Voice Cloning registration.
+Reports Dad/Mom sample presence and PCM WAV metadata; does not normalize,
+trim recordings, or register cloned voices.
 """
 
 import os
@@ -43,7 +43,7 @@ def check_sample(filepath: Path):
             if duration_sec < 45.0:
                 status = "Warning: Sample is under 45 seconds. 1-2 minutes is recommended for optimal clone quality."
             elif duration_sec > 180.0:
-                status = "Notice: Sample exceeds 3 minutes. The cloner will utilize the first 3 minutes."
+                status = "Notice: Sample exceeds 3 minutes. This scanner does not trim recordings."
             else:
                 status = "Excellent: Optimal duration for high-fidelity voice cloning."
 
@@ -55,7 +55,6 @@ def check_sample(filepath: Path):
 def scan_all_samples():
     """Scans audio_samples directory for Dad and Mom recordings."""
     print("Scanning audio samples directory:", AUDIO_SAMPLES_DIR)
-    AUDIO_SAMPLES_DIR.mkdir(parents=True, exist_ok=True)
 
     targets = [
         ("Dad (Cantonese)", ["dad_cantonese.wav", "dad_cantonese.m4a", "dad_cantonese.mp3", "dad_cantonese.aac", "dad.wav", "dad.m4a", "dad.mp3"]),
@@ -78,8 +77,9 @@ def scan_all_samples():
                 success, info = check_sample(found_path)
             else:
                 info = f"{found_path.suffix.upper()} audio file present"
-            results[label] = {"found": True, "path": str(found_path), "info": info}
-            print(f"✅ Found {label}: {found_path.name} ({info})", flush=True)
+            valid = success if found_path.suffix.lower() == ".wav" else None
+            results[label] = {"found": True, "validated": valid, "path": str(found_path), "info": info}
+            print(f"{'❌' if valid is False else 'ℹ️'} Found {label}: {found_path.name} ({info})", flush=True)
         else:
             results[label] = {"found": False, "expected": filenames}
             print(f"⏳ Waiting for {label}: place in assets/audio_samples/{filenames[0]} (WAV, M4A, MP3)", flush=True)

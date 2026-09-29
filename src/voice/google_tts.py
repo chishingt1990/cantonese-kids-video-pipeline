@@ -63,8 +63,7 @@ class GoogleCantoneseTTS:
         elif api_key:
             url += f"?key={api_key}"
         else:
-            print(f"Notice: No Google API Key or OAuth token found for Google TTS. Simulating speech for: '{text}'")
-            return output_path
+            raise RuntimeError("Google Cloud TTS credentials are required; no audio was generated")
 
         payload = {
             "input": {"text": text},
@@ -80,17 +79,18 @@ class GoogleCantoneseTTS:
             }
         }
 
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=120)
         if response.status_code == 200:
             import base64
             audio_content = response.json().get("audioContent", "")
+            if not audio_content:
+                raise RuntimeError("Google TTS returned no audio")
             with open(output_path, "wb") as f:
                 f.write(base64.b64decode(audio_content))
             print(f"✅ Google Cantonese TTS saved to: {output_path}")
             return output_path
         else:
-            print(f"Google TTS response ({response.status_code}): {response.text}")
-            return output_path
+            raise RuntimeError(f"Google TTS failed (HTTP {response.status_code}); no audio was generated")
 
 
 if __name__ == "__main__":

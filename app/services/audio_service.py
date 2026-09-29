@@ -1,73 +1,192 @@
+import asyncio
+import math
 import os
+import shutil
+import subprocess
 import wave
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
 import numpy as np
 
-def get_audio_duration(file_path: str) -> float:
-    if not os.path.exists(file_path):
-        return 0.0
+from app.storage import contained_path, project_path, project_is_busy, project_operation, validate_id
+
+MAX_SCENE_SECONDS = 120
+MAX_EPISODE_SECONDS = 1800
+media_operation = project_operation
+
+
+def media_binary(name):
+    return os.environ.get(f"KIDS_STUDIO_{name.upper()}", name)
+
+
+class MediaPrerequisiteError(RuntimeError):
+    pass
+
+
+def missing_media_tool(name):
+    return MediaPrerequisiteError(
+        f"{name} executable is unavailable. Install FFmpeg (including ffprobe) and add its bin "
+        f"directory to PATH, or set KIDS_STUDIO_{name.upper()} to the full executable path."
+    )
+
+
+def require_media_tools(*names):
+    for name in names:
+        if not shutil.which(media_binary(name)):
+            raise missing_media_tool(name)
+
+
+def run_media_command(name, arguments, **kwargs):
     try:
-        with wave.open(file_path, "rb") as wf:
-            return wf.getnframes() / float(wf.getframerate())
+        return subprocess.run([media_binary(name), *arguments], **kwargs)
+    except FileNotFoundError as exc:
+        raise missing_media_tool(name) from exc
+
+
+def project_media_busy(project_id):
+    """Compatibility alias; storage owns the deletion-lease registry."""
+    return project_is_busy(project_id)
+
+
+async def run_blocking(function, *args, **kwargs):
+    """Do not release a worker's input files until that worker has really stopped."""
+    task = asyncio.create_task(asyncio.to_thread(function, *args, **kwargs))
+    try:
+        return await asyncio.shield(task)
+    except asyncio.CancelledError:
+        while not task.done():
+            try:
+                await asyncio.shield(task)
+            except asyncio.CancelledError:
+                continue
+            except Exception:
+                break
+        if task.done() and not task.cancelled():
+            task.exception()
+        raise
+
+
+def get_audio_duration(file_path: str) -> float:
+    """Probe containers as well as PCM WAV; invalid audio is never silent success."""
+    if not Path(file_path).is_file():
+        raise ValueError("Audio file is missing")
+    try:
+        with wave.open(str(file_path), "rb") as wf:
+            duration = wf.getnframes() / float(wf.getframerate())
+    except (wave.Error, EOFError):
+        result = run_media_command(
+            "ffprobe", ["-v", "error", "-show_entries", "format=duration",
+             "-of", "default=noprint_wrappers=1:nokey=1", str(file_path)],
+            capture_output=True, text=True, timeout=30,
+        )
+        if result.returncode:
+            raise ValueError("Audio could not be decoded by ffprobe")
+        try:
+            duration = float(result.stdout.strip())
+        except ValueError as exc:
+            raise ValueError("Audio duration is unavailable") from exc
+    if not math.isfinite(duration) or duration <= 0:
+        raise ValueError("Audio must have a positive finite duration")
+    return duration
+
+
+def scene_duration(requested=6, audio_duration=0) -> float:
+    requested = float(requested)
+    audio_duration = float(audio_duration)
+    if not math.isfinite(requested) or requested <= 0:
+        raise ValueError("Scene duration must be positive and finite")
+    if not math.isfinite(audio_duration) or audio_duration < 0:
+        raise ValueError("Audio duration must be finite and nonnegative")
+    duration = max(6, math.ceil(requested * 30) / 30, math.ceil(audio_duration + 1.2))
+    if duration > MAX_SCENE_SECONDS:
+        raise ValueError(f"Scene exceeds {MAX_SCENE_SECONDS} seconds")
+    return duration
+
+
+def normalize_audio(source, destination, *, max_seconds=None):
+    destination = Path(destination)
+    if destination.exists():
+        raise ValueError("Audio outputs are immutable; choose a new filename")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    duration = get_audio_duration(str(source))
+    if max_seconds is not None and duration > max_seconds:
+        raise ValueError(f"Recording exceeds {max_seconds} seconds")
+    try:
+        result = run_media_command(
+            "ffmpeg", ["-nostdin", "-n", "-i", str(source), "-vn",
+             "-ar", "44100", "-ac", "1", "-c:a", "pcm_s16le", str(destination)],
+            capture_output=True, timeout=120,
+        )
+        if result.returncode:
+            raise RuntimeError("FFmpeg audio normalization failed")
+        return get_audio_duration(str(destination))
     except Exception:
-        return 0.0
+        destination.unlink(missing_ok=True)
+        raise
+
+
+def resolve_project_audio(project_id, audio_url):
+    """Only immutable audio URLs from this project are valid render inputs."""
+    validate_id(project_id)
+    parsed = urlsplit(audio_url)
+    parts = unquote(parsed.path).split("/")
+    if parsed.scheme or parsed.netloc or len(parts) != 6 or parts[:4] != ["", "api", "audio", "clip"]:
+        raise ValueError("Audio must be a project-scoped studio clip URL")
+    if parts[4] != project_id:
+        raise ValueError("Audio belongs to a different project")
+    filename = parts[5]
+    if not filename.endswith(".wav") or Path(filename).name != filename or "\\" in filename:
+        raise ValueError("Invalid audio filename")
+    path = contained_path(project_path(project_id, "audio"), filename)
+    if not path.is_file():
+        raise ValueError("Referenced project audio is missing; regenerate or record it")
+    return path
+
 
 def mix_scene_audio(voice_paths: list, durations: list, output_master_path: str):
-    """Mixes scene audio with background ukulele and auto-ducking."""
-    sr = 44100
+    """Mix validated normalized scene clips without truncating narration."""
+    if len(voice_paths) != len(durations) or not durations:
+        raise ValueError("Audio paths and durations must describe the same nonempty timeline")
+    if any(not math.isfinite(float(d)) or d <= 0 for d in durations):
+        raise ValueError("Invalid scene duration")
     total_duration = sum(durations)
-    total_samples = int(total_duration * sr)
+    if total_duration > MAX_EPISODE_SECONDS:
+        raise ValueError("Episode exceeds maximum duration")
+    sr = 44100
+    scene_samples = [round(d * sr) for d in durations]
+    total_samples = sum(scene_samples)
     master = np.zeros(total_samples, dtype=np.float32)
-    
-    # 1. Synthesize soft acoustic ukulele BGM (C - G - Am - F)
-    t = np.linspace(0, total_duration, total_samples, endpoint=False)
-    chords = [
-        [261.63, 329.63, 392.00],  # C
-        [196.00, 246.94, 293.66],  # G
-        [220.00, 261.63, 329.63],  # Am
-        [174.61, 220.00, 261.63]   # F
-    ]
+    chords = [[261.63, 329.63, 392.00], [196.00, 246.94, 293.66],
+              [220.00, 261.63, 329.63], [174.61, 220.00, 261.63]]
     bgm = np.zeros(total_samples, dtype=np.float32)
     chord_len = int(2.0 * sr)
     for i in range(0, total_samples, chord_len):
-        c = chords[(i // chord_len) % len(chords)]
         sub_len = min(chord_len, total_samples - i)
-        sub_t = t[i:i+sub_len] - t[i]
-        for note in c:
-            bgm[i:i+sub_len] += 0.04 * np.sin(2 * np.pi * note * sub_t) * np.exp(-1.5 * (sub_t % 0.5))
-    
-    # 2. Place voice clips and build ducking envelope
+        sub_t = np.arange(sub_len) / sr
+        for note in chords[(i // chord_len) % len(chords)]:
+            bgm[i:i + sub_len] += 0.04 * np.sin(2 * np.pi * note * sub_t) * np.exp(-1.5 * (sub_t % 0.5))
     duck_mask = np.ones(total_samples, dtype=np.float32)
     cur_idx = 0
-    for idx, dur in enumerate(durations):
-        dur_samples = int(dur * sr)
-        v_path = voice_paths[idx] if idx < len(voice_paths) else None
-        if v_path and os.path.exists(v_path):
-            try:
-                with wave.open(v_path, "rb") as wf:
-                    n = wf.getnframes()
-                    raw = wf.readframes(n)
-                    arr = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
-                    clip_len = min(len(arr), dur_samples)
-                    master[cur_idx:cur_idx+clip_len] += arr[:clip_len]
-                    duck_mask[cur_idx:cur_idx+clip_len] = 0.25
-            except Exception:
-                pass
+    for v_path, dur_samples in zip(voice_paths, scene_samples):
+        if v_path is not None:
+            with wave.open(str(v_path), "rb") as wf:
+                if (wf.getframerate(), wf.getnchannels(), wf.getsampwidth()) != (sr, 1, 2):
+                    raise ValueError("Scene audio must be normalized 44.1kHz mono PCM16 WAV")
+                arr = np.frombuffer(wf.readframes(wf.getnframes()), dtype=np.int16).astype(np.float32) / 32768.0
+            if len(arr) > dur_samples:
+                raise ValueError("Narration exceeds scene duration")
+            master[cur_idx:cur_idx + len(arr)] += arr
+            duck_mask[cur_idx:cur_idx + len(arr)] = 0.25
         cur_idx += dur_samples
-    
-    # Smooth ducking
     from scipy.ndimage import uniform_filter1d
-    duck_smooth = uniform_filter1d(duck_mask, size=int(0.5 * sr))
-    
-    # Combine
-    final_mix = master + (bgm * duck_smooth)
+    final_mix = master + bgm * uniform_filter1d(duck_mask, size=int(0.5 * sr))
     peak = np.max(np.abs(final_mix))
     if peak > 0.95:
         final_mix = final_mix / peak * 0.95
-    
-    out_int16 = (final_mix * 32767.0).astype(np.int16)
-    os.makedirs(os.path.dirname(output_master_path), exist_ok=True)
-    with wave.open(output_master_path, "wb") as wf:
+    Path(output_master_path).parent.mkdir(parents=True, exist_ok=True)
+    with wave.open(str(output_master_path), "wb") as wf:
         wf.setnchannels(1)
         wf.setsampwidth(2)
         wf.setframerate(sr)
-        wf.writeframes(out_int16.tobytes())
+        wf.writeframes((final_mix * 32767.0).astype(np.int16).tobytes())

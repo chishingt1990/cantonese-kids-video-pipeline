@@ -431,7 +431,12 @@
     </div>
   </div>
 
+  <script src="/static/api.js"></script>
   <script>
+    const fetch = window.studioFetch;
+    const esc = StudioAPI.escapeHTML;
+    const arg = StudioAPI.handlerArg;
+    const safeURL = StudioAPI.safeURL;
     let charactersData = [];
     let backgroundsData = [];
     let stickersData = [];
@@ -503,8 +508,8 @@
       const container = document.getElementById('char-filter-pills');
       let html = `<button onclick="filterCharBy('all', this)" class="char-pill px-3 py-1.5 rounded-xl bg-amber-500 text-white shadow-xs">All Characters</button>`;
       charactersData.forEach(c => {
-        html += `<button onclick="filterCharBy('${c.id}', this)" class="char-pill px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700">
-          ${c.name.split(' ')[0]} (${(c.poses || []).length})
+        html += `<button onclick="filterCharBy('${arg(c.id)}', this)" class="char-pill px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700">
+          ${esc(c.name.split(' ')[0])} (${(c.poses || []).length})
         </button>`;
       });
       container.innerHTML = html;
@@ -549,16 +554,16 @@
           <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-stone-100">
             <div class="flex items-center gap-3">
               <div class="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-xl overflow-hidden border border-amber-200">
-                <img src="${char.sprite_url}" alt="${char.name}" class="w-full h-full object-contain p-1">
+                <img src="${esc(safeURL(char.sprite_url))}" alt="${esc(char.name)}" class="w-full h-full object-contain p-1">
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="font-extrabold text-lg text-stone-900">${char.name}</h3>
-                  <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">${char.role}</span>
+                  <h3 class="font-extrabold text-lg text-stone-900">${esc(char.name)}</h3>
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">${esc(char.role)}</span>
                 </div>
                 <p class="text-xs text-stone-500 font-medium mt-0.5">
-                  <span class="font-bold text-stone-700">Canon Outfit:</span> ${char.outfit} · 
-                  <span class="font-bold text-stone-700">Hair:</span> ${char.hair}
+                  <span class="font-bold text-stone-700">Canon Outfit:</span> ${esc(char.outfit)} ·
+                  <span class="font-bold text-stone-700">Hair:</span> ${esc(char.hair)}
                 </p>
               </div>
             </div>
@@ -567,42 +572,42 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="poses-${char.id}">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="poses-${esc(char.id)}">
           </div>
         `;
 
         container.appendChild(card);
 
-        const posesContainer = card.querySelector(`#poses-${char.id}`);
+        const posesContainer = card.querySelector('.grid');
         (char.poses || []).forEach(pose => {
           if (query && !pose.label.toLowerCase().includes(query) && !pose.sprite.toLowerCase().includes(query) && !char.name.toLowerCase().includes(query)) {
             return;
           }
 
-          const spriteUrl = `/api/characters/sprite/${pose.sprite}?v=${Date.now()}`;
+          const spriteUrl = `/api/characters/sprite/${encodeURIComponent(pose.sprite)}?v=${Date.now()}`;
           const poseEl = document.createElement('div');
           poseEl.className = 'bg-stone-50 rounded-2xl border border-stone-200/80 p-3 space-y-2 hover:border-amber-300 transition-all group flex flex-col justify-between';
           
           poseEl.innerHTML = `
             <div>
-              <div class="sprite-preview-box h-48 w-full rounded-2xl flex items-center justify-center p-3 relative overflow-hidden transition-colors ${currentGlobalBg} cursor-pointer" onclick="openLightbox('${char.name} — ${pose.label}', '${pose.sprite}', '${spriteUrl}')">
-                <img src="${spriteUrl}" alt="${pose.label}" class="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
+              <div class="sprite-preview-box h-48 w-full rounded-2xl flex items-center justify-center p-3 relative overflow-hidden transition-colors ${esc(currentGlobalBg)} cursor-pointer" onclick="openLightbox('${arg(char.name)} — ${arg(pose.label)}', '${arg(pose.sprite)}', '${arg(spriteUrl)}')">
+                <img src="${esc(spriteUrl)}" alt="${esc(pose.label)}" class="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
                 <span class="absolute bottom-2 right-2 text-[10px] bg-black/40 text-white px-1.5 py-0.5 rounded backdrop-blur-xs font-mono opacity-0 group-hover:opacity-100 transition">Inspect</span>
               </div>
               <div class="mt-2.5">
-                <div class="font-bold text-xs text-stone-800 leading-tight">${pose.label}</div>
-                <div class="text-[10px] text-stone-400 font-mono mt-0.5 truncate">${pose.sprite}</div>
+                <div class="font-bold text-xs text-stone-800 leading-tight">${esc(pose.label)}</div>
+                <div class="text-[10px] text-stone-400 font-mono mt-0.5 truncate">${esc(pose.sprite)}</div>
               </div>
             </div>
 
             <div class="pt-2 border-t border-stone-200/60 flex items-center gap-1.5">
-              <button onclick="stageSpriteInSandbox('${char.id}', '${pose.id}')" class="flex-1 py-1.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] text-center transition shadow-xs flex items-center justify-center gap-1">
+              <button onclick="stageSpriteInSandbox('${arg(char.id)}', '${arg(pose.id)}')" class="flex-1 py-1.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-[11px] text-center transition shadow-xs flex items-center justify-center gap-1">
                 <span>🎭</span> Stage
               </button>
-              <button onclick="openLightbox('${char.name} — ${pose.label}', '${pose.sprite}', '${spriteUrl}')" class="p-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Inspect Full Size">
+              <button onclick="openLightbox('${arg(char.name)} — ${arg(pose.label)}', '${arg(pose.sprite)}', '${arg(spriteUrl)}')" class="p-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Inspect Full Size">
                 🔍
               </button>
-              <a href="${spriteUrl}" download="${pose.sprite}" class="p-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Download PNG">
+              <a href="${esc(spriteUrl)}" download="${esc(pose.sprite)}" class="p-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Download PNG">
                 💾
               </a>
             </div>
@@ -652,8 +657,8 @@
         
         card.innerHTML = `
           <div>
-            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-stone-100 border border-stone-100 cursor-pointer" onclick="openLightbox('${bg.name}', '${bg.filename} — 1920x1080 HD', '${bg.url}')">
-              <img src="${bg.url}" alt="${bg.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-stone-100 border border-stone-100 cursor-pointer" onclick="openLightbox('${arg(bg.name)}', '${arg(bg.filename)} — 1920x1080 HD', '${arg(safeURL(bg.url))}')">
+              <img src="${esc(safeURL(bg.url))}" alt="${esc(bg.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${isOutdoor ? 'bg-emerald-600/90 text-white' : 'bg-amber-600/90 text-white'} backdrop-blur-xs">
                 ${isOutdoor ? '🌳 Outdoor' : '🏠 Indoor'}
               </span>
@@ -663,19 +668,19 @@
             </div>
 
             <div class="mt-3">
-              <h3 class="font-extrabold text-sm text-stone-900 leading-snug">${bg.name}</h3>
-              <p class="text-[11px] text-stone-400 font-mono mt-0.5">${bg.filename}</p>
+              <h3 class="font-extrabold text-sm text-stone-900 leading-snug">${esc(bg.name)}</h3>
+              <p class="text-[11px] text-stone-400 font-mono mt-0.5">${esc(bg.filename)}</p>
             </div>
           </div>
 
           <div class="pt-2 border-t border-stone-100 flex items-center gap-2">
-            <button onclick="stageBackgroundInSandbox('${bg.filename}', '${bg.name}')" class="flex-1 py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs text-center transition shadow-xs flex items-center justify-center gap-1.5">
+            <button onclick="stageBackgroundInSandbox('${arg(bg.filename)}', '${arg(bg.name)}')" class="flex-1 py-1.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs text-center transition shadow-xs flex items-center justify-center gap-1.5">
               <span>🎭</span> Stage in Sandbox
             </button>
-            <button onclick="openLightbox('${bg.name}', '${bg.filename} — 1920x1080 HD', '${bg.url}')" class="p-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Inspect Fullscreen">
+            <button onclick="openLightbox('${arg(bg.name)}', '${arg(bg.filename)} — 1920x1080 HD', '${arg(safeURL(bg.url))}')" class="p-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Inspect Fullscreen">
               🔍
             </button>
-            <a href="${bg.url}" download="${bg.filename}" class="p-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Download HD 1080p">
+            <a href="${esc(safeURL(bg.url))}" download="${esc(bg.filename)}" class="p-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition" title="Download HD 1080p">
               💾
             </a>
           </div>
@@ -767,26 +772,26 @@
       const filtered = stickersData.filter(s => isStickerMatch(s, category));
 
       filtered.forEach(stk => {
-        const imgUrl = `/api/scene-director/stickers/render/${stk.id}?v=${Date.now()}`;
+        const imgUrl = `/api/scene-director/stickers/render/${encodeURIComponent(stk.id)}?v=${Date.now()}`;
         const card = document.createElement('div');
         card.className = 'bg-white rounded-2xl p-3 border border-stone-200 shadow-xs flex flex-col justify-between space-y-2 hover:border-amber-300 transition-all group';
         
         card.innerHTML = `
           <div>
-            <div class="sprite-preview-box h-28 w-full rounded-xl flex items-center justify-center p-2 relative overflow-hidden transition-colors ${currentGlobalBg} cursor-pointer" onclick="openLightbox('${stk.label || stk.id}', '${stk.id}.png — Educational Sticker', '${imgUrl}')">
-              <img src="${imgUrl}" alt="${stk.label || stk.id}" class="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
+            <div class="sprite-preview-box h-28 w-full rounded-xl flex items-center justify-center p-2 relative overflow-hidden transition-colors ${esc(currentGlobalBg)} cursor-pointer" onclick="openLightbox('${arg(stk.label || stk.id)}', '${arg(stk.id)}.png — Educational Sticker', '${arg(imgUrl)}')">
+              <img src="${esc(imgUrl)}" alt="${esc(stk.label || stk.id)}" class="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
             </div>
             <div class="mt-2 text-center">
-              <div class="font-bold text-xs text-stone-800 truncate tc-font">${stk.label || stk.id}</div>
-              <div class="text-[10px] text-stone-400 capitalize truncate">${stk.id}</div>
+              <div class="font-bold text-xs text-stone-800 truncate tc-font">${esc(stk.label || stk.id)}</div>
+              <div class="text-[10px] text-stone-400 capitalize truncate">${esc(stk.id)}</div>
             </div>
           </div>
 
           <div class="pt-2 border-t border-stone-100 flex items-center gap-1.5">
-            <button onclick="stageStickerInSandbox('${stk.id}')" class="flex-1 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[10px] text-center transition border border-amber-200">
+            <button onclick="stageStickerInSandbox('${arg(stk.id)}')" class="flex-1 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-[10px] text-center transition border border-amber-200">
               Stage
             </button>
-            <a href="${imgUrl}" download="${stk.id}.png" class="p-1 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition">
+            <a href="${esc(imgUrl)}" download="${esc(stk.id)}.png" class="p-1 rounded-xl bg-stone-50 hover:bg-stone-100 text-stone-600 border border-stone-200 text-xs transition">
               💾
             </a>
           </div>
@@ -1128,6 +1133,7 @@
     }
 
     function openLightbox(title, subtitle, url) {
+      url = safeURL(url);
       document.getElementById('lightbox-title').textContent = title;
       document.getElementById('lightbox-subtitle').textContent = subtitle;
       document.getElementById('lightbox-img').src = url;
