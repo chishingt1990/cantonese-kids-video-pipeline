@@ -87,6 +87,45 @@ test('HTTP JSON and non-JSON failures throw visible errors and never look succes
   await assert.rejects(API.createClient(async () => new Response('bad gateway', { status: 502 }))('/api/x'), /HTTP 502/);
 });
 
+test('provider error codes survive response headers without exposing settings', async () => {
+  const request = API.createClient(async () => Response.json(
+    { detail: 'Provider service unavailable. Saved settings were not changed.' },
+    { status: 503, headers: { 'X-Studio-Error-Code': 'provider_unavailable' } }
+  ));
+  await assert.rejects(request('/api/ideas/generate'), error =>
+    error.code === 'provider_unavailable' && error.status === 503);
+});
+
+test('topic chips retain one class through selection and custom-topic editing', () => {
+  const app = harness();
+  const chips = [app.element('topic-one'), app.element('vehicles')];
+  chips.forEach(chip => { chip.className = 'chip topic-chip'; });
+  app.context.document.querySelectorAll = selector => selector === '.chip' ? chips : [];
+  app.context.vehicleButton = chips[1];
+  const before = chips.map(chip => chip.className);
+  app.run("setTopicChip(vehicleButton, 'Vehicles & Community Helpers', 'vehicles')");
+  assert.deepEqual(chips.map(chip => chip.className), before);
+  app.run('editStoryTopic()');
+  assert.deepEqual(chips.map(chip => chip.className), before);
+  app.run("renderAgeLessonChips('1-2')");
+  const classes = [...app.element('lesson-topic-chips').innerHTML.matchAll(/class="([^"]+)"/g)].map(match => match[1]);
+  assert.equal(classes.length, 6);
+  assert.ok(classes.every(name => name === 'chip topic-chip'));
+});
+
+test('provider outage directs script building to an explicit offline option, not credential reset', async () => {
+  const app = harness(async () => {
+    throw Object.assign(new Error('Provider service unavailable. Saved settings were not changed.'),
+      { code: 'provider_unavailable', status: 503 });
+  });
+  seedIdea(app);
+  let hidden = false;
+  app.element('script-build-error-settings').classList.toggle = (_name, value) => { hidden = value; };
+  await app.run('selectIdeaAndBuildScript(0)');
+  assert.equal(hidden, true);
+  assert.match(app.element('script-build-error-message').textContent, /explicitly choose.*offline story/);
+});
+
 test('brainstorm provider failure stays visible and a retry clears it', async () => {
   let reject = true;
   const h = harness(async () => {

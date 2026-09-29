@@ -50,6 +50,28 @@ body.studio {
   cursor: pointer;
 }
 .studio .studio-button:hover:not(:disabled) { background: var(--cp-surface-soft); border-color: var(--cp-border-strong); }
+.studio .topic-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid var(--cp-border);
+  border-radius: 0.625rem;
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.studio .topic-chip:hover { background: var(--cp-surface-soft); }
+.studio .topic-chip[aria-pressed="true"] {
+  border-color: var(--cp-accent);
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+}
 .studio .studio-primary { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-accent-fg); }
 .studio .studio-primary:hover:not(:disabled) { background: var(--cp-accent-hover); border-color: var(--cp-accent-hover); }
 .studio-next { width: 100%; min-height: 52px; }

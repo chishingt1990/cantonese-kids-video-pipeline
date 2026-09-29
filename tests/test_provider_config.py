@@ -9,6 +9,16 @@ from app.services import ai_service
 
 
 class StructuredProviderTests(unittest.TestCase):
+    def test_provider_service_failure_is_distinct_from_missing_credentials(self):
+        failure = ai_service._classify_provider_error(ServerError(
+            503, {"error": {"code": 503, "message": "private diagnostic"}}
+        ))
+        self.assertEqual(failure.code, "provider_unavailable")
+        self.assertIn("HTTP 503", str(failure))
+        self.assertIn("not a missing API key", str(failure))
+        self.assertIn("settings were not changed", str(failure))
+        self.assertNotIn("private diagnostic", str(failure))
+
     def test_script_json_and_long_timeout_are_sent_without_changing_model(self):
         settings = StudioSettings(gemini_api_key="test-only", active_model="selected-model")
         client = Mock()

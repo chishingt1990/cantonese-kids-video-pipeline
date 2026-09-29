@@ -12,7 +12,8 @@
           : `Request failed (HTTP ${response.status})`;
         const error = new Error(message);
         error.status = response.status;
-        if (detail?.code) error.code = detail.code;
+        const code = detail?.code || response.headers?.get('X-Studio-Error-Code');
+        if (code) error.code = code;
         throw error;
       }
       return response;

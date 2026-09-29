@@ -56,7 +56,11 @@ def _classify_provider_error(exc):
     if status in {408, 504}:
         return GenerationError("The selected AI provider timed out. Retry shortly; no model was changed.", code="timeout", status_code=504)
     if isinstance(status, int) and 500 <= status <= 599:
-        return GenerationError("The selected AI provider is temporarily unavailable. Retry later; no model was changed.", code="provider_unavailable", status_code=503)
+        return GenerationError(
+            f"The AI provider returned HTTP {status} (service unavailable). This is a provider service error, not a missing API key. "
+            "Your saved API key and model settings were not changed. Retry later.",
+            code="provider_unavailable", status_code=503,
+        )
     if isinstance(status, int) and 400 <= status <= 499:
         return GenerationError("The selected AI provider rejected the request. Check the selected model's supported inputs and deployment settings.", code="provider_request_rejected")
     if isinstance(exc, (requests.ConnectionError, httpx.NetworkError)):

@@ -265,14 +265,14 @@ html[data-theme="dark"] {
         <p id="story-provenance" role="status" class="studio-help"></p>
         <div id="ideas-error" role="alert" class="hidden rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
           <p id="ideas-error-message"></p>
-          <button type="button" onclick="toggleSettingsModal()" class="mt-2 font-bold underline">Open provider settings</button>
+          <button type="button" id="ideas-error-settings" onclick="toggleSettingsModal()" class="mt-2 font-bold underline">Open provider settings</button>
         </div>
       </div>
 
       <div id="ideas-container" class="grid md:grid-cols-3 gap-5"></div>
       <div id="script-build-error" role="alert" class="hidden rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
         <p id="script-build-error-message"></p>
-        <button type="button" onclick="toggleSettingsModal()" class="mt-2 font-bold underline">Open provider settings</button>
+        <button type="button" id="script-build-error-settings" onclick="toggleSettingsModal()" class="mt-2 font-bold underline">Open provider settings</button>
       </div>
     </div>
 

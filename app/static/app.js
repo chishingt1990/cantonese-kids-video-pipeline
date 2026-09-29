@@ -69,10 +69,11 @@ function updateLessonDurationUI() {
     ? `${currentProject.scenes.length} Scenes · ${formatLessonDuration(duration.seconds)}` : '0 Scenes';
 }
 
-function setScriptBuildError(message = '') {
+function setScriptBuildError(message = '', code = '') {
   const text = document.getElementById('script-build-error-message');
   if (text) text.textContent = message;
   document.getElementById('script-build-error')?.classList.toggle('hidden', !message);
+  document.getElementById('script-build-error-settings')?.classList.toggle('hidden', code === 'provider_unavailable');
 }
 
 // Wizard Step Navigation (fixes active sidebar highlight)
@@ -190,7 +191,6 @@ function resetIdeaResults() {
 function editStoryTopic() {
   document.querySelectorAll('.chip').forEach(button => {
     button.setAttribute('aria-pressed', 'false');
-    button.className = 'chip studio-button';
   });
   resetIdeaResults();
 }
@@ -213,13 +213,13 @@ function renderAgeLessonChips(ageKey) {
   if (!container) return;
   const presets = AGE_TOPIC_PRESETS[ageKey] || AGE_TOPIC_PRESETS['1-2'];
   container.innerHTML = presets.map((p, idx) => `
-    <button type="button" aria-pressed="${idx === 0}" onclick="setTopicChip(this, '${arg(p.topic)}')" class="chip px-4 py-2 rounded-full border ${idx === 0 ? 'border-amber-400 bg-amber-100/70 text-amber-900 font-bold shadow-sm' : 'border-stone-200 hover:border-amber-300 text-stone-600 font-semibold'} text-xs transition">
+    <button type="button" aria-pressed="${idx === 0}" onclick="setTopicChip(this, '${arg(p.topic)}')" class="chip topic-chip">
       ${esc(p.label)}
     </button>
-  `).join('') + '<button type="button" aria-pressed="false" onclick="setTopicChip(this, \'Vehicles & Community Helpers\', \'vehicles\')" class="chip studio-button">Vehicles</button>';
+  `).join('') + '<button type="button" aria-pressed="false" onclick="setTopicChip(this, \'Vehicles & Community Helpers\', \'vehicles\')" class="chip topic-chip">Vehicles</button>';
   document.getElementById('vehicle-topic-group').classList.add('hidden');
   document.getElementById('vehicle-topic-chips').innerHTML = VEHICLE_TOPICS.map(item =>
-    `<button type="button" aria-pressed="false" onclick="setTopicChip(this, '${arg(item.topic)}', 'vehicles')" class="chip studio-button">${esc(item.label)}</button>`
+    `<button type="button" aria-pressed="false" onclick="setTopicChip(this, '${arg(item.topic)}', 'vehicles')" class="chip topic-chip">${esc(item.label)}</button>`
   ).join('');
 
   const input = document.getElementById('input-topic');
@@ -230,10 +230,8 @@ function renderAgeLessonChips(ageKey) {
 
 function setTopicChip(btn, topic, category = 'general') {
   document.querySelectorAll('.chip').forEach(c => {
-    c.className = 'chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold';
     c.setAttribute('aria-pressed', 'false');
   });
-  btn.className = 'chip px-4 py-2 rounded-full border border-amber-400 bg-amber-100/70 text-amber-900 text-xs font-bold shadow-sm';
   btn.setAttribute('aria-pressed', 'true');
   document.getElementById('input-topic').value = topic;
   document.getElementById('vehicle-topic-group').classList.toggle('hidden', category !== 'vehicles');
@@ -250,6 +248,7 @@ async function generateIdeas() {
   const errorMessage = document.getElementById('ideas-error-message');
   if (errorBox) errorBox.classList.add('hidden');
   if (errorMessage) errorMessage.textContent = '';
+  document.getElementById('ideas-error-settings')?.classList.remove('hidden');
   btn.textContent = 'Generating story ideas…';
   btn.disabled = true;
 
@@ -273,6 +272,7 @@ async function generateIdeas() {
     console.error(e);
     if (!stillCurrent()) return;
     if (errorMessage) errorMessage.textContent = e.message || 'Could not generate ideas. Please retry.';
+    document.getElementById('ideas-error-settings')?.classList.toggle('hidden', e.code === 'provider_unavailable');
     if (errorBox) errorBox.classList.remove('hidden');
   } finally {
     if (request === ideaGenerationRequest) {
@@ -465,7 +465,10 @@ async function selectIdeaAndBuildScript(idx, options = {}) {
   } catch (err) {
     console.error("Failed to generate custom script:", err);
     if (request === scriptBuildRequest && operation.project === currentProject) {
-      setScriptBuildError(err.message || 'Could not generate a script. Your existing scenes have been kept.');
+      const message = err.code === 'provider_unavailable'
+        ? `${err.message} You can explicitly choose "Use offline story template (no AI)" on the selected concept to continue without the provider.`
+        : err.message || 'Could not generate a script. Your existing scenes have been kept.';
+      setScriptBuildError(message, err.code);
       showToast(err.message || 'Could not generate a script. Your existing scenes have been kept.');
     }
   } finally {
