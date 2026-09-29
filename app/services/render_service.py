@@ -3,6 +3,7 @@ import re
 import subprocess
 import threading
 import copy
+import hashlib
 import json
 import math
 import shutil
@@ -11,8 +12,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from app.services.audio_service import (
-    mix_scene_audio, get_audio_duration, resolve_project_audio, MAX_EPISODE_SECONDS,
-    MAX_SCENE_SECONDS, media_binary, require_media_tools, missing_media_tool,
+    get_audio_duration, media_binary, require_media_tools, missing_media_tool,
+    resolve_project_audio, MAX_SCENE_SECONDS, MAX_EPISODE_SECONDS,
 )
 from app.services.sticker_service import get_or_render_sticker
 from app.services.asset_manifest import resolve_sprite, resolve_background
@@ -26,6 +27,7 @@ _CONTROLS = {}
 _JOBS_LOCK = threading.RLock()
 _RENDER_SLOT = threading.BoundedSemaphore(1)
 MAX_JOB_SECONDS = 1800
+FPS = 30
 
 
 class RenderBusyError(RuntimeError):
@@ -34,6 +36,15 @@ class RenderBusyError(RuntimeError):
 
 class RenderCancelled(RuntimeError):
     pass
+
+
+class RenderPolicyError(ValueError):
+    def __init__(self, code, message, project_id, scene_numbers=None, input_fingerprint=None):
+        super().__init__(message)
+        self.code = code
+        self.project_id = project_id
+        self.scene_numbers = scene_numbers or []
+        self.input_fingerprint = input_fingerprint
 
 
 def _update_job(job_id, **fields):
@@ -92,42 +103,192 @@ def _stage_asset(resolver, *identifiers):
         raise ValueError(f"Approved stage asset is missing: {' / '.join(identifiers)}") from exc
 
 
-def validate_render_snapshot(project_data):
+def _load_narration(project_data):
+    attachment = project_data.get("narration")
+    if attachment is None or attachment == {}:
+        return None, None
+    if not isinstance(attachment, dict) or not attachment.get("take_id"):
+        raise ValueError("Select a valid narration take before rendering")
+    from app.services.narration_service import validate_narration, narration_audio_path
+    manifest = copy.deepcopy(validate_narration(project_data))
+    project_id = project_data.get("id") or project_data.get("episode_id")
+    take_id = validate_id(manifest["take_id"])
+    path = Path(narration_audio_path(project_id, take_id))
+    if not path.resolve().is_relative_to(project_path(project_id, "narration")):
+        raise ValueError("Narration take belongs to another project")
+    return manifest, path
+
+
+def _file_digest(path):
+    with Path(path).open("rb") as source:
+        return hashlib.file_digest(source, "sha256").hexdigest()
+
+
+def _narration_frame_spans(manifest, scene_numbers, fps=FPS):
+    """Quantize absolute boundaries once; pauses stay on screen, never disappear."""
+    duration = float(manifest["duration_sec"])
+    if not math.isfinite(duration) or not 120 <= duration <= 240:
+        raise ValueError("Narration must span 120–240 seconds")
+    entries = manifest.get("scenes")
+    if not isinstance(entries, list) or len(entries) != len(scene_numbers):
+        raise ValueError("Narration scenes do not match the current visual script")
+    if [entry.get("scene_number") for entry in entries] != scene_numbers:
+        raise ValueError("Narration scene order does not match the current script")
+    previous_end = 0.0
+    for entry in entries:
+        start, end = float(entry["start_sec"]), float(entry["end_sec"])
+        if not all(math.isfinite(t) for t in (start, end)) or start < previous_end - 1e-6 or not 0 <= start < end <= duration:
+            raise ValueError("Narration scene timestamps are invalid or overlapping")
+        previous_end = end
+        words = entry.get("words", [])
+        if not isinstance(words, list) or len(words) > 10000:
+            raise ValueError("Invalid narration word timings")
+        previous_word_end = start
+        for word in words:
+            word_start, word_end = float(word["start_sec"]), float(word["end_sec"])
+            if not isinstance(word.get("text"), str) or not word["text"].strip() or len(word["text"]) > 1000:
+                raise ValueError("Invalid narration word text")
+            if not all(math.isfinite(t) for t in (word_start, word_end)) or not start <= word_start < word_end <= end + .02 or word_start < previous_word_end - .02:
+                raise ValueError("Narration word timestamps are invalid or overlapping")
+            previous_word_end = word_end
+    boundaries = [0] + [math.ceil(float(entry["start_sec"]) * fps - 1e-9) for entry in entries[1:]]
+    boundaries.append(math.ceil(duration * fps - 1e-9))
+    if any(end <= start for start, end in zip(boundaries, boundaries[1:])):
+        raise ValueError("Narration scene boundaries are too close to render")
+    return list(zip(boundaries, boundaries[1:]))
+
+
+def _legacy_scene_timeline(project_id, scenes, scene_numbers):
+    timeline, spans = [], []
+    missing_spoken, unvoiced = [], []
+    has_voice = False
+    elapsed = 0.0
+    previous_frame = 0
+    for number, scene in zip(scene_numbers, scenes):
+        duration = float(scene.get("duration_sec", 6))
+        if not math.isfinite(duration) or not 0 < duration <= MAX_SCENE_SECONDS:
+            raise ValueError("Invalid scene duration")
+        url = scene.get("audio_url")
+        path = resolve_project_audio(project_id, url) if url else None
+        text = scene.get("cantonese", "")
+        if not isinstance(text, str):
+            raise ValueError("Invalid scene cantonese")
+        audio_duration = get_audio_duration(str(path)) if path else 0
+        if path and audio_duration + 1.2 > duration + 1e-6:
+            raise ValueError(f"Scene {number} requires at least {audio_duration + 1.2:.2f} seconds")
+        if not path:
+            unvoiced.append(number)
+            if text.strip():
+                missing_spoken.append(number)
+        else:
+            has_voice = True
+        scene["_audio_path"] = str(path) if path else None
+        timeline.append({"scene_number": number, "start_sec": elapsed,
+                         "end_sec": elapsed + duration, "words": []})
+        elapsed += duration
+        end_frame = math.ceil(elapsed * FPS - 1e-9)
+        if end_frame <= previous_frame:
+            raise ValueError("Scene is too short to render")
+        spans.append((previous_frame, end_frame))
+        previous_frame = end_frame
+    if elapsed > MAX_EPISODE_SECONDS:
+        raise ValueError("Episode exceeds maximum duration")
+    return {"take_id": None, "duration_sec": elapsed, "scenes": timeline,
+            "alignment_method": "estimated",
+            "missing_narration_scenes": missing_spoken if has_voice else unvoiced,
+            "warnings": ["Legacy scene-clip mode: caption timings are estimated."]}, spans
+
+
+def _narration_audio_options(project_data):
+    options = project_data.get("audio_options")
+    if options is None:
+        options = {}
+    if not isinstance(options, dict):
+        raise ValueError("Audio options must be an object")
+    enabled = options.get("bgm_enabled", True)
+    volume = options.get("bgm_volume", .025)
+    if not isinstance(enabled, bool) or isinstance(volume, bool) or not isinstance(volume, (int, float)):
+        raise ValueError("Backing enabled must be boolean and volume numeric")
+    if not math.isfinite(volume) or not 0 <= volume <= .05:
+        raise ValueError("Backing volume must be between 0 and 0.05")
+    return {"bgm_enabled": enabled, "bgm_volume": float(volume)}
+
+
+def validate_render_snapshot(project_data, *, silent_legacy_confirmed=False):
+    if not isinstance(silent_legacy_confirmed, bool):
+        raise ValueError("silent_legacy_confirmed must be a boolean request field")
     if not isinstance(project_data, dict):
         raise ValueError("Project snapshot must be an object")
     snapshot = copy.deepcopy(project_data)
     project_id = validate_id(snapshot.get("id") or snapshot.get("episode_id") or "")
     if snapshot.get("id") and snapshot.get("episode_id") and snapshot["id"] != snapshot["episode_id"]:
         raise ValueError("Project identifiers disagree")
-    if not project_path(project_id, "project.json").is_file():
+    project_file = project_path(project_id, "project.json")
+    if not project_file.is_file():
         raise ValueError("Save the project before rendering")
+    try:
+        saved = json.loads(project_file.read_text(encoding="utf-8"))
+        narration_first = snapshot.get("workflow") == "narration_first" or saved.get("workflow") == "narration_first"
+    except (OSError, ValueError, AttributeError) as exc:
+        raise ValueError("Saved project could not be verified before rendering") from exc
     scenes = snapshot.get("scenes")
     if not isinstance(scenes, list) or not 1 <= len(scenes) <= 100:
         raise ValueError("Render requires 1–100 scenes")
-    total = 0
+    scene_numbers = [scene.get("scene_number", index) if isinstance(scene, dict) else None
+                     for index, scene in enumerate(scenes, 1)]
+    if any(isinstance(number, bool) or not isinstance(number, int) or number < 1 for number in scene_numbers) or len(set(scene_numbers)) != len(scene_numbers):
+        raise ValueError("Scene numbers must be unique positive integers")
+    manifest, narration_path = _load_narration(snapshot)
+    if manifest is None:
+        if narration_first:
+            raise RenderPolicyError(
+                "narration_required", "This narration-first project requires a current narration take; silent rendering is not allowed.",
+                project_id)
+        manifest, spans = _legacy_scene_timeline(project_id, scenes, scene_numbers)
+        snapshot["_audio_mode"] = "scene_clips"
+        snapshot["_narration_audio_path"] = None
+        snapshot["_narration_audio_sha256"] = None
+    else:
+        spans = _narration_frame_spans(manifest, scene_numbers, fps=FPS)
+        snapshot["_audio_mode"] = "narration"
+        if not narration_path.is_file():
+            raise ValueError("Validated narration audio is missing")
+        if abs(get_audio_duration(str(narration_path)) - float(manifest["duration_sec"])) > 1 / FPS:
+            raise ValueError("Narration WAV duration does not match its manifest")
+        digest = _file_digest(narration_path)
+        if manifest.get("source_digest") != digest:
+            raise ValueError("Narration audio changed during validation")
+        snapshot["_narration_audio_path"] = str(narration_path)
+        snapshot["_narration_audio_sha256"] = digest
+    if manifest.get("alignment_method") not in ("asr", "estimated"):
+        raise ValueError("Narration alignment method must be asr or estimated")
+    warnings = manifest.get("warnings", [])
+    if not isinstance(warnings, list) or any(not isinstance(warning, str) for warning in warnings):
+        raise ValueError("Narration warnings must be a list of strings")
+    if manifest["alignment_method"] == "estimated":
+        warning = "Word timing is estimated, not ASR-aligned."
+        if warning not in warnings:
+            warnings.append(warning)
+        manifest["warnings"] = warnings
+    if snapshot["_audio_mode"] == "narration":
+        snapshot["narration"] = copy.deepcopy(manifest)
+    snapshot["_narration"] = manifest
+    missing_narration = manifest.get("missing_narration_scenes", [])
+    snapshot["_silent_legacy_confirmed"] = bool(silent_legacy_confirmed and missing_narration)
+    snapshot["_missing_narration_scenes"] = missing_narration
+    snapshot["_audio_options"] = _narration_audio_options(snapshot) if snapshot["_audio_mode"] == "narration" else None
+    snapshot["_total_frames"] = spans[-1][1]
+    snapshot["_fps"] = FPS
     for index, scene in enumerate(scenes, 1):
         if not isinstance(scene, dict):
             raise ValueError("Each scene must be an object")
-        duration = float(scene.get("duration_sec", 6))
-        if not math.isfinite(duration) or not 0 < duration <= MAX_SCENE_SECONDS:
-            raise ValueError("Invalid scene duration")
-        duration = math.ceil(duration * 30) / 30
-        total += duration
         for field in ("cantonese", "english", "jyutping", "vocab_highlight", "speaker"):
             if not isinstance(scene.get(field, ""), str) or len(scene.get(field, "")) > 10000:
                 raise ValueError(f"Invalid scene {field}")
-        audio_url = scene.get("audio_url")
-        if audio_url:
-            path = resolve_project_audio(project_id, audio_url)
-            audio_duration = get_audio_duration(str(path))
-            if audio_duration + 1.2 > duration + 1e-6:
-                raise ValueError(f"Scene {index} requires at least {math.ceil(audio_duration + 1.2)} seconds for its narration")
-            scene["_audio_path"] = str(path)
-        elif scene.get("cantonese", "").strip():
-            raise ValueError(f"Scene {index} has narration text but no approved audio")
-        else:
-            scene["_audio_path"] = None
-        scene["duration_sec"] = duration
+        scene["_start_frame"], scene["_end_frame"] = spans[index - 1]
+        scene["_caption_mode"] = snapshot["_audio_mode"]
+        scene["_fps"] = FPS
+        scene["_narration_scene"] = copy.deepcopy(manifest["scenes"][index - 1])
         background = validate_id(scene.get("background", "living_room"))
         scene["_background_path"] = str(_stage_asset(resolve_background, background))
         for key, limit in (("characters", 30), ("stickers", 50)):
@@ -157,8 +318,6 @@ def validate_render_snapshot(project_data):
                         if not isinstance(sticker.get(text_field, ""), str) or len(sticker.get(text_field, "")) > 200:
                             raise ValueError("Invalid sticker content")
                     item["_sticker_path"] = str(_asset(Path(get_or_render_sticker(sticker))))
-    if total > MAX_EPISODE_SECONDS:
-        raise ValueError("Episode exceeds maximum duration")
     options = snapshot.get("subtitle_options", {})
     if not isinstance(options, dict) or not isinstance(snapshot.get("caption_options", {}), dict):
         raise ValueError("Invalid subtitle/caption options")
@@ -166,6 +325,15 @@ def validate_render_snapshot(project_data):
         value = int(options.get(name, default))
         if not 12 <= value <= 96:
             raise ValueError("Font sizes must be between 12 and 96")
+    if missing_narration and snapshot["_audio_mode"] == "scene_clips":
+        if not silent_legacy_confirmed:
+            raise RenderPolicyError(
+                "silent_legacy_confirmation_required",
+                "Confirm rendering without narration for the listed legacy scenes. Existing recordings and background music will be retained.",
+                project_id, missing_narration, media_input_fingerprint(project_data))
+        manifest["warnings"].append(
+            "Confirmed rendering without narration for scene(s): " + ", ".join(map(str, missing_narration))
+            + ". Existing recordings and background music are retained.")
     return project_id, snapshot
 
 
@@ -180,14 +348,28 @@ def _freeze_assets(snapshot, workdir):
             shutil.copyfile(source, destination)
             cache[path] = str(destination)
         return cache[path]
+    if snapshot["_audio_mode"] == "narration":
+        snapshot["_narration_audio_path"] = freeze(snapshot["_narration_audio_path"])
+        if _file_digest(snapshot["_narration_audio_path"]) != snapshot["_narration_audio_sha256"]:
+            raise ValueError("Narration audio changed while capturing the render snapshot")
+        atomic_write_json(workdir / "narration.json", snapshot["_narration"])
     for scene in snapshot["scenes"]:
-        for key in ("_audio_path", "_background_path"):
-            scene[key] = freeze(scene[key])
+        scene["_background_path"] = freeze(scene["_background_path"])
+        if snapshot["_audio_mode"] == "scene_clips":
+            scene["_audio_path"] = freeze(scene["_audio_path"])
         for char in scene.get("characters", []):
             char["_sprite_path"] = freeze(char["_sprite_path"])
         for sticker in scene.get("stickers", []):
             sticker["_sticker_path"] = freeze(sticker["_sticker_path"])
     return snapshot
+
+
+def _narration_identity(snapshot):
+    if snapshot["_audio_mode"] != "narration":
+        return None
+    return {key: snapshot["_narration"].get(key) for key in
+            ("take_id", "source_digest", "script_fingerprint", "alignment_method", "alignment_digest")}
+
 
 def get_font(size: int, bold: bool = False):
     candidates = [
@@ -206,14 +388,6 @@ def get_font(size: int, bold: bool = False):
     raise RuntimeError("Install a Cantonese-capable CJK font or set KIDS_STUDIO_CJK_FONT")
 
 
-# ---------------------------------------------------------------------------
-# Sing-along karaoke captions.
-# Each scene's Cantonese line is split into short singable phrases. Timing
-# prefers the real narration (scene <-> audio-clip pairing the pipeline
-# already produces); when a clip's duration is unknown we fall back to
-# distributing phrases evenly across the scene duration, weighted by length.
-# ---------------------------------------------------------------------------
-
 def _split_caption_lines(text: str, max_chars: int = 10) -> list:
     """Split a Cantonese line into short singable phrases at punctuation."""
     if max_chars < 1:
@@ -222,50 +396,66 @@ def _split_caption_lines(text: str, max_chars: int = 10) -> list:
     return [part[i:i + max_chars] for part in parts for i in range(0, len(part), max_chars)]
 
 
-def _build_scene_caption_timeline(scene: dict, project_root: str, font) -> list:
-    """
-    Returns a list of caption cues for one scene:
-    [{"start", "end", "chars", "widths", "total_w"}].
-    """
-    text = (scene.get("cantonese") or "").strip()
-    if not text:
-        return []
-    lines = _split_caption_lines(text)
+def _legacy_caption_timeline(scene, font, max_chars):
+    lines = _split_caption_lines(scene.get("cantonese", ""), max_chars)
     if not lines:
         return []
-
-    duration = float(scene.get("duration_sec", 6))
-
-    # Prefer real narration timing: resolve this scene's voice clip and read
-    # its actual duration, clamped to the scene length.
-    audio_dur = get_audio_duration(scene["_audio_path"]) if scene.get("_audio_path") else None
-
-    if audio_dur and audio_dur > 0:
-        span = min(duration, audio_dur)
-    else:
-        span = duration - 0.6
-    span = max(1 / 30, span)
-
-    lead_in = 0.0
-    total_chars = max(1, sum(len(l) for l in lines))
-    timeline = []
-    t = lead_in
+    fps = scene["_fps"]
+    duration = (scene["_end_frame"] - scene["_start_frame"]) / fps
+    audio_duration = get_audio_duration(scene["_audio_path"]) if scene.get("_audio_path") else None
+    span = min(duration, audio_duration) if audio_duration else duration - .6
+    span = max(1 / fps, span)
+    total_chars = sum(len(line) for line in lines)
+    time_sec = scene["_start_frame"] / fps
+    cues = []
     for line in lines:
-        line_dur = span * (len(line) / total_chars)
-        chars = list(line)
-        try:
-            widths = [font.getlength(ch) for ch in chars]
-        except Exception:
-            widths = [font.size * 0.9] * len(chars)
-        timeline.append({
-            "start": t,
-            "end": t + line_dur,
-            "chars": chars,
-            "widths": widths,
-            "total_w": sum(widths),
+        line_duration = span * len(line) / total_chars
+        words = [{"text": char, "start_sec": time_sec + line_duration * i / len(line),
+                  "end_sec": time_sec + line_duration * (i + 1) / len(line)}
+                 for i, char in enumerate(line)]
+        widths = [font.getlength(char) for char in line]
+        cues.append({"start": time_sec, "end": time_sec + line_duration,
+                     "words": words, "widths": widths, "total_w": sum(widths),
+                     "font": font, "legacy": True})
+        time_sec += line_duration
+    return cues
+
+
+def _build_scene_caption_timeline(scene: dict, font, max_chars=10) -> list:
+    """Use take word timestamps, or preserve explicitly estimated legacy phrases."""
+    if scene.get("_caption_mode") == "scene_clips":
+        return _legacy_caption_timeline(scene, font, max_chars)
+    cues, group = [], []
+    count = 0
+    for word in scene["_narration_scene"].get("words", []):
+        text = word["text"]
+        if group and (count + len(text) > max_chars or word["start_sec"] - group[-1]["end_sec"] > 0.75):
+            cues.append(group)
+            group, count = [], 0
+        group.append({"text": text, "start_sec": word["start_sec"], "end_sec": word["end_sec"]})
+        count += len(text)
+    if group:
+        cues.append(group)
+    result = []
+    for words in cues:
+        cue_font = font
+        total_width = sum(cue_font.getlength(word["text"]) for word in words)
+        if total_width > 1600:
+            cue_font = font.font_variant(size=max(1, math.floor(font.size * 1600 / total_width)))
+        widths = [cue_font.getlength(word["text"]) for word in words]
+        result.append({
+            "start": words[0]["start_sec"], "end": words[-1]["end_sec"],
+            "words": words, "widths": widths, "total_w": sum(widths), "font": cue_font,
         })
-        t += line_dur
-    return timeline
+    return result
+
+
+def _word_state(word, absolute_time):
+    if absolute_time < word["start_sec"]:
+        return "upcoming"
+    if absolute_time < word["end_sec"]:
+        return "active"
+    return "spoken"
 
 def render_project_video(project_data: dict, job_id: str, output_path: str):
     proc = None
@@ -283,18 +473,34 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
         if control["cancel"].is_set():
             raise RenderCancelled("Render cancelled")
         scenes = project_data.get("scenes", [])
-        total_duration = sum(s.get("duration_sec", 6) for s in scenes)
-        fps = 30
+        narration = project_data["_narration"]
+        render_warnings = list(narration.get("warnings", []))
+        total_duration = float(narration["duration_sec"])
+        fps = project_data["_fps"]
         width, height = 1920, 1080
-        total_frames = sum(round(s["duration_sec"] * fps) for s in scenes)
-        
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        
-        # 1. Dynamically gather scene voice recordings and mix master audio with ukulele BGM
-        voice_paths = [s["_audio_path"] for s in scenes]
-        durations = [s["duration_sec"] for s in scenes]
-        audio_path = workdir / "master.wav"
-        mix_scene_audio(voice_paths, durations, str(audio_path))
+        total_frames = project_data["_total_frames"]
+        if project_data["_audio_mode"] == "narration":
+            audio_path = project_data["_narration_audio_path"]
+            if _file_digest(audio_path) != project_data["_narration_audio_sha256"]:
+                raise ValueError("Frozen narration audio changed before encoding")
+            from app.services.audio_service import mix_narration_with_bgm
+            options = project_data["_audio_options"]
+            mixed_path = workdir / "narration_mix.wav"
+            mixed = mix_narration_with_bgm(audio_path, mixed_path,
+                                          enabled=options["bgm_enabled"], volume=options["bgm_volume"])
+            if abs(get_audio_duration(str(mixed_path)) - get_audio_duration(str(audio_path))) > 1 / 44100:
+                raise ValueError("Narration backing changed the audio duration")
+            audio_path = mixed_path
+            backing = mixed["backing"]
+            render_warnings.extend(mixed.get("warnings", []))
+        else:
+            from app.services.audio_service import mix_scene_audio
+            audio_path = workdir / "master.wav"
+            mix_scene_audio([scene["_audio_path"] for scene in scenes],
+                            [(scene["_end_frame"] - scene["_start_frame"]) / fps for scene in scenes],
+                            str(audio_path))
+            backing = "legacy_synthesized"
+        render_audio_digest = _file_digest(audio_path)
         if control["cancel"].is_set():
             raise RenderCancelled("Render cancelled")
         
@@ -309,7 +515,8 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
             "-i", "-",
         ]
         
-        ffmpeg_cmd.extend(["-i", str(audio_path), "-c:a", "aac", "-b:a", "192k"])
+        ffmpeg_cmd.extend(["-i", str(audio_path), "-map", "0:v:0", "-map", "1:a:0",
+                           "-c:a", "aac", "-b:a", "192k", "-t", f"{total_duration:.9f}"])
             
         ffmpeg_cmd.extend([
             "-c:v", "libx264",
@@ -347,7 +554,7 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
         if singalong_enabled:
             for _scene in scenes:
                 caption_timelines.append(
-                    _build_scene_caption_timeline(_scene, project_root, font_karaoke)
+                    _build_scene_caption_timeline(_scene, font_karaoke)
                 )
         
         frame_idx = 0
@@ -382,8 +589,7 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
             vocab = scene.get("vocab_highlight", "")
             speaker = (scene.get("speaker") or "").lower()
             
-            scene_duration = scene.get("duration_sec", 6)
-            scene_frames = round(scene_duration * fps)
+            scene_frames = scene["_end_frame"] - scene["_start_frame"]
             
             # Speaker bias for Ken Burns subtle camera pan
             speaker_bias_x = 0.0
@@ -564,29 +770,25 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                 # Drawn above the subtitle pill; skipped entirely when toggled off.
                 if singalong_enabled and s_idx < len(caption_timelines):
                     cues = caption_timelines[s_idx]
-                    scene_elapsed = f / fps
+                    absolute_time = frame_idx / fps
                     active = next(
-                        (c for c in cues if c["start"] <= scene_elapsed < c["end"]),
+                        (c for c in cues if c["start"] <= absolute_time < c["end"]),
                         None,
                     )
                     if active:
+                        cue_font = active["font"]
+                        fade_seconds = .15 if active.get("legacy") else .05
                         fade = min(
                             1.0,
-                            (scene_elapsed - active["start"]) / 0.15,
-                            (active["end"] - scene_elapsed) / 0.15,
+                            (absolute_time - active["start"]) / fade_seconds,
+                            (active["end"] - absolute_time) / fade_seconds,
                         )
                         if fade > 0.05:
-                            n_chars = len(active["chars"])
-                            progress = (scene_elapsed - active["start"]) / max(
-                                0.001, active["end"] - active["start"]
-                            )
-                            lit_count = progress * n_chars
-
                             k_draw = ImageDraw.Draw(frame, "RGBA")
                             cy = 748  # sits above the subtitle pill
                             cx = width // 2 - active["total_w"] / 2
                             try:
-                                _bbox = font_karaoke.getbbox("".join(active["chars"]))
+                                _bbox = cue_font.getbbox("".join(word["text"] for word in active["words"]))
                                 line_h = _bbox[3] - _bbox[1]
                             except Exception:
                                 line_h = 64
@@ -596,17 +798,17 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                                 radius=32,
                                 fill=(30, 20, 12, int(110 * fade)),
                             )
-                            # Karaoke: sung chars glow amber, upcoming chars stay cream
+                            # Only words whose own absolute interval is active glow amber.
                             x = cx
-                            for i, ch in enumerate(active["chars"]):
-                                sung = i < lit_count
-                                fill = (
-                                    (255, 176, 32, int(255 * fade))
-                                    if sung
-                                    else (255, 251, 235, int(255 * fade))
-                                )
+                            for i, word in enumerate(active["words"]):
+                                state = _word_state(word, absolute_time)
+                                if active.get("legacy") and state == "spoken":
+                                    state = "active"
+                                color = {"active": (255, 176, 32), "spoken": (230, 205, 150),
+                                         "upcoming": (255, 251, 235)}[state]
+                                fill = (*color, int(255 * fade))
                                 k_draw.text(
-                                    (x, cy), ch, font=font_karaoke, fill=fill,
+                                    (x, cy), word["text"], font=cue_font, fill=fill,
                                     stroke_width=3,
                                     stroke_fill=(40, 25, 10, int(220 * fade)),
                                     anchor="lt",
@@ -620,6 +822,8 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                 if frame_idx % 30 == 0:
                     _update_job(job_id, progress=min(99, int((frame_idx / total_frames) * 100)))
         
+        if frame_idx != total_frames:
+            raise RuntimeError("Rendered frame count does not cover the complete narration timeline")
         proc.stdin.close()
         _verify_encoder_output(proc, output_path)
         with _JOBS_LOCK:
@@ -632,7 +836,21 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                 "video_filename": Path(output_path).name,
                 "video_url": f"/api/render/video/{job['project_id']}/{Path(output_path).name}",
                 "input_fingerprint": job["input_fingerprint"],
-                "caption_timing": "estimated" if singalong_enabled else "disabled",
+                "caption_timing": narration["alignment_method"] if singalong_enabled else "disabled",
+                "alignment_method": narration["alignment_method"],
+                "audio_mode": project_data["_audio_mode"],
+                "warnings": render_warnings,
+                "narration_take_id": narration["take_id"],
+                "narration_identity": _narration_identity(project_data),
+                "narration_audio_sha256": project_data["_narration_audio_sha256"],
+                "render_audio_sha256": render_audio_digest,
+                "audio_options": project_data["_audio_options"],
+                "backing": backing,
+                "silent_legacy_confirmed": project_data["_silent_legacy_confirmed"],
+                "missing_narration_scenes": project_data["_missing_narration_scenes"],
+                "duration_sec": total_duration,
+                "frame_count": total_frames,
+                "fps": fps,
                 "rendered_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
             }
             atomic_write_json(Path(str(output_path) + ".json"), artifact)
@@ -683,7 +901,7 @@ def _verify_encoder_output(proc, output_path):
         raise RuntimeError("FFmpeg produced no usable output")
 
 
-def start_render_job(project_data: dict, job_id: str):
+def start_render_job(project_data: dict, job_id: str, *, silent_legacy_confirmed=False):
     validate_id(job_id)
     if not _RENDER_SLOT.acquire(blocking=False):
         raise RenderBusyError("Another render is active; wait or cancel it before starting another")
@@ -701,8 +919,10 @@ def start_render_job(project_data: dict, job_id: str):
         operation = project_operation(project_id)
         operation.__enter__()
         operation_entered = True
-        project_id, snapshot = validate_render_snapshot(original)
+        project_id, snapshot = validate_render_snapshot(original, silent_legacy_confirmed=silent_legacy_confirmed)
         original["id"] = original["episode_id"] = project_id
+        if snapshot["_audio_mode"] == "narration":
+            original["narration"] = copy.deepcopy(snapshot["narration"])
         filename = f"episode_{job_id}.mp4"
         output_path = project_path(project_id, "renders", filename)
         if output_path.exists():
@@ -713,6 +933,8 @@ def start_render_job(project_data: dict, job_id: str):
         snapshot = _freeze_assets(snapshot, workdir)
         fingerprint = media_input_fingerprint(original)
         atomic_write_json(Path(str(output_path) + ".input.json"), original)
+        if snapshot["_audio_mode"] == "narration":
+            atomic_write_json(Path(str(output_path) + ".narration.json"), snapshot["_narration"])
         with _JOBS_LOCK:
             # Disk records remain available through project-scoped status queries.
             for old in list(JOBS):
@@ -722,7 +944,17 @@ def start_render_job(project_data: dict, job_id: str):
                     JOBS.pop(old)
             JOBS[job_id] = {"job_id": job_id, "project_id": project_id,
                             "status": "queued", "progress": 0, "error": None,
-                            "input_fingerprint": fingerprint}
+                            "input_fingerprint": fingerprint,
+                            "narration_take_id": snapshot["_narration"]["take_id"],
+                            "narration_identity": _narration_identity(snapshot),
+                            "alignment_method": snapshot["_narration"]["alignment_method"],
+                            "audio_mode": snapshot["_audio_mode"],
+                            "audio_options": snapshot["_audio_options"],
+                            "silent_legacy_confirmed": snapshot["_silent_legacy_confirmed"],
+                            "missing_narration_scenes": snapshot["_missing_narration_scenes"],
+                            "warnings": snapshot["_narration"].get("warnings", []),
+                            "duration_sec": snapshot["_narration"]["duration_sec"],
+                            "frame_count": snapshot["_total_frames"], "fps": FPS}
             _CONTROLS[job_id] = {"cancel": threading.Event(), "proc": None, "workdir": str(workdir),
                                 "operation": operation}
         _update_job(job_id)

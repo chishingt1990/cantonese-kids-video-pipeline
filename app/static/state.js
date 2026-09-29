@@ -10,6 +10,24 @@
   }
   function observe(project, changed) {
     const cache = new WeakMap();
+    const spokenKey = () => fingerprint({
+      scenes: (project.scenes || []).map((scene, index) => ({
+        scene_number: scene?.scene_number || index + 1, cantonese: String(scene?.cantonese || '').trim()
+      })),
+      voice_id: project.voice_options?.voice_id || null,
+      use_cloned: project.voice_options?.use_cloned === true,
+      style: project.voice_options?.style || null
+    });
+    let lastSpokenKey = spokenKey();
+    function invalidateNarration() {
+      const next = spokenKey();
+      if (next !== lastSpokenKey && project.narration) {
+        project.previous_narration = project.narration;
+        delete project.narration;
+        delete project.narration_binding;
+      }
+      lastSpokenKey = next;
+    }
     function wrap(object, path = []) {
       if (!object || typeof object !== 'object') return object;
       if (cache.has(object)) return cache.get(object);
@@ -19,6 +37,7 @@
           if (Object.is(target[key], value)) return true;
           target[key] = value;
           if (!['revision', 'updated_at'].includes(key)) {
+            invalidateNarration();
             if (['cantonese', 'speaker', 'voice_id'].includes(key) && path[0] === 'scenes') {
               delete target.audio_url;
               delete target.audio_fingerprint;
@@ -33,6 +52,7 @@
         deleteProperty(target, key) {
           if (!(key in target)) return true;
           delete target[key];
+          invalidateNarration();
           if (key !== 'rendered_video') delete project.rendered_video;
           changed([...path, key]);
           return true;

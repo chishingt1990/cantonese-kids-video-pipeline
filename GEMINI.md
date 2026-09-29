@@ -32,4 +32,4 @@ A full-stack, pedagogical Cantonese educational video generation studio designed
 ## Conventions & Rules
 1. **Preschool Safety & Tone:** Content is tailored for 1-4 year old toddlers learning Cantonese. Keep vocabulary authentic (Spoken Cantonese / 廣東話), gentle, and encouraging.
 2. **File-Backed Persistence:** Projects are saved directly into `projects/<project_id>/project.json`.
-3. **No Breaking Web UI Changes:** Keep existing API routes intact; when modifying UI, preserve the 5-step workflow (Theme -> Script -> Staging -> Audio -> Render/Publish).
+3. **Narration-first workflow:** Story -> Script -> Voice -> Staging -> Render. Preserve session protection, revision-safe saves, and legacy project-owned media routes. New narration is one immutable, project-owned adult voice take; never silently substitute a speaker or claim estimated timing is exact.

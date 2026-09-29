@@ -13,6 +13,7 @@ let activeStageSceneIdx = 0;
 let draggedCharacterId = null;
 let draggedStickerId = null;
 let copilotUndoStack = [];
+let scriptBuildRequest = 0;
 
 let projectReady = false;
 let currentProject = emptyProject();
@@ -27,10 +28,70 @@ function requireProject() {
   return false;
 }
 
+function selectedLessonDuration() {
+  const seconds = Number(document.getElementById('lesson-length-seconds')?.value);
+  return [120, 180, 240].includes(seconds) ? seconds : 180;
+}
+
+function plannedLessonDuration(project = currentProject) {
+  const seconds = (project.scenes || []).reduce((total, scene) => {
+    const duration = Number(scene.duration_sec);
+    return total + (Number.isFinite(duration) && duration > 0 ? duration : 0);
+  }, 0);
+  return { seconds, status: seconds < 120 ? 'below' : seconds > 240 ? 'above' : 'within' };
+}
+
+function formatLessonDuration(seconds) {
+  const rounded = Math.round(seconds * 10) / 10;
+  return `${Math.floor(rounded / 60)}m ${Number((rounded % 60).toFixed(1))}s`;
+}
+
+function updateLessonDurationUI() {
+  const duration = plannedLessonDuration();
+  const summary = `Planned timeline: ${formatLessonDuration(duration.seconds)} · ${currentProject.scenes.length} scenes`;
+  const warning = duration.status === 'below'
+    ? 'Below the 2-minute lesson goal. Consider more teaching or interaction time. Existing short projects can still render.'
+    : duration.status === 'above'
+      ? 'Above the preferred 4-minute range. Review pacing if needed; narration will not be trimmed.'
+      : '';
+  for (const step of ['script', 'render']) {
+    const total = document.getElementById(`${step}-planned-duration`);
+    if (total) total.textContent = projectReady ? summary : '';
+    const notice = document.getElementById(`${step}-duration-warning`);
+    if (notice) {
+      notice.textContent = projectReady ? warning : '';
+      notice.classList.toggle('hidden', !projectReady || !warning);
+    }
+  }
+  const sidebar = document.getElementById('side-project-scenes');
+  if (sidebar) sidebar.innerText = projectReady
+    ? `${currentProject.scenes.length} Scenes · ${formatLessonDuration(duration.seconds)}` : '0 Scenes';
+}
+
+function setScriptBuildError(message = '') {
+  const text = document.getElementById('script-build-error-message');
+  if (text) text.textContent = message;
+  document.getElementById('script-build-error')?.classList.toggle('hidden', !message);
+}
+
 // Wizard Step Navigation (fixes active sidebar highlight)
 function setStep(step) {
-  if (!projectReady) { updateProjectAvailability(); return; }
-  if (currentStep === 4 && step !== 4) stopRecording();
+  if (!projectReady) { updateProjectAvailability(); return false; }
+  if (flowEditor.dirty && !commitFlowingStory()) return false;
+  if (currentStep === 3 && step > 3 && !StudioStory.isCurrentNarration(currentProject)
+      && !confirm('This story has no current whole-story narration. Continue to inspect pictures? You must narrate before rendering this story.')) return false;
+  const project = currentProject;
+  const proceed = () => {
+    if (currentProject !== project) return false;
+    showStep(step);
+    return true;
+  };
+  if (isProjectDirty && step !== currentStep) return flushProject().then(saved => saved ? proceed() : false);
+  return proceed();
+}
+
+function showStep(step) {
+  if (step !== currentStep) stopRecording();
   currentStep = step;
   
   // Toggle step containers
@@ -64,14 +125,12 @@ function setStep(step) {
 
   // Render step specific data
   if (step === 2) renderScriptStep();
-  if (step === 3) {
+  if (step === 4) {
     renderVisualStageStep();
-    if (!currentProject._autoDirected) {
-      triggerAutoDirectAllScenes({ silent: true });
-    }
   }
-  if (step === 4) renderAudioStep();
+  if (step === 3) renderNarrationStep();
   if (step === 5) renderRenderStep();
+  updateLessonDurationUI();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -175,7 +234,7 @@ function renderIdeas(ideas) {
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[10px] font-extrabold uppercase tracking-wider">Concept ${idx + 1}</span>
-          <span class="text-xs text-stone-400 font-medium">1-2 min lesson</span>
+          <span class="text-xs text-stone-400 font-medium">${selectedLessonDuration() / 60}-minute lesson target</span>
         </div>
         <div>
           <h3 class="font-extrabold text-stone-900 text-lg tc-font leading-tight">${esc(idea.title_cantonese)}</h3>
@@ -197,25 +256,37 @@ function renderIdeas(ideas) {
       </div>
 
       <button id="btn-select-idea-${idx}" onclick="selectIdeaAndBuildScript(${idx})" class="w-full py-3 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 font-bold text-xs transition flex items-center justify-center gap-1.5 mt-2">
-        <span>🎬</span> Build Episode Script ➔
+        <span>🎬</span> Build Episode Script (AI) ➔
       </button>
+      <button id="btn-template-idea-${idx}" type="button" onclick="selectIdeaAndBuildScript(${idx}, {template:true})" class="studio-button">Use offline story template (no AI)</button>
     </div>
   `).join('');
 }
 
 // Seamlessly passes the selected idea into AI Script Generator and replaces currentProject!
-async function selectIdeaAndBuildScript(idx) {
+async function selectIdeaAndBuildScript(idx, options = {}) {
   if (!requireProject()) return;
+  const template = options.template === true;
+  if (flowEditor.dirty) {
+    setScriptBuildError('Save or restore the current story draft before building another story. Your draft has been kept.');
+    return;
+  }
+  const request = ++scriptBuildRequest;
+  const targetDuration = selectedLessonDuration();
   const operation = StudioState.capture(currentProject);
+  const editor = flowEditor;
+  const editorVersion = flowEditor.version;
+  const editorText = flowEditor.text;
+  setScriptBuildError();
   const idea = currentIdeas[idx];
   if (!idea) {
     setStep(2);
     return;
   }
 
-  const btn = document.getElementById(`btn-select-idea-${idx}`);
+  const btn = document.getElementById(`${template ? 'btn-template-idea-' : 'btn-select-idea-'}${idx}`);
   if (btn) {
-    btn.innerHTML = '<span class="animate-spin">⏳</span> Writing Custom Toddler Script...';
+    btn.textContent = template ? 'Preparing local story template…' : 'Writing story with AI…';
     btn.disabled = true;
   }
 
@@ -224,61 +295,126 @@ async function selectIdeaAndBuildScript(idx) {
       ? allCharacters.map(c => c.id) 
       : ["levi", "luca", "dad", "mom", "dog", "grandparents_paternal", "grandparents_maternal", "auntie_cousins"];
 
-    const res = await fetch('/api/scripts/generate', {
+    const res = await fetch(template ? '/api/scripts/template' : '/api/scripts/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idea: idea,
-        characters: activeRoster
+        characters: activeRoster,
+        target_duration_sec: targetDuration
       })
     });
     const data = await res.json();
     const script = data.script;
-    if (!StudioState.matches(operation, currentProject)) return;
+    if (request !== scriptBuildRequest || operation.project !== currentProject) return;
+    if (!StudioState.matches(operation, currentProject) || selectedLessonDuration() !== targetDuration
+        || flowEditor !== editor || flowEditor.project !== operation.project
+        || flowEditor.version !== editorVersion || flowEditor.dirty || flowEditor.text !== editorText) {
+      const message = 'The project, story draft, or lesson target changed while generating. Your current script was kept; no automatic retry was made.';
+      setScriptBuildError(message);
+      showToast(message);
+      return;
+    }
+    if (template && (data.status !== 'template' || data.provenance !== 'offline_template')) {
+      throw new Error('The offline template response was not identified as a local template. Your existing script was kept.');
+    }
+    if (!template && (data.provenance === 'offline_template' || ['template', 'fallback'].includes(data.status))) {
+      throw new Error('An offline template was not requested. Choose the explicit offline button if wanted. Your existing script was kept.');
+    }
 
-    if (script && script.scenes && script.scenes.length > 0) {
-      currentProject.title_cantonese = script.title_cantonese || idea.title_cantonese;
-      currentProject.title_english = script.title_english || idea.title_english;
-      currentProject.vocab_words = script.vocab_words || idea.target_vocab || [];
-      currentProject.moral_lesson = script.moral_lesson || idea.moral_lesson || "";
-      currentProject.description = idea.description || "";
-      currentProject.theme = idea.theme || idea.title_english || "";
-      currentProject._autoDirected = false; // Mark for automatic scene directing when advancing to Step 3!
-      copilotUndoStack = [];
-      
-      // Map scenes ensuring x_percent positioning exists
-      currentProject.scenes = script.scenes.map((s, sIdx) => ({
+    if (!script || !Array.isArray(script.scenes) || script.scenes.length < 18 || script.scenes.length > 22) {
+      throw new Error('The generated story must contain 18–22 scenes. Your existing script was kept.');
+    }
+    if (['title_cantonese', 'title_english'].some(key => typeof script[key] !== 'string' || !script[key].trim())
+        || (script.moral_lesson != null && typeof script.moral_lesson !== 'string')) {
+      throw new Error('The generated script has invalid lesson metadata. Your existing script was kept.');
+    }
+    const scenes = script.scenes.map((s, sIdx) => {
+      if (!s || typeof s.cantonese !== 'string' || typeof s.english !== 'string'
+          || !Number.isFinite(s.duration_sec) || s.duration_sec <= 0
+          || (s.characters != null && !Array.isArray(s.characters))
+          || (s.stickers != null && !Array.isArray(s.stickers))
+          || (s.interaction_prompt != null && typeof s.interaction_prompt !== 'string')) {
+        throw new Error('The generated script has invalid scene fields. Your existing script was kept.');
+      }
+      if (s.speaker !== 'Dad' || /\p{Script=Latin}/u.test(s.cantonese) || !/\p{Script=Han}/u.test(s.cantonese)) {
+        throw new Error('Generated narration must be pure Cantonese spoken by Dad. Your existing script was kept.');
+      }
+      return {
+        scene_id: sceneIdentity(),
         scene_number: sIdx + 1,
         title: s.title || `Scene ${sIdx + 1}`,
         background: s.background || "living_room",
         speaker: s.speaker || "Dad",
-        characters: (s.characters || [{ name: "levi", pose: "default", position: "left" }, { name: "luca", pose: "waving", position: "right" }]).map((c, cIdx) => ({
-          name: c.name,
-          pose: c.pose || "default",
-          scale: 1.0,
-          x_percent: c.x_percent || (c.position === 'left' ? 32 : (c.position === 'right' ? 68 : 50)),
-          y_percent: 88,
-          flip: c.flip || false,
-          layer: 1
-        })),
+        characters: (s.characters || [{ name: "levi", pose: "default", position: "left" }, { name: "luca", pose: "waving", position: "right" }]).map(c => {
+          if (!c || typeof c.name !== 'string') throw new Error('The generated script has an invalid character. Your existing script was kept.');
+          return {
+            name: c.name,
+            pose: c.pose || "default",
+            scale: 1.0,
+            x_percent: c.x_percent ?? (c.position === 'left' ? 32 : (c.position === 'right' ? 68 : 50)),
+            y_percent: 88,
+            flip: c.flip || false,
+            layer: 1
+          };
+        }),
         stickers: s.stickers || [],
         cantonese: s.cantonese || "",
         english: s.english || "",
         vocab_highlight: s.vocab_highlight || "",
-        duration_sec: s.duration_sec || 7,
+        interaction_prompt: s.interaction_prompt || "",
+        ...Object.fromEntries(['scene_type', 'act', 'chorus'].filter(key => s[key] != null).map(key => [key, s[key]])),
+        duration_sec: s.duration_sec,
         audio_url: null
-      }));
-      activeStageSceneIdx = 0;
-      setStep(2);
-    } else {
-      throw new Error('No scenes were returned. Your existing script has been kept.');
+      };
+    });
+    const plannedDuration = plannedLessonDuration({ scenes });
+    if (plannedDuration.seconds < 120 - 1e-9 || plannedDuration.seconds > 240 + 1e-9) {
+      throw new Error('The generated timeline must total 120–240 seconds. Your existing script was kept.');
     }
+    const returnedTarget = script.target_duration_sec ?? targetDuration;
+    const returnedPlan = script.planned_duration_sec ?? plannedDuration.seconds;
+    if (returnedTarget !== targetDuration || !Number.isFinite(returnedPlan)
+        || Math.abs(returnedPlan - plannedDuration.seconds) > 0.001) {
+      throw new Error('The generated lesson duration metadata is inconsistent. Your existing script was kept.');
+    }
+    const vocab = script.vocab_words || idea.target_vocab || [];
+    if (!Array.isArray(vocab) || vocab.some(word => !word || typeof word.chinese !== 'string'
+        || (word.english != null && typeof word.english !== 'string'))) {
+      throw new Error('The generated script has invalid vocabulary. Your existing script was kept.');
+    }
+    Object.assign(currentProject, {
+      title_cantonese: script.title_cantonese || idea.title_cantonese,
+      title_english: script.title_english || idea.title_english,
+      vocab_words: vocab,
+      moral_lesson: script.moral_lesson || idea.moral_lesson || "",
+      description: idea.description || "",
+      theme: idea.theme || idea.title_english || "",
+      target_duration_sec: returnedTarget,
+      planned_duration_sec: returnedPlan,
+      script_provenance: template ? 'offline_template' : 'ai',
+      script_warning: template
+        ? String(data.warning || 'This is a local story template, not AI-generated content. Review and personalize it before narration.')
+        : (typeof data.warning === 'string' ? data.warning : ''),
+      ...(script.chorus != null ? { chorus: script.chorus } : {}),
+      _autoDirected: false,
+      workflow: 'narration_first',
+      story_text: scenes.map(scene => scene.cantonese).join('\n\n'),
+      scenes
+    });
+    copilotUndoStack = [];
+    activeStageSceneIdx = 0;
+    initializeFlowEditor();
+    await setStep(2);
   } catch (err) {
     console.error("Failed to generate custom script:", err);
-    showToast(err.message || 'Could not generate a script. Your existing scenes have been kept.');
+    if (request === scriptBuildRequest && operation.project === currentProject) {
+      setScriptBuildError(err.message || 'Could not generate a script. Your existing scenes have been kept.');
+      showToast(err.message || 'Could not generate a script. Your existing scenes have been kept.');
+    }
   } finally {
     if (btn) {
-      btn.innerHTML = '<span>🎬</span> Build Episode Script ➔';
+      btn.textContent = template ? 'Use offline story template (no AI)' : 'Build Episode Script (AI) ➔';
       btn.disabled = false;
     }
   }
@@ -286,6 +422,18 @@ async function selectIdeaAndBuildScript(idx) {
 
 // Step 2: Script & Vocabulary
 function renderScriptStep() {
+  renderFlowingStory();
+  const provenance = document.getElementById('script-provenance');
+  if (provenance) provenance.textContent = currentProject.script_provenance === 'offline_template'
+    ? 'Story source: offline template (no AI).'
+    : currentProject.script_provenance === 'ai' ? 'Story source: AI-generated. Review and edit before narration.'
+    : 'Story source: existing/manual project.';
+  const warning = document.getElementById('script-provenance-warning');
+  if (warning) {
+    warning.textContent = String(currentProject.script_warning || '');
+    warning.classList.toggle('hidden', !currentProject.script_warning);
+  }
+  updateLessonDurationUI();
   document.getElementById('script-episode-title').innerText = `${currentProject.title_cantonese} (${currentProject.title_english})`;
 
   const vocabContainer = document.getElementById('vocab-cards-list');
@@ -304,12 +452,12 @@ function renderScriptStep() {
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-3">
         <div class="flex items-center gap-2.5 flex-1 min-w-[200px]">
           <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
-          <input type="text" value="${esc(s.title || `Scene ${idx + 1}`)}" oninput="updateSceneText(${idx}, 'title', this.value)" class="font-bold text-stone-800 text-sm px-2.5 py-1 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 w-full" placeholder="Scene Title">
+          <input type="text" value="${esc(s.title || `Scene ${idx + 1}`)}" oninput="updateSceneById('${arg(sceneEditorKey(s))}', 'title', this.value)" class="font-bold text-stone-800 text-sm px-2.5 py-1 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 w-full" placeholder="Scene Title">
         </div>
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 text-xs text-stone-500 font-semibold">
             <span>Speaker:</span>
-            <select onchange="updateSceneText(${idx}, 'speaker', this.value)" class="px-2 py-1 rounded-lg border border-stone-200 bg-stone-50 text-stone-800 font-bold text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
+            <select onchange="updateSceneById('${arg(sceneEditorKey(s))}', 'speaker', this.value)" class="px-2 py-1 rounded-lg border border-stone-200 bg-stone-50 text-stone-800 font-bold text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
               <option value="Dad" ${speaker === 'Dad' ? 'selected' : ''}>Dad (爸爸)</option>
               <option value="Mom" ${speaker === 'Mom' ? 'selected' : ''}>Mom (媽媽)</option>
               <option value="Child" ${speaker === 'Child' ? 'selected' : ''}>Child (小朋友)</option>
@@ -318,7 +466,7 @@ function renderScriptStep() {
           </div>
           <div class="flex items-center gap-1.5 text-xs text-stone-500 font-semibold">
             <span>Duration:</span>
-            <input type="number" min="3" max="30" step="1" value="${esc(s.duration_sec || 7)}" onchange="updateSceneText(${idx}, 'duration_sec', this.value)" class="w-16 px-2 py-1 rounded-lg border border-stone-200 text-center font-bold text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
+            <input type="number" min="3" max="30" step="1" value="${esc(s.duration_sec || 7)}" onchange="updateSceneById('${arg(sceneEditorKey(s))}', 'duration_sec', this.value)" class="w-16 px-2 py-1 rounded-lg border border-stone-200 text-center font-bold text-stone-800 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
             <span>s</span>
           </div>
           <span class="text-xs text-stone-400 font-medium">BG: <strong>${esc(s.background)}</strong></span>
@@ -329,18 +477,26 @@ function renderScriptStep() {
       <div class="grid md:grid-cols-2 gap-4">
         <div>
           <label class="block text-[10px] font-extrabold text-stone-400 uppercase tracking-wider mb-1">Spoken Cantonese (Parentese)</label>
-          <input type="text" value="${esc(s.cantonese)}" oninput="updateSceneText(${idx}, 'cantonese', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 font-bold tc-font text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+          <input type="text" value="${esc(s.cantonese)}" oninput="updateSceneById('${arg(sceneEditorKey(s))}', 'cantonese', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 font-bold tc-font text-stone-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
         </div>
         <div>
           <label class="block text-[10px] font-extrabold text-stone-400 uppercase tracking-wider mb-1">English Translation</label>
-          <input type="text" value="${esc(s.english)}" oninput="updateSceneText(${idx}, 'english', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
+          <input type="text" value="${esc(s.english)}" oninput="updateSceneById('${arg(sceneEditorKey(s))}', 'english', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400">
         </div>
+      </div>
+      <div>
+        <label class="block text-[10px] font-extrabold text-stone-400 uppercase tracking-wider mb-1">Parent / Child Interaction Prompt (within planned scene time)</label>
+        <input type="text" value="${esc(s.interaction_prompt || '')}" oninput="updateSceneById('${arg(sceneEditorKey(s))}', 'interaction_prompt', this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-stone-700 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Optional: invite a response, gesture, or repeat">
       </div>
     </div>
   `}).join('');
 }
 
 function updateSceneText(idx, field, value) {
+  if (flowEditor.dirty) {
+    showToast('Save or reset the whole-story draft before editing individual scenes. Your draft has been kept.');
+    return false;
+  }
   if (currentProject.scenes[idx]) {
     if (field === 'duration_sec') {
       currentProject.scenes[idx][field] = Math.max(2, parseFloat(value) || 6);
@@ -348,6 +504,15 @@ function updateSceneText(idx, field, value) {
       currentProject.scenes[idx][field] = value;
     }
     if (typeof markProjectDirty === 'function') markProjectDirty();
+    if (field === 'cantonese') {
+      currentProject.scenes[idx].translation_stale = true;
+      const updatedText = currentProject.scenes.map(scene => scene.cantonese || '').join('\n\n');
+      if (flowEditor.text !== updatedText) flowEditor.version++;
+      flowEditor.text = updatedText;
+      currentProject.story_text = flowEditor.text;
+      flowEditor.dirty = false;
+      renderFlowingStory();
+    }
   }
 }
 
@@ -1727,29 +1892,17 @@ async function saveAndEquipCustomOutfit() {
 }
 
 
-// Step 4: Voice & Audio Studio
+// Advanced legacy per-scene audio tools (the default Voice step uses workflow.js).
 let mediaRecorder;
-let audioChunks = [];
 
 // Parent voice cloning (Gemini voice replication) state
 let parentVoiceState = { ready: false, available: false, voices: [], selectedVoiceId: null };
-
-function updateSampleFileName(input) {
-  const label = document.getElementById('sample-file-name');
-  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Voice Sample (10–30s)';
-}
-
-function updateConsentFileName(input) {
-  const label = document.getElementById('consent-file-name');
-  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Consent Recording';
-}
 
 async function refreshVoiceCloneStatus() {
   const project = currentProject;
   parentVoiceState.ready = false;
   const statusEl = document.getElementById('voice-clone-status');
   const selectEl = document.getElementById('cloned-voice-select');
-  const cloneBtn = document.getElementById('btn-clone-voice');
   const useBox = document.getElementById('use-cloned-voice');
   if (!statusEl || !selectEl) return;
   try {
@@ -1770,7 +1923,6 @@ async function refreshVoiceCloneStatus() {
     if (!data.available) {
       statusEl.innerText = data.reason || 'Parent voice cloning is unavailable. Select a built-in voice explicitly to continue.';
       statusEl.className = 'text-[11px] text-amber-600 font-bold';
-      if (cloneBtn) cloneBtn.disabled = true;
     } else {
       if (parentVoiceState.voices.length) {
         const activeName = parentVoiceState.voices.find(v => v.voice_id === parentVoiceState.selectedVoiceId)?.name;
@@ -1778,11 +1930,10 @@ async function refreshVoiceCloneStatus() {
         statusEl.className = 'text-[11px] text-emerald-600 font-bold';
         if (useBox) { useBox.checked = !!currentProject.voice_options?.use_cloned; useBox.disabled = false; }
       } else {
-        statusEl.innerText = '✅ Gemini connected — upload a 10-30s voice sample + consent clip to train a new model.';
+        statusEl.innerText = 'No saved parent voice is available. Open Settings for setup instructions.';
         statusEl.className = 'text-[11px] text-emerald-600 font-bold';
         if (useBox) useBox.disabled = false;
       }
-      if (cloneBtn) cloneBtn.disabled = false;
     }
   } catch (e) {
     if (project !== currentProject) return;
@@ -1800,6 +1951,7 @@ function selectClonedVoice(voiceId) {
 
 function updateVoiceOptions() {
   const next = {
+    ...currentProject.voice_options,
     voice_id: parentVoiceState.selectedVoiceId,
     use_cloned: !!document.getElementById('use-cloned-voice')?.checked
   };
@@ -1814,53 +1966,9 @@ function updateVoiceOptions() {
 
 async function cloneParentVoice() {
   if (!requireProject()) return;
-  const project = currentProject;
-  const btn = document.getElementById('btn-clone-voice');
-  const statusEl = document.getElementById('voice-clone-status');
-  const sampleInput = document.getElementById('sample-file-input');
-  const consentInput = document.getElementById('consent-file-input');
-  const sampleFile = sampleInput && sampleInput.files ? sampleInput.files[0] : null;
-  const consentFile = consentInput && consentInput.files ? consentInput.files[0] : null;
-  
-  if (!sampleFile || !consentFile) {
-    statusEl.innerText = '⚠️ Attach both a voice sample and the consent recording: "I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model."';
-    statusEl.className = 'text-[11px] text-amber-600 font-bold';
-    return;
-  }
-  
-  btn.innerHTML = '<span class="animate-spin">⏳</span> Training voice model…';
-  btn.disabled = true;
-  statusEl.innerText = '🧬 Submitting voice sample & consent verification to Google AI Cloud…';
-  statusEl.className = 'text-[11px] text-stone-500 font-bold';
-  try {
-    const fd = new FormData();
-    fd.append('name', 'Dad (Chishing)');
-    fd.append('project_id', currentProject.id);
-    if (sampleFile) fd.append('audio_file', sampleFile);
-    fd.append('consent_file', consentFile);
-    const res = await fetch('/api/audio/voice-clone/create', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (project !== currentProject) return;
-    if (res.ok && data.status === 'success') {
-      await refreshVoiceCloneStatus();
-      if (project !== currentProject) return;
-      selectClonedVoice(data.voice_id);
-      const useBox = document.getElementById('use-cloned-voice');
-      if (useBox && !useBox.disabled) { useBox.checked = true; updateVoiceOptions(); }
-      statusEl.innerText = `🎉 Successfully cloned voice model "${data.name}"!`;
-      statusEl.className = 'text-[11px] text-emerald-600 font-bold';
-    } else {
-      statusEl.innerText = `❌ Cloning note: ${data.detail || 'Google Cloud internal acoustic verification error. Check that the sample and consent clips are clear recordings from the same person.'}`;
-      statusEl.className = 'text-[11px] text-rose-500 font-bold';
-    }
-  } catch (e) {
-    console.error(e);
-    statusEl.innerText = `❌ ${e.message}`;
-    statusEl.className = 'text-[11px] text-rose-500 font-bold';
-  } finally {
-    btn.innerHTML = '<span>🧬</span> Train New Voice Model';
-    btn.disabled = !parentVoiceState.available;
-  }
+  // Compatibility for an old bookmarked action: never submit voice-training audio.
+  showToast('Choose an existing saved voice. Voice setup instructions are in Settings.');
+  toggleSettingsModal();
 }
 
 function useClonedParentVoice() {
@@ -1899,6 +2007,7 @@ function renderAudioStep() {
         <div class="bg-amber-50/60 rounded-2xl p-4 text-center space-y-1">
           <div class="text-xl font-extrabold text-stone-900 tc-font tracking-wide">${esc(s.cantonese)}</div>
           <div class="text-xs text-stone-600 font-medium">"${esc(s.english)}"</div>
+          ${s.interaction_prompt ? `<p class="text-xs text-amber-800 pt-2">Parent / child interaction: ${esc(s.interaction_prompt)}</p>` : ''}
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
@@ -2142,10 +2251,12 @@ function showCaptionTiming(mode) {
   const label = document.getElementById('render-caption-timing');
   if (label) label.textContent = mode === 'estimated'
     ? 'Sing-along timing is estimated by character weight, not aligned to spoken words.'
+    : mode === 'asr' ? 'Caption timing is audio-derived ASR alignment, not guaranteed exact. Review by listening.'
     : mode === 'disabled' ? 'Sing-along highlighting is disabled.' : '';
 }
 
 function renderRenderStep() {
+  updateLessonDurationUI();
   document.getElementById('render-pre').classList.remove('hidden');
   document.getElementById('render-progress-box').classList.add('hidden');
   
@@ -2170,6 +2281,23 @@ function renderRenderStep() {
 async function startRender() {
   if (!requireProject()) return;
   if (renderInProgress) return;
+  if (!currentProject.scenes.length) { showToast('Write a story and narrate it before rendering.'); return; }
+  if (flowEditor.dirty && !commitFlowingStory()) return;
+  if ((currentProject.workflow === 'narration_first' || currentProject.narration)
+      && !StudioStory.isCurrentNarration(currentProject)) {
+    showToast('Narrate and review the current story in Voice before rendering.');
+    narrationStatus('A current narration take matching this story, voice, and style is required.');
+    return;
+  }
+  let silentLegacyConfirmed = false;
+  if (!currentProject.narration && currentProject.workflow !== 'narration_first') {
+    const missing = currentProject.scenes.filter(scene => !scene.audio_url);
+    if (missing.length) {
+      const numbers = missing.map(scene => scene.scene_number).join(', ');
+      if (!confirm(`Legacy scenes ${numbers} have no audio. Allow silent gaps in these scenes for this render only? Existing clips and spoken text will be kept unchanged; no voice will be generated.`)) return;
+      silentLegacyConfirmed = true;
+    }
+  }
   renderInProgress = true;
   document.getElementById('render-pre').classList.add('hidden');
   document.getElementById('render-progress-box').classList.remove('hidden');
@@ -2190,12 +2318,13 @@ async function startRender() {
   };
 
   try {
-    if (!await flushProject()) throw new Error('Save your project before rendering.');
     const operation = StudioState.capture(currentProject);
+    if (!await flushProject()) throw new Error('Save your project before rendering.');
+    if (!StudioState.matches(operation, currentProject)) throw new Error('The project changed while saving. Review it and start rendering again; any silent-gap consent must be given again.');
     const res = await fetch('/api/render/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ project_data: currentProject })
+      body: JSON.stringify({ project_data: currentProject, silent_legacy_confirmed: silentLegacyConfirmed })
     });
     const data = await res.json();
     pollRenderStatus(data.job_id, operation, data.input_fingerprint);
@@ -2211,6 +2340,7 @@ let renderInProgress = false;
 function pollRenderStatus(jobId, operation, inputFingerprint) {
   const bar = document.getElementById('render-progress-bar');
   const txt = document.getElementById('render-percent');
+  const narrationTakeId = operation.project.narration?.take_id;
 
   let attempts = 0;
   async function poll() {
@@ -2230,6 +2360,7 @@ function pollRenderStatus(jobId, operation, inputFingerprint) {
       }
       if (data.project_id !== operation.project.id) throw new Error('Render project identity mismatch.');
       if (data.input_fingerprint !== inputFingerprint) throw new Error('Render input identity mismatch.');
+      if (narrationTakeId && data.narration_take_id !== narrationTakeId) throw new Error('Render narration take identity mismatch.');
 
       bar.style.width = `${data.progress}%`;
       txt.innerText = `${data.progress}%`;
@@ -2255,6 +2386,12 @@ function pollRenderStatus(jobId, operation, inputFingerprint) {
           filename: data.video_filename,
           input_fingerprint: data.input_fingerprint,
           caption_timing: data.caption_timing,
+          alignment_method: data.alignment_method,
+          narration_take_id: data.narration_take_id,
+          duration_sec: data.duration_sec,
+          frame_count: data.frame_count,
+          fps: data.fps,
+          warnings: data.warnings || [],
           rendered_at: new Date().toISOString()
         };
         showCaptionTiming(data.caption_timing);
@@ -2389,6 +2526,10 @@ let activeYouTubeThumbnail = null;
 
 function activateProject(project) {
   if (!project || !(project.id || project.episode_id)) throw new Error('The selected episode has no project identity.');
+  if (project.narration) {
+    if (project.narration_current === true) project.narration._spoken_key = StudioStory.spokenKey(project);
+    else delete project.narration._spoken_key;
+  }
   stopRecording();
   clearTimeout(projectAutoSaveTimer);
   currentProject = StudioState.observe(StudioState.normalize(project), () => {
@@ -2396,6 +2537,8 @@ function activateProject(project) {
     markProjectDirty();
   });
   projectReady = true;
+  scriptBuildRequest++;
+  setScriptBuildError();
   isProjectDirty = false;
   projectEditVersion++;
   const warning = document.getElementById('project-migration-warning');
@@ -2431,6 +2574,9 @@ function activateProject(project) {
     });
   const singalong = document.getElementById('caption-singalong');
   if (singalong) singalong.checked = currentProject.caption_options?.enabled !== false;
+  const lessonLength = document.getElementById('lesson-length-seconds');
+  if (lessonLength) lessonLength.value = [120, 180, 240].includes(currentProject.target_duration_sec)
+    ? String(currentProject.target_duration_sec) : '180';
   ['yt-input-title', 'yt-input-desc', 'yt-input-tags'].forEach(id => {
     const input = document.getElementById(id);
     if (input) input.value = '';
@@ -2438,6 +2584,8 @@ function activateProject(project) {
   closeYouTubePublishModal();
   updateProjectAvailability();
   setProjectSyncBadge('saved');
+  updateLessonDurationUI();
+  initializeFlowEditor();
 }
 
 function updateProjectAvailability(message) {
@@ -2470,6 +2618,7 @@ function clearActiveProject(message) {
   updateProjectUiHeaders();
   updateProjectAvailability(message);
   setProjectSyncBadge('none');
+  initializeFlowEditor();
 }
 
 const saveQueuedProject = StudioState.createSaveQueue(async snapshot => {
@@ -2482,10 +2631,13 @@ const saveQueuedProject = StudioState.createSaveQueue(async snapshot => {
 });
 
 async function flushProject() {
-  while (isProjectDirty) {
-    if (!await manualSaveProject({ silent: true })) return false;
+  const project = currentProject;
+  while (isProjectDirty || flowEditor.dirty) {
+    if (currentProject !== project) return false;
+    if (flowEditor.dirty && !commitFlowingStory()) return false;
+    if (isProjectDirty && !await manualSaveProject({ silent: true })) return false;
   }
-  return true;
+  return currentProject === project;
 }
 
 async function initProjects() {
@@ -2536,6 +2688,7 @@ function updateProjectUiHeaders() {
     scriptTitle.innerText = projectReady
       ? `${currentProject.title_cantonese || ''} (${currentProject.title_english || ''})` : 'Episode Script & Vocabulary';
   }
+  updateLessonDurationUI();
 }
 
 function setProjectSyncBadge(status) {
@@ -2559,6 +2712,8 @@ function setProjectSyncBadge(status) {
 
 function markProjectDirty() {
   if (!projectReady) return;
+  updateLessonDurationUI();
+  if (typeof updateNarrationReadiness === 'function') updateNarrationReadiness();
   isProjectDirty = true;
   setProjectSyncBadge('unsaved');
   scheduleAutoSave(2500);
@@ -2575,6 +2730,16 @@ function scheduleAutoSave(delayMs = 2500) {
 
 async function manualSaveProject(options = { silent: false }) {
   if (!requireProject()) return false;
+  if (flowEditor.dirty && !commitFlowingStory()) return false;
+  if (currentProject.workflow === 'narration_first' && currentProject.scenes.length) {
+    try { StudioStory.validateText(StudioStory.textForProject(currentProject)); }
+    catch (error) {
+      flowEditor.error = error.message;
+      renderFlowingStory();
+      showToast(error.message);
+      return false;
+    }
+  }
   clearTimeout(projectAutoSaveTimer);
   const project = currentProject;
   setProjectSyncBadge('saving');
@@ -2582,7 +2747,7 @@ async function manualSaveProject(options = { silent: false }) {
     await saveQueuedProject(project, () => projectEditVersion, unchanged => {
       if (currentProject !== project) return;
       isProjectDirty = !unchanged;
-      setProjectSyncBadge(unchanged ? 'saved' : 'unsaved');
+      setProjectSyncBadge(unchanged && !flowEditor.dirty ? 'saved' : 'unsaved');
       localStorage.setItem('kids_studio_active_project_id', project.id);
     });
     if (!options.silent) showToast('💾 Project saved successfully!');
@@ -3243,7 +3408,7 @@ window.addEventListener('message', (event) => {
 
 window.addEventListener('beforeunload', event => {
   stopRecording();
-  if (isProjectDirty) {
+  if (isProjectDirty || flowEditor.dirty) {
     event.preventDefault();
     event.returnValue = '';
   }

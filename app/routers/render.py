@@ -2,13 +2,14 @@ import uuid
 import json
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel, StrictBool
 
 from app.storage import contained_path, project_path
 from app.services.audio_service import MediaPrerequisiteError
+from app.services.narration_service import NarrationError
 from app.services.render_service import (
-    start_render_job, get_render_job, cancel_render_job, RenderBusyError,
+    start_render_job, get_render_job, cancel_render_job, RenderBusyError, RenderPolicyError,
 )
 
 router = APIRouter(prefix="/api/render", tags=["render"])
@@ -16,18 +17,34 @@ router = APIRouter(prefix="/api/render", tags=["render"])
 
 class RenderRequest(BaseModel):
     project_data: dict
+    silent_legacy_confirmed: StrictBool = False
 
 
 @router.post("/start")
 def trigger_render(req: RenderRequest):
     try:
-        job = start_render_job(req.project_data, uuid.uuid4().hex)
+        job = start_render_job(req.project_data, uuid.uuid4().hex,
+                               silent_legacy_confirmed=req.silent_legacy_confirmed)
         return {"job_id": job["job_id"], "project_id": job["project_id"],
-                "status": job["status"], "input_fingerprint": job["input_fingerprint"]}
+                "status": job["status"], "input_fingerprint": job["input_fingerprint"],
+                "narration_take_id": job["narration_take_id"],
+                "narration_identity": job["narration_identity"],
+                "audio_mode": job["audio_mode"],
+                "audio_options": job["audio_options"],
+                "silent_legacy_confirmed": job["silent_legacy_confirmed"],
+                "missing_narration_scenes": job["missing_narration_scenes"],
+                "alignment_method": job["alignment_method"], "warnings": job["warnings"],
+                "duration_sec": job["duration_sec"], "frame_count": job["frame_count"], "fps": job["fps"]}
     except RenderBusyError as exc:
         raise HTTPException(409, str(exc)) from exc
+    except RenderPolicyError as exc:
+        return JSONResponse(status_code=409, content={
+            "detail": str(exc), "error_code": exc.code, "project_id": exc.project_id,
+            "scene_numbers": exc.scene_numbers, "input_fingerprint": exc.input_fingerprint})
     except MediaPrerequisiteError as exc:
         raise HTTPException(503, str(exc)) from exc
+    except NarrationError as exc:
+        raise HTTPException(exc.http_status, str(exc)) from exc
     except (ValueError, TypeError, KeyError) as exc:
         raise HTTPException(400, str(exc)) from exc
 

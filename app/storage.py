@@ -72,7 +72,7 @@ def project_path(project_id: str, *parts) -> Path:
 
 
 def media_input_fingerprint(project_data) -> str:
-    """Canonical identity + normalized scenes + subtitle/caption options only."""
+    """Canonical visual inputs and, when present, the narration take/configuration."""
     from app.models import ProjectData
     if isinstance(project_data, ProjectData):
         project_data = project_data.model_dump(mode="json", exclude_none=True)
@@ -103,6 +103,28 @@ def media_input_fingerprint(project_data) -> str:
         "scenes": [scene.model_dump(mode="json", exclude_none=True) for scene in project.scenes],
         **options,
     }
+    if project_data.get("workflow") == "narration_first":
+        payload["workflow"] = "narration_first"
+    narration = project_data.get("narration")
+    if narration:
+        if not isinstance(narration, dict):
+            raise StorageError("Narration must be an object")
+        payload["narration"] = {
+            key: narration.get(key) for key in
+            ("take_id", "source_digest", "script_fingerprint", "alignment_method", "alignment_digest")
+        }
+        payload["voice_options"] = project_data.get("voice_options") or {}
+        audio_options = project_data.get("audio_options")
+        if audio_options is None:
+            audio_options = {}
+        if not isinstance(audio_options, dict):
+            raise StorageError("Audio options must be an object")
+        enabled = audio_options.get("bgm_enabled", True)
+        volume = audio_options.get("bgm_volume", 0.025)
+        if (not isinstance(enabled, bool) or isinstance(volume, bool)
+                or not isinstance(volume, (int, float)) or not 0 <= volume <= 0.05):
+            raise StorageError("Backing requires boolean enabled and volume between 0 and 0.05")
+        payload["audio_options"] = {"bgm_enabled": enabled, "bgm_volume": float(volume)}
     canonical = json.dumps(clean(payload), sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 

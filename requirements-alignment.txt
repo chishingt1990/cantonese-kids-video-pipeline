@@ -1,0 +1,3 @@
+-r requirements.txt
+# Optional local word alignment. Model weights must be provisioned separately.
+faster-whisper>=1.2.0,<2

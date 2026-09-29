@@ -8,7 +8,7 @@ import logging
 from typing import List, Dict, Any, Optional
 from PIL import Image, ImageDraw
 from app.storage import PROJECTS_DIR, project_path, project_lock, project_is_busy, atomic_write_json, validate_id, contained_path
-from app.models import ProjectData
+from app.models import ProjectData, NarrationAttachment
 
 logger = logging.getLogger(__name__)
 
@@ -177,9 +177,10 @@ def list_projects() -> List[Dict[str, Any]]:
     return sorted(projects, key=lambda p: p.get("updated_at", ""), reverse=True)
 
 
-def _sanitize_media(data: dict, project_id: str) -> dict:
+def _sanitize_media(data: dict, project_id: str, *, strict_narration=False) -> dict:
     data = copy.deepcopy(data)
     warnings = list(data.get("migration_warnings", [])) if isinstance(data.get("migration_warnings"), list) else []
+    narrations = {key: data.pop(key, None) for key in ("narration", "previous_narration")}
 
     def clean(value):
         if isinstance(value, dict):
@@ -207,6 +208,24 @@ def _sanitize_media(data: dict, project_id: str) -> dict:
                 clean(item)
 
     clean(data)
+    for key, narration in narrations.items():
+        if not narration:
+            continue
+        from app.services.narration_service import load_manifest, NarrationError
+        try:
+            attachment = NarrationAttachment.model_validate(narration)
+            manifest = load_manifest(project_id, attachment.take_id)
+            # Only the local, digest-verified manifest supplies playback and alignment metadata.
+            canonical = {**manifest, "audio_url": f"/api/narration/audio/{project_id}/{attachment.take_id}"}
+            if "_spoken_key" in narration:
+                if not isinstance(narration["_spoken_key"], str):
+                    raise ValueError("Client narration identity must be a string")
+                canonical["_spoken_key"] = narration["_spoken_key"]
+            data[key] = NarrationAttachment.model_validate(canonical).model_dump(mode="json", exclude_none=True)
+        except (ValueError, OSError, NarrationError):
+            if strict_narration:
+                raise ProjectCorruptError("Narration attachment could not be verified in this project. The saved project was not changed.") from None
+            warnings.append("Missing or changed narration attachment removed from this response; recover or regenerate the project's narration.")
     rendered = data.get("rendered_video")
     if rendered:
         try:
@@ -222,6 +241,21 @@ def _sanitize_media(data: dict, project_id: str) -> dict:
         data["migration_warnings"] = list(dict.fromkeys(str(w) for w in warnings))
     return data
 
+
+def _with_narration_readiness(data: dict) -> dict:
+    response = copy.deepcopy(data)
+    response["narration_current"] = False
+    if response.get("narration"):
+        from app.services.narration_service import validate_narration, NarrationError
+        try:
+            # Uses trusted manifest hashes, current script/voice/style, duration and alignment.
+            validate_narration(response)
+            response["narration_current"] = True
+        except (NarrationError, ValueError, KeyError, TypeError, AttributeError, OSError):
+            pass
+    return response
+
+
 def get_project(project_id: str) -> Optional[Dict[str, Any]]:
     with project_lock(project_id):
         path = project_path(project_id, "project.json")
@@ -232,18 +266,30 @@ def get_project(project_id: str) -> Optional[Dict[str, Any]]:
             raw = _sanitize_media(raw, project_id)
             data = ProjectData.model_validate(raw).model_dump(mode="json", exclude_none=True)
             data["id"] = data["episode_id"] = project_id
-            return data
+            return _with_narration_readiness(data)
         except (ValueError, TypeError, AttributeError) as exc:
             raise ProjectCorruptError("Project data is unreadable; the original file has been preserved") from exc
 
 def save_project(project_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
     with project_lock(project_id):
-        data = ProjectData.model_validate(_sanitize_media(data, project_id)).model_dump(mode="json", exclude_none=True)
         current = get_project(project_id)
+        data = ProjectData.model_validate(data).model_dump(mode="json", exclude_none=True)
         revision = current.get("revision", 0) if current else 0
         if data["revision"] != revision:
             raise RevisionConflict("Project changed since it was loaded. Reload before saving.")
+        data = ProjectData.model_validate(_sanitize_media(data, project_id, strict_narration=True)).model_dump(mode="json", exclude_none=True)
         data["id"] = data["episode_id"] = project_id
+        attachment = data.get("narration")
+        previous_take = ((current or {}).get("narration") or {}).get("take_id")
+        if attachment and attachment["take_id"] != previous_take:
+            from app.services.narration_service import script_fingerprint, NarrationError
+            options = data.get("voice_options") or {}
+            try:
+                matching_script = attachment.get("script_fingerprint") == script_fingerprint(data)
+            except (NarrationError, ValueError, TypeError):
+                matching_script = False
+            if not current or options.get("use_cloned") is not True or any(options.get(key) != attachment.get(key) for key in ("voice_id", "style")) or not matching_script:
+                raise RevisionConflict("New narration does not match this saved project's story and selected voice/style. Save the intended settings and regenerate or realign.")
         data["revision"] = revision + 1
         now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
         data["created_at"] = (current or {}).get("created_at") or data.get("created_at") or now_iso
@@ -253,7 +299,7 @@ def save_project(project_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
             _render_simple_thumbnail(str(project_path(project_id)), data["title_cantonese"], data["title_english"])
         except (OSError, ValueError):
             logger.warning("Project saved, but thumbnail creation failed")
-        return data
+        return _with_narration_readiness(data)
 
 def duplicate_project(project_id: str) -> Optional[Dict[str, Any]]:
     original = get_project(project_id)
@@ -265,6 +311,10 @@ def duplicate_project(project_id: str) -> Optional[Dict[str, Any]]:
     clone_data["revision"] = 0
     clone_data["created_at"] = ""
     clone_data.pop("rendered_video", None)
+    had_narration = clone_data.pop("narration", None)
+    had_previous = clone_data.pop("previous_narration", None)
+    if had_narration or had_previous:
+        clone_data.setdefault("migration_warnings", []).append("Copied projects require their own narration take; source-project audio was not reused.")
     return save_project(new_id, clone_data)
 
 def delete_project(project_id: str) -> bool:

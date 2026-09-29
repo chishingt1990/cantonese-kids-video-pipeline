@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from app.services.ai_service import brainstorm_ideas, get_grounded_topic_ideas, GenerationError
+from app.services.ai_service import brainstorm_ideas, get_grounded_topic_ideas, get_vehicle_ideas, GenerationError
 from app.models import Idea
 
 router = APIRouter(prefix="/api/ideas", tags=["ideas"])
@@ -11,6 +11,11 @@ class IdeaRequest(BaseModel):
     age_group: str = Field(default="1-2 years (Toddlers)", max_length=100)
     theme: str = Field(default="Manners, Love & Politeness", max_length=2000)
     allow_fallback: bool = False
+
+
+@router.get("/vehicles")
+def vehicle_ideas():
+    return {"ideas": get_vehicle_ideas(), "provenance": "curated"}
 
 
 @router.post("/generate")

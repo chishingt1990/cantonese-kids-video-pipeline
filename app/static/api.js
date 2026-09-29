@@ -7,9 +7,12 @@
       if (!response.ok) {
         let detail;
         try { detail = (await response.clone().json()).detail; } catch (_) {}
-        const message = typeof detail === 'string' ? detail : `Request failed (HTTP ${response.status})`;
+        const message = typeof detail === 'string' ? detail
+          : typeof detail?.message === 'string' ? detail.message
+          : `Request failed (HTTP ${response.status})`;
         const error = new Error(message);
         error.status = response.status;
+        if (detail?.code) error.code = detail.code;
         throw error;
       }
       return response;

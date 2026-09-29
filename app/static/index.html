@@ -3,32 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kids Video Studio — Personalized Educational Videos</title>
+  <title>Cantonese Story Studio — Story, Voice &amp; Pictures</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; }
-    .tc-font { font-family: 'Noto Sans TC', sans-serif; }
-    .pulse-record { animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
   </style>
+  <link rel="stylesheet" href="/static/studio.css">
 </head>
-<body class="bg-amber-50/30 text-stone-800 min-h-screen flex">
+<body class="studio min-h-screen flex">
 
   <!-- ======================================================== -->
   <!-- LEFT SIDEBAR PANE -->
   <!-- ======================================================== -->
-  <aside class="w-72 bg-white border-r border-amber-100 flex flex-col justify-between shrink-0 h-screen sticky top-0 shadow-sm z-20">
+  <aside class="studio-sidebar w-72 bg-white border-r border-amber-100 flex flex-col justify-between shrink-0 h-screen sticky top-0 z-20">
     <!-- TOP SECTION -->
     <div class="p-5 space-y-5">
       <!-- APP LOGO -->
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-rose-400 flex items-center justify-center text-xl shadow-sm shadow-amber-200">
-          🌱
+        <div class="studio-mark" aria-hidden="true">
+          粵
         </div>
         <div>
-          <h1 class="font-extrabold text-base tracking-tight text-stone-900 leading-none">Kids Video Studio</h1>
-          <p class="text-[11px] text-stone-400 font-medium mt-1">Parent-Powered Cantonese</p>
+          <h1 class="font-extrabold text-base tracking-tight text-stone-900 leading-none">Cantonese Story Studio</h1>
+          <p class="text-[11px] text-stone-400 font-medium mt-1">A little story. A familiar voice.</p>
         </div>
       </div>
 
@@ -88,26 +144,26 @@
       </div>
 
       <!-- SIDEBAR NAV ITEMS -->
-      <nav class="space-y-1.5 font-semibold text-xs">
+      <nav aria-label="Episode steps" class="space-y-1.5 font-semibold text-xs">
         <button onclick="setStep(1)" id="side-step-1" disabled class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition bg-amber-500 text-white font-bold shadow-sm shadow-amber-200 disabled:opacity-50">
           <span class="text-sm">💡</span>
-          <span>1. Theme & Ideas</span>
+          <span>1. Story</span>
         </button>
         <button onclick="setStep(2)" id="side-step-2" disabled class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50 disabled:opacity-50">
           <span class="text-sm">📝</span>
-          <span>2. Script & Vocab</span>
+          <span>2. Script</span>
         </button>
         <button onclick="setStep(3)" id="side-step-3" disabled class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50 disabled:opacity-50">
-          <span class="text-sm">🎨</span>
-          <span>3. Picture Book Studio</span>
+          <span class="text-sm">🎙️</span>
+          <span>3. Voice</span>
         </button>
         <button onclick="setStep(4)" id="side-step-4" disabled class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50 disabled:opacity-50">
-          <span class="text-sm">🎙️</span>
-          <span>4. Voice & Sound</span>
+          <span class="text-sm">🎨</span>
+          <span>4. Pictures</span>
         </button>
         <button onclick="setStep(5)" id="side-step-5" disabled class="side-nav-btn w-full px-3.5 py-2.5 rounded-xl flex items-center gap-3 transition text-stone-600 hover:bg-stone-50 disabled:opacity-50">
           <span class="text-sm">🎬</span>
-          <span>5. Render & Video</span>
+          <span>5. Render</span>
         </button>
       </nav>
 
@@ -126,7 +182,7 @@
       <div class="space-y-1.5 text-[11px]">
         <div class="flex items-center justify-between text-stone-500 font-medium">
           <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Storage</span>
-          <span class="font-bold text-stone-700">100% On-Device</span>
+          <span class="font-bold text-stone-700">Projects saved locally</span>
         </div>
         <div class="flex items-center justify-between text-stone-500 font-medium">
           <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Video Pipeline</span>
@@ -143,7 +199,12 @@
   <!-- ======================================================== -->
   <!-- MAIN WORKSPACE -->
   <!-- ======================================================== -->
-  <main class="flex-1 p-8 overflow-y-auto max-w-5xl">
+  <main class="studio-workspace flex-1 p-8">
+    <header class="studio-headline">
+      <p class="studio-eyebrow">Made together · 廣東話故事</p>
+      <h2>Your story, in a voice they know.</h2>
+      <p>Write the story. Listen together. Then bring the pictures to life.</p>
+    </header>
     <div id="project-migration-warning" role="status" class="hidden mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs font-semibold text-amber-900"></div>
     <div id="project-empty-state" class="rounded-3xl border border-amber-100 bg-white p-6 shadow-sm space-y-4">
       <h2 class="text-2xl font-extrabold text-stone-900">Start an episode</h2>
@@ -157,9 +218,9 @@
     <!-- STEP 1: IDEA & THEME -->
     <div id="step-1" class="step-view hidden space-y-6" inert>
       <div class="space-y-1">
-        <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 1: Ideation</span>
-        <h2 class="text-3xl font-extrabold text-stone-900 tracking-tight">What do we want to teach today?</h2>
-        <p class="text-stone-500 text-sm">Pick a gentle, wholesome theme tailored for your little ones without the addictive frenzy of YouTube.</p>
+        <span class="studio-eyebrow">Step 1 · Story</span>
+        <h2 class="text-3xl font-extrabold text-stone-900 tracking-tight">What shall we discover today?</h2>
+        <p class="text-stone-500 text-sm">Start with six curated vehicle adventures, or explore your own topic for a gentle 2–4 minute Cantonese story.</p>
       </div>
 
       <div class="bg-white rounded-3xl p-6 md:p-8 border border-amber-100 shadow-sm space-y-6">
@@ -188,9 +249,20 @@
           <input id="input-topic" type="text" value="Meeting Family & Greeting Relatives" class="w-full px-4 py-3 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm font-medium">
         </div>
 
-        <button onclick="generateIdeas()" id="btn-gen-ideas" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold text-sm shadow-md shadow-amber-200 flex items-center justify-center gap-2 transition">
-          <span>✨</span> Brainstorm Episode Concepts
-        </button>
+        <div>
+          <label for="lesson-length-seconds" class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Lesson Length Target</label>
+          <select id="lesson-length-seconds" onchange="renderIdeas(currentIdeas)" class="w-full px-4 py-3 rounded-2xl border border-stone-200 bg-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400">
+            <option value="120">2 minutes</option>
+            <option value="180" selected>3 minutes (recommended)</option>
+            <option value="240">4 minutes</option>
+          </select>
+          <p class="mt-2 text-xs text-stone-500">A planned timeline, not a narration-length guarantee. Voice generation may extend scene durations.</p>
+        </div>
+
+        <div class="studio-actions">
+          <button type="button" id="btn-curated-vehicle-ideas" onclick="loadCuratedVehicleIdeas()" class="studio-button studio-primary">Explore 6 Vehicle Stories</button>
+          <button type="button" onclick="generateIdeas()" id="btn-gen-ideas" class="studio-button">Create Ideas for My Topic</button>
+        </div>
         <div id="ideas-error" role="alert" class="hidden rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
           <p id="ideas-error-message"></p>
           <button type="button" onclick="toggleSettingsModal()" class="mt-2 font-bold underline">Open provider settings</button>
@@ -198,46 +270,72 @@
       </div>
 
       <div id="ideas-container" class="grid md:grid-cols-3 gap-5"></div>
+      <div id="script-build-error" role="alert" class="hidden rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+        <p id="script-build-error-message"></p>
+        <button type="button" onclick="toggleSettingsModal()" class="mt-2 font-bold underline">Open provider settings</button>
+      </div>
     </div>
 
     <!-- STEP 2: SCRIPT & VOCABULARY -->
     <div id="step-2" class="step-view hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 2: Scripting</span>
-          <h2 id="script-episode-title" class="text-2xl font-extrabold text-stone-900 mt-1">Episode Script & Vocabulary</h2>
-          <p class="text-stone-500 text-xs">Review and refine spoken Cantonese parentese dialogue and English bilingual context.</p>
+          <span class="studio-eyebrow">Step 2 · Script</span>
+          <h2 id="script-episode-title" class="text-2xl font-extrabold text-stone-900 mt-1">Make the story your own</h2>
+          <p class="text-stone-500 text-xs">Read it aloud. Keep the words gentle, familiar, and naturally Cantonese.</p>
         </div>
         <button onclick="setStep(3)" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
-          Next: Picture Book Studio ➔
+          Next: Voice →
         </button>
       </div>
+
+      <div class="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 space-y-1">
+        <p id="script-planned-duration" class="text-sm font-bold text-stone-800"></p>
+        <p class="text-xs text-stone-500">Scene slots include teaching and interaction time. The total updates when audio extends a scene.</p>
+        <p id="script-duration-warning" role="status" class="hidden text-xs font-semibold text-amber-800"></p>
+        <p id="script-provenance" class="studio-help"></p>
+        <p id="script-provenance-warning" role="status" class="studio-help hidden"></p>
+      </div>
+
+      <section class="studio-card studio-stack" aria-labelledby="flow-story-label">
+        <label id="flow-story-label" for="flow-story-editor" class="studio-label">The Cantonese story</label>
+        <p id="flow-story-help" class="studio-help">Use spoken Cantonese only, with a blank line between scenes. English notes and scene directions stay outside the narration.</p>
+        <textarea id="flow-story-editor" lang="yue-Hant" rows="14" oninput="editFlowingStory(this.value)" aria-describedby="flow-story-help flow-story-error" placeholder="喺呢度寫你嘅廣東話故事……" class="studio-story-editor"></textarea>
+        <p id="flow-story-error" role="alert" class="studio-error hidden"></p>
+        <div class="studio-actions">
+          <button type="button" onclick="saveFlowingStory()" class="studio-button studio-primary">Save Story</button>
+          <button type="button" onclick="resetFlowingStory()" class="studio-button">Restore Story Snapshot</button>
+        </div>
+        <p class="studio-help">Restore uses the snapshot captured when you opened or generated this story—not your most recent edits.</p>
+      </section>
+
+      <details id="flow-english-reference" class="studio-disclosure">
+        <summary>English reference · optional, not narrated</summary>
+        <div id="flow-english-content" lang="en" class="studio-disclosure-body studio-reference"></div>
+      </details>
 
       <div class="bg-white rounded-3xl p-5 border border-amber-100 shadow-sm space-y-3">
         <h4 class="text-xs font-extrabold text-stone-500 uppercase tracking-wider">Target Vocabulary Flashcards</h4>
         <div id="vocab-cards-list" class="flex flex-wrap gap-3"></div>
       </div>
 
-      <div id="scenes-list" class="space-y-4"></div>
+      <details id="legacy-script-tools" class="studio-disclosure">
+        <summary>Advanced · individual scene editor</summary>
+        <div id="scenes-list" class="studio-disclosure-body space-y-4"></div>
+      </details>
     </div>
 
-    <!-- STEP 3: PICTURE BOOK STUDIO & SCENE DIRECTOR -->
-    <div id="step-3" class="step-view hidden space-y-6">
+    <!-- STEP 4: PICTURES & OPTIONAL SCENE DIRECTOR -->
+    <div id="step-4" class="step-view hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 3: Picture Book Studio 🎨</span>
-          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Autonomous Scene Director & Co-pilot</h2>
-          <p class="text-stone-500 text-xs">AI reads your script, selects warm pastel backgrounds, poses characters, and places 3D stickers automatically.</p>
+          <span class="studio-eyebrow">Step 4 · Pictures</span>
+          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Pictures</h2>
+          <p class="text-stone-500 text-xs">Review each scene with your approved storybook artwork. Fine-tuning is optional.</p>
         </div>
         <div class="flex items-center gap-2">
-          <button id="btn-auto-direct-all" onclick="triggerAutoDirectAllScenes()" class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
-            <span>✨</span> Auto-Direct All Scenes
-          </button>
-          <button onclick="openCustomOutfitModal()" class="px-3.5 py-2.5 rounded-2xl bg-white border border-stone-200 text-stone-700 hover:bg-stone-50 font-bold text-xs flex items-center gap-1.5 transition">
-            <span>🎨</span> Custom Outfit
-          </button>
-          <button onclick="setStep(4)" class="px-6 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs shadow-md flex items-center gap-1.5 transition">
-            Next: Voice Studio ➔
+          <button type="button" onclick="setStep(3)" class="studio-button">
+            ← Back: Voice
           </button>
         </div>
       </div>
@@ -247,13 +345,12 @@
         <!-- Generated Scene Pills -->
       </div>
 
-      <div class="grid lg:grid-cols-3 gap-6">
-        <!-- LEFT: 16:9 INTERACTIVE SCENE VIEWPORT (2 COLS) -->
-        <div class="lg:col-span-2 space-y-4">
+      <div class="studio-preview">
+        <div class="space-y-4">
           <!-- 16:9 DRAG & DROP CANVAS -->
           <div class="relative aspect-video rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-stone-100 select-none cursor-crosshair" id="visual-stage-canvas" ondragover="handleStageDragOver(event)" ondragleave="handleStageDragLeave(event)" ondrop="handleStageDrop(event)">
             <!-- Background Image -->
-            <img id="stage-bg-img" src="/api/characters/background/bg_living_room.png" class="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-300">
+            <img id="stage-bg-img" src="/api/characters/background/bg_living_room.png" alt="Current scene background" class="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-300">
 
             <!-- Drop Zone Helper overlay when dragging -->
             <div id="stage-drop-overlay" class="absolute inset-0 border-4 border-dashed border-amber-400 bg-amber-400/15 hidden pointer-events-none z-30 flex items-center justify-center">
@@ -265,7 +362,7 @@
             <!-- Live Vocab Badge Preview (matching render_service.py) -->
             <div id="stage-vocab-badge" class="absolute top-3 left-4 bg-amber-50/95 backdrop-blur-xs border-2 border-amber-300/80 rounded-2xl px-3 py-1.5 shadow-md z-35 pointer-events-none flex items-center gap-1.5 transition-all">
               <span class="text-amber-500 text-xs">★</span>
-              <span id="stage-vocab-text" class="font-extrabold text-amber-950 text-xs tc-font tracking-wide">屋企人</span>
+              <span id="stage-vocab-text" class="font-extrabold text-amber-950 text-xs tc-font tracking-wide"></span>
             </div>
 
             <!-- Free-form Characters Container (z-20) -->
@@ -280,11 +377,23 @@
 
             <!-- Subtitle Bar Preview (Clean Spoken Cantonese + English) - Forefront z-40 -->
             <div class="absolute bottom-3 inset-x-8 bg-white/95 backdrop-blur-md rounded-2xl px-5 py-2.5 text-center border-2 border-amber-300 shadow-lg pointer-events-none z-40">
-              <p id="stage-sub-cantonese" class="font-extrabold text-stone-900 text-lg tc-font leading-tight">早晨呀！</p>
-              <p id="stage-sub-english" class="text-xs text-stone-600 font-semibold mt-0.5">Good morning sweet babies!</p>
+              <p id="stage-sub-cantonese" lang="yue-Hant" class="font-extrabold text-stone-900 text-lg tc-font leading-tight"></p>
+              <p id="stage-sub-english" class="text-xs text-stone-600 font-semibold mt-0.5"></p>
             </div>
           </div>
 
+        </div>
+      </div>
+      <button type="button" id="btn-pictures-render" onclick="picturesLookGoodRender()" class="studio-button studio-primary studio-next">Pictures Look Good → Render</button>
+
+      <details id="advanced-staging-tools" class="studio-disclosure">
+        <summary>Advanced · scene arrangement, backgrounds &amp; characters</summary>
+        <div class="studio-actions studio-disclosure-body">
+          <button type="button" id="btn-auto-direct-all" onclick="triggerAutoDirectAllScenes()" class="studio-button">Auto-Direct All Scenes</button>
+          <button type="button" onclick="openCustomOutfitModal()" class="studio-button">Character Presets &amp; Outfits</button>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-6 studio-disclosure-body">
+          <div class="lg:col-span-2 space-y-4">
           <!-- INLINE SCENE CO-PILOT BAR -->
           <div class="bg-gradient-to-r from-amber-400 via-rose-400 to-amber-500 p-[1.5px] rounded-3xl shadow-sm">
             <div class="bg-white rounded-[22px] p-4 space-y-3">
@@ -420,109 +529,91 @@
           </div>
         </div>
       </div>
+      </details>
     </div>
 
-    <!-- STEP 4: VOICE & SOUND STUDIO -->
-    <div id="step-4" class="step-view hidden space-y-6">
+    <!-- STEP 3: FULL-STORY NARRATION -->
+    <div id="step-3" class="step-view hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 4: Voiceover & Sound</span>
-          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Audio Studio & Teleprompter</h2>
-          <p class="text-stone-500 text-xs">Generate instant Cantonese neural voices with 1 click, or record your personal voice via microphone.</p>
+          <span class="studio-eyebrow">Step 3 · Voice</span>
+          <h2 class="text-2xl font-extrabold text-stone-900 mt-1">One story. One familiar voice.</h2>
+          <p class="text-stone-500 text-xs">Choose a supported voice, narrate the whole story, then listen before moving on.</p>
         </div>
-        <button onclick="setStep(5)" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
-          Next: Render Video ➔
+        <button type="button" onclick="setStep(4)" class="studio-button">
+          Next: Pictures →
         </button>
       </div>
 
-      <!-- PARENT VOICE CLONING (GEMINI) -->
-      <div class="bg-white rounded-3xl p-5 border border-violet-200 shadow-sm space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div class="space-y-1 max-w-xl">
-            <h3 class="font-extrabold text-stone-800 text-sm flex items-center gap-2">
-              <span>🧬</span> Parent Voice Cloning (Google Gemini)
-            </h3>
-            <p id="voice-clone-status" class="text-[11px] text-stone-500">Checking Gemini connection…</p>
-            <p class="text-[11px] text-stone-400">
-              Google requires two clips from the <strong>same person</strong> recorded on the same mic:
-              a 10–30s voice sample and a consent recording reciting word for word:
-              <span class="text-stone-600 font-semibold">"I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model."</span>
-            </p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <select id="cloned-voice-select" onchange="selectClonedVoice(this.value)" class="text-stone-800 text-xs font-bold px-3 py-2 rounded-xl bg-violet-50 border border-violet-200 focus:outline-none shadow-sm max-w-[220px]">
-              <option value="">No cloned voice yet</option>
+      <section class="studio-card studio-stack" aria-label="Story narration">
+        <div class="studio-fields">
+          <div class="studio-stack">
+            <label for="narration-voice-select" class="studio-label">Narrator</label>
+            <select id="narration-voice-select" onchange="setNarrationVoice(this.value)" aria-describedby="narration-capability-status">
+              <option value="">Choose a supported voice</option>
             </select>
-            <label class="flex items-center gap-1.5 text-xs font-bold text-violet-700 bg-violet-50 px-3 py-2 rounded-xl border border-violet-200 cursor-pointer">
-              <input type="checkbox" id="use-cloned-voice" class="w-4 h-4 accent-violet-600" onchange="updateVoiceOptions()">
-              Use parent voice for AI generation
-            </label>
+          </div>
+          <div class="studio-stack">
+            <label for="narration-style-select" class="studio-label">Storytelling style</label>
+            <select id="narration-style-select" onchange="setNarrationStyle(this.value)">
+              <option value="calm">Calm</option>
+              <option value="warm_playful" selected>Warm &amp; playful</option>
+              <option value="excited">Excited</option>
+            </select>
           </div>
         </div>
+        <p id="narration-capability-status" class="studio-help" role="status">Supported voices and provider availability will appear here.</p>
+        <label class="studio-check">
+          <input type="checkbox" id="narration-allow-estimated" aria-describedby="narration-estimated-help">
+          <span>Allow estimated timing if local alignment is unavailable</span>
+        </label>
+        <p id="narration-estimated-help" class="studio-help">Local alignment matches the recording to the story. This optional fallback estimates scene and caption timings instead; it is not speech-aligned. Leave unchecked to require alignment.</p>
+        <button type="button" id="btn-narrate-story" onclick="narrateMyStory()" class="studio-button studio-primary studio-next">Narrate My Story</button>
+        <button type="button" id="btn-check-narration-job" onclick="resumeNarrationJob()" class="studio-button hidden">Check existing narration job</button>
+        <button type="button" id="btn-realign-story" onclick="realignStory()" class="studio-button hidden">Retry alignment of saved take (no new synthesis)</button>
+        <button type="button" id="btn-listen-previous-take" onclick="listenToPreviousTake()" class="studio-button hidden">Listen to previous take (not current)</button>
+        <p role="status" id="narration-job-status" aria-live="polite" class="studio-status">Save your story and choose a voice to begin.</p>
+        <label for="story-narration-player" class="studio-label">Listen to the whole story</label>
+        <audio id="story-narration-player" controls preload="none" aria-label="Full story narration"></audio>
+        <p id="narration-timing-note" class="studio-help">After narration, review the timing information and listen before continuing.</p>
+        <button type="button" onclick="toggleSettingsModal()" class="studio-text-button">Need to set up a saved voice? Open settings</button>
+      </section>
 
-        <!-- CLONE NEW VOICE COLLAPSIBLE FORM -->
-        <div class="pt-2 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
-          <div class="flex flex-wrap items-center gap-2">
-            <label class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition cursor-pointer" title="Attach voice sample clip (10-30s)">
-              <span>🎙️</span> <span id="sample-file-name">Voice Sample (10–30s)</span>
-              <input type="file" id="sample-file-input" accept="audio/*" class="hidden" onchange="updateSampleFileName(this)">
-            </label>
-            <label class="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs shadow-sm flex items-center gap-1.5 transition cursor-pointer" title="Attach consent recording">
-              <span>📜</span> <span id="consent-file-name">Consent Recording</span>
-              <input type="file" id="consent-file-input" accept="audio/*" class="hidden" onchange="updateConsentFileName(this)">
-            </label>
-            <button id="btn-clone-voice" onclick="cloneParentVoice()" class="px-4 py-1.5 rounded-xl bg-violet-500 hover:bg-violet-600 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
-              <span>🧬</span> Train New Voice Model
-            </button>
-          </div>
-          <span class="text-[11px] text-stone-400 italic">Pre-trained models are saved in config/cloned_voices.json</span>
-        </div>
-      </div>
-
-      <!-- 1-CLICK BULK GENERATION BANNER -->
-      <div class="bg-gradient-to-r from-amber-500 via-rose-500 to-amber-500 rounded-3xl p-6 text-white shadow-md flex flex-wrap items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">⚡</span>
-            <h3 class="text-lg font-extrabold">1-Click Generate All Scene Voices (Cantonese AI)</h3>
-          </div>
-          <p class="text-amber-100 text-xs">Instantly synthesizes high-fidelity Hong Kong Cantonese neural speech for all 7 scenes and mixes acoustic ukulele BGM.</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <select id="bulk-persona-selector" class="text-stone-800 text-xs font-bold px-3 py-2 rounded-xl bg-white focus:outline-none shadow-sm">
-            <option value="dad">👨 Narrator: Warm Dad (Wan Lung)</option>
-            <option value="mom">👩 Narrator: Gentle Mom (Hiu Maan)</option>
-            <option value="child">🧒 Narrator: Cheerful Child (Hiu Gaai)</option>
+      <details id="legacy-audio-tools" class="studio-disclosure" ontoggle="if(this.open) renderLegacyAudioStep()">
+        <summary>Advanced · legacy per-scene audio &amp; recording</summary>
+        <div class="studio-disclosure-body studio-stack">
+          <p class="studio-help">For older projects and individual clip corrections. These tools are separate from whole-story narration; changing clips may require a new render.</p>
+          <label class="studio-check">
+            <input type="checkbox" id="use-cloned-voice" onchange="updateVoiceOptions()">
+            <span>Use the selected saved voice for legacy clips. Uncheck explicitly for stock voices; changing voice mode invalidates whole-story narration.</span>
+          </label>
+          <label for="cloned-voice-select" class="studio-label">Legacy saved voice</label>
+          <select id="cloned-voice-select" onchange="selectClonedVoice(this.value)">
+            <option value="">No supported saved voice selected</option>
           </select>
-          <button id="btn-bulk-tts" onclick="generateAllVoicesAI()" class="px-5 py-2.5 rounded-xl bg-white text-stone-900 hover:bg-amber-50 font-extrabold text-xs shadow-sm flex items-center gap-1.5 transition">
-            <span>✨</span> Generate All Scenes
-          </button>
+          <p id="voice-clone-status" class="studio-help" role="status">Saved voice availability will appear here.</p>
+          <label for="bulk-persona-selector" class="studio-label">Legacy stock narrator</label>
+          <select id="bulk-persona-selector">
+            <option value="dad">Wan Lung · warm narrator</option>
+            <option value="mom">Hiu Maan · gentle narrator</option>
+            <option value="child">Hiu Gaai · cheerful narrator</option>
+          </select>
+          <button type="button" id="btn-bulk-tts" onclick="generateAllVoicesAI()" class="studio-button">Generate Individual Scene Voices</button>
+          <label for="master-audio-player" class="studio-label">Legacy mixed soundtrack</label>
+          <audio id="master-audio-player" controls preload="none" aria-label="Legacy mixed soundtrack"></audio>
+          <div id="audio-scenes-list" class="space-y-4"></div>
         </div>
-      </div>
-
-      <!-- MASTER SOUNDTRACK PREVIEW -->
-      <div class="bg-white rounded-3xl p-4 border border-amber-100 shadow-sm flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-lg">
-            🎵
-          </div>
-          <div>
-            <h4 class="font-bold text-stone-800 text-xs">Master Soundtrack (Voice + Ukulele BGM + Auto-Ducking)</h4>
-            <p class="text-[11px] text-stone-400">Re-mixed automatically whenever you record or generate voice clips</p>
-          </div>
-        </div>
-        <audio id="master-audio-player" controls class="h-8 max-w-[280px]"></audio>
-      </div>
-
-      <div id="audio-scenes-list" class="space-y-4"></div>
+      </details>
     </div>
 
     <!-- STEP 5: RENDER & PREVIEW -->
     <div id="step-5" class="step-view hidden space-y-6">
       <div class="space-y-1">
-        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 5: Production</span>
-        <h2 class="text-2xl font-extrabold text-stone-900 tracking-tight">1080p Video Rendering</h2>
+        <span class="studio-eyebrow">Step 5 · Render</span>
+        <h2 class="text-2xl font-extrabold text-stone-900 tracking-tight">Your story, ready to watch</h2>
         <p class="text-stone-500 text-xs">Stitched on your local computer using FFmpeg with character animations and dual subtitles.</p>
+        <p id="render-planned-duration" class="text-sm font-bold text-stone-800"></p>
+        <p id="render-duration-warning" role="status" class="hidden text-xs font-semibold text-amber-800"></p>
       </div>
 
       <div class="bg-white rounded-3xl p-6 md:p-8 border border-amber-100 shadow-sm space-y-6">
@@ -571,7 +662,7 @@
             </div>
             <label class="flex items-center gap-2 text-xs font-bold text-stone-700 cursor-pointer pt-1">
               <input type="checkbox" id="caption-singalong" checked class="w-4 h-4 accent-amber-500">
-              <span>🎤 Sing-along captions <span class="font-medium text-stone-500">(estimated character timing, not speech-aligned; burned into video)</span></span>
+              <span>Sing-along captions <span class="font-medium text-stone-500">(uses the saved take’s audio-derived or explicitly estimated timing; review before sharing)</span></span>
             </label>
           </div>
 
@@ -618,11 +709,22 @@
       <div class="flex items-center justify-between border-b border-stone-100 pb-3">
         <div>
           <h3 class="font-extrabold text-stone-900 text-base">API Keys & AI Providers</h3>
-          <p class="text-[11px] text-stone-400">All keys are stored 100% locally on your PC. Never uploaded.</p>
+          <p class="text-[11px] text-stone-400">Keys are saved locally and used to authenticate requests to your selected providers.</p>
         </div>
         <button onclick="toggleSettingsModal()" class="text-stone-400 hover:text-stone-700 font-bold">✕</button>
       </div>
 
+      <section id="voice-setup-help" class="studio-card studio-stack" aria-labelledby="voice-setup-title">
+        <h4 id="voice-setup-title" class="studio-label">Set up a supported saved voice</h4>
+        <p class="studio-help">Already created a Google voice profile with the owner's permission? Save your API key below, then connect its existing profile ID. This checks provider metadata only—no voice training or narration is requested.</p>
+        <label for="setting-parent-voice-id" class="studio-label">Existing provider voice profile ID</label>
+        <input id="setting-parent-voice-id" type="text" autocomplete="off" spellcheck="false" maxlength="100" placeholder="Paste your existing voice profile ID">
+        <label for="setting-parent-voice-name" class="studio-label">Local nickname (not verified speaker identity)</label>
+        <input id="setting-parent-voice-name" type="text" maxlength="100" placeholder="For example, Dad">
+        <button type="button" id="btn-import-parent-voice" onclick="importExistingVoice()" class="studio-button">Verify &amp; Connect Existing Voice</button>
+        <p id="voice-setup-status" role="status" class="studio-help"></p>
+        <a href="https://aistudio.google.com/generate-speech" target="_blank" rel="noopener noreferrer" class="studio-text-button">Open Google AI Studio voice setup</a>
+      </section>
       <div class="space-y-4 text-xs">
         <!-- GOOGLE GEMINI -->
         <div class="p-3.5 rounded-2xl bg-amber-50/50 border border-amber-200/70 space-y-2">
@@ -679,8 +781,10 @@
   </div>
 
   <script src="/static/api.js"></script>
+  <script src="/static/story-state.js"></script>
   <script src="/static/state.js"></script>
-  <script src="/static/app.js?v=4"></script>
+  <script src="/static/app.js?v=6"></script>
+  <script src="/static/workflow.js"></script>
   <!-- AI OUTFIT & POSE STUDIO MODAL -->
   <div id="modal-custom-outfit" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-stone-100 max-h-[90vh] overflow-y-auto">
@@ -732,7 +836,7 @@
           <span id="preview-status-badge" class="text-[10px] font-bold text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">Base Sprite</span>
         </div>
 
-        <div class="relative h-56 rounded-2xl border-2 border-stone-200 overflow-hidden flex items-center justify-center" style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px), radial-gradient(#cbd5e1 1px, #f8fafc 1px); background-size: 20px 20px; background-position: 0 0, 10 p 10px;">
+        <div class="studio-artwork-preview relative h-56 rounded-2xl border-2 border-stone-200 overflow-hidden flex items-center justify-center">
           <!-- Preview Image -->
           <img id="outfit-live-preview-img" src="/api/characters/sprite/levi_default.png" class="max-h-48 object-contain filter drop-shadow-md transition-all duration-300">
           

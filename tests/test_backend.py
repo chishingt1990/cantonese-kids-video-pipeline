@@ -11,6 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 import unittest
 from unittest.mock import Mock, patch
 import uuid
+import wave
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -18,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class BackendTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.root = ROOT / ".test-data" / f"backend_{uuid.uuid4().hex}"
+        cls.root = ROOT / ".test-data" / f"b_{uuid.uuid4().hex}"
         cls.environment = patch.dict(os.environ, {"KIDS_STUDIO_TESTING": "1", "KIDS_STUDIO_DATA_DIR": str(cls.root)})
         cls.environment.start()
         original_connect = socket.socket.connect
@@ -58,7 +59,7 @@ class BackendTests(unittest.TestCase):
             pass
 
     def setUp(self):
-        self.data = self.root / uuid.uuid4().hex
+        self.data = self.root / uuid.uuid4().hex[:8]
         self.data.mkdir(parents=True)
         self.patches = [
             patch.object(self.storage, "DATA_DIR", self.data),
@@ -240,6 +241,160 @@ class BackendTests(unittest.TestCase):
         self.assertTrue(response["migration_warnings"])
         self.assertEqual(json.loads(path.read_text()), legacy)
 
+    def narration_fixture(self, duration_sec=2):
+        from app.services import narration_service
+        project = self.save(
+            voice_options={"voice_id": "voice_fixture", "use_cloned": True, "style": "calm"},
+            scenes=[{"cantonese": "你好", "english": "Hello"}],
+        )
+        take_id = uuid.uuid4().hex
+        audio = self.storage.project_path("sample", "narration", take_id + ".wav")
+        audio.parent.mkdir(parents=True)
+        with wave.open(str(audio), "wb") as stream:
+            stream.setnchannels(1)
+            stream.setsampwidth(2)
+            stream.setframerate(8000)
+            stream.writeframes(b"\0\0" * (8000 * duration_sec))
+        timeline = [{"scene_number": 1, "start_sec": 0.0, "end_sec": float(duration_sec), "words": [
+            {"text": "你", "start_sec": 0.2, "end_sec": 0.5},
+            {"text": "好", "start_sec": 0.6, "end_sec": 1.0},
+        ]}]
+        manifest = {
+            "take_id": take_id, "project_id": "sample", "audio_url": f"/api/narration/audio/sample/{take_id}",
+            "duration_sec": float(duration_sec), "script_fingerprint": narration_service.script_fingerprint(project),
+            "voice_id": "voice_fixture", "style": "calm", "alignment_method": "estimated",
+            "scenes": timeline, "warnings": ["Synthetic estimated fixture"],
+            "source_digest": narration_service.file_digest(audio),
+            "alignment_digest": narration_service._digest(timeline), "allow_estimated_alignment": True,
+        }
+        self.storage.atomic_write_json(audio.with_suffix(".json"), manifest)
+        return project, manifest, audio
+
+    def test_narration_attachment_round_trip_uses_verified_local_manifest(self):
+        project, manifest, audio = self.narration_fixture()
+        project["narration"] = {**manifest, "audio_url": "C:\\untrusted.wav", "duration_sec": 999, "scenes": []}
+        response = self.client.put("/api/projects/sample", json={"project_data": project}, headers=self.headers)
+        self.assertEqual(response.status_code, 200, response.text)
+        saved = response.json()["project"]
+        self.assertEqual(saved["narration"], manifest)
+        self.assertEqual(saved["voice_options"]["style"], "calm")
+        loaded = self.client.get("/api/projects/sample")
+        self.assertEqual(loaded.status_code, 200)
+        self.assertEqual(loaded.json()["narration"], manifest)
+        self.assertNotIn("migration_warnings", loaded.json())
+        saved["narration"] = {"take_id": manifest["take_id"]}
+        compact = self.client.put("/api/projects/sample", json={"project_data": saved}, headers=self.headers)
+        self.assertEqual(compact.status_code, 200, compact.text)
+        self.assertEqual(compact.json()["project"]["narration"], manifest)
+
+    def test_missing_cross_project_or_corrupt_narration_cannot_replace_saved_project(self):
+        project, manifest, audio = self.narration_fixture()
+        project["narration"] = {"take_id": "missing_take"}
+        response = self.client.put("/api/projects/sample", json={"project_data": project}, headers=self.headers)
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(self.projects.get_project("sample")["revision"], project["revision"])
+        other = self.save("other")
+        other["narration"] = {"take_id": manifest["take_id"]}
+        response = self.client.put("/api/projects/other", json={"project_data": other}, headers=self.headers)
+        self.assertEqual(response.status_code, 409)
+        project["narration"] = manifest
+        audio.write_bytes(b"changed")
+        response = self.client.put("/api/projects/sample", json={"project_data": project}, headers=self.headers)
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(self.projects.get_project("sample")["revision"], project["revision"])
+
+    def test_narration_schema_and_voice_style_validation_are_safe(self):
+        project, manifest, audio = self.narration_fixture()
+        for change in (
+            {"voice_options": {"voice_id": "voice_fixture", "use_cloned": True, "style": "unsupported"}},
+            {"narration": {"take_id": "..\\outside"}},
+            {"narration": {**manifest, "scenes": [{"scene_number": 1, "start_sec": 1, "end_sec": 0.5}]}},
+        ):
+            response = self.client.put("/api/projects/sample", json={"project_data": {**project, **change}}, headers=self.headers)
+            self.assertEqual(response.status_code, 422, response.text)
+        self.assertIsNone(self.models.ProjectData.model_validate({"scenes": []}).voice_options)
+        self.assertEqual(self.models.ProjectData.model_validate({"voice_options": {"voice_id": "legacy"}}).model_dump(exclude_none=True)["voice_options"], {"voice_id": "legacy"})
+
+    def test_project_duplicate_does_not_inherit_source_narration(self):
+        project, manifest, audio = self.narration_fixture()
+        project["narration"] = manifest
+        project["previous_narration"] = manifest
+        self.projects.save_project("sample", project)
+        duplicate = self.projects.duplicate_project("sample")
+        self.assertNotIn("narration", duplicate)
+        self.assertNotIn("previous_narration", duplicate)
+        self.assertTrue(duplicate["migration_warnings"])
+        self.assertTrue(audio.is_file())
+
+    def test_current_and_previous_narration_preserve_playback_and_client_identity(self):
+        project, manifest, audio = self.narration_fixture()
+        for key in ("narration", "previous_narration"):
+            project[key] = {**manifest, "_spoken_key": f"client-{key}-identity"}
+        response = self.client.put("/api/projects/sample", json={"project_data": project}, headers=self.headers)
+        self.assertEqual(response.status_code, 200, response.text)
+        loaded = self.client.get("/api/projects/sample")
+        self.assertEqual(loaded.status_code, 200)
+        for key in ("narration", "previous_narration"):
+            attachment = loaded.json()[key]
+            self.assertEqual(attachment["audio_url"], manifest["audio_url"])
+            self.assertEqual(attachment["source_digest"], manifest["source_digest"])
+            self.assertEqual(attachment["alignment_digest"], manifest["alignment_digest"])
+            self.assertEqual(attachment["_spoken_key"], f"client-{key}-identity")
+        self.assertNotIn("migration_warnings", loaded.json())
+        self.assertTrue(audio.is_file())
+
+    def test_narration_readiness_is_authoritative_and_response_only(self):
+        project, manifest, audio = self.narration_fixture(120)
+        project["narration"] = {**manifest, "_spoken_key": "client-local-identity"}
+        saved = self.projects.save_project("sample", project)
+        self.assertIs(saved["narration_current"], True)
+        self.assertIs(self.projects.get_project("sample")["narration_current"], True)
+        on_disk = json.loads(self.storage.project_path("sample", "project.json").read_text(encoding="utf-8"))
+        self.assertNotIn("narration_current", on_disk)
+        saved["scenes"][0]["cantonese"] = "故事已經改咗。"
+        saved["narration_current"] = True
+        edited = self.projects.save_project("sample", saved)
+        self.assertIs(edited["narration_current"], False)
+        self.assertEqual(edited["narration"]["audio_url"], manifest["audio_url"])
+        self.assertEqual(edited["narration"]["_spoken_key"], "client-local-identity")
+        self.assertNotIn("narration_current", json.loads(self.storage.project_path("sample", "project.json").read_text(encoding="utf-8")))
+
+    def test_narration_readiness_requires_duration_alignment_and_approval(self):
+        project, manifest, audio = self.narration_fixture(120)
+        project["narration"] = manifest
+        saved = self.projects.save_project("sample", project)
+        self.assertTrue(saved["narration_current"])
+        for change in (
+            {"allow_estimated_alignment": False},
+            {"alignment_method": "none"},
+            {"duration_sec": 119.0},
+        ):
+            with self.subTest(change=change):
+                self.storage.atomic_write_json(audio.with_suffix(".json"), {**manifest, **change})
+                loaded = self.projects.get_project("sample")
+                self.assertIs(loaded["narration_current"], False)
+                self.assertEqual(loaded["narration"]["audio_url"], manifest["audio_url"])
+        self.storage.atomic_write_json(audio.with_suffix(".json"), manifest)
+        saved = self.projects.get_project("sample")
+        saved["voice_options"]["style"] = "excited"
+        self.assertIs(self.projects.save_project("sample", saved)["narration_current"], False)
+
+    def test_new_narration_requires_matching_story_voice_and_revision(self):
+        project, manifest, audio = self.narration_fixture()
+        project["narration"] = manifest
+        for change in (
+            {"voice_options": {"voice_id": "voice_other", "use_cloned": True, "style": "calm"}},
+            {"scenes": [{"cantonese": "另一段說話", "english": "Different words"}]},
+            {"revision": project["revision"] - 1},
+        ):
+            response = self.client.put("/api/projects/sample", json={"project_data": {**project, **change}}, headers=self.headers)
+            self.assertEqual(response.status_code, 409, response.text)
+        saved = self.projects.save_project("sample", project)
+        saved["voice_options"]["style"] = "excited"
+        edited = self.projects.save_project("sample", saved)
+        self.assertEqual(edited["voice_options"]["style"], "excited")
+        self.assertEqual(edited["narration"]["style"], "calm")
+
     def test_cross_project_media_suffix_is_removed(self):
         audio = self.storage.project_path("sample", "audio", "clip.wav")
         audio.parent.mkdir(parents=True)
@@ -356,7 +511,7 @@ class BackendTests(unittest.TestCase):
             self.assertEqual(response.headers["X-Studio-Error-Code"], code)
             self.assertNotIn(secret, response.text)
             self.assertNotIn(provider_url, response.text)
-            self.assertEqual(client.models.generate_content.call_count, 2 if status == 429 else 1)
+            self.assertEqual(client.models.generate_content.call_count, 2 if status in {429, 503} else 1)
             self.assertTrue(all(call.kwargs["model"] == "explicit-selected-model" for call in client.models.generate_content.call_args_list))
             client.close.assert_called_once()
 
@@ -470,6 +625,115 @@ class BackendTests(unittest.TestCase):
             self.assertEqual(response.headers["X-Studio-Error-Code"], "invalid_schema")
             self.assertIn("scenes.0.cantonese", response.json()["detail"])
             self.assertNotIn(secret, response.text)
+
+    def test_offline_generated_lessons_meet_duration_and_teaching_contract(self):
+        for topic in ("Numbers", "ABCs", "Animals", "Sharing"):
+            idea = self.ai.get_grounded_topic_ideas(topic, "Toddlers")[0]
+            for target in (120, 180, 240):
+                with self.subTest(topic=topic, target=target):
+                    script = self.ai._generate_dynamic_fallback_script(idea, ["dad"], target)
+                    self.assertGreaterEqual(len(script["scenes"]), 18)
+                    self.assertLessEqual(len(script["scenes"]), 22)
+                    self.assertAlmostEqual(sum(scene["duration_sec"] for scene in script["scenes"]), target, places=3)
+                    self.assertEqual(script["planned_duration_sec"], target)
+                    self.assertEqual(script["target_duration_sec"], target)
+                    self.assertEqual([scene["scene_number"] for scene in script["scenes"]], list(range(1, len(script["scenes"]) + 1)))
+                    self.assertTrue(all(scene["cantonese"].strip() and scene["english"].strip() for scene in script["scenes"]))
+                    self.assertTrue(any("跟住爸爸" in scene["cantonese"] or "跟住爸爸" in scene.get("interaction_prompt", "") for scene in script["scenes"]))
+                    self.assertTrue(all(scene["speaker"] == "Dad" for scene in script["scenes"]))
+                    self.models.GeneratedScript.model_validate(script)
+
+    def test_generated_contract_rejects_short_long_and_silent_padding_not_manual_projects(self):
+        idea = self.ai.get_grounded_topic_ideas("Numbers", "Toddlers")[0]
+        good = self.ai._generate_dynamic_fallback_script(idea, ["dad"])
+        for count, duration in ((20, 5), (20, 13)):
+            invalid = copy.deepcopy(good)
+            invalid["scenes"] = [
+                {**copy.deepcopy(good["scenes"][index % len(good["scenes"])]), "scene_number": index + 1, "duration_sec": duration}
+                for index in range(count)
+            ]
+            with self.subTest(count=count), self.assertRaises(ValueError):
+                self.models.GeneratedScript.model_validate(invalid)
+            self.models.ProjectData.model_validate(invalid)
+        padded = copy.deepcopy(good)
+        for scene in padded["scenes"]:
+            scene.update({"cantonese": "", "english": "Good morning!", "duration_sec": 9})
+        with self.assertRaises(ValueError):
+            self.models.GeneratedScript.model_validate(padded)
+        self.models.ProjectData.model_validate({"scenes": [{"cantonese": "", "duration_sec": 6}]})
+        self.models.ProjectData.model_validate({"scenes": [{"cantonese": "手動長場景", "duration_sec": 100}]})
+
+    def test_generated_scene_count_sequence_and_total_are_normalized(self):
+        idea = self.ai.get_grounded_topic_ideas("Numbers", "Toddlers")[0]
+        good = self.ai._generate_dynamic_fallback_script(idea, ["dad"])
+        for count, duration in ((18, 120 / 18), (22, 240 / 22)):
+            raw = copy.deepcopy(good)
+            raw["scenes"] = [
+                {**copy.deepcopy(good["scenes"][index % len(good["scenes"])]), "scene_number": index + 1, "duration_sec": duration}
+                for index in range(count)
+            ]
+            raw["planned_duration_sec"] = 999
+            result = self.models.GeneratedScript.model_validate(raw)
+            self.assertAlmostEqual(result.planned_duration_sec, count * duration, places=3)
+        for count in (17, 23):
+            invalid = copy.deepcopy(good)
+            invalid["scenes"] = [
+                {**copy.deepcopy(good["scenes"][index % len(good["scenes"])]), "scene_number": index + 1}
+                for index in range(count)
+            ]
+            with self.assertRaises(ValueError):
+                self.models.GeneratedScript.model_validate(invalid)
+        good["scenes"][2]["scene_number"] = 1
+        with self.assertRaises(ValueError):
+            self.models.GeneratedScript.model_validate(good)
+
+    def test_script_api_target_and_duration_failure_are_explicit(self):
+        idea = self.ai.get_grounded_topic_ideas("Numbers", "Toddlers")[0]
+        for target in (119, 241, True):
+            response = self.client.post("/api/scripts/generate", json={"idea": idea, "target_duration_sec": target}, headers=self.headers)
+            self.assertEqual(response.status_code, 422)
+        short = self.ai._generate_dynamic_fallback_script(idea, ["dad"])
+        short["scenes"] = [{**scene, "duration_sec": 5} for scene in short["scenes"]]
+        with patch.object(self.ai, "generate_ai_text", return_value=json.dumps(short)):
+            response = self.client.post("/api/scripts/generate", json={"idea": idea}, headers=self.headers)
+        self.assertEqual(response.status_code, 502)
+        self.assertEqual(response.headers["X-Studio-Error-Code"], "invalid_lesson_duration")
+        self.assertIn("120", response.json()["detail"])
+        self.assertNotIn("script", response.json())
+        with patch.object(self.ai, "generate_ai_text", side_effect=self.ai.GenerationError("Provider unavailable", code="provider_unavailable", status_code=503)):
+            response = self.client.post("/api/scripts/generate", json={"idea": idea, "target_duration_sec": 240, "allow_fallback": True}, headers=self.headers)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["status"], "fallback")
+        self.assertEqual(response.json()["script"]["planned_duration_sec"], 240)
+        self.assertEqual(response.json()["error_code"], "provider_unavailable")
+
+    def test_script_prompt_and_old_signature_preserve_provider_failures(self):
+        idea = self.ai.get_grounded_topic_ideas("Numbers", "Toddlers")[0]
+        result = self.ai._generate_dynamic_fallback_script(idea, ["dad"])
+        with patch.object(self.ai, "generate_ai_text", return_value=json.dumps(result)) as generate:
+            script = self.ai.generate_full_script(idea, ["dad"])
+        self.assertEqual(script["target_duration_sec"], 180)
+        prompt = generate.call_args.args[0]
+        self.assertIn("120", prompt)
+        self.assertIn("240", prompt)
+        self.assertIn("repeat-after-me", prompt)
+        self.assertIn("NEVER stretch", prompt)
+        self.assertNotIn("EXACTLY 7", prompt)
+        self.assertIn("18–22", prompt)
+        error = self.ai.GenerationError("Provider unavailable", code="provider_unavailable", status_code=503)
+        with patch.object(self.ai, "generate_ai_text", side_effect=error):
+            with self.assertRaises(self.ai.GenerationError) as caught:
+                self.ai.generate_full_script(idea, ["dad"], 180)
+        self.assertIs(caught.exception, error)
+
+    def test_curated_vehicle_route_never_invokes_provider(self):
+        with patch.object(self.ai, "generate_ai_text", side_effect=AssertionError("No provider for curated concepts")):
+            response = self.client.get("/api/ideas/vehicles")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["provenance"], "curated")
+        self.assertEqual(len(response.json()["ideas"]), 6)
+        for idea in response.json()["ideas"]:
+            self.models.Idea.model_validate(idea)
 
     def test_fallback_is_explicit_and_labelled(self):
         with patch.object(self.ai, "generate_ai_text", side_effect=self.ai.GenerationError("offline")):

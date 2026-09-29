@@ -8,12 +8,12 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 
-from app.routers import settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube
+from app.routers import settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube, narration
 from app.config import SettingsCorruptError
 from app.storage import ROOT, StorageError
 from app.services.project_service import RevisionConflict, ProjectCorruptError
 
-app = FastAPI(title="Kids Video Studio", version="1.1.0")
+app = FastAPI(title="Kids Video Studio", version="1.2.0")
 _sessions = {}
 _session_lock = threading.RLock()
 _session_ttl = 8 * 60 * 60
@@ -98,7 +98,7 @@ async def corrupt_storage(request, exc):
     return JSONResponse({"detail": str(exc)}, status_code=409)
 
 
-for router in (settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube):
+for router in (settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube, narration):
     app.include_router(router.router)
 
 static_path = ROOT / "app" / "static"

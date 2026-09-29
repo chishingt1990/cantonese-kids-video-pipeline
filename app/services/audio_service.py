@@ -98,7 +98,8 @@ def scene_duration(requested=6, audio_duration=0) -> float:
         raise ValueError("Scene duration must be positive and finite")
     if not math.isfinite(audio_duration) or audio_duration < 0:
         raise ValueError("Audio duration must be finite and nonnegative")
-    duration = max(6, math.ceil(requested * 30) / 30, math.ceil(audio_duration + 1.2))
+    required = max(requested, audio_duration + 1.2 if audio_duration > 0 else 0)
+    duration = math.ceil(required * 30) / 30
     if duration > MAX_SCENE_SECONDS:
         raise ValueError(f"Scene exceeds {MAX_SCENE_SECONDS} seconds")
     return duration
@@ -142,6 +143,61 @@ def resolve_project_audio(project_id, audio_url):
     if not path.is_file():
         raise ValueError("Referenced project audio is missing; regenerate or record it")
     return path
+
+
+def mix_narration_with_bgm(narration_path, output_path, *, enabled=True, volume=0.025):
+    """Preserve every narration sample; optionally add a quiet synthesized plucked bed."""
+    output = Path(output_path)
+    if output.exists():
+        raise ValueError("Mixed narration outputs are immutable")
+    if not isinstance(enabled, bool) or not math.isfinite(volume) or not 0 <= volume <= 0.05:
+        raise ValueError("Synthesized backing volume must be between 0 and 0.05")
+    sr = 44100
+    with wave.open(str(narration_path), "rb") as stream:
+        if (stream.getframerate(), stream.getnchannels(), stream.getsampwidth()) != (sr, 1, 2):
+            raise ValueError("Narration audio must be normalized 44.1kHz mono PCM16 WAV")
+        frames = stream.getnframes()
+        if not 0 < frames <= MAX_EPISODE_SECONDS * sr:
+            raise ValueError("Narration duration is invalid")
+        raw = stream.readframes(frames)
+        if len(raw) != frames * 2:
+            raise ValueError("Narration WAV is incomplete")
+    if enabled and volume:
+        from scipy.ndimage import uniform_filter1d
+        narration = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
+        bed = np.zeros(frames, dtype=np.float32)
+        chords = ((261.63, 329.63, 392.0), (196.0, 246.94, 293.66),
+                  (220.0, 261.63, 329.63), (174.61, 220.0, 261.63))
+        chord_frames = 2 * sr
+        for offset in range(0, frames, chord_frames):
+            count = min(chord_frames, frames - offset)
+            seconds = np.arange(count, dtype=np.float32) / sr
+            decay = np.exp(-6 * (seconds % 0.5))
+            for frequency in chords[(offset // chord_frames) % len(chords)]:
+                bed[offset:offset + count] += (volume / 3) * np.sin(2 * np.pi * frequency * seconds) * decay
+        envelope = uniform_filter1d(np.abs(narration), size=round(.08 * sr))
+        duck = np.where(envelope > .01, .25, 1.0).astype(np.float32)
+        duck = uniform_filter1d(duck, size=round(.15 * sr))
+        mixed = narration + bed * duck
+        peak = float(np.max(np.abs(mixed)))
+        if peak > .98:
+            mixed *= .98 / peak
+        raw = np.round(np.clip(mixed, -1, .999969) * 32768).astype(np.int16).tobytes()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    handle = output.open("xb")
+    try:
+        with handle:
+            with wave.open(handle, "wb") as stream:
+                stream.setnchannels(1)
+                stream.setsampwidth(2)
+                stream.setframerate(sr)
+                stream.writeframes(raw)
+    except Exception:
+        output.unlink(missing_ok=True)
+        raise
+    return {"path": str(output), "duration_sec": frames / sr,
+            "backing": "synthesized_plucked" if enabled and volume else "none",
+            "warnings": []}
 
 
 def mix_scene_audio(voice_paths: list, durations: list, output_master_path: str):

@@ -16,16 +16,53 @@ python -m venv .venv
 
 Open `http://127.0.0.1:8000`. Keep the server bound to loopback; this is not a
 multi-user or internet-hosted service. Do not expose it through a tunnel.
-The existing workflow is Theme -> Script -> Staging -> Audio -> Render.
+The parent workflow is Story -> Script -> Voice -> Staging -> Render.
 Run a single worker: project locks and the render queue are process-local.
 `requirements-lock.txt` records the dependency versions used for this baseline.
 
 Copy `.env.example` to `.env` or use Settings to configure a provider. A key being
 configured is not proof that a provider supports a particular model or voice.
-Parent-voice replication requires the adult speaker's sample and consent.
+Connect an existing verified adult voice profile in Voice. Creating a new profile
+requires the adult speaker's reference sample and consent in Google AI Studio;
+the main workflow does not train voices or substitute a stock speaker.
 Export also needs a Cantonese-capable font; set `KIDS_STUDIO_CJK_FONT` if automatic
-discovery cannot find one. Caption highlighting uses estimated timing, not
-word-level speech alignment.
+discovery cannot find one.
+
+## Narration-first lessons
+
+- Choose a curated vehicle concept or request ideas from your selected provider.
+  **Use offline story template** builds a labeled local story without contacting
+  an AI provider. It is an explicit choice, never a hidden substitute after failure.
+- Generated stories contain 18-22 scenes, a five-act adventure, Dad narration,
+  Chinese-only spoken text, and a planned 120-240-second lesson (default 180).
+  Language checks exclude Latin/digit tokens; they do not guarantee dialect quality.
+- Edit the flowing Cantonese story before narrating. English is reference material
+  and is marked stale when its corresponding narration changes.
+- Choose Calm, Warm & playful, or Excited and use **Narrate My Story**. One
+  synthesis operation covers the entire saved story. Timeout/uncertain outcomes
+  do not automatically resubmit a chargeable request.
+- Voice takes are immutable, project-owned artifacts tied to the spoken story,
+  selected voice, and delivery style. Picture-only edits do not invalidate speech.
+- Planned runtime and measured audio length are different. A take outside
+  120-240 seconds remains available for inspection but is not accepted as a
+  finished narration-first lesson; the app does not pad silence to meet the target.
+- Rendering uses the full audio timeline, including pauses. Optional soft backing
+  is synthesized plucked accompaniment, ducked under speech, not a recorded ukulele.
+
+### Caption timing
+
+Audio-derived alignment uses a locally installed Cantonese-capable converted
+Whisper large-v3 model. Install `requirements-alignment.txt` and set
+`KIDS_STUDIO_WHISPER_MODEL` to its directory (see `.env.example`).
+The app never downloads model weights automatically. The library alone does
+not provide the model, and local alignment can be CPU-intensive.
+
+Without an aligner, explicitly choose estimated timing before narration. This
+mode is labeled **estimated** and does not claim exact word-level karaoke.
+Audio-derived timestamps are also estimates, not an accuracy guarantee.
+If alignment fails after synthesis, keep the take and retry alignment without
+generating the voice again. Existing short/manual projects remain supported.
+Full-resolution rendering is CPU-intensive and can take longer than the story.
 
 ## Privacy and media ownership
 
