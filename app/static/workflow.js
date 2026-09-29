@@ -120,23 +120,6 @@ function resetFlowingStory() {
   updateNarrationReadiness();
 }
 
-async function loadCuratedVehicleIdeas() {
-  if (!requireProject()) return;
-  const project = currentProject;
-  try {
-    const data = await (await fetch('/api/ideas/vehicles')).json();
-    if (currentProject !== project) return;
-    if (!Array.isArray(data.ideas)) throw new Error('The curated story list is unavailable.');
-    currentIdeas = data.ideas;
-    renderIdeas(currentIdeas);
-    const note = document.getElementById('story-provenance');
-    if (note) note.textContent = 'Curated vehicle story starters · no model call used to load these ideas.';
-  } catch (error) {
-    document.getElementById('ideas-error-message').textContent = error.message;
-    document.getElementById('ideas-error').classList.remove('hidden');
-  }
-}
-
 function setNarrationVoice(voiceId) {
   if (!requireProject()) return;
   const options = { ...currentProject.voice_options, voice_id: voiceId || null, use_cloned: true,

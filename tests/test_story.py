@@ -21,6 +21,12 @@ class StoryTests(unittest.TestCase):
         concepts[0]["title_english"] = "Changed locally"
         self.assertNotEqual(ai_service.get_vehicle_ideas()[0]["title_english"], "Changed locally")
 
+    def test_selected_idea_age_is_carried_into_script_prompt(self):
+        idea = {**self.idea, "target_age": "3-5 years (Kindergarten)"}
+        with patch.object(ai_service, "generate_ai_text", return_value=json.dumps(self.script)) as provider:
+            ai_service.generate_full_script(idea, ["dad", "levi", "luca"])
+        self.assertIn("Target child age: 3-5 years (Kindergarten)", provider.call_args.args[0])
+
     def test_all_vehicle_templates_have_twenty_chinese_dad_scenes(self):
         for idea in ai_service.get_vehicle_ideas():
             for target in (120, 180, 240):

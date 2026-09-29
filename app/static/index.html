@@ -220,33 +220,33 @@ html[data-theme="dark"] {
       <div class="space-y-1">
         <span class="studio-eyebrow">Step 1 · Story</span>
         <h2 class="text-3xl font-extrabold text-stone-900 tracking-tight">What shall we discover today?</h2>
-        <p class="text-stone-500 text-sm">Start with six curated vehicle adventures, or explore your own topic for a gentle 2–4 minute Cantonese story.</p>
+        <p class="text-stone-500 text-sm">Choose an age group and a recommended topic, or add your own. Story ideas will follow those choices for a gentle 2–4 minute Cantonese lesson.</p>
       </div>
 
       <div class="bg-white rounded-3xl p-6 md:p-8 border border-amber-100 shadow-sm space-y-6">
         <div>
           <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Child Age Group</label>
           <div class="grid grid-cols-3 gap-3">
-            <button onclick="setAge(this, '1-2 years (Toddlers)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-amber-400 bg-amber-50/50 text-amber-900 font-bold text-sm text-center transition">1–2 Years (Toddlers)</button>
-            <button onclick="setAge(this, '2-3 years (Preschool)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 hover:border-amber-300 text-stone-600 font-bold text-sm text-center transition">2–3 Years (Preschool)</button>
-            <button onclick="setAge(this, '3-5 years (Kindergarten)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 hover:border-amber-300 text-stone-600 font-bold text-sm text-center transition">3–5 Years (Kindergarten)</button>
+            <button data-age="1-2" aria-pressed="true" onclick="setAge(this, '1-2 years (Toddlers)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-amber-400 bg-amber-50/50 text-amber-900 font-bold text-sm text-center transition">1–2 Years (Toddlers)</button>
+            <button data-age="2-3" aria-pressed="false" onclick="setAge(this, '2-3 years (Preschool)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 hover:border-amber-300 text-stone-600 font-bold text-sm text-center transition">2–3 Years (Preschool)</button>
+            <button data-age="3-5" aria-pressed="false" onclick="setAge(this, '3-5 years (Kindergarten)')" class="age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 hover:border-amber-300 text-stone-600 font-bold text-sm text-center transition">3–5 Years (Kindergarten)</button>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Lesson Presets & Topics</label>
+          <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Recommended Topics for This Age</label>
           <div id="lesson-topic-chips" class="flex flex-wrap gap-2">
-            <button onclick="setTopicChip(this, 'Meeting Family & Greeting Relatives')" class="chip px-4 py-2 rounded-full border border-amber-300 bg-amber-100/50 text-amber-900 text-xs font-bold">👨‍👩‍👦 Meeting Family & Relatives</button>
-            <button onclick="setTopicChip(this, 'Morning Routine & Brushing Teeth')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">☀️ Morning Routine & Brushing Teeth</button>
-            <button onclick="setTopicChip(this, 'Breakfast & Healthy Eating Habits')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">🥣 Breakfast & Eating Fruit</button>
-            <button onclick="setTopicChip(this, 'Animal Friends & Puppy Sounds')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">🐶 Animal Friends & Sounds</button>
-            <button onclick="setTopicChip(this, 'Bedtime Routine & Sweet Dreams')" class="chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold">🌙 Bedtime & Sweet Dreams</button>
+            <!-- Populated from the selected age group. -->
+          </div>
+          <div id="vehicle-topic-group" class="hidden mt-4 space-y-2">
+            <p class="studio-label">Vehicles: choose a focus, or explore them all</p>
+            <div id="vehicle-topic-chips" class="flex flex-wrap gap-2"></div>
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Custom Topic or Specific Details</label>
-          <input id="input-topic" type="text" value="Meeting Family & Greeting Relatives" class="w-full px-4 py-3 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm font-medium">
+          <input id="input-topic" type="text" oninput="editStoryTopic()" value="" placeholder="Choose a recommended topic above, or describe your own" class="w-full px-4 py-3 rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm font-medium">
         </div>
 
         <div>
@@ -260,9 +260,9 @@ html[data-theme="dark"] {
         </div>
 
         <div class="studio-actions">
-          <button type="button" id="btn-curated-vehicle-ideas" onclick="loadCuratedVehicleIdeas()" class="studio-button studio-primary">Explore 6 Vehicle Stories</button>
-          <button type="button" onclick="generateIdeas()" id="btn-gen-ideas" class="studio-button">Create Ideas for My Topic</button>
+          <button type="button" onclick="generateIdeas()" id="btn-gen-ideas" class="studio-button studio-primary studio-next">Generate Story Ideas</button>
         </div>
+        <p id="story-provenance" role="status" class="studio-help"></p>
         <div id="ideas-error" role="alert" class="hidden rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
           <p id="ideas-error-message"></p>
           <button type="button" onclick="toggleSettingsModal()" class="mt-2 font-bold underline">Open provider settings</button>

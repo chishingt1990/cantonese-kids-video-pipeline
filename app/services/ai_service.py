@@ -751,6 +751,7 @@ def generate_full_script(idea: dict, characters: list, target_duration_sec: int 
     user_prompt = f"""Create one continuous narration-first Cantonese mini-adventure targeting {target_duration_sec} seconds:
 Title: {title_cn} ({title_en})
 Story Concept & Arc: {desc}
+Target child age: {idea.get('target_age', '1-5 years')}. Match vocabulary, repetition, and teaching complexity to this age.
 Moral Lesson: {lesson}
 Target Vocabulary: {json.dumps(vocab, ensure_ascii=False)}
 Scenes Preview Guide: {json.dumps(previews, ensure_ascii=False)}

@@ -30,7 +30,9 @@ discovery cannot find one.
 
 ## Narration-first lessons
 
-- Choose a curated vehicle concept or request ideas from your selected provider.
+- Choose an age group and a recommended topic, or enter a custom topic, then use
+  **Generate Story Ideas**. Vehicles is one topic category with six vehicle choices;
+  the same generation action follows the selected topic and age for every lesson.
   **Use offline story template** builds a labeled local story without contacting
   an AI provider. It is an explicit choice, never a hidden substitute after failure.
 - Generated stories contain 18-22 scenes, a five-act adventure, Dad narration,

@@ -14,6 +14,7 @@ let draggedCharacterId = null;
 let draggedStickerId = null;
 let copilotUndoStack = [];
 let scriptBuildRequest = 0;
+let ideaGenerationRequest = 0;
 
 let projectReady = false;
 let currentProject = emptyProject();
@@ -160,17 +161,51 @@ const AGE_TOPIC_PRESETS = {
   ]
 };
 
+const VEHICLE_TOPICS = [
+  { label: 'Fire trucks', topic: 'Fire Trucks & Firefighter Helpers' },
+  { label: 'Excavators', topic: 'Excavators & Building Together' },
+  { label: 'Ambulances', topic: 'Ambulances & Caring for Others' },
+  { label: 'Police cars', topic: 'Police Cars & Community Helpers' },
+  { label: 'Garbage trucks', topic: 'Garbage Trucks & Keeping Our Neighbourhood Clean' },
+  { label: 'Race cars', topic: 'Toy Race Cars, Fast & Slow, and Taking Turns' }
+];
+
+function agePresetKey(age = selectedAge) {
+  return age.includes('3-5') ? '3-5' : age.includes('2-3') ? '2-3' : '1-2';
+}
+
+function resetIdeaResults() {
+  ideaGenerationRequest++;
+  scriptBuildRequest++;
+  currentIdeas = [];
+  document.getElementById('ideas-container').innerHTML = '';
+  document.getElementById('story-provenance').textContent = '';
+  document.getElementById('ideas-error').classList.add('hidden');
+  const button = document.getElementById('btn-gen-ideas');
+  button.textContent = 'Generate Story Ideas';
+  button.disabled = !projectReady;
+  setScriptBuildError();
+}
+
+function editStoryTopic() {
+  document.querySelectorAll('.chip').forEach(button => {
+    button.setAttribute('aria-pressed', 'false');
+    button.className = 'chip studio-button';
+  });
+  resetIdeaResults();
+}
+
 function setAge(btn, age) {
   selectedAge = age;
   document.querySelectorAll('.age-btn').forEach(b => {
+    b.setAttribute('aria-pressed', 'false');
     b.className = 'age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 hover:border-amber-300 text-stone-600 font-bold text-sm text-center transition';
   });
   btn.className = 'age-btn px-4 py-3 rounded-2xl border-2 border-amber-400 bg-amber-50/50 text-amber-900 font-bold text-sm text-center transition shadow-sm';
+  btn.setAttribute('aria-pressed', 'true');
 
-  let key = '1-2';
-  if (age.includes('2-3')) key = '2-3';
-  else if (age.includes('3-5')) key = '3-5';
-  renderAgeLessonChips(key);
+  renderAgeLessonChips(agePresetKey());
+  resetIdeaResults();
 }
 
 function renderAgeLessonChips(ageKey) {
@@ -178,10 +213,14 @@ function renderAgeLessonChips(ageKey) {
   if (!container) return;
   const presets = AGE_TOPIC_PRESETS[ageKey] || AGE_TOPIC_PRESETS['1-2'];
   container.innerHTML = presets.map((p, idx) => `
-    <button onclick="setTopicChip(this, '${p.topic}')" class="chip px-4 py-2 rounded-full border ${idx === 0 ? 'border-amber-400 bg-amber-100/70 text-amber-900 font-bold shadow-sm' : 'border-stone-200 hover:border-amber-300 text-stone-600 font-semibold'} text-xs transition">
-      ${p.label}
+    <button type="button" aria-pressed="${idx === 0}" onclick="setTopicChip(this, '${arg(p.topic)}')" class="chip px-4 py-2 rounded-full border ${idx === 0 ? 'border-amber-400 bg-amber-100/70 text-amber-900 font-bold shadow-sm' : 'border-stone-200 hover:border-amber-300 text-stone-600 font-semibold'} text-xs transition">
+      ${esc(p.label)}
     </button>
-  `).join('');
+  `).join('') + '<button type="button" aria-pressed="false" onclick="setTopicChip(this, \'Vehicles & Community Helpers\', \'vehicles\')" class="chip studio-button">Vehicles</button>';
+  document.getElementById('vehicle-topic-group').classList.add('hidden');
+  document.getElementById('vehicle-topic-chips').innerHTML = VEHICLE_TOPICS.map(item =>
+    `<button type="button" aria-pressed="false" onclick="setTopicChip(this, '${arg(item.topic)}', 'vehicles')" class="chip studio-button">${esc(item.label)}</button>`
+  ).join('');
 
   const input = document.getElementById('input-topic');
   if (input && presets.length > 0) {
@@ -189,41 +228,57 @@ function renderAgeLessonChips(ageKey) {
   }
 }
 
-function setTopicChip(btn, topic) {
+function setTopicChip(btn, topic, category = 'general') {
   document.querySelectorAll('.chip').forEach(c => {
     c.className = 'chip px-4 py-2 rounded-full border border-stone-200 hover:border-amber-300 text-stone-600 text-xs font-semibold';
+    c.setAttribute('aria-pressed', 'false');
   });
   btn.className = 'chip px-4 py-2 rounded-full border border-amber-400 bg-amber-100/70 text-amber-900 text-xs font-bold shadow-sm';
+  btn.setAttribute('aria-pressed', 'true');
   document.getElementById('input-topic').value = topic;
+  document.getElementById('vehicle-topic-group').classList.toggle('hidden', category !== 'vehicles');
+  resetIdeaResults();
 }
 
 async function generateIdeas() {
   if (!requireProject()) return;
+  const request = ++ideaGenerationRequest;
+  const project = currentProject;
+  const age = selectedAge;
   const btn = document.getElementById('btn-gen-ideas');
   const errorBox = document.getElementById('ideas-error');
   const errorMessage = document.getElementById('ideas-error-message');
   if (errorBox) errorBox.classList.add('hidden');
   if (errorMessage) errorMessage.textContent = '';
-  btn.innerHTML = '<span class="animate-spin">⏳</span> AI is Crafting Concepts...';
+  btn.textContent = 'Generating story ideas…';
   btn.disabled = true;
 
-  const topic = document.getElementById('input-topic').value.trim() || 'Meeting Family & Greeting Relatives';
+  const topic = document.getElementById('input-topic').value.trim()
+    || AGE_TOPIC_PRESETS[agePresetKey(age)][0].topic;
+  const stillCurrent = () => request === ideaGenerationRequest && project === currentProject
+    && age === selectedAge && topic === (document.getElementById('input-topic').value.trim()
+      || AGE_TOPIC_PRESETS[agePresetKey()][0].topic);
   try {
     const res = await fetch('/api/ideas/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: topic, age_group: selectedAge, theme: topic })
+      body: JSON.stringify({ topic: topic, age_group: age, theme: topic })
     });
     const data = await res.json();
-    currentIdeas = data.ideas || [];
+    if (!stillCurrent()) return;
+    currentIdeas = (data.ideas || []).map(idea => ({ ...idea, target_age: age, topic }));
     renderIdeas(currentIdeas);
+    document.getElementById('story-provenance').textContent = `Ideas for ${age} · ${topic}`;
   } catch (e) {
     console.error(e);
+    if (!stillCurrent()) return;
     if (errorMessage) errorMessage.textContent = e.message || 'Could not generate ideas. Please retry.';
     if (errorBox) errorBox.classList.remove('hidden');
   } finally {
-    btn.innerHTML = '<span>✨</span> Brainstorm Episode Concepts';
-    btn.disabled = false;
+    if (request === ideaGenerationRequest) {
+      btn.textContent = 'Generate Story Ideas';
+      btn.disabled = !projectReady;
+    }
   }
 }
 
@@ -389,7 +444,8 @@ async function selectIdeaAndBuildScript(idx, options = {}) {
       vocab_words: vocab,
       moral_lesson: script.moral_lesson || idea.moral_lesson || "",
       description: idea.description || "",
-      theme: idea.theme || idea.title_english || "",
+      theme: idea.topic || idea.theme || idea.title_english || "",
+      target_age: idea.target_age || selectedAge,
       target_duration_sec: returnedTarget,
       planned_duration_sec: returnedPlan,
       script_provenance: template ? 'offline_template' : 'ai',
@@ -2537,6 +2593,20 @@ function activateProject(project) {
     markProjectDirty();
   });
   projectReady = true;
+  selectedAge = currentProject.target_age || '1-2 years (Toddlers)';
+  document.querySelectorAll('.age-btn').forEach(button => {
+    const active = button.dataset.age === agePresetKey();
+    button.setAttribute('aria-pressed', String(active));
+    button.className = active
+      ? 'age-btn px-4 py-3 rounded-2xl border-2 border-amber-400 bg-amber-50/50 text-amber-900 font-bold text-sm text-center transition'
+      : 'age-btn px-4 py-3 rounded-2xl border-2 border-stone-200 text-stone-600 font-bold text-sm text-center transition';
+  });
+  renderAgeLessonChips(agePresetKey());
+  if (currentProject.theme) {
+    document.getElementById('input-topic').value = currentProject.theme;
+    editStoryTopic();
+  }
+  resetIdeaResults();
   scriptBuildRequest++;
   setScriptBuildError();
   isProjectDirty = false;

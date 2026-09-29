@@ -1377,17 +1377,113 @@ test('narration job recovery polls the persisted job ID without a new provider o
   assert.equal(app.run('narrationJob.running'), true);
 });
 
-test('curated vehicle starters load through one GET and expose curated provenance', async () => {
+test('primary idea action uses the selected age and topic rather than a fixed vehicle endpoint', async () => {
   const calls = [];
   const app = harness(async (url, options) => {
-    calls.push([url, options?.method || 'GET']);
-    return response({ ideas: Array.from({ length: 6 }, (_, index) => ({
-      id: `idea_car_${index + 1}`, title_cantonese: '車車故事', title_english: 'Vehicle story', target_vocab: []
-    })), provenance: 'curated' });
+    calls.push({ url, payload: JSON.parse(options.body) });
+    return response({ ideas: [{ id: 'sharing', title_cantonese: '分享', title_english: 'Sharing', target_vocab: [] }] });
   });
-  await app.run('loadCuratedVehicleIdeas()');
-  assert.deepEqual(calls, [['/api/ideas/vehicles', 'GET']]);
-  assert.equal(app.run('currentIdeas.length'), 6);
+  app.context.ageButton = app.element('age-test');
+  app.context.topicButton = app.element('topic-test');
+  app.run("setAge(ageButton, '2-3 years (Preschool)'); setTopicChip(topicButton, 'Sharing Toys & Taking Turns')");
+  await app.run('generateIdeas()');
+  assert.deepEqual(calls, [{ url: '/api/ideas/generate', payload: {
+    topic: 'Sharing Toys & Taking Turns', age_group: '2-3 years (Preschool)', theme: 'Sharing Toys & Taking Turns'
+  } }]);
+  assert.equal(app.run('currentIdeas[0].target_age'), '2-3 years (Preschool)');
+  assert.equal(app.element('btn-gen-ideas').textContent, 'Generate Story Ideas');
+  assert.match(app.element('story-provenance').textContent, /Sharing Toys/);
+});
+
+test('vehicles are a topic category with individual choices for every age group', async () => {
+  const calls = [];
+  const app = harness(async (url, options) => {
+    calls.push({ url, body: JSON.parse(options.body) });
+    return response({ ideas: [] });
+  });
+  app.context.ageButton = app.element('age-test');
+  app.context.topicButton = app.element('topic-test');
+  for (const age of ['1-2 years (Toddlers)', '2-3 years (Preschool)', '3-5 years (Kindergarten)']) {
+    app.context.testAge = age;
+    app.run('setAge(ageButton, testAge)');
+    assert.match(app.element('lesson-topic-chips').innerHTML, />Vehicles</);
+    assert.equal((app.element('vehicle-topic-chips').innerHTML.match(/<button/g) || []).length, 6);
+    app.run("setTopicChip(topicButton, 'Excavators & Building Together', 'vehicles')");
+    await app.run('generateIdeas()');
+    assert.equal(calls.at(-1).body.topic, 'Excavators & Building Together');
+    assert.equal(calls.at(-1).body.age_group, age);
+    assert.equal(calls.at(-1).url, '/api/ideas/generate');
+  }
+});
+
+test('custom topics and empty topic fallback follow the chosen age', async () => {
+  const calls = [];
+  const app = harness(async (url, options) => {
+    calls.push(JSON.parse(options.body));
+    return response({ ideas: [] });
+  });
+  app.context.ageButton = app.element('age-test');
+  app.run("setAge(ageButton, '3-5 years (Kindergarten)')");
+  app.element('input-topic').value = " Helping a new friend feel welcome ";
+  app.run('editStoryTopic()');
+  await app.run('generateIdeas()');
+  assert.equal(calls[0].topic, 'Helping a new friend feel welcome');
+  app.element('input-topic').value = ' ';
+  await app.run('generateIdeas()');
+  assert.equal(calls[1].topic, 'Big Emotions & Deep Calming Breaths');
+});
+
+test('age/topic changes or project switches discard late idea responses', async () => {
+  for (const change of [
+    "setAge(ageButton, '3-5 years (Kindergarten)')",
+    "document.getElementById('input-topic').value='New topic'; editStoryTopic()",
+    "activateProject({...projectFixture,id:'other',episode_id:'other'})"
+  ]) {
+    const pending = deferred();
+    const app = harness(() => pending.promise);
+    app.context.ageButton = app.element('age-test');
+    const generation = app.run('generateIdeas()');
+    app.run(change);
+    pending.resolve(response({ ideas: [{ id: 'stale', target_vocab: [] }] }));
+    await generation;
+    assert.equal(app.run('currentIdeas.length'), 0);
+    assert.equal(app.element('btn-gen-ideas').disabled, false);
+  }
+});
+
+test('newer idea requests win and opening a project restores its age and topic', async () => {
+  const first = deferred(), second = deferred();
+  let count = 0;
+  const app = harness(() => (++count === 1 ? first.promise : second.promise));
+  app.run("activateProject({...projectFixture,target_age:'3-5 years',theme:'Kindness to friends'})");
+  assert.equal(app.run('selectedAge'), '3-5 years');
+  assert.equal(app.element('input-topic').value, 'Kindness to friends');
+  const older = app.run('generateIdeas()'), newer = app.run('generateIdeas()');
+  second.resolve(response({ ideas: [{ id: 'new', target_vocab: [] }] }));
+  await newer;
+  first.resolve(response({ ideas: [{ id: 'old', target_vocab: [] }] }));
+  await older;
+  assert.equal(app.run('currentIdeas[0].id'), 'new');
+});
+
+test('Story screen has one adaptive primary action and no vehicle-only main button', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'app', 'static', 'index.html'), 'utf8');
+  assert.match(html, /id="btn-gen-ideas" class="studio-button studio-primary studio-next">Generate Story Ideas/);
+  assert.doesNotMatch(html, /Explore 6 Vehicle Stories|btn-curated-vehicle-ideas|loadCuratedVehicleIdeas/);
+  assert.match(html, /id="vehicle-topic-group"/);
+});
+
+test('changing the topic while building a script preserves the existing story', async () => {
+  const pending = deferred();
+  const app = harness(() => pending.promise);
+  seedIdea(app);
+  const original = app.run('JSON.stringify(currentProject.scenes)');
+  const building = app.run('selectIdeaAndBuildScript(0)');
+  app.element('input-topic').value = 'A different lesson';
+  app.run('editStoryTopic()');
+  pending.resolve(response({ script: generatedLesson() }));
+  await building;
+  assert.equal(app.run('JSON.stringify(currentProject.scenes)'), original);
 });
 
 test('Save Story rejects an empty draft without writing a blank narration script', async () => {
