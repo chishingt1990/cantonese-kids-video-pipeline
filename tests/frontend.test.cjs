@@ -83,6 +83,29 @@ test('HTTP JSON and non-JSON failures throw visible errors and never look succes
   await assert.rejects(API.createClient(async () => new Response('bad gateway', { status: 502 }))('/api/x'), /HTTP 502/);
 });
 
+test('brainstorm provider failure stays visible and a retry clears it', async () => {
+  let reject = true;
+  const h = harness(async () => {
+    if (reject) throw new Error('Enable the Generative Language API. <secret-like markup>');
+    return response({ ideas: [] });
+  });
+  const visibility = [];
+  h.element('ideas-error').classList = {
+    add: name => visibility.push(['hide', name]),
+    remove: name => visibility.push(['show', name])
+  };
+  await h.run('generateIdeas()');
+  assert.equal(h.element('ideas-error-message').textContent,
+    'Enable the Generative Language API. <secret-like markup>');
+  assert.equal(h.element('ideas-error-message').innerHTML, '');
+  assert.equal(h.element('btn-gen-ideas').disabled, false);
+  assert.deepEqual(visibility.at(-1), ['show', 'hidden']);
+  reject = false;
+  await h.run('generateIdeas()');
+  assert.equal(h.element('ideas-error-message').textContent, '');
+  assert.deepEqual(visibility.at(-1), ['hide', 'hidden']);
+});
+
 test('nested mutations invalidate renders and narration changes invalidate audio', () => {
   let mutations = 0;
   const project = State.observe(fixture(), () => mutations++);

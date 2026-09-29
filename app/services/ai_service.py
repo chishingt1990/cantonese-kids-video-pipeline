@@ -2,69 +2,126 @@ import json
 import time
 import logging
 import requests
+import httpx
+from google.genai.errors import APIError
+from pydantic import ValidationError
 from app.config import load_settings
 from app.models import Idea, GeneratedScript
 
 logger = logging.getLogger(__name__)
 
 class GenerationError(RuntimeError):
-    pass
+    def __init__(self, message, *, code="generation_failed", status_code=502):
+        super().__init__(message)
+        self.code = code
+        self.status_code = status_code
+
+
+def _classify_provider_error(exc):
+    if isinstance(exc, GenerationError):
+        return exc
+    if isinstance(exc, (requests.Timeout, httpx.TimeoutException, TimeoutError)):
+        return GenerationError("The selected AI provider timed out. Retry shortly; no model was changed.", code="timeout", status_code=504)
+    status = None
+    if isinstance(exc, APIError):
+        status = exc.code
+        details = exc.details if isinstance(exc.details, dict) else {}
+        error = details.get("error", details)
+        reasons = error.get("details", []) if isinstance(error, dict) else []
+        if isinstance(reasons, list) and any(
+            isinstance(item, dict)
+            and item.get("@type") == "type.googleapis.com/google.rpc.ErrorInfo"
+            and item.get("reason") == "SERVICE_DISABLED"
+            for item in reasons[:20]
+        ):
+            return GenerationError(
+                "The Generative Language API is disabled. Enable the Generative Language API in the Google Cloud project associated with this API key, then retry.",
+                code="service_disabled",
+            )
+        if isinstance(reasons, list) and any(
+            isinstance(item, dict) and isinstance(item.get("reason"), str) and item["reason"] in {"API_KEY_INVALID", "API_KEY_EXPIRED", "API_KEY_NOT_FOUND"}
+            for item in reasons[:20]
+        ):
+            status = 401
+    elif isinstance(exc, requests.HTTPError) and exc.response is not None:
+        status = exc.response.status_code
+    elif isinstance(exc, httpx.HTTPStatusError):
+        status = exc.response.status_code
+    if status in {401, 403}:
+        return GenerationError("The selected AI provider rejected authentication or access. Check the saved API key and its model permissions in Settings.", code="authentication_failed")
+    if status == 404:
+        return GenerationError("The selected model or deployment is unavailable to this account. Check its exact name and access in Settings; choose another model explicitly if needed.", code="model_unavailable")
+    if status == 429:
+        return GenerationError("The selected AI provider rate limit or quota was exceeded. Check quota/billing or retry after the limit resets.", code="rate_limited", status_code=429)
+    if status in {408, 504}:
+        return GenerationError("The selected AI provider timed out. Retry shortly; no model was changed.", code="timeout", status_code=504)
+    if isinstance(status, int) and 500 <= status <= 599:
+        return GenerationError("The selected AI provider is temporarily unavailable. Retry later; no model was changed.", code="provider_unavailable", status_code=503)
+    if isinstance(status, int) and 400 <= status <= 499:
+        return GenerationError("The selected AI provider rejected the request. Check the selected model's supported inputs and deployment settings.", code="provider_request_rejected")
+    if isinstance(exc, (requests.ConnectionError, httpx.NetworkError)):
+        return GenerationError("Could not connect to the selected AI provider. Check connectivity and endpoint configuration.", code="connection_failed", status_code=503)
+    if isinstance(exc, json.JSONDecodeError):
+        return GenerationError("The selected AI provider returned invalid JSON. Retry generation.", code="invalid_json")
+    if isinstance(exc, (KeyError, IndexError, TypeError, AttributeError)):
+        return GenerationError("The selected AI provider returned an unexpected response format. Check model compatibility or retry.", code="invalid_schema")
+    return GenerationError("The selected AI provider failed unexpectedly. Check provider configuration and retry.", code="provider_error")
+
+
+def _schema_error(exc):
+    allowed = {
+        "id", "title_cantonese", "title_english", "description", "target_vocab", "chinese",
+        "english", "moral_lesson", "scenes_preview", "scenes", "scene_number", "title",
+        "cantonese", "background", "speaker", "duration_sec", "characters", "name",
+        "pose", "scale", "stickers", "vocab_words", "target_age", "theme", "revision",
+    }
+    fields = []
+    for error in exc.errors(include_input=False, include_context=False, include_url=False)[:6]:
+        path = ".".join(
+            str(part) if isinstance(part, int) and 0 <= part <= 200 else part if isinstance(part, str) and part in allowed else "field"
+            for part in error["loc"]
+        ) or "response"
+        if path not in fields:
+            fields.append(path)
+    return GenerationError(
+        "AI returned JSON with missing or invalid fields: " + ", ".join(fields) + ". Retry generation; no substitute was used.",
+        code="invalid_schema",
+    )
 
 def call_gemini(prompt: str, system_instruction: str = "", model: str = "") -> str:
     settings = load_settings()
     api_key = settings.gemini_api_key
     if not api_key:
-        raise ValueError("Google Gemini API Key is not configured. Please enter it in Settings.")
+        raise GenerationError("Gemini API key is missing. Enter and save it in Settings.", code="missing_configuration", status_code=400)
     
     primary_model = model or settings.active_model or "gemini-3.6-flash"
-    fallback_models = []
-    
-    # Try primary model first, then fallback models if 503/404/429 occurs
-    models_to_try = [primary_model] + [m for m in fallback_models if m != primary_model]
-    
     from google import genai
     # 30-second timeout prevents the request from hanging the application indefinitely
     client = genai.Client(api_key=api_key, http_options={"timeout": 30_000})
-    
-    last_error = None
-    for try_model in models_to_try:
+    try:
         for attempt in range(2):
             try:
                 response = client.models.generate_content(
-                    model=try_model,
-                    contents=prompt,
-                    config={"system_instruction": system_instruction} if system_instruction else None
+                    model=primary_model, contents=prompt,
+                    config={"system_instruction": system_instruction} if system_instruction else None,
                 )
                 if response.text:
                     return response.text
-            except Exception as e:
-                err_msg = str(e)
-                last_error = err_msg
-                logger.warning("Gemini generation failed (%s)", type(e).__name__)
-                
-                # Check for rate limiting / quota exhaustion (429)
-                is_rate_limited = any(indicator in err_msg for indicator in ["429", "RESOURCE_EXHAUSTED", "quota", "Quota"])
-                if is_rate_limited:
-                    if attempt < 1:
-                        time.sleep(2.5 * (attempt + 1))
-                        continue
-                    else:
-                        break
-                
-                # Check for transient server issues or model unavailability
-                is_transient = any(indicator in err_msg for indicator in ["503", "404", "UNAVAILABLE", "timeout", "timed out", "DeadlineExceeded"])
-                if is_transient:
-                    break
-                else:
-                    raise RuntimeError(f"Gemini API error ({try_model}): {err_msg}")
-                
-    raise RuntimeError(f"All Gemini models busy or rate-limited: {last_error}")
+                raise GenerationError("The selected model returned no text. Retry with a different prompt or check model capabilities.", code="empty_response")
+            except Exception as exc:
+                failure = _classify_provider_error(exc)
+                if failure.code == "rate_limited" and attempt == 0:
+                    time.sleep(2.5)
+                    continue
+                raise failure from None
+    finally:
+        client.close()
 
 def call_openai(prompt: str, system_instruction: str = "", model: str = "") -> str:
     settings = load_settings()
     api_key = settings.openai_api_key
     if not api_key:
-        raise ValueError("OpenAI API Key is not configured. Please enter it in Settings.")
+        raise GenerationError("OpenAI API key is missing. Enter and save it in Settings.", code="missing_configuration", status_code=400)
     
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     chosen_model = model or settings.active_model or "gpt-4o-mini"
@@ -84,7 +141,7 @@ def call_anthropic(prompt: str, system_instruction: str = "", model: str = "") -
     settings = load_settings()
     api_key = settings.anthropic_api_key
     if not api_key:
-        raise ValueError("Anthropic API Key is not configured. Please enter it in Settings.")
+        raise GenerationError("Anthropic API key is missing. Enter and save it in Settings.", code="missing_configuration", status_code=400)
     
     headers = {
         "x-api-key": api_key,
@@ -124,7 +181,7 @@ def call_azure(prompt: str, system_instruction: str = "", model: str = "") -> st
     from urllib.parse import quote
     settings = load_settings()
     if not settings.azure_endpoint or not settings.azure_api_key:
-        raise GenerationError("Azure OpenAI is not configured")
+        raise GenerationError("Azure OpenAI key or endpoint is missing. Enter and save both in Settings.", code="missing_configuration", status_code=400)
     deployment = quote(model or settings.active_model, safe="")
     messages = [{"role": "user", "content": prompt}]
     if system_instruction:
@@ -145,9 +202,12 @@ def generate_ai_text(prompt: str, system_instruction: str = "") -> str:
     providers = {"gemini": call_gemini, "openai": call_openai, "anthropic": call_anthropic, "azure": call_azure, "ollama": call_ollama}
     try:
         return providers[settings.active_provider](prompt, system_instruction, settings.active_model)
+    except GenerationError:
+        raise
     except Exception as exc:
-        logger.warning("Text generation failed for %s (%s)", settings.active_provider, type(exc).__name__)
-        raise GenerationError("AI generation failed. Check the selected provider and credentials; no content was substituted.") from exc
+        failure = _classify_provider_error(exc)
+        logger.warning("Text generation failed for %s (%s)", settings.active_provider, failure.code)
+        raise failure from None
 
 def get_grounded_topic_ideas(topic: str, age_group: str) -> list:
     """Smart deterministic template generator matching any custom topic (e.g. ABCs, Counting, Animals)."""
@@ -438,10 +498,16 @@ Return ONLY valid JSON matching this schema:
             cleaned = cleaned[:-3]
         parsed = json.loads(cleaned.strip())
         if not isinstance(parsed, list) or len(parsed) != 3:
-            raise ValueError("Expected three ideas")
+            raise GenerationError("AI returned JSON with an invalid ideas structure: expected an array of exactly three ideas. Retry generation.", code="invalid_schema")
         return [Idea.model_validate(item).model_dump(mode="json") for item in parsed]
-    except Exception as e:
-        raise GenerationError("AI idea generation failed or returned invalid content.") from e
+    except GenerationError:
+        raise
+    except json.JSONDecodeError:
+        raise GenerationError("AI ideas were not valid JSON. Retry generation; no substitute was used.", code="invalid_json") from None
+    except ValidationError as exc:
+        raise _schema_error(exc) from None
+    except Exception as exc:
+        raise _classify_provider_error(exc) from None
 
 def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
     """
@@ -690,7 +756,13 @@ Return ONLY valid JSON matching this schema:
             cleaned = cleaned[:-3]
         parsed = GeneratedScript.model_validate(json.loads(cleaned.strip()))
         if [scene.scene_number for scene in parsed.scenes] != list(range(1, 8)):
-            raise ValueError("Scene numbers must be sequential")
+            raise GenerationError("AI returned JSON with invalid scenes.scene_number: expected sequential scene numbers 1 through 7. Retry generation.", code="invalid_schema")
         return parsed.model_dump(mode="json", exclude_none=True)
-    except Exception as e:
-        raise GenerationError("AI script generation failed or returned invalid content.") from e
+    except GenerationError:
+        raise
+    except json.JSONDecodeError:
+        raise GenerationError("AI script was not valid JSON. Retry generation; no substitute was used.", code="invalid_json") from None
+    except ValidationError as exc:
+        raise _schema_error(exc) from None
+    except Exception as exc:
+        raise _classify_provider_error(exc) from None

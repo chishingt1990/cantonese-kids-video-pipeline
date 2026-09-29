@@ -19,6 +19,6 @@ def generate_ideas(req: IdeaRequest):
         return {"ideas": brainstorm_ideas(req.topic, req.age_group, req.theme), "status": "generated", "provenance": "ai"}
     except GenerationError as exc:
         if not req.allow_fallback:
-            raise HTTPException(502, str(exc))
+            raise HTTPException(exc.status_code, str(exc), headers={"X-Studio-Error-Code": exc.code})
         ideas = [Idea.model_validate(item).model_dump(mode="json") for item in get_grounded_topic_ideas(req.topic, req.age_group)]
-        return {"ideas": ideas, "status": "fallback", "provenance": "offline_template", "warning": str(exc)}
+        return {"ideas": ideas, "status": "fallback", "provenance": "offline_template", "warning": str(exc), "error_code": exc.code}

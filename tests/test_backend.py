@@ -326,6 +326,151 @@ class BackendTests(unittest.TestCase):
             with self.assertRaises(self.ai.GenerationError):
                 self.ai.generate_full_script(idea, ["dad"])
 
+    def test_missing_provider_configuration_is_actionable(self):
+        for provider in ("gemini", "openai", "anthropic", "azure"):
+            with self.subTest(provider=provider), patch.object(self.ai, "load_settings", return_value=self.config.StudioSettings(active_provider=provider)):
+                with self.assertRaises(self.ai.GenerationError) as caught:
+                    self.ai.generate_ai_text("synthetic")
+                self.assertEqual(caught.exception.code, "missing_configuration")
+                self.assertEqual(caught.exception.status_code, 400)
+                self.assertIn("Settings", str(caught.exception))
+
+    def test_gemini_sdk_status_classification_is_safe_and_keeps_selected_model(self):
+        from google.genai.errors import ClientError, ServerError
+        secret = "synthetic-secret-do-not-echo"
+        provider_url = "https://provider.invalid/private?key=" + secret
+        settings = self.config.StudioSettings(gemini_api_key="synthetic-key", active_model="explicit-selected-model")
+        cases = [
+            (401, "authentication_failed", 502), (403, "authentication_failed", 502),
+            (404, "model_unavailable", 502), (429, "rate_limited", 429),
+            (503, "provider_unavailable", 503), (400, "provider_request_rejected", 502),
+        ]
+        for status, code, api_status in cases:
+            error_type = ServerError if status >= 500 else ClientError
+            error = error_type(status, {"error": {"message": secret + provider_url, "code": status}})
+            client = Mock()
+            client.models.generate_content.side_effect = error
+            with self.subTest(status=status), patch.object(self.ai, "load_settings", return_value=settings), patch("google.genai.Client", return_value=client), patch.object(self.ai.time, "sleep"):
+                response = self.client.post("/api/ideas/generate", json={"topic": "Letters"}, headers=self.headers)
+            self.assertEqual(response.status_code, api_status, response.text)
+            self.assertEqual(response.headers["X-Studio-Error-Code"], code)
+            self.assertNotIn(secret, response.text)
+            self.assertNotIn(provider_url, response.text)
+            self.assertEqual(client.models.generate_content.call_count, 2 if status == 429 else 1)
+            self.assertTrue(all(call.kwargs["model"] == "explicit-selected-model" for call in client.models.generate_content.call_args_list))
+            client.close.assert_called_once()
+
+    def test_sdk_invalid_key_reason_classified_without_message_matching(self):
+        from google.genai.errors import ClientError
+        error = ClientError(400, {"error": {"message": "synthetic-private-message", "details": [{"reason": "API_KEY_INVALID"}]}})
+        failure = self.ai._classify_provider_error(error)
+        self.assertEqual(failure.code, "authentication_failed")
+        self.assertNotIn("synthetic-private-message", str(failure))
+        malformed = ClientError(400, {"error": {"message": "synthetic-private-message", "details": [{"reason": {"untrusted": "value"}}]}})
+        self.assertEqual(self.ai._classify_provider_error(malformed).code, "provider_request_rejected")
+        misleading = self.ai._classify_provider_error(RuntimeError("401 429 timeout quota synthetic-private-message"))
+        self.assertEqual(misleading.code, "provider_error")
+        self.assertNotIn("synthetic-private-message", str(misleading))
+
+    def test_gemini_service_disabled_survives_entire_generation_stack_safely(self):
+        from google.genai.errors import ClientError
+        secret = "synthetic-key-do-not-expose"
+        project_number = "987654321098"
+        payload = {"error": {
+            "code": 403, "status": "PERMISSION_DENIED",
+            "message": f"Private diagnostic project {project_number} key {secret}",
+            "details": [{
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "SERVICE_DISABLED", "domain": "googleapis.com",
+                "metadata": {"service": "generativelanguage.googleapis.com", "consumer": f"projects/{project_number}"},
+            }],
+        }}
+        error = ClientError(code=403, response_json=payload)
+        settings = self.config.StudioSettings(gemini_api_key=secret)
+        client = Mock()
+        client.models.generate_content.side_effect = error
+        with patch.object(self.ai, "load_settings", return_value=settings), patch("google.genai.Client", return_value=client):
+            for operation in (
+                lambda: self.ai.generate_ai_text("synthetic"),
+                lambda: self.ai.brainstorm_ideas("Letters", "Toddlers", "Sharing"),
+            ):
+                with self.assertRaises(self.ai.GenerationError) as caught:
+                    operation()
+                self.assertEqual(caught.exception.code, "service_disabled")
+                self.assertEqual(caught.exception.status_code, 502)
+                self.assertIn("Enable the Generative Language API", str(caught.exception))
+                self.assertNotIn(secret, str(caught.exception))
+                self.assertNotIn(project_number, str(caught.exception))
+            response = self.client.post("/api/ideas/generate", json={"topic": "Letters"}, headers=self.headers)
+        self.assertEqual(response.status_code, 502)
+        self.assertEqual(response.headers["X-Studio-Error-Code"], "service_disabled")
+        self.assertIn("Google Cloud project associated with this API key", response.json()["detail"])
+        self.assertNotIn(secret, response.text)
+        self.assertNotIn(project_number, response.text)
+        self.assertNotIn("googleapis.com", response.text)
+        self.assertEqual(client.models.generate_content.call_count, 3)
+
+    def test_requests_http_error_and_transport_timeout_classification(self):
+        import requests
+        import httpx
+        secret = "synthetic-raw-error"
+        for status, code in ((401, "authentication_failed"), (403, "authentication_failed"), (404, "model_unavailable"), (429, "rate_limited")):
+            response = requests.Response()
+            response.status_code = status
+            response.url = "https://private.invalid/?key=" + secret
+            response._content = secret.encode()
+            error = requests.HTTPError(secret, response=response)
+            with self.subTest(status=status), patch.object(self.ai, "load_settings", return_value=self.config.StudioSettings(active_provider="openai")), patch.object(self.ai, "call_openai", side_effect=error):
+                with self.assertRaises(self.ai.GenerationError) as caught:
+                    self.ai.generate_ai_text("synthetic")
+                self.assertEqual(caught.exception.code, code)
+                self.assertNotIn(secret, str(caught.exception))
+                self.assertNotIn("https://", str(caught.exception))
+        for error in (requests.Timeout(secret), httpx.ReadTimeout(secret)):
+            failure = self.ai._classify_provider_error(error)
+            self.assertEqual((failure.code, failure.status_code), ("timeout", 504))
+            self.assertNotIn(secret, str(failure))
+
+    def test_generation_error_is_preserved_through_idea_and_script_layers(self):
+        error = self.ai.GenerationError("Safe timeout message", code="timeout", status_code=504)
+        idea = self.ai.get_grounded_topic_ideas("Letters", "Toddlers")[0]
+        with patch.object(self.ai, "generate_ai_text", side_effect=error):
+            with self.assertRaises(self.ai.GenerationError) as ideas:
+                self.ai.brainstorm_ideas("Letters", "Toddlers", "Sharing")
+            with self.assertRaises(self.ai.GenerationError) as scripts:
+                self.ai.generate_full_script(idea, ["dad"])
+            self.assertIs(ideas.exception, error)
+            self.assertIs(scripts.exception, error)
+            response = self.client.post("/api/scripts/generate", json={"idea": idea}, headers=self.headers)
+            self.assertEqual(response.status_code, 504)
+            self.assertEqual(response.headers["X-Studio-Error-Code"], "timeout")
+            self.assertEqual(response.json()["detail"], "Safe timeout message")
+
+    def test_invalid_json_and_schema_report_distinct_safe_errors(self):
+        secret = "synthetic-model-output-do-not-echo"
+        idea = self.ai.get_grounded_topic_ideas("Letters", "Toddlers")[0]
+        for endpoint, payload in (("/api/ideas/generate", {"topic": "Letters"}), ("/api/scripts/generate", {"idea": idea})):
+            with self.subTest(endpoint=endpoint), patch.object(self.ai, "generate_ai_text", return_value=secret + "{invalid-json"):
+                response = self.client.post(endpoint, json=payload, headers=self.headers)
+                self.assertEqual(response.status_code, 502)
+                self.assertEqual(response.headers["X-Studio-Error-Code"], "invalid_json")
+                self.assertNotIn(secret, response.text)
+        ideas = self.ai.get_grounded_topic_ideas("Letters", "Toddlers")
+        for item in ideas:
+            item["title_english"] = {"private": secret}
+        with patch.object(self.ai, "generate_ai_text", return_value=json.dumps(ideas)):
+            response = self.client.post("/api/ideas/generate", json={"topic": "Letters"}, headers=self.headers)
+            self.assertEqual(response.headers["X-Studio-Error-Code"], "invalid_schema")
+            self.assertIn("title_english", response.json()["detail"])
+            self.assertNotIn(secret, response.text)
+        script = self.ai._generate_dynamic_fallback_script(idea, ["dad"])
+        script["scenes"][0]["cantonese"] = {"private": secret}
+        with patch.object(self.ai, "generate_ai_text", return_value=json.dumps(script)):
+            response = self.client.post("/api/scripts/generate", json={"idea": idea}, headers=self.headers)
+            self.assertEqual(response.headers["X-Studio-Error-Code"], "invalid_schema")
+            self.assertIn("scenes.0.cantonese", response.json()["detail"])
+            self.assertNotIn(secret, response.text)
+
     def test_fallback_is_explicit_and_labelled(self):
         with patch.object(self.ai, "generate_ai_text", side_effect=self.ai.GenerationError("offline")):
             failed = self.client.post("/api/ideas/generate", json={"topic": "Numbers"}, headers=self.headers)

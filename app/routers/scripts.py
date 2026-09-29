@@ -19,6 +19,6 @@ def create_script(req: ScriptGenRequest):
         return {"script": generate_full_script(idea, req.characters), "status": "generated", "provenance": "ai"}
     except GenerationError as exc:
         if not req.allow_fallback:
-            raise HTTPException(502, str(exc))
+            raise HTTPException(exc.status_code, str(exc), headers={"X-Studio-Error-Code": exc.code})
         script = GeneratedScript.model_validate(_generate_dynamic_fallback_script(idea, req.characters)).model_dump(mode="json", exclude_none=True)
-        return {"script": script, "status": "fallback", "provenance": "offline_template", "warning": str(exc)}
+        return {"script": script, "status": "fallback", "provenance": "offline_template", "warning": str(exc), "error_code": exc.code}

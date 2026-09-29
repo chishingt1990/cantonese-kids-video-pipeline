@@ -141,6 +141,10 @@ function setTopicChip(btn, topic) {
 async function generateIdeas() {
   if (!requireProject()) return;
   const btn = document.getElementById('btn-gen-ideas');
+  const errorBox = document.getElementById('ideas-error');
+  const errorMessage = document.getElementById('ideas-error-message');
+  if (errorBox) errorBox.classList.add('hidden');
+  if (errorMessage) errorMessage.textContent = '';
   btn.innerHTML = '<span class="animate-spin">⏳</span> AI is Crafting Concepts...';
   btn.disabled = true;
 
@@ -156,6 +160,8 @@ async function generateIdeas() {
     renderIdeas(currentIdeas);
   } catch (e) {
     console.error(e);
+    if (errorMessage) errorMessage.textContent = e.message || 'Could not generate ideas. Please retry.';
+    if (errorBox) errorBox.classList.remove('hidden');
   } finally {
     btn.innerHTML = '<span>✨</span> Brainstorm Episode Concepts';
     btn.disabled = false;
