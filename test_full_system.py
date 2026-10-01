@@ -1,4 +1,6 @@
 import os
+import json
+import hashlib
 import unittest
 from PIL import Image
 from fastapi.testclient import TestClient
@@ -103,15 +105,22 @@ class TestCantoneseKidsPipeline(unittest.TestCase):
 
     def test_04_word_stickers_snug_centered_proportions(self):
         """Verify all word stickers use the snug pill badge design with no bottom void."""
+        with open("config/artwork_release_v1.json", encoding="utf-8") as release_file:
+            approved = {a["id"]: a for a in json.load(release_file)["assets"] if a["kind"] == "badge"}
         for s in STICKER_CATALOG:
             if s.get("type") == "word":
                 p = get_or_render_sticker(s)
-                im = Image.open(p)
-                w, h = im.size
-                # Height should be proportional and compact (h <= 110 for standard words)
-                self.assertLessEqual(h, 120, f"Sticker {s['id']} has excessive height ({h}px)")
-                self.assertEqual(im.mode, "RGBA")
-                im.close()
+                with Image.open(p) as im:
+                    w, h = im.size
+                    if s["id"] in approved:
+                        # Approved high-resolution badges retain the same compact proportions.
+                        self.assertEqual([w, h], approved[s["id"]]["size"])
+                        self.assertLessEqual(h / w, 0.55)
+                        with open(p, "rb") as image_file:
+                            self.assertEqual(hashlib.sha256(image_file.read()).hexdigest(), approved[s["id"]]["sha256"])
+                    else:
+                        self.assertLessEqual(h, 120, f"Sticker {s['id']} has excessive height ({h}px)")
+                    self.assertEqual(im.mode, "RGBA")
         print("[OK] All word stickers verified: snug, balanced, centered typography!")
 
     def test_05_background_delete_protections(self):
@@ -186,6 +195,15 @@ class TestCantoneseKidsPipeline(unittest.TestCase):
         stks = r4.json().get("stickers", [])
         self.assertGreaterEqual(len(stks), 20)
         print("[OK] Review gallery and staging sandbox endpoints verified successfully!")
+
+    def test_13_portable_asset_library(self):
+        response = client.get("/asset-library")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Your generated assets", response.text)
+        self.assertNotIn("file:///", response.text)
+        self.assertNotIn("copilot.cloud.microsoft/chat/conversation/", response.text)
+        for url in ("/assets/sprites/levi_jumping.png", "/assets/stickers/prop_broccoli.png"):
+            self.assertEqual(client.get(url).status_code, 200)
 
     def test_08_dynamic_script_theme_linkage_and_7_scenes(self):
         """Verify dynamic script synthesis produces strictly 7 scenes matching user theme and moral lesson."""

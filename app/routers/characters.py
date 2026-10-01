@@ -11,6 +11,9 @@ from app.services.character_generator import generate_custom_character_sprite
 router = APIRouter(prefix="/api/characters", tags=["characters"])
 
 POSE_LABELS = {
+    "jumping": "Jumping / 跳起",
+    "dancing": "Dancing / 跳舞",
+    "brushing_teeth": "Brushing Teeth / 刷牙",
     "default": "Default Standing",
     "sad": "😢 Sad / Needing Hug",
     "holding_book": "📖 Holding Storybook",

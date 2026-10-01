@@ -29,6 +29,7 @@ config/studio_settings.json
 config/cloned_voices.json
 temp_*
 test_*
+!test_artwork_release.py
 assets/sprites/test_*
 
 

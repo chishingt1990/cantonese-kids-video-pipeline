@@ -1,8 +1,9 @@
 import json
 import logging
+import re
 from typing import Dict, Any, List, Optional
 from app.services.ai_service import generate_ai_text
-from app.services.sticker_service import STICKER_CATALOG, get_or_render_sticker
+from app.services.sticker_service import STICKER_CATALOG, RELEASE_PROPS, get_or_render_sticker
 
 logger = logging.getLogger(__name__)
 
@@ -14,8 +15,8 @@ PRESET_BACKGROUNDS = [
 ]
 
 CHARACTER_POSES = {
-    "levi": ["default", "sad", "waving", "pointing", "running", "arms_out_hug", "stretching", "eating", "sleeping"],
-    "luca": ["default", "waving", "clapping", "holding_toy", "eating", "sleeping"],
+    "levi": ["default", "sad", "waving", "pointing", "running", "arms_out_hug", "stretching", "eating", "sleeping", "jumping", "dancing", "brushing_teeth"],
+    "luca": ["default", "waving", "clapping", "holding_toy", "eating", "sleeping", "jumping", "dancing", "brushing_teeth"],
     "dad": ["default", "sitting", "kneeling", "teaching", "waving", "drinking"],
     "mom": ["default", "kneeling_hug", "holding_fruit", "teaching"],
     "dog": ["default", "playing_ball", "running", "eating_banana"],
@@ -23,6 +24,43 @@ CHARACTER_POSES = {
     "grandparents_maternal": ["default", "waving"],
     "auntie_cousins": ["default", "waving"]
 }
+
+# Reviewed bottom anchors for the new full-canvas 520px toddler exports.
+STARTER_POSE_Y = {"jumping": 800 / 1080 * 100, "dancing": 880 / 1080 * 100, "brushing_teeth": 880 / 1080 * 100}
+STARTER_BADGES = {s["id"]: s for s in STICKER_CATALOG if s["id"] in {
+    "badge_routine_brush_teeth", "badge_routine_wash_hands", "badge_routine_eat",
+    "badge_play_together_v1", "badge_take_turns_v1", "badge_bedtime_sleep",
+}}
+
+
+def _starter_action(text: str) -> Optional[str]:
+    """Match concrete actions without treating 'jumpers' or 'dancefloor' as poses."""
+    text = text.lower()
+    if "刷牙" in text or re.search(r"\bbrush(?:ing|es|ed)?\s+(?:(?:my|your|his|her|our|their|the)\s+)?teeth\b", text):
+        return "brushing_teeth"
+    if any(word in text for word in ("跳舞", "舞蹈")) or re.search(r"\bdanc(?:e|es|ed|ing)\b", text):
+        return "dancing"
+    if any(word in text for word in ("跳起", "跳一跳", "跳跳", "蹦跳")) or re.search(r"\b(?:jump(?:s|ed|ing)?|hop(?:s|ped|ping)?)\b", text):
+        return "jumping"
+    return None
+
+
+def _starter_badge(sticker_id: str) -> Dict[str, Any]:
+    badge = dict(STARTER_BADGES[sticker_id])
+    badge.update(content=badge["chinese"], x_percent=50.0, y_percent=22.0,
+                 scale=1.0, rotation_deg=0.0, layer=2)
+    return badge
+
+
+def _expanded_prop(text: str) -> Optional[Dict[str, Any]]:
+    for prop in sorted(RELEASE_PROPS, key=lambda p: len(p["english"]), reverse=True):
+        if not prop["release_addition"]:
+            continue
+        english = re.escape(prop["english"].lower()).replace(r"\ ", r"\s+")
+        if prop["chinese"] in text or re.search(r"\b" + english + r"s?\b", text.lower()):
+            return prop
+    return None
+
 
 # Single source of truth for scale standards (matching 1080p canvas & render)
 SCALE_STANDARDS = {
@@ -41,8 +79,8 @@ STAGE COORDINATE RULES:
 - Characters scale: Adults = 1.0, Toddlers = 1.0, Dog = 1.0.
 - Educational stickers: Limit to 1-2 high-impact items. Place stickers in upper safe zones (y_percent between 18.0 and 32.0, x_percent between 18.0 and 82.0). NEVER place stickers below y_percent = 72.0 (reserved for subtitles).
 - Choose poses ONLY from available catalog:
-  - levi: default, waving, pointing, running, arms_out_hug, stretching, eating, sleeping
-  - luca: default, waving, clapping, holding_toy, eating, sleeping
+  - levi: default, sad, waving, pointing, running, arms_out_hug, stretching, eating, sleeping, jumping, dancing, brushing_teeth
+  - luca: default, waving, clapping, holding_toy, eating, sleeping, jumping, dancing, brushing_teeth
   - dad: default, sitting, kneeling, teaching, waving, drinking
   - mom: default, kneeling_hug, holding_fruit, teaching
   - dog: default, playing_ball, running, eating_banana
@@ -50,6 +88,11 @@ STAGE COORDINATE RULES:
   - grandparents_maternal: default, waving
   - auntie_cousins: default, waving
 - Choose background_id from: living_room, nursery, kitchen, park, beach, playroom, reading_nook, dining, bathroom, mountains, playground, farm_field, duck_pond, backyard_garden, art_room, supermarket.
+- New twin action layouts: jumping uses y_percent 74.074 (airborne); dancing and brushing_teeth use 81.481. Use scale 1.0 and preserve reference hair direction (flip=false) unless the scene explicitly requires otherwise. Do not show dancing/jumping while brushing teeth. Prefer bathroom for toothbrushing and playroom for indoor dance.
+- Prefer the approved word badges with their exact labels:
+  badge_routine_brush_teeth: 刷牙 / BRUSH TEETH; badge_routine_wash_hands: 洗手 / WASH HANDS;
+  badge_routine_eat: 食飯 / MEALTIME; badge_play_together_v1: 一齊玩 / PLAY TOGETHER;
+  badge_take_turns_v1: 輪住玩 / TAKE TURNS; badge_bedtime_sleep: 瞓覺 / SLEEP.
 
 Return ONLY a valid JSON object matching this schema:
 {
@@ -63,6 +106,9 @@ Return ONLY a valid JSON object matching this schema:
   ]
 }
 """
+DIRECTOR_SYSTEM_PROMPT += "\nApproved illustrated prop IDs (reuse these PNGs, do not invent replacements):\n" + "\n".join(
+    f"- {prop['id']}: {prop['chinese']} / {prop['english']}" for prop in RELEASE_PROPS
+)
 
 def direct_single_scene(scene: Dict[str, Any], context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """Uses LLM visual reasoning to direct a scene, with an instant deterministic heuristic fallback."""
@@ -118,7 +164,8 @@ def _validate_and_sanitize_plan(plan: Dict[str, Any], original_scene: Dict[str, 
         if "x_percent" not in c or c["x_percent"] is None:
             c["x_percent"] = slots[i]
         c["x_percent"] = max(8.0, min(92.0, float(c["x_percent"])))
-        c["y_percent"] = max(60.0, min(92.0, float(c.get("y_percent", 88.0))))
+        default_y = STARTER_POSE_Y.get(c["pose"], 88.0) if c_name in ("levi", "luca") else 88.0
+        c["y_percent"] = max(60.0, min(92.0, float(c.get("y_percent", default_y))))
         c["scale"] = max(0.6, min(1.5, float(c.get("scale", 1.0))))
         c["flip"] = bool(c.get("flip", c["x_percent"] > 50))
         c["layer"] = int(c.get("layer", 1))
@@ -128,6 +175,11 @@ def _validate_and_sanitize_plan(plan: Dict[str, Any], original_scene: Dict[str, 
     valid_stickers = []
     for s in stickers:
         s_id = s.get("id")
+        if s_id in STARTER_BADGES:
+            # Keep plan coordinates, but never relabel an approved cached image.
+            badge = STARTER_BADGES[s_id]
+            s.update(type="word", content=badge["chinese"], chinese=badge["chinese"],
+                     english=badge["english"], color_theme=badge["color_theme"])
         # Ensure sticker exists in catalog or render
         get_or_render_sticker(s)
         s["x_percent"] = max(10.0, min(90.0, float(s.get("x_percent", 50.0))))
@@ -221,6 +273,11 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
     is_bedtime = any(k in text for k in ["sleep", "bed", "night", "star", "moon", "dream", "lullaby", "瞓", "晚安", "瞓覺", "發夢", "星星", "月亮"])
     is_hugging = any(k in text for k in ["hug", "arms", "love", "comfort", "cuddle", "抱抱", "我愛你"])
     is_waving = any(k in text for k in ["hello", "good morning", "hi", "bye", "goodbye", "早晨", "揮手", "你好", "拜拜"])
+    action = _starter_action(text)
+    expanded_prop = _expanded_prop(text)
+    # Hygiene takes precedence over movement; sadness retains its existing priority.
+    if is_hygiene and action != "brushing_teeth":
+        action = None
 
     # 1. Emotional Disruption & Comfort Domain (Sadness, Lost Item, Empathy)
     if is_sadness:
@@ -236,6 +293,15 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
         stickers.append({"id": "prop_comfort_hearts", "type": "icon", "content": "comfort_hearts", "x_percent": 50.0, "y_percent": 38.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 2})
         stickers.append({"id": "badge_calm_down", "type": "word", "content": "深呼吸", "english": "Deep Breath & Hug", "color_theme": "sky", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
 
+    elif action:
+        if scene.get("background") not in PRESET_BACKGROUNDS:
+            bg = "bathroom" if action == "brushing_teeth" else "playroom"
+        for name, x in (("levi", 34.0), ("luca", 66.0)):
+            chars.append({"name": name, "pose": action, "scale": 1.0, "x_percent": x,
+                          "y_percent": STARTER_POSE_Y[action], "flip": False, "layer": 1})
+        badge_id = "badge_routine_brush_teeth" if action == "brushing_teeth" else "badge_play_together_v1"
+        stickers.append(_starter_badge(badge_id))
+
     # 2. Celebration & Milestone Domain (Scene 6 or Praises)
     elif is_celebration:
         chars.append({"name": "levi", "pose": "cheering", "scale": 1.0, "x_percent": 34.0, "y_percent": 88.0, "flip": False, "layer": 1})
@@ -249,6 +315,18 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
             
         stickers.append({"id": "prop_sparkle_cluster", "type": "icon", "content": "sparkle_cluster", "x_percent": 50.0, "y_percent": 38.0, "scale": 1.1, "rotation_deg": 0.0, "layer": 2})
         stickers.append({"id": "badge_well_done", "type": "word", "content": "好叻仔！", "english": "Well Done!", "color_theme": "emerald", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})
+
+    elif expanded_prop and not is_hygiene:
+        if scene.get("background") not in PRESET_BACKGROUNDS:
+            bg = {"animals": "park", "vehicles": "park", "fruit_vegetables": "kitchen",
+                  "food_snacks": "kitchen", "everyday_props": "playroom"}[expanded_prop["category"]]
+        chars.extend([
+            {"name": "levi", "pose": "pointing", "scale": 1.0, "x_percent": 28.0, "y_percent": 81.481, "flip": False, "layer": 1},
+            {"name": "luca", "pose": "clapping", "scale": 1.0, "x_percent": 72.0, "y_percent": 81.481, "flip": True, "layer": 1},
+        ])
+        sticker = dict(expanded_prop)
+        sticker.update(x_percent=50.0, y_percent=30.0, scale=1.0, rotation_deg=0.0, layer=2)
+        stickers.append(sticker)
 
     # 3. Vehicle & Transport Domain
     elif is_vehicle:
@@ -375,6 +453,23 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
         elif vocab:
             stickers.append({"id": f"badge_vocab_{vocab[:6]}", "type": "word", "content": vocab, "english": "Learn", "color_theme": "amber", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.0, "rotation_deg": 0.0, "layer": 2})
 
+    # Use approved labels for explicit lesson cues, without replacing emotion badges.
+    if not is_sadness:
+        badge_id = None
+        if any(word in text for word in ("洗手",)) or re.search(r"\bwash(?:ing)?\s+(?:(?:your|my|our|their|his|her|the)\s+)?hands\b", text):
+            badge_id = "badge_routine_wash_hands"
+        elif "輪住玩" in text or "輪流玩" in text or re.search(r"\btak(?:e|ing)\s+turns\b", text):
+            badge_id = "badge_take_turns_v1"
+        elif "一齊玩" in text or re.search(r"\bplay(?:ing)?\s+together\b", text):
+            badge_id = "badge_play_together_v1"
+        elif "食飯" in text or re.search(r"\bmealtime\b", text):
+            badge_id = "badge_routine_eat"
+        elif "瞓覺" in text or re.search(r"\b(?:sleep|sleeping|bedtime)\b", text):
+            badge_id = "badge_bedtime_sleep"
+        if badge_id and action != "brushing_teeth":
+            stickers = [s for s in stickers if s.get("type") != "word"]
+            stickers.append(_starter_badge(badge_id))
+
     return {
         "background": bg,
         "characters": chars,
@@ -493,6 +588,14 @@ def apply_copilot_tweak(current_scene: Dict[str, Any], instruction: str) -> Dict
                 luca_char["pose"] = "sleeping"
 
     # 3. Sticker tweaks
+    action = _starter_action(inst_lower)
+    if action:
+        for c in chars:
+            name = c.get("name")
+            if name in ("levi", "luca") and (name in inst_lower or ("哥哥" if name == "levi" else "細佬") in inst_lower):
+                c["pose"] = action
+                c.setdefault("y_percent", STARTER_POSE_Y[action])
+
     if any(k in inst_lower for k in ["thank you", "多謝"]):
         if not any(s.get("id") == "badge_thank_you" for s in stickers):
             stickers.append({"id": "badge_thank_you", "type": "word", "content": "多謝", "english": "Thank you", "color_theme": "amber", "x_percent": 50.0, "y_percent": 22.0, "scale": 1.05, "rotation_deg": 0.0, "layer": 2})

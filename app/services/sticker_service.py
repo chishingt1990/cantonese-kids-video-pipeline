@@ -1,5 +1,6 @@
 import os
 import math
+import json
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from typing import Optional, Dict, Any, List
 
@@ -21,6 +22,12 @@ def get_font(size: int, bold: bool = False):
     return ImageFont.load_default()
 
 STICKER_CATALOG = [
+    {"id": "badge_routine_brush_teeth", "type": "word", "label": "刷牙 (Brush Teeth)", "chinese": "刷牙", "english": "BRUSH TEETH", "icon": "刷牙", "color_theme": "sky"},
+    {"id": "badge_routine_wash_hands", "type": "word", "label": "洗手 (Wash Hands)", "chinese": "洗手", "english": "WASH HANDS", "icon": "洗手", "color_theme": "emerald"},
+    {"id": "badge_routine_eat", "type": "word", "label": "食飯 (Mealtime)", "chinese": "食飯", "english": "MEALTIME", "icon": "食飯", "color_theme": "amber"},
+    {"id": "badge_play_together_v1", "type": "word", "label": "一齊玩 (Play Together)", "chinese": "一齊玩", "english": "PLAY TOGETHER", "icon": "一齊玩", "color_theme": "rose"},
+    {"id": "badge_take_turns_v1", "type": "word", "label": "輪住玩 (Take Turns)", "chinese": "輪住玩", "english": "TAKE TURNS", "icon": "輪住玩", "color_theme": "purple"},
+    {"id": "badge_bedtime_sleep", "type": "word", "label": "瞓覺 (Sleep)", "chinese": "瞓覺", "english": "SLEEP", "icon": "瞓覺", "color_theme": "indigo"},
     # 1. Manners & Life Skills
     {
         "id": "badge_thank_you",
@@ -495,6 +502,24 @@ STICKER_CATALOG = [
     }
 ]
 
+with open(os.path.join(os.path.dirname(STICKER_DIR), "..", "config", "artwork_release_v1.json"), encoding="utf-8") as release_file:
+    _release = json.load(release_file)
+RELEASE_PROPS = [
+    {
+        "id": asset["id"], "type": "icon",
+        "label": f"{asset['chinese']} ({asset['name']})",
+        "chinese": asset["chinese"], "english": asset["name"],
+        "icon": asset["id"].removeprefix("prop_"),
+        "content": asset["id"].removeprefix("prop_"),
+        "category": asset["category"],
+        "release_addition": asset.get("previous_runtime_sha256") is None,
+    }
+    for asset in _release["assets"] if asset["kind"] == "prop"
+]
+_release_prop_ids = {prop["id"] for prop in RELEASE_PROPS}
+STICKER_CATALOG = [s for s in STICKER_CATALOG if s["id"] not in _release_prop_ids] + RELEASE_PROPS
+
+
 def get_all_stickers_catalog() -> List[Dict[str, Any]]:
     """Returns all stickers by merging the static catalog with any extra sticker PNG files found in assets/stickers/."""
     catalog_map = {s["id"]: dict(s) for s in STICKER_CATALOG}
@@ -920,6 +945,10 @@ def get_or_render_sticker(sticker_info: Dict[str, Any], force: bool = False) -> 
     
     if os.path.exists(file_path) and not force:
         return file_path
+    if clean_id in _release_prop_ids:
+        if force:
+            raise ValueError(f"Approved prop {clean_id} cannot be regenerated; use a reviewed replacement PNG.")
+        raise FileNotFoundError(f"Approved prop PNG is missing: {file_path}")
         
     prop_candidate = os.path.join(STICKER_DIR, f"prop_{clean_id.replace('prop_', '')}.png")
     if os.path.exists(prop_candidate) and not force:

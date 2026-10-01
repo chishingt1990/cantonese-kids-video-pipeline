@@ -1,0 +1,2301 @@
+{
+  "schema_version": 1,
+  "release_id": "artwork-library-v1",
+  "status": "approved_complete_release",
+  "approval": "All60current assets visually accepted and approved for release preparation on2026-10-01.",
+  "installed_at_utc": "2026-10-01T06:39:10.203393+00:00",
+  "scope": "6new twin poses,6new Cantonese badges,40new props,and8approved replacements of existing props. No background changes.",
+  "note": "Provenance manifest, not the runtime catalog. Runtime catalogs remain in application services.",
+  "assets": [
+    {
+      "kind": "sprite",
+      "id": "levi_jumping",
+      "runtime_path": "assets/sprites/levi_jumping.png",
+      "source_filename": "levi_jumping_r02.original.png",
+      "source_sha256": "876f9ef40b3cc6c8c157fcede5863e9e403b8d9e71074134f681034a7e328dce",
+      "primary_reference": {
+        "repository_relative_path": "assets/sprites/levi.png",
+        "sha256": "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+      },
+      "prompt_sha256": "418e54af9424d07c3388b1a6ada52c1dd7a69e47c191565693f6c7772100f185",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 9365,
+        "alpha_ge_250_to_255_pixels": 467562,
+        "source_crop_ltrb": [
+          39,
+          95,
+          997,
+          1389
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        974,
+        1310
+      ],
+      "mode": "RGBA",
+      "sha256": "87e9d72460545a3c43cb5a1027c10fbf4c2eef8564b07c4ce93a554b02fafdbc",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "sprite",
+      "id": "luca_jumping",
+      "runtime_path": "assets/sprites/luca_jumping.png",
+      "source_filename": "luca_jumping_r01.original.png",
+      "source_sha256": "ba7339ecbb21cf3af32374d697afdb67216ab4ce35698a71bb4dcab8eec13dda",
+      "primary_reference": {
+        "repository_relative_path": "assets/sprites/luca.png",
+        "sha256": "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+      },
+      "prompt_sha256": "0df08b9c2f366f571ab58be4cc8946524e9214f9466b38f4f2dad2957be0e811",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 8455,
+        "alpha_ge_250_to_255_pixels": 471025,
+        "source_crop_ltrb": [
+          47,
+          28,
+          980,
+          1335
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        949,
+        1323
+      ],
+      "mode": "RGBA",
+      "sha256": "0fe64f6fff5a4d5ac714bfb1d8362a4652c0c5949b062176713b8063e5093436",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "sprite",
+      "id": "levi_dancing",
+      "runtime_path": "assets/sprites/levi_dancing.png",
+      "source_filename": "levi_dancing_r01.original.png",
+      "source_sha256": "5c7f1678528fc3f9dcd3b84513ce076c4b793aef4cd90257978cdc86f5d700eb",
+      "primary_reference": {
+        "repository_relative_path": "assets/sprites/levi.png",
+        "sha256": "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+      },
+      "prompt_sha256": "747911fcd144dd53d1e7102e95e797e15b00143607d27b1acd28c7f57193df79",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 8719,
+        "alpha_ge_250_to_255_pixels": 430354,
+        "source_crop_ltrb": [
+          190,
+          75,
+          976,
+          1457
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        802,
+        1398
+      ],
+      "mode": "RGBA",
+      "sha256": "ec6c6815fd67b7f40442f6426ab688631315bea228af1397246838828cbe5457",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "sprite",
+      "id": "luca_dancing",
+      "runtime_path": "assets/sprites/luca_dancing.png",
+      "source_filename": "luca_dancing_r01.original.png",
+      "source_sha256": "519f082b44e2e1a47ba55cd28086ad38f237900ae19b6af7bd4f6ed7e028b57f",
+      "primary_reference": {
+        "repository_relative_path": "assets/sprites/luca.png",
+        "sha256": "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+      },
+      "prompt_sha256": "58012bb10d6a52b1dc7297ff666c0a41de2f97e8872895a652b14bf74d6d1aaf",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 7257,
+        "alpha_ge_250_to_255_pixels": 460795,
+        "source_crop_ltrb": [
+          195,
+          26,
+          856,
+          1450
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        677,
+        1440
+      ],
+      "mode": "RGBA",
+      "sha256": "85df00e26f46d4d3dd797228cf78c550fe6e0103cd731919150b9f20124d3106",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "sprite",
+      "id": "levi_brushing_teeth",
+      "runtime_path": "assets/sprites/levi_brushing_teeth.png",
+      "source_filename": "levi_brushing_teeth_r01.original.png",
+      "source_sha256": "e2dfda67c9492c99bb9fe5a2f17574d378da44c1467812cc77fc44989d43ff29",
+      "primary_reference": {
+        "repository_relative_path": "assets/sprites/levi.png",
+        "sha256": "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+      },
+      "prompt_sha256": "bf0390531ecd650d66a252a5ca9128ef6872929381591d54a2404bc53b83509b",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 8511,
+        "alpha_ge_250_to_255_pixels": 475938,
+        "source_crop_ltrb": [
+          208,
+          43,
+          803,
+          1486
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        611,
+        1459
+      ],
+      "mode": "RGBA",
+      "sha256": "2d87a53ee5e67b1c7894221a005ab10c875f36485ea5f6e80cab98591260b736",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "sprite",
+      "id": "luca_brushing_teeth",
+      "runtime_path": "assets/sprites/luca_brushing_teeth.png",
+      "source_filename": "luca_brushing_teeth_r01.original.png",
+      "source_sha256": "9aa3d1673f37a6b1c7f99ca976fa4fd6c7b11fc8a39aa6576dca1edb225e74ae",
+      "primary_reference": {
+        "repository_relative_path": "assets/sprites/luca.png",
+        "sha256": "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+      },
+      "prompt_sha256": "1159c783f1ba3e2e424b4968cc7ab9fe4a50a03fccc4b9f8d767698e0433fac9",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 8329,
+        "alpha_ge_250_to_255_pixels": 458097,
+        "source_crop_ltrb": [
+          210,
+          44,
+          773,
+          1471
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        579,
+        1443
+      ],
+      "mode": "RGBA",
+      "sha256": "a4d969d89f349c6839f5154dc951bb3dccb46b38d3cc64e1383773823c46ed6e",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "badge",
+      "id": "badge_bedtime_sleep",
+      "runtime_path": "assets/stickers/badge_bedtime_sleep.png",
+      "source_filename": "badge_bedtime_sleep_r01.png",
+      "source_sha256": "9c55a08ef66a24de9f60c0dc86f250d2c807d5cd31aa5fe87242c0b84dcfacff",
+      "provider": "local deterministic Pillow typography",
+      "processing": {
+        "byte_identical_to_approved_candidate": true
+      },
+      "size": [
+        440,
+        225
+      ],
+      "mode": "RGBA",
+      "sha256": "9c55a08ef66a24de9f60c0dc86f250d2c807d5cd31aa5fe87242c0b84dcfacff",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "badge",
+      "id": "badge_play_together_v1",
+      "runtime_path": "assets/stickers/badge_play_together_v1.png",
+      "source_filename": "badge_play_together_v1_r01.png",
+      "source_sha256": "36b28d8a8f1c402d0e88576e3ca29b0a6a683eebb9faf351b695b9e4de9ea83e",
+      "provider": "local deterministic Pillow typography",
+      "processing": {
+        "byte_identical_to_approved_candidate": true
+      },
+      "size": [
+        561,
+        225
+      ],
+      "mode": "RGBA",
+      "sha256": "36b28d8a8f1c402d0e88576e3ca29b0a6a683eebb9faf351b695b9e4de9ea83e",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "badge",
+      "id": "badge_routine_brush_teeth",
+      "runtime_path": "assets/stickers/badge_routine_brush_teeth.png",
+      "source_filename": "badge_routine_brush_teeth_r01.png",
+      "source_sha256": "d03098a8e36727b23ac2c3a46b710dab368be7fd88b233446c4319de6887e5a1",
+      "provider": "local deterministic Pillow typography",
+      "processing": {
+        "byte_identical_to_approved_candidate": true
+      },
+      "size": [
+        512,
+        225
+      ],
+      "mode": "RGBA",
+      "sha256": "d03098a8e36727b23ac2c3a46b710dab368be7fd88b233446c4319de6887e5a1",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "badge",
+      "id": "badge_routine_eat",
+      "runtime_path": "assets/stickers/badge_routine_eat.png",
+      "source_filename": "badge_routine_eat_r01.png",
+      "source_sha256": "8d16f2021e7c3956f4689456fa907ddc87c93d934372e572ce3d0a39adbfbde7",
+      "provider": "local deterministic Pillow typography",
+      "processing": {
+        "byte_identical_to_approved_candidate": true
+      },
+      "size": [
+        447,
+        224
+      ],
+      "mode": "RGBA",
+      "sha256": "8d16f2021e7c3956f4689456fa907ddc87c93d934372e572ce3d0a39adbfbde7",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "badge",
+      "id": "badge_routine_wash_hands",
+      "runtime_path": "assets/stickers/badge_routine_wash_hands.png",
+      "source_filename": "badge_routine_wash_hands_r01.png",
+      "source_sha256": "cddf4afa458ccbf6f735f3f52cdf1ada6db0327eeb9cf0d2971ae39332be1d13",
+      "provider": "local deterministic Pillow typography",
+      "processing": {
+        "byte_identical_to_approved_candidate": true
+      },
+      "size": [
+        504,
+        225
+      ],
+      "mode": "RGBA",
+      "sha256": "cddf4afa458ccbf6f735f3f52cdf1ada6db0327eeb9cf0d2971ae39332be1d13",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "badge",
+      "id": "badge_take_turns_v1",
+      "runtime_path": "assets/stickers/badge_take_turns_v1.png",
+      "source_filename": "badge_take_turns_v1_r01.png",
+      "source_sha256": "549475b11f8881fc68067a6255c6b1aefc57c71bc9105436d39aa501a657a7e6",
+      "provider": "local deterministic Pillow typography",
+      "processing": {
+        "byte_identical_to_approved_candidate": true
+      },
+      "size": [
+        528,
+        225
+      ],
+      "mode": "RGBA",
+      "sha256": "549475b11f8881fc68067a6255c6b1aefc57c71bc9105436d39aa501a657a7e6",
+      "visual_status": "user_approved"
+    },
+    {
+      "kind": "prop",
+      "id": "prop_apple",
+      "name": "Apple",
+      "chinese": "蘋果",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_apple.png",
+      "size": [
+        905,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "64b4de0dc02b48719cb761bb7d03fd963df2c0411870177eeb2b325e20a5b5de",
+      "source_filename": "prop_apple_r02.display-source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "7510d53447a2dc3a32f47865b3e2b68cc2f4ba5bea32398ec6eb9a186df0e1f9",
+      "prompt_sha256": "f6da7495e1ed67f6d152ccfbc01e484b16da8561a19e0bf222f88ce8ed83e653",
+      "previous_runtime_sha256": "f166982aa71056f50b99a464197b929ac8a1c3f9424515970c4d4ed497621386",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          145,
+          80,
+          1108,
+          1172
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_cookie",
+      "name": "Cookie",
+      "chinese": "曲奇",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_cookie.png",
+      "size": [
+        1024,
+        1001
+      ],
+      "mode": "RGBA",
+      "sha256": "4fc5e0df69113c8737b4e410d2a786a51d4519df78c16aabe46d16c2e0fb334b",
+      "source_filename": "prop_cookie_r01.original.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "4dde11112267aa95277eec50b106f63f834d474b4dd5409276069df8baf2cbd0",
+      "prompt_sha256": "291c71aae0e3a37b4d1457e8207cbdc2276f0022b9e0f714ad2e4c86aa7c21ec",
+      "previous_runtime_sha256": "6bd990f3ddf1d30868c202afd3e50ae22b3ea4bb5f2c4bf5b5926a7b88f5b265",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          58,
+          75,
+          1192,
+          1183
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_bus",
+      "name": "Bus",
+      "chinese": "巴士",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_bus.png",
+      "size": [
+        1024,
+        502
+      ],
+      "mode": "RGBA",
+      "sha256": "969466e23d9db098ffbc657e12d18505723692a486b06036264195fab56b2283",
+      "source_filename": "prop_bus_r01.original.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "685750618d178fd2b021be4ffe0aab526b727783c9eec8637c5babe4504d5d72",
+      "prompt_sha256": "11fdd95f74e681520c276902569cfa6548fc2c4e6d5fbc1a95664845634bb98b",
+      "previous_runtime_sha256": "fd7285954faf3655e084e5139d4e6580cafb2d498f14cb60daa96422fd8cde31",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          20,
+          324,
+          1236,
+          910
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_train",
+      "name": "Train",
+      "chinese": "火車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_train.png",
+      "size": [
+        1024,
+        490
+      ],
+      "mode": "RGBA",
+      "sha256": "3fb8e340574e3bdb1a7cbf8d278f8ce60e9134b8fb4885ea061183f670ec1499",
+      "source_filename": "prop_train_r01.original.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "791a68e14865572ec1f04751af922a475fd405dfb2605c70837ba6c27e342859",
+      "prompt_sha256": "ff861e9210cef820e93ec38bcf8cc04031672116ac4a85c271743e413bab3863",
+      "previous_runtime_sha256": "0a4c86cf23d081b1806750cd02e901799c5e50fc89ea336a9d4ab50f7f2f8eb8",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          17,
+          317,
+          1239,
+          892
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_airplane",
+      "name": "Airplane",
+      "chinese": "飛機",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_airplane.png",
+      "size": [
+        1024,
+        687
+      ],
+      "mode": "RGBA",
+      "sha256": "1787375ce5ff8990ba18ec2cf52359bad78a0d125ccfc41acf96728e17734a94",
+      "source_filename": "prop_airplane_r01.original.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "63c95d806a5aac8d139e71d1edd630c4e882cb79ff26771ed847f6c7789ac450",
+      "prompt_sha256": "d487badb810f854f0328be771b63e26a49f751889143c06b50ffc03d9bb26a83",
+      "previous_runtime_sha256": "99c889212fd08af66196fbdd64fb3d09d23d87ce801d1f91cf715fac3a8a72b2",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          21,
+          199,
+          1241,
+          1011
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_duckling",
+      "name": "Duckling",
+      "chinese": "鴨仔",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_duckling.png",
+      "size": [
+        652,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "063f9861fbd9a04057976406d05cc8893dfbb40138ae4872eb9d9d0cfe323e22",
+      "source_filename": "prop_duckling_r01.original.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "7fb9391ff1b95b98e61561569e539ee288bd9a2f21c92575d3fd46a9169d5b43",
+      "prompt_sha256": "91670a96259fa0c63722d34e15caca73a084b990223977ab96157d183cb70116",
+      "previous_runtime_sha256": "fcb67906bb2131e7004ca7cb465dd84f971bc02bc064f18f2d33a21c49349b7d",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          228,
+          22,
+          994,
+          1236
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_frog",
+      "name": "Frog",
+      "chinese": "青蛙",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_frog.png",
+      "size": [
+        1024,
+        1010
+      ],
+      "mode": "RGBA",
+      "sha256": "dee54e89aba17a8df66827d6804190555ac415ea472bdee539ff9ba8af1cf756",
+      "source_filename": "prop_frog_r01.original.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "90e91a7feec1d23cc4fa6a3f5f6c22df52609ceb7429bf324fe6e1464b3529b9",
+      "prompt_sha256": "579bd5dc131374a41e3ee7b15f03acccc79625f83325e6649639d1322f8a3471",
+      "previous_runtime_sha256": "8f522cc311fc5c0be21fa829d5137aaa966368c752b91cbde65dde16f6e4c8ac",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          127,
+          131,
+          1142,
+          1132
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_bunny",
+      "name": "Bunny",
+      "chinese": "兔仔",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_bunny.png",
+      "size": [
+        809,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "bb0d54c88e28785073e273015ad5b57174f6737aa131206636d1ab66c225b10d",
+      "source_filename": "prop_bunny_r01.original.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "6fcb02344614fe5d5dfd8dcd534c386a26df59daa9d910f8c40416e95791513e",
+      "prompt_sha256": "ee4e1a44bf6aae33d2c1986005abe640fb004aad90157acfde96d10229977f37",
+      "previous_runtime_sha256": "04edb8f3b9db701ea12a020ecd04c551f56db3df494c7fb81097d903c596d746",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          176,
+          20,
+          1129,
+          1232
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_elephant",
+      "name": "Elephant",
+      "chinese": "大象",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_elephant.png",
+      "size": [
+        1024,
+        901
+      ],
+      "mode": "RGBA",
+      "sha256": "f8076724968f17c5681d73d52687a10121dc1a22d335c0604b0686232cf67a81",
+      "source_filename": "prop_elephant_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "ca747e4514f0a96390c5bafa906ec5c692a77e22cb0f923c7eeaa4d76fb86975",
+      "prompt_sha256": "51652d3aeef842b49e782893afa49c4b7f2f88a6124fbbdc424f293f8d80ba4c",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          64,
+          128,
+          1208,
+          1132
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_giraffe",
+      "name": "Giraffe",
+      "chinese": "長頸鹿",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_giraffe.png",
+      "size": [
+        607,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "c31fc3bc2be18fde8d7e29b58dd0280ed48d6b5e6272c550e681fa587dfb2267",
+      "source_filename": "prop_giraffe_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "bb829b9bda732b5352a712ba8341470e1d0244d80483a992c19e19f38db0a500",
+      "prompt_sha256": "70ba51e7f3cded08345afd8aed2d53839a75a2031b114a4c01aba386147d2f44",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          271,
+          14,
+          990,
+          1240
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_lion",
+      "name": "Lion",
+      "chinese": "獅子",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_lion.png",
+      "size": [
+        1024,
+        1010
+      ],
+      "mode": "RGBA",
+      "sha256": "5991315f3e8995ef139053ffb9f08a43da1059a775ebc787ec2191be1bed9c33",
+      "source_filename": "prop_lion_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "5dac9949087558d9164b772342abf98a342d9fddb3d134b3dbf27876f23575de",
+      "prompt_sha256": "7c201a032856d4e4ee4a67d7d9b7d3ef9e0286c5e2a0359d4f90c955c8b45aa9",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          47,
+          55,
+          1205,
+          1197
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_panda",
+      "name": "Panda",
+      "chinese": "熊貓",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_panda.png",
+      "size": [
+        935,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "d6d7cc34c1827b756a9eb3dfd0125f7fdee44564457a0cedad2f14e19912c208",
+      "source_filename": "prop_panda_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "aad0bf36a32a4ad291d0889658a3b52de0b97d79e59f4b28466ab9099af6336e",
+      "prompt_sha256": "8171f59c432089fc80efecd7a5657a9c329966b38687e5940924a6c6a744b405",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          93,
+          40,
+          1163,
+          1214
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_monkey",
+      "name": "Monkey",
+      "chinese": "馬騮",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_monkey.png",
+      "size": [
+        917,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "0e4e8b920af0fdd8403e25cb3ffdec966e1d6110b155748c7420f84a990a13ee",
+      "source_filename": "prop_monkey_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "c752fbda770b08aed6b5b8ca8b301531e499cfe548ae267dd1503b0802ca268f",
+      "prompt_sha256": "54f0c8fe562aa5e5f57a5f932ff6b2bd9823e3c19543e0353ece8868bef6ebba",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          125,
+          32,
+          1183,
+          1215
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_penguin",
+      "name": "Penguin",
+      "chinese": "企鵝",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_penguin.png",
+      "size": [
+        865,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "3f84bf44d6a5dd97104103d5e0dffb442ac850839a262c46d677746e3c624b66",
+      "source_filename": "prop_penguin_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "f2598c80edeb3ede7250225b9833936636ffaf61bf1db754dda42bb629ed3cee",
+      "prompt_sha256": "89fcb4f4c35ed6c071ca8f29517778df446041ef8c6686771cf5968e53671f2e",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          144,
+          55,
+          1108,
+          1199
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_turtle",
+      "name": "Turtle",
+      "chinese": "烏龜",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_turtle.png",
+      "size": [
+        1024,
+        754
+      ],
+      "mode": "RGBA",
+      "sha256": "7a2b5e13194b902509a1d68df3998f8e59c4cfb724c98183898e26d2153b9f11",
+      "source_filename": "prop_turtle_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "6f5e653b860a9cb81b642c90c93520e089a1a7edd4710abbd81ffa267cce5d81",
+      "prompt_sha256": "b42c1c5dbc6de8cf950ea99c1a162191b9783de0aa51a6e1241983c9031ba0e2",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          32,
+          192,
+          1227,
+          1067
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_fish",
+      "name": "Fish",
+      "chinese": "魚",
+      "category": "animals",
+      "runtime_path": "assets/stickers/prop_fish.png",
+      "size": [
+        1024,
+        761
+      ],
+      "mode": "RGBA",
+      "sha256": "ee8b72c0881fa6972d1409d0efd9ed3b25a23af32f2b2b5be06c3013be3bd728",
+      "source_filename": "prop_fish_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "849c5b6485188c9eb4f0336562d4df6e946511b4ff70f1b3066889a72e9cbdb0",
+      "prompt_sha256": "681db72f431554037f3b060a179f53d7bc96f532961d91dab3daf7050d014ba0",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          43,
+          195,
+          1211,
+          1058
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_ambulance",
+      "name": "Ambulance",
+      "chinese": "救護車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_ambulance.png",
+      "size": [
+        1024,
+        665
+      ],
+      "mode": "RGBA",
+      "sha256": "d28b8c6a206df1e0cd8bfcc20bcd3c287ca6e14c004e6b2ce0c3b454b31b0f44",
+      "source_filename": "prop_ambulance_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "893ace7daf0fea855f9f0713bd4c9bedae8ecec9c0d9c565727039a130bf2159",
+      "prompt_sha256": "4b946f51e31e4779e31f4afe4ae362f7ca854971e4f7254a8a796abced431904",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          24,
+          244,
+          1230,
+          1020
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_police_car",
+      "name": "Police Car",
+      "chinese": "警車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_police_car.png",
+      "size": [
+        1024,
+        553
+      ],
+      "mode": "RGBA",
+      "sha256": "4fe988d09a0d2d20270b6b64df50222689b7732f68c7cc880e9ab9a6a609034d",
+      "source_filename": "prop_police_car_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "a21e0d3d25897c424f5e45cc178950a23e4ca300e25b172f290ea0e01dafb634",
+      "prompt_sha256": "8f0f732c73faa1aad39e1b492fda7df12d1962399d6ad5b160f2601ce16b7e1c",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          47,
+          322,
+          1207,
+          940
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_helicopter",
+      "name": "Helicopter",
+      "chinese": "直升機",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_helicopter.png",
+      "size": [
+        1024,
+        709
+      ],
+      "mode": "RGBA",
+      "sha256": "47c9cbf758b817f560a2a32c552a5b7884a33505bc66188b9039a2e4be1255f4",
+      "source_filename": "prop_helicopter_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "d35d5a67329f9db849d03f692ba37baf2c046835cfcc2fa2190ed298b5bef3ee",
+      "prompt_sha256": "b06f0c8055f180fee9397c27333d84a3ed6b8ce53593cb488b5bb8dcf61a4a0d",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          43,
+          221,
+          1235,
+          1040
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_excavator",
+      "name": "Excavator",
+      "chinese": "挖泥機",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_excavator.png",
+      "size": [
+        1024,
+        845
+      ],
+      "mode": "RGBA",
+      "sha256": "bac5353bf79274e80fe7b837210d7a9bea63972e29d5224ccbd1fc3dcb427bd0",
+      "source_filename": "prop_excavator_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "e83e2fdc399819a91f9d0a609d243950a98cf333c7ada3ac61141fefede39a0f",
+      "prompt_sha256": "0ee72598911c729bbfc3c3c60ddb246e5aef03057af5de043ac1f589527313d1",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          23,
+          126,
+          1231,
+          1120
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_tractor",
+      "name": "Tractor",
+      "chinese": "拖拉機",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_tractor.png",
+      "size": [
+        1024,
+        779
+      ],
+      "mode": "RGBA",
+      "sha256": "34d7e364a9280e00b44c1410d9e06c478e23df02e943071465d0394c72cac829",
+      "source_filename": "prop_tractor_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "3062739807ca0a115bffb5cbaf6b790356ce4765ff52333b190ea577589fbdb9",
+      "prompt_sha256": "981926fd76ee41658421db44ab5376da5a7b83f0867267a287af45f108902573",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          36,
+          176,
+          1223,
+          1075
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_dump_truck",
+      "name": "Dump Truck",
+      "chinese": "泥頭車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_dump_truck.png",
+      "size": [
+        1024,
+        615
+      ],
+      "mode": "RGBA",
+      "sha256": "184170d4be5a2736b7f2c255e66f0b2cc34949dbee78f7caab97505c02055aad",
+      "source_filename": "prop_dump_truck_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "5f49f5fff524fa7740340aea6658d0df49cef70ba2d1a00558054e18a8875e41",
+      "prompt_sha256": "4fe6bb2108044fdd2ef7004781b14c16fd2f583c86ab986562a21227de5c72e5",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          24,
+          268,
+          1233,
+          986
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_sailboat",
+      "name": "Sailboat",
+      "chinese": "帆船",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_sailboat.png",
+      "size": [
+        1024,
+        1016
+      ],
+      "mode": "RGBA",
+      "sha256": "7df5833878a0592c78e40902148b699989d69786bc1476cf22f4f63daa3b5b62",
+      "source_filename": "prop_sailboat_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "2e798a39334212385124078d38b89b75c93021edf9c632a4d3d9c69f477f7858",
+      "prompt_sha256": "8401247ba3e102523ac1d74c0410c3417209ca9fa83fddc0782d68a2acafd5d7",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          91,
+          95,
+          1164,
+          1160
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_bicycle",
+      "name": "Bicycle",
+      "chinese": "單車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_bicycle.png",
+      "size": [
+        1024,
+        759
+      ],
+      "mode": "RGBA",
+      "sha256": "14c5305951936e5bf8002c950162f98fe3acf78e5d5dc37d946689c6772ed101",
+      "source_filename": "prop_bicycle_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "4797ae28ae9cabb76946d709e8fadd3baa26137ae40a1fa26cdf4e4a0011eaa8",
+      "prompt_sha256": "c89444e9ae667373d8e2d128db748b62e28044bda67a8491e27e7182ed7ad1f8",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          26,
+          183,
+          1228,
+          1069
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_orange",
+      "name": "Orange",
+      "chinese": "橙",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_orange.png",
+      "size": [
+        990,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "0b845c9eddd0f0cd5fadbf3eca72f416306591cfb8b9b50b4d80092a673a7e4c",
+      "source_filename": "prop_orange_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "25b374a17c7f722e59304d8469c305964b0759f69af86ef3239907b78ad5d2b3",
+      "prompt_sha256": "59d6ac91c7be0ecae0134e1798c16e33adf402522b254966bcded0698f65de42",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          145,
+          95,
+          1179,
+          1165
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_pear",
+      "name": "Pear",
+      "chinese": "梨",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_pear.png",
+      "size": [
+        679,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "199000bacd04a00a16de450bc1dc1f26d1130c4aecca4c921dbde83264aadeef",
+      "source_filename": "prop_pear_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "6508b438adb6a4f6c4e3b72eacd58366b34df9095c59fb14cf1c6bf94aa7bc56",
+      "prompt_sha256": "73d449a13569e5187db362d5f6fd4e7cd3ce8051cf5143420bb79bc7a42b95b2",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          257,
+          61,
+          998,
+          1187
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_mango",
+      "name": "Mango",
+      "chinese": "芒果",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_mango.png",
+      "size": [
+        754,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "427089c5fdfe2b74d1fa4875f5363d6cc9e27a52f1e1eff45ef6a2bcce1b72a1",
+      "source_filename": "prop_mango_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "b3bd8ef8834eee8c12d364807b65aec0e0cabe4905045af87cbad273ca457ad4",
+      "prompt_sha256": "922b877de6d9dae89f9815cc28ef9190a6913d8b430cc6d16943e2ffcf7ac162",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          235,
+          61,
+          1060,
+          1188
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_pineapple",
+      "name": "Pineapple",
+      "chinese": "菠蘿",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_pineapple.png",
+      "size": [
+        623,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "a6a525da2766a3d7e1e094eb81f3addc3322e722b432d0a22b4236fe6222e50b",
+      "source_filename": "prop_pineapple_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "32a2d3496f82a0c658d1941cb6e21c5617d144da199eb2c73e96b91852025ffa",
+      "prompt_sha256": "e5edb2bd91e3d6a6b04a2830a15e1b921e0e68545cb49bb65715fdcdeb6269b5",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          269,
+          21,
+          998,
+          1231
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_carrot",
+      "name": "Carrot",
+      "chinese": "紅蘿蔔",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_carrot.png",
+      "size": [
+        865,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "d748b1d850b900559cdcdacbf1b078ec7e13040b57ee4f6906a3ddea05ad08e5",
+      "source_filename": "prop_carrot_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "6aefabbd6a6ffc6a6e217c13a136be3b57f81033f8edf760725d78bcc999ad82",
+      "prompt_sha256": "c30673999f2b6a329f6bf69a1b0985eb74f79c4c170a635f2a450bd4b72717e0",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          173,
+          51,
+          1143,
+          1203
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_broccoli",
+      "name": "Broccoli",
+      "chinese": "西蘭花",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_broccoli.png",
+      "size": [
+        1024,
+        999
+      ],
+      "mode": "RGBA",
+      "sha256": "aaf0df577f28ee94aeb32a6830e518766fc51e9ff7e46d092308635da959b3ce",
+      "source_filename": "prop_broccoli_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "5261727979c4e9466043af7d480e4221d548a5042f6044e96960da3eac385994",
+      "prompt_sha256": "21ecc5bb3cac53683475c9ec4a53881eeeba57a82d09f35114b5c74d2214bda0",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          44,
+          60,
+          1210,
+          1197
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_sweetcorn",
+      "name": "Sweetcorn",
+      "chinese": "粟米",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_sweetcorn.png",
+      "size": [
+        767,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "1987419fb2e2aceead4482f82ffc6b6b2207df418a9def479b7a1e397b2c476f",
+      "source_filename": "prop_sweetcorn_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "69b1172b9bcb63c1b12aa4cbc63afff99012acec10eaf28c737add4bbe5a100e",
+      "prompt_sha256": "08a8aa867d1c57f6dab34b229e8c2a82524581e860bf977838fe89a059763ba3",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          204,
+          33,
+          1091,
+          1223
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_bok_choy",
+      "name": "Bok Choy",
+      "chinese": "白菜",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_bok_choy.png",
+      "size": [
+        938,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "1bd5db794bf2c0305c1c8488d709278bb6721f3006a2186d3bf49aff7e2a17cf",
+      "source_filename": "prop_bok_choy_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "74f96e4fcaf01bb01a332b919e0a04b736c97f3eece48c0ca85c9ac71b0925e3",
+      "prompt_sha256": "a6da7c2f071c6979a320c2d5e921eac92e8e4938018ec1db159d0d9b94d278eb",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          96,
+          43,
+          1162,
+          1209
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_rice_bowl",
+      "name": "Rice Bowl",
+      "chinese": "白飯",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_rice_bowl.png",
+      "size": [
+        1024,
+        858
+      ],
+      "mode": "RGBA",
+      "sha256": "81a964957e90774b047abbb55085ea5ecf4fbbb1f14fd0d226cb72f1d8a4466d",
+      "source_filename": "prop_rice_bowl_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "1de57e836f2ca038bbe217c114cde7b1b379b49f41a1e21c89538aa653602ccc",
+      "prompt_sha256": "f189c2e4b91e9fd948db695d19d2bad3930e9cc23232f8ebe5f22ab9b332fc92",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          78,
+          187,
+          1175,
+          1103
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_noodle_bowl",
+      "name": "Noodle Bowl",
+      "chinese": "麵",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_noodle_bowl.png",
+      "size": [
+        1024,
+        852
+      ],
+      "mode": "RGBA",
+      "sha256": "cec2ef449547fc8c6e68c451205e3638b5759335ec41382d27c1d76840f90478",
+      "source_filename": "prop_noodle_bowl_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "6280b203d7718674e473eeeb078d50db7f00f1496b6e64810f2bb8534fc2e418",
+      "prompt_sha256": "af56057e2edf72f494f74c0840392fb186128ac6d55dc4cad11de5bdc364073f",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          123,
+          222,
+          1132,
+          1059
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_congee_bowl",
+      "name": "Congee Bowl",
+      "chinese": "粥",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_congee_bowl.png",
+      "size": [
+        1024,
+        792
+      ],
+      "mode": "RGBA",
+      "sha256": "7a9c2d60cee766db3c75953d50366a5a9af927562753865ab87d0538499e01d0",
+      "source_filename": "prop_congee_bowl_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "198c4762e65f8933820c7d6682263063ff9f070185ba11d1bbe002afafc8ec48",
+      "prompt_sha256": "a6fb5f9b94a342b479cbda47c60326fe74db1f2447a1ef49e594215535e92827",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          76,
+          213,
+          1179,
+          1062
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_steamed_bun",
+      "name": "Steamed Bun",
+      "chinese": "包",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_steamed_bun.png",
+      "size": [
+        1024,
+        840
+      ],
+      "mode": "RGBA",
+      "sha256": "b51bf78b9ccb6401edf3c32d3988ef9daec8dc4f2a50ca037eeb8c26410ecee0",
+      "source_filename": "prop_steamed_bun_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "c33c9a2a104bdceecc75a58294bea0ccc559d8b3b05d850cfd3745c7e8673700",
+      "prompt_sha256": "d4f896be3b88dc92ce9e18a777a4d27e0283c90927cb924119bb94479381470d",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          100,
+          200,
+          1154,
+          1062
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_toast",
+      "name": "Toast",
+      "chinese": "多士",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_toast.png",
+      "size": [
+        985,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "c3ffa09249b8c8c6dfeb0e942c2b69c981106033c6cfa8a5bd682579f7482e39",
+      "source_filename": "prop_toast_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "163fa8702a0e44a0b0eb70b7d441a54ef79e738b59406baad8bbd3ad72653631",
+      "prompt_sha256": "72ac2a0f5d20ae69f9b9ad31ca7ccada8fdeaf1c1419adf51e2105e9235c61f5",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          110,
+          92,
+          1139,
+          1162
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_boiled_egg",
+      "name": "Boiled Egg",
+      "chinese": "烚蛋",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_boiled_egg.png",
+      "size": [
+        1024,
+        741
+      ],
+      "mode": "RGBA",
+      "sha256": "5ca2877fae8690afd6ece0abc15d26f3a6d988043bb85055f810fc860527761d",
+      "source_filename": "prop_boiled_egg_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "7359f29bf3a06e553ba59c307344b468e15b256d29ff9d7c85ffbfa674ff2dba",
+      "prompt_sha256": "a9a49c9b1510ba3f6d4892df475cd4664f473c967ce06b8d865c611a550316c6",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          40,
+          204,
+          1219,
+          1052
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_sandwich",
+      "name": "Sandwich",
+      "chinese": "三文治",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_sandwich.png",
+      "size": [
+        1024,
+        814
+      ],
+      "mode": "RGBA",
+      "sha256": "0bb572cba7a8f8f407ce93d7000695876d9bbd7222385c4a0aedaaad87f0a7ec",
+      "source_filename": "prop_sandwich_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "bce62570c3d3611849b35ad71685bb5a068a64ca72b783560ac125837df63aec",
+      "prompt_sha256": "62081c2ce39782ecb6431dff88f5632a89b648a900bd46a2464a017048cd7128",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          47,
+          163,
+          1219,
+          1091
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_rice_cracker",
+      "name": "Rice Cracker",
+      "chinese": "米餅",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_rice_cracker.png",
+      "size": [
+        1024,
+        1007
+      ],
+      "mode": "RGBA",
+      "sha256": "96f1b7d5c5a59e1b2ef35f91612c22b825f2883711bb16326d387965a25c5a96",
+      "source_filename": "prop_rice_cracker_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "5e12e762425ec3ff6207bbb9211db6b965565f601441ef579a5ad628a3c4cd8a",
+      "prompt_sha256": "fa32c630a615f230f807aa314673465fd93dcbed4842e0b75c01d7b66ad78343",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          118,
+          132,
+          1139,
+          1136
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_spoon",
+      "name": "Spoon",
+      "chinese": "匙羹",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_spoon.png",
+      "size": [
+        937,
+        971
+      ],
+      "mode": "RGBA",
+      "sha256": "f452ad14bfc5559b70570072c56401b5c77d07b0cd401b094b1598e9d72ade0d",
+      "source_filename": "prop_spoon_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "a1d0f5a93815cd3d8e7dfc1f0ecad57b8c379c2944541c659acc41c1c58b96cf",
+      "prompt_sha256": "b37b4f6031dac812fe3e8cd6a139f19610f5cf1d0c9c9e52257e128429070ca4",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          202,
+          153,
+          1123,
+          1108
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_plate",
+      "name": "Plate",
+      "chinese": "碟",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_plate.png",
+      "size": [
+        1024,
+        730
+      ],
+      "mode": "RGBA",
+      "sha256": "b555c3e8cabfc3ca1c9f627165e7c7c9417f55a8beda68b56fa8c714e78d68ef",
+      "source_filename": "prop_plate_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "9550ff931d8533f5921135ac0587ac3eb570b3eac7d9e4732477fd5555992302",
+      "prompt_sha256": "1413e4e6482c55af847ff97bad4525838c5fa7dfd024c18d75fb6d25710d8e81",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          53,
+          207,
+          1200,
+          1019
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_drinking_cup",
+      "name": "Drinking Cup",
+      "chinese": "杯",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_drinking_cup.png",
+      "size": [
+        818,
+        991
+      ],
+      "mode": "RGBA",
+      "sha256": "fc066414524aec666137342178cfd6fccc62d7d23747a219a6c9cb0adc06a36e",
+      "source_filename": "prop_drinking_cup_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "078c9fbd15c481d9d3bf84b758be761db2bf47cd03ccb74ef2af9cafc56c6294",
+      "prompt_sha256": "a67299fb938dba27cc829b6184655f981604a3f05e33d40ec35a4a731eea6aa0",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          226,
+          154,
+          1028,
+          1129
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_soap_bar",
+      "name": "Soap Bar",
+      "chinese": "番梘",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_soap_bar.png",
+      "size": [
+        1024,
+        657
+      ],
+      "mode": "RGBA",
+      "sha256": "efd50814b1234b69206647536c19f0a503e9b7bbbb2487cea1a932c1944310fc",
+      "source_filename": "prop_soap_bar_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "5d677c4fe3622ca82b42547e7fee068fc3de4cc3d917f7032ca0a8283c810ad6",
+      "prompt_sha256": "71d01d0d6b95dc6f02c0322bcae7de3efb8fd4d6210bc25c5b2d94e4d0e95e06",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          48,
+          258,
+          1206,
+          994
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_hand_towel",
+      "name": "Hand Towel",
+      "chinese": "毛巾",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_hand_towel.png",
+      "size": [
+        1024,
+        658
+      ],
+      "mode": "RGBA",
+      "sha256": "96e9f3a717b6db0298ae10c26163ed29e1583886c1cea8da21e0cb0d901bafd9",
+      "source_filename": "prop_hand_towel_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "96df21a6106bc5a0f2c34fa1607efba210fe8d3182d25899875cfe48cfa59af3",
+      "prompt_sha256": "b8ce38dc200293ce1b88fdc1990e56f775a0cf2784619a64966e4da44d807f2a",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          37,
+          250,
+          1220,
+          1004
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_backpack",
+      "name": "Backpack",
+      "chinese": "背囊",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_backpack.png",
+      "size": [
+        931,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "7bcf05fd38cea60c64107a52d32a77d0fd6342cb6282f8c836110dd4df66417d",
+      "source_filename": "prop_backpack_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "e0ab387ef630ac01c60c1885ed28a856b90a3cce80623cfd03f837c77ae97780",
+      "prompt_sha256": "6eaaf9ed021c86a983b9560ef6fb476f35e9bfd9a93784accc3d90ac7f9866a9",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          116,
+          62,
+          1138,
+          1188
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_umbrella",
+      "name": "Umbrella",
+      "chinese": "遮",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_umbrella.png",
+      "size": [
+        1024,
+        998
+      ],
+      "mode": "RGBA",
+      "sha256": "1252875df96056587f3bbfe4ca1e1afddeb9840dcba41d1aef1f2dcdff4d5b38",
+      "source_filename": "prop_umbrella_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "ada54212200b5d668aba7c812c3848a2abbda3cba9c45f132f17937cc3ffe398",
+      "prompt_sha256": "6b7dc67d00e81ac0b8251b2f4a4cf75b0810de86c0588fbebe8bd20f5c910c9d",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          55,
+          77,
+          1191,
+          1184
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    },
+    {
+      "kind": "prop",
+      "id": "prop_rain_boots",
+      "name": "Rain Boots",
+      "chinese": "水靴",
+      "category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_rain_boots.png",
+      "size": [
+        1024,
+        963
+      ],
+      "mode": "RGBA",
+      "sha256": "3e39fad40dfba51ae2ea86bd4402dd9b6ac0f77b3b19a7676bfedbd8601830a1",
+      "source_filename": "prop_rain_boots_r01.source.png",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_sha256": "ff2c66dd8985b1e9293dbb2b96fa0d115035b4e22ff2e12a45de5e3a9b257342",
+      "prompt_sha256": "31d39e8a8454bb32d3b57c344439dee4fc336bdd7c2a80b10fc05b450e6fceea",
+      "previous_runtime_sha256": null,
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255; intermediate edge alpha retained",
+        "crop_ltrb": [
+          101,
+          133,
+          1155,
+          1123
+        ],
+        "maximum_content_dimensions": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "transparent_padding_each_side": 8,
+        "recoloring": false
+      },
+      "review_note": "User accepted the generated appearance. Matte remains the target; retained tonal variation is not proof of strict cel-style compliance."
+    }
+  ],
+  "runtime_integration": {
+    "pose_labels": true,
+    "director_allowlists_and_prompt": true,
+    "offline_action_cues": true,
+    "named_child_tweaks": true,
+    "badge_catalog_and_cache": true,
+    "explicit_scene_coordinates_preserved": true,
+    "release_prop_catalog": true
+  },
+  "counts": {
+    "sprites": 6,
+    "badges": 6,
+    "props": 48,
+    "new_files": 52,
+    "replaced_files": 8
+  }
+}

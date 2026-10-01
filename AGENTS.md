@@ -24,7 +24,7 @@ A full-stack, pedagogical Cantonese educational video generation studio designed
   - `sticker_service.py`: 12+ milestone visual props (dim sum, toothbrush, crayons, blocks, etc.).
 - `projects/`: File-backed storage for projects (e.g. `ep01_meeting_family`).
 - `assets/`:
-  - `assets/sprites/`: Canonical watercolor character action poses (Levi, Luca, Mom, Dad, Dog).
+  - `assets/sprites/`: Runtime character anchors and action poses. New poses use the clean matte 2D character rules in `STYLE_GUIDE.md`; watercolor is the background style, not a blanket character rule.
   - `assets/stickers/`: Props, badges, and learning stickers.
   - `assets/backgrounds/`: Living room, park, dining room watercolor scenes.
   - `assets/audio/`: Ukulele backing tracks and sound effects.
@@ -33,3 +33,4 @@ A full-stack, pedagogical Cantonese educational video generation studio designed
 1. **Preschool Safety & Tone:** Content is tailored for 1-4 year old toddlers learning Cantonese. Keep vocabulary authentic (Spoken Cantonese / 廣東話), gentle, and encouraging.
 2. **File-Backed Persistence:** Projects are saved directly into `projects/<project_id>/project.json`.
 3. **No Breaking Web UI Changes:** Keep existing API routes intact; when modifying UI, preserve the 5-step workflow (Theme -> Script -> Staging -> Audio -> Render/Publish).
+4. **Artwork Authority:** Read `STYLE_GUIDE.md` before creating or changing assets. Exact runtime anchors outrank historical SVGs, concept JPGs and selection-page labels. Keep candidates outside runtime asset folders until visual approval; file discovery does not imply automatic scene-director support. Do not run legacy bulk sprite scripts as a review/preparation step.

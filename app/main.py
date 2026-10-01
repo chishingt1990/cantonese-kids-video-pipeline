@@ -28,6 +28,14 @@ app.include_router(youtube.router)
 
 static_path = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=static_path), name="static")
+asset_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
+app.mount("/assets/sprites", StaticFiles(directory=os.path.join(asset_root, "sprites")), name="sprite-assets")
+app.mount("/assets/stickers", StaticFiles(directory=os.path.join(asset_root, "stickers")), name="sticker-assets")
+
+
+@app.get("/asset-library")
+def read_asset_library():
+    return FileResponse(os.path.join(os.path.dirname(os.path.dirname(__file__)), "generated-asset-portal.html"))
 
 @app.get("/")
 def read_root():
