@@ -114,7 +114,7 @@ Despite the test variable name `opaque_px`, alpha > 0 is **not** proof of opacit
 ## 3. Educational Stickers & Word Badges Specification
 
 ### Visual Attributes
-- **Scope**: The pill specification below applies to **word/vocabulary badges**, not every sticker. Toy letter/number blocks and object props retain their own silhouettes.
+- **Scope**: The pill specification below applies to **word/vocabulary badges**, not every sticker. Letter and number teaching stickers are now glyph-shaped phonics stickers, not boxed toy blocks.
 - **Shape**: Snug, content-proportional rounded pill badge (pill radius $\approx 46\%$ of badge height).
 - **Typography Lockup**:
   - **Spoken Cantonese**: Prominent top Chinese text (e.g. `多謝`, `早晨`, `好乖！`, `抱抱`) rendered in bold rounded Gothic / Microsoft JhengHei.
@@ -132,6 +132,7 @@ Despite the test variable name `opaque_px`, alpha > 0 is **not** proof of opacit
 - Render words with an installed font that actually contains the required glyphs. Inspect the raster output, not just the text string. Reject tofu boxes, missing glyphs, garbled text, clipping and internal identifiers such as `vocab_banana`.
 - Props must depict the named object at useful stage size. A blank circle, generic star or missing emoji glyph is not an acceptable substitute for a bus, apple, duck or train.
 - A sticker may use a restrained white die-cut outline/shadow; a character sprite may not. Avoid double borders when a prop is drawn as part of a character's hand-held action.
+- Phonics letter/number stickers must be deterministic local font renders with transparent RGBA exteriors, vivid matte colored glyph fills, and a close white die-cut outline following the glyph contours. Do not use box, tile, circle, or pill backgrounds for alphabet/number stickers. Preserve interior counters/holes in glyphs such as `A`, `B`, `0`, and `8`; multi-digit numbers should be the union of digit contours with no enclosing badge.
 - `get_or_render_sticker(..., force=False)` reuses an existing file (or matching `prop_` file). `force=True` can overwrite it; missing files can be generated at module import through `ensure_base_stickers()`. Do not delete the sticker directory or import the application as a read-only review shortcut.
 - Repairs to existing stickers require their own reviewed replacement batch. Do not regenerate all stickers during character-pose preparation.
 
@@ -296,3 +297,27 @@ only the 60 current release assets and uses repository-relative PNG links.
 Superseded trials, account-specific conversation links and machine-specific paths
 are excluded. No new backgrounds or unrelated video/voice pipeline changes are
 part of this release.
+
+## 9. Phonics and Prop Expansion
+
+The portal now includes 189 assets across three manifests: 60 from the first
+release, 73 glyph-shaped phonics stickers, and 56 further props.
+
+Phonics glyphs have no enclosing box, tile, pill or circular backing. Their white
+die-cut border follows the glyph outline; interior counters in letters/numbers
+remain transparent. Uppercase and lowercase versions share a color. Catalog IDs
+`block_a` through `block_z`, `block_lower_a` through `block_lower_z`, and
+`block_0` through `block_20` retain the six original ABC/123 IDs for compatibility.
+Font provenance uses font filenames rather than machine-specific paths.
+
+The 56 props include five toys, eleven vehicles, thirteen fruits, twelve vegetables
+and fifteen dishes. Toys and vehicles use three-quarter views to convey depth while
+retaining illustrated outlines and matte-color intent, not photorealistic 3D.
+Production exports preserve source colors, normalize near-opaque interiors,
+remove barely visible exterior speckles, downsample only as needed to fit within
+1008px content bounds, and add eight transparent pixels of padding.
+
+Eight requests have no recovered output: teddy bear, toy robot, beach bucket set,
+scooter, cherries, pink guava, lychee and siu mai plate. They are listed in
+`config/props_release_v2.json` and must not appear as generated assets or placeholder
+substitutions. Existing older assets with similar names remain unaffected.

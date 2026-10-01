@@ -4,6 +4,12 @@ import json
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from typing import Optional, Dict, Any, List
 
+from app.services.glyph_sticker_service import (
+    catalog_ids as phonics_catalog_ids,
+    catalog_records as phonics_catalog_records,
+    render_glyph_sticker,
+)
+
 STICKER_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "assets", "stickers")
 os.makedirs(STICKER_DIR, exist_ok=True)
 
@@ -504,6 +510,8 @@ STICKER_CATALOG = [
 
 with open(os.path.join(os.path.dirname(STICKER_DIR), "..", "config", "artwork_release_v1.json"), encoding="utf-8") as release_file:
     _release = json.load(release_file)
+with open(os.path.join(os.path.dirname(STICKER_DIR), "..", "config", "props_release_v2.json"), encoding="utf-8") as release_file:
+    _prop_expansion = json.load(release_file)
 RELEASE_PROPS = [
     {
         "id": asset["id"], "type": "icon",
@@ -514,10 +522,12 @@ RELEASE_PROPS = [
         "category": asset["category"],
         "release_addition": asset.get("previous_runtime_sha256") is None,
     }
-    for asset in _release["assets"] if asset["kind"] == "prop"
+    for asset in _release["assets"] + _prop_expansion["assets"] if asset["kind"] == "prop"
 ]
 _release_prop_ids = {prop["id"] for prop in RELEASE_PROPS}
-STICKER_CATALOG = [s for s in STICKER_CATALOG if s["id"] not in _release_prop_ids] + RELEASE_PROPS
+_phonics_catalog = phonics_catalog_records()
+_phonics_ids = phonics_catalog_ids()
+STICKER_CATALOG = [s for s in STICKER_CATALOG if s["id"] not in _release_prop_ids and s["id"] not in _phonics_ids] + _phonics_catalog + RELEASE_PROPS
 
 
 def get_all_stickers_catalog() -> List[Dict[str, Any]]:
@@ -538,9 +548,15 @@ def get_all_stickers_catalog() -> List[Dict[str, Any]]:
                 clean_name = s_id.replace("badge_", "").replace("word_", "").replace("vocab_", "").replace("_", " ").title()
                 label = f"🏷️ {clean_name}"
             elif s_id.startswith("block_"):
-                s_type = "letter" if not s_id[-1].isdigit() else "number"
-                clean_name = s_id.replace("block_", "").upper()
-                label = f"🧱 Block {clean_name}"
+                s_type = "number" if s_id.replace("block_", "").isdigit() else "letter"
+                clean_name = s_id.replace("block_lower_", "").replace("block_", "")
+                if s_type == "number":
+                    label = f"數字 {clean_name} (Number {clean_name})"
+                elif s_id.startswith("block_lower_"):
+                    label = f"細楷 {clean_name} (Lowercase {clean_name})"
+                else:
+                    clean_name = clean_name.upper()
+                    label = f"字母 {clean_name} (Letter {clean_name})"
             elif s_id.startswith("prop_") or s_id.startswith("sticker_"):
                 s_type = "icon"
                 clean_name = s_id.replace("prop_", "").replace("sticker_", "").replace("_", " ").title()
@@ -768,32 +784,11 @@ def generate_vocab_badge(chinese: str, english: str = "", theme: str = "amber", 
     return canvas.resize((target_w, target_h), Image.Resampling.LANCZOS)
 
 def generate_toy_block(content: str, theme: str = "rose", size: int = 180) -> Image.Image:
-    """Renders a preschool wooden toy block with bright bevel and drop shadow."""
-    s = size * 2
-    canvas = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    
-    # Shadow
-    shadow = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    s_draw = ImageDraw.Draw(shadow)
-    s_draw.rounded_rectangle([24, 38, s - 24, s - 10], radius=36, fill=(0, 0, 0, 65))
-    shadow = shadow.filter(ImageFilter.GaussianBlur(10))
-    canvas.alpha_composite(shadow)
-
-    # White Border
-    draw = ImageDraw.Draw(canvas)
-    draw.rounded_rectangle([24, 24, s - 24, s - 24], radius=36, fill=(255, 255, 255, 255))
-
-    # Block Face
-    c_theme = THEME_COLORS.get(theme, THEME_COLORS["rose"])
-    draw.rounded_rectangle([32, 32, s - 32, s - 32], radius=30, fill=c_theme["border"] + (255,))
-    
-    # Glossy Highlight Curve
-    draw.chord([40, 40, s - 40, s - 40], 180, 270, fill=(255, 255, 255, 90))
-
-    font = get_font(104, bold=True)
-    draw.text((s // 2, s // 2), content, font=font, fill=(255, 255, 255), anchor="mm")
-
-    return canvas.resize((size, size), Image.Resampling.LANCZOS)
+    """Backward-compatible public API for glyph-shaped phonics stickers."""
+    color = next((record["color"] for record in _phonics_catalog if record["content"] == content), None)
+    if color is None:
+        color = next((record["color"] for record in _phonics_catalog if record["color_theme"] == theme), "#D81B60")
+    return render_glyph_sticker(content, color, size=size)
 
 def generate_prop_icon(icon_name: str, size: int = 180) -> Image.Image:
     """Renders a transparent cartoon prop sticker with white die-cut border."""
@@ -958,11 +953,11 @@ def get_or_render_sticker(sticker_info: Dict[str, Any], force: bool = False) -> 
     if s_type == "letter":
         letter = sticker_info.get("content") or sticker_info.get("letter") or "A"
         theme = sticker_info.get("color_theme") or "rose"
-        img = generate_toy_block(letter, theme)
+        img = generate_toy_block(letter, theme, size=220)
     elif s_type == "number":
         num = sticker_info.get("content") or sticker_info.get("number") or "1"
         theme = sticker_info.get("color_theme") or "amber"
-        img = generate_toy_block(num, theme)
+        img = generate_toy_block(num, theme, size=220)
     elif s_type == "icon":
         icon = sticker_info.get("content") or sticker_info.get("icon") or "banana"
         img = generate_prop_icon(icon)

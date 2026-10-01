@@ -1,0 +1,1176 @@
+{
+  "release_id": "phonics_release_v2",
+  "description": "Deterministic local glyph-shaped phonics sticker replacement for boxed ABC/123 blocks.",
+  "asset_count": 73,
+  "renderer": "app.services.glyph_sticker_service.render_glyph_sticker",
+  "assets": [
+    {
+      "id": "block_a",
+      "kind": "letter",
+      "content": "A",
+      "label": "字母 A (Letter A)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_a.png",
+      "sha256": "ecf9cf3dfb9ab3acae09d1d90a2c556a6555c6671f489b67f343492726519384",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_lower_a",
+      "kind": "letter",
+      "content": "a",
+      "label": "細楷 a (Lowercase a)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_a.png",
+      "sha256": "b73bca94282a621337838e5128626061ae8de4c8d630c098afe4ff14dc02c7e3",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_b",
+      "kind": "letter",
+      "content": "B",
+      "label": "字母 B (Letter B)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_b.png",
+      "sha256": "2f3cfed698a92b00711f2255f16fd5565be7ea8788dded10567187a3b372c531",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#E85D3F"
+    },
+    {
+      "id": "block_lower_b",
+      "kind": "letter",
+      "content": "b",
+      "label": "細楷 b (Lowercase b)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_b.png",
+      "sha256": "43b85f2fc0cbfe44a09aa2bbc2146b942467d694668e1f26ec7dfaecebeb9cf0",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#E85D3F"
+    },
+    {
+      "id": "block_c",
+      "kind": "letter",
+      "content": "C",
+      "label": "字母 C (Letter C)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_c.png",
+      "sha256": "f58245ccb12a45342c43224cffa2dc291375babbe275074e31e53f3e66e75cc5",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#F28C28"
+    },
+    {
+      "id": "block_lower_c",
+      "kind": "letter",
+      "content": "c",
+      "label": "細楷 c (Lowercase c)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_c.png",
+      "sha256": "45e33dd3f3ff8f4e446f014e2637838614baaa2a7b799603813ee24d56dd797b",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#F28C28"
+    },
+    {
+      "id": "block_d",
+      "kind": "letter",
+      "content": "D",
+      "label": "字母 D (Letter D)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_d.png",
+      "sha256": "76cd66da6690cfaa7ad899533d6d86f337346bcb47daa137b509508bc5b18a32",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D8A000"
+    },
+    {
+      "id": "block_lower_d",
+      "kind": "letter",
+      "content": "d",
+      "label": "細楷 d (Lowercase d)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_d.png",
+      "sha256": "cf8b91cef6b0fae1542386a2055b6a338e3de9ab4e48b6c3aa220a32f754415f",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D8A000"
+    },
+    {
+      "id": "block_e",
+      "kind": "letter",
+      "content": "E",
+      "label": "字母 E (Letter E)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_e.png",
+      "sha256": "1003a893dc2b09680227835b7db2a777db3ed526f74f6fd6e5ad19cefcc4eb25",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#74A82A"
+    },
+    {
+      "id": "block_lower_e",
+      "kind": "letter",
+      "content": "e",
+      "label": "細楷 e (Lowercase e)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_e.png",
+      "sha256": "2203b04793b4f5e2f072979e5cce6abfc128d7d8822869f428c2dc5ea9c153c0",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#74A82A"
+    },
+    {
+      "id": "block_f",
+      "kind": "letter",
+      "content": "F",
+      "label": "字母 F (Letter F)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_f.png",
+      "sha256": "0d1eacf517bded14424a9b75c0be1c1ab97f4707ed6d909d1b9c54fed289aac0",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#14996B"
+    },
+    {
+      "id": "block_lower_f",
+      "kind": "letter",
+      "content": "f",
+      "label": "細楷 f (Lowercase f)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_f.png",
+      "sha256": "975cd336abbceb7a4b67f711ed662c456be91bb7a222dff47d83576ee37829f6",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#14996B"
+    },
+    {
+      "id": "block_g",
+      "kind": "letter",
+      "content": "G",
+      "label": "字母 G (Letter G)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_g.png",
+      "sha256": "26492944fb638aed4e19929beeb0a9a7d159796fa0fba910bcc40fa7746cf19d",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#008C95"
+    },
+    {
+      "id": "block_lower_g",
+      "kind": "letter",
+      "content": "g",
+      "label": "細楷 g (Lowercase g)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_g.png",
+      "sha256": "8acb67741d0eebfd95b1273ea469f69e3e059b41e02a330390a6fa4ac9143d05",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#008C95"
+    },
+    {
+      "id": "block_h",
+      "kind": "letter",
+      "content": "H",
+      "label": "字母 H (Letter H)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_h.png",
+      "sha256": "46dad3346e98d9f2bd8cb65316b535331b2f506d67c398fb13c617fe69d05e58",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#1687D9"
+    },
+    {
+      "id": "block_lower_h",
+      "kind": "letter",
+      "content": "h",
+      "label": "細楷 h (Lowercase h)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_h.png",
+      "sha256": "935656818a4c08fbdc1960d6680fd05ba80618f40f7a47d0bb2307df3dad8394",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#1687D9"
+    },
+    {
+      "id": "block_i",
+      "kind": "letter",
+      "content": "I",
+      "label": "字母 I (Letter I)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_i.png",
+      "sha256": "d8c629e25a019dc2f2c08c2ab9a9632df5a43d84795d046a2b240959c9fd7426",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#3367D6"
+    },
+    {
+      "id": "block_lower_i",
+      "kind": "letter",
+      "content": "i",
+      "label": "細楷 i (Lowercase i)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_i.png",
+      "sha256": "9df2a3fab4126621d61b3297f1df243e73b982033472c85a7e073b777337c5a2",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#3367D6"
+    },
+    {
+      "id": "block_j",
+      "kind": "letter",
+      "content": "J",
+      "label": "字母 J (Letter J)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_j.png",
+      "sha256": "324b186c6516b7bb4bb42a758b1c848f7a4926fa167537b664733b6fa2eb2e85",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#5E5CE6"
+    },
+    {
+      "id": "block_lower_j",
+      "kind": "letter",
+      "content": "j",
+      "label": "細楷 j (Lowercase j)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_j.png",
+      "sha256": "a91580f285ada8e3db7ec90f45f67ea9a6ef61818f4f1689b26d64779c154303",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#5E5CE6"
+    },
+    {
+      "id": "block_k",
+      "kind": "letter",
+      "content": "K",
+      "label": "字母 K (Letter K)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_k.png",
+      "sha256": "96ee5e9d4745477ff12b1cdfcb1a376419356651be7525a23773da3d8358546e",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#8E44AD"
+    },
+    {
+      "id": "block_lower_k",
+      "kind": "letter",
+      "content": "k",
+      "label": "細楷 k (Lowercase k)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_k.png",
+      "sha256": "25aebac79db9c83fe29b832cfb42720ff8405f61e56e21e0521f6a22938cb791",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#8E44AD"
+    },
+    {
+      "id": "block_l",
+      "kind": "letter",
+      "content": "L",
+      "label": "字母 L (Letter L)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_l.png",
+      "sha256": "c729d6b0f136fa3254b2e017670d1af6a3bc34004e3395151d6f5669c7fd8793",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#C13FA0"
+    },
+    {
+      "id": "block_lower_l",
+      "kind": "letter",
+      "content": "l",
+      "label": "細楷 l (Lowercase l)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_l.png",
+      "sha256": "1da6bd7aa57456a8afa3786d9fa219ebf875d813a4d67e8dfa09942b4dbdf182",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#C13FA0"
+    },
+    {
+      "id": "block_m",
+      "kind": "letter",
+      "content": "M",
+      "label": "字母 M (Letter M)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_m.png",
+      "sha256": "8132d8a05c0adc32a06bcbb0915f0a79f9a2755c5f60ac203a6f875fbc03e4e4",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_lower_m",
+      "kind": "letter",
+      "content": "m",
+      "label": "細楷 m (Lowercase m)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_m.png",
+      "sha256": "1f60ed3bf7590576523746662dd70d7a3574cf715c211303fe6b17197d08cc92",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_n",
+      "kind": "letter",
+      "content": "N",
+      "label": "字母 N (Letter N)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_n.png",
+      "sha256": "cf42f4c7a920f684dacf661aab856f9d1422dbbe2f6a76a98b4d11274103e958",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#E85D3F"
+    },
+    {
+      "id": "block_lower_n",
+      "kind": "letter",
+      "content": "n",
+      "label": "細楷 n (Lowercase n)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_n.png",
+      "sha256": "da413cf72e80bd7f0f9b50ed5f80efac26b2e137335c5a99430c022d77178b9d",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#E85D3F"
+    },
+    {
+      "id": "block_o",
+      "kind": "letter",
+      "content": "O",
+      "label": "字母 O (Letter O)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_o.png",
+      "sha256": "050bb8f601bc72a5d642c7a9c6c608567475adccee982eab765a484033d3e41b",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#F28C28"
+    },
+    {
+      "id": "block_lower_o",
+      "kind": "letter",
+      "content": "o",
+      "label": "細楷 o (Lowercase o)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_o.png",
+      "sha256": "a43779d140eb09ef488f252030bed44e5d66eaf0caff09e9df700a96e0bf4e8e",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#F28C28"
+    },
+    {
+      "id": "block_p",
+      "kind": "letter",
+      "content": "P",
+      "label": "字母 P (Letter P)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_p.png",
+      "sha256": "6cd6c857918cdeacc40719d74857d458bfa1ff3c314b7d762810e356b017c058",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D8A000"
+    },
+    {
+      "id": "block_lower_p",
+      "kind": "letter",
+      "content": "p",
+      "label": "細楷 p (Lowercase p)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_p.png",
+      "sha256": "936f38f3094f4e53aba79eef8f1d066b9170275b250d0fedce0866ebb9053165",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D8A000"
+    },
+    {
+      "id": "block_q",
+      "kind": "letter",
+      "content": "Q",
+      "label": "字母 Q (Letter Q)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_q.png",
+      "sha256": "56ffac0d853b6f89507dbd39c1afd13d441f2c2c1f2c02b3bb9cfd28d4eba52a",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#74A82A"
+    },
+    {
+      "id": "block_lower_q",
+      "kind": "letter",
+      "content": "q",
+      "label": "細楷 q (Lowercase q)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_q.png",
+      "sha256": "65b073daab79fb1ba9e0c38325ee164ca1bc439ae3c0a20349280121417cfe51",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#74A82A"
+    },
+    {
+      "id": "block_r",
+      "kind": "letter",
+      "content": "R",
+      "label": "字母 R (Letter R)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_r.png",
+      "sha256": "6994ce3c49253b69c5dfce81f299370472256621976049dbf1f5fcc00c338867",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#14996B"
+    },
+    {
+      "id": "block_lower_r",
+      "kind": "letter",
+      "content": "r",
+      "label": "細楷 r (Lowercase r)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_r.png",
+      "sha256": "72e8adfd1edb6c411d51a16eb55060617d34cb9b579bd790cef634d32e480f62",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#14996B"
+    },
+    {
+      "id": "block_s",
+      "kind": "letter",
+      "content": "S",
+      "label": "字母 S (Letter S)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_s.png",
+      "sha256": "3ce219ce293ea45811a72fbd9e7f91db65f710112bcfecf7709414d7ff68967a",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#008C95"
+    },
+    {
+      "id": "block_lower_s",
+      "kind": "letter",
+      "content": "s",
+      "label": "細楷 s (Lowercase s)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_s.png",
+      "sha256": "e6b1936c2a284ca899e30d1a3c728834372ca62e47728ffdf61b0952b47e8cf5",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#008C95"
+    },
+    {
+      "id": "block_t",
+      "kind": "letter",
+      "content": "T",
+      "label": "字母 T (Letter T)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_t.png",
+      "sha256": "67103e362399a1a7c2ffb17fa3df0d5eb1762028c4e6dc921abd686b9451c197",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#1687D9"
+    },
+    {
+      "id": "block_lower_t",
+      "kind": "letter",
+      "content": "t",
+      "label": "細楷 t (Lowercase t)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_t.png",
+      "sha256": "7a6b1330de89e9dc102bbd75f2726e1ae648259340093eb59614b1cb7fb7fdfa",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#1687D9"
+    },
+    {
+      "id": "block_u",
+      "kind": "letter",
+      "content": "U",
+      "label": "字母 U (Letter U)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_u.png",
+      "sha256": "8660a5b7c04c866de9771f481b5061c43faf45f13d0a9f2ce0de5f782d97cba5",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#3367D6"
+    },
+    {
+      "id": "block_lower_u",
+      "kind": "letter",
+      "content": "u",
+      "label": "細楷 u (Lowercase u)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_u.png",
+      "sha256": "b89a3c4bc2cd92d9d3dc8c02a7271ea1cf54fe1717a62cdf2db0bce8ba86dffc",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#3367D6"
+    },
+    {
+      "id": "block_v",
+      "kind": "letter",
+      "content": "V",
+      "label": "字母 V (Letter V)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_v.png",
+      "sha256": "91d7c9749484bb5e0e48121bdee92e505460813a629bff2d90aca77d4c190732",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#5E5CE6"
+    },
+    {
+      "id": "block_lower_v",
+      "kind": "letter",
+      "content": "v",
+      "label": "細楷 v (Lowercase v)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_v.png",
+      "sha256": "4bba95b15db52ad6e0183a3dbc106e4f66b529c5ff1ceb52a2d458926c556ca6",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#5E5CE6"
+    },
+    {
+      "id": "block_w",
+      "kind": "letter",
+      "content": "W",
+      "label": "字母 W (Letter W)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_w.png",
+      "sha256": "3f2fea23f352376f1f48fb5765fb5efdf5f87a7491cd0fc1f36026058b381e30",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#8E44AD"
+    },
+    {
+      "id": "block_lower_w",
+      "kind": "letter",
+      "content": "w",
+      "label": "細楷 w (Lowercase w)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_w.png",
+      "sha256": "35f3a9aa8da2f82604079f75e3de5740e66e6473ba3faafc9fdea6a9bea6c211",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#8E44AD"
+    },
+    {
+      "id": "block_x",
+      "kind": "letter",
+      "content": "X",
+      "label": "字母 X (Letter X)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_x.png",
+      "sha256": "b8b87a5b70ec7b14873b1a912c26769fca96dd988fa8590a9c607a275cf00d80",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#C13FA0"
+    },
+    {
+      "id": "block_lower_x",
+      "kind": "letter",
+      "content": "x",
+      "label": "細楷 x (Lowercase x)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_x.png",
+      "sha256": "24c9817c3cb8c8a517e38c72bb4d0553333b52b7daf1d06b16ff3bb8736ab216",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#C13FA0"
+    },
+    {
+      "id": "block_y",
+      "kind": "letter",
+      "content": "Y",
+      "label": "字母 Y (Letter Y)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_y.png",
+      "sha256": "50003a6d0fb91a67efb6fb626f387a018aaf68b29ef718ccb240f70386524a76",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_lower_y",
+      "kind": "letter",
+      "content": "y",
+      "label": "細楷 y (Lowercase y)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_y.png",
+      "sha256": "8b7c927195023eab8ae73c2872d9c98ff827d901043f12fce7127b4aa5a0539c",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_z",
+      "kind": "letter",
+      "content": "Z",
+      "label": "字母 Z (Letter Z)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_z.png",
+      "sha256": "56354747e1506ae1af9906b8e730ac9af2fbcf347d6b52e04a3911da09c7be96",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#E85D3F"
+    },
+    {
+      "id": "block_lower_z",
+      "kind": "letter",
+      "content": "z",
+      "label": "細楷 z (Lowercase z)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_lower_z.png",
+      "sha256": "ae772f7890ff0e5a5a5a955762fabbe97173faca15cedf718cf62f5034f71414",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#E85D3F"
+    },
+    {
+      "id": "block_0",
+      "kind": "number",
+      "content": "0",
+      "label": "數字 0 (Number 0)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_0.png",
+      "sha256": "fb6a1cc952152ee90516dc755a4ef6aeafd291566dc39f40342e862992451d00",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_1",
+      "kind": "number",
+      "content": "1",
+      "label": "數字 1 (Number 1)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_1.png",
+      "sha256": "9b8efb9dd53d611c9797112e2f25e156ccd4b270f4c573cb4e48aaeb81946d43",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#1687D9"
+    },
+    {
+      "id": "block_2",
+      "kind": "number",
+      "content": "2",
+      "label": "數字 2 (Number 2)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_2.png",
+      "sha256": "9361b860f2e3e3aeaab5a400080bbb98758e5496e08a9189366e4c4064993850",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#14996B"
+    },
+    {
+      "id": "block_3",
+      "kind": "number",
+      "content": "3",
+      "label": "數字 3 (Number 3)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_3.png",
+      "sha256": "fbdab454a83b5b43673f626330d74c02ebd4e208047ecbd02f0f4d6f0f9a586a",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#F28C28"
+    },
+    {
+      "id": "block_4",
+      "kind": "number",
+      "content": "4",
+      "label": "數字 4 (Number 4)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_4.png",
+      "sha256": "43ec0881f385faa1e5df08084c5fe8cf6addd3c3587bb12a6127c6937aba1981",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#8E44AD"
+    },
+    {
+      "id": "block_5",
+      "kind": "number",
+      "content": "5",
+      "label": "數字 5 (Number 5)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_5.png",
+      "sha256": "0200f0f8accb335cd46b358a43d1f93d24a9d057d38e124f6bd476052deb8d52",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D8A000"
+    },
+    {
+      "id": "block_6",
+      "kind": "number",
+      "content": "6",
+      "label": "數字 6 (Number 6)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_6.png",
+      "sha256": "c0c558b3adb6c0ef47c5e2ec6d5c9161dff84ce8eeff751aa7cbf237b4702e2e",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#008C95"
+    },
+    {
+      "id": "block_7",
+      "kind": "number",
+      "content": "7",
+      "label": "數字 7 (Number 7)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_7.png",
+      "sha256": "f72c29094999b9f2f29a5b5d18b614809a15b424dfb2b0d812a7e26552df64b9",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_8",
+      "kind": "number",
+      "content": "8",
+      "label": "數字 8 (Number 8)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_8.png",
+      "sha256": "c64c0f2423fec7672199202db16a3ea9142fb8320ea97570cabf61d2ca5c7597",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#1687D9"
+    },
+    {
+      "id": "block_9",
+      "kind": "number",
+      "content": "9",
+      "label": "數字 9 (Number 9)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_9.png",
+      "sha256": "b969b0fb12ad7536edd5963ce966337d1e1a59eb144d43a85d7a8b54ff3d9002",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#14996B"
+    },
+    {
+      "id": "block_10",
+      "kind": "number",
+      "content": "10",
+      "label": "數字 10 (Number 10)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_10.png",
+      "sha256": "302e31f44483dd19b03f5397d08d6ac373a7b6751fdfd97b9369e1f46663d400",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#F28C28"
+    },
+    {
+      "id": "block_11",
+      "kind": "number",
+      "content": "11",
+      "label": "數字 11 (Number 11)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_11.png",
+      "sha256": "31f813bf3f85e5c18f7d90bd3fe357d9f6f1e3fbff6070e5613923ebd2c6d437",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#8E44AD"
+    },
+    {
+      "id": "block_12",
+      "kind": "number",
+      "content": "12",
+      "label": "數字 12 (Number 12)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_12.png",
+      "sha256": "a6677f55bdae16572e1eef3d5f0cdd601f1f300413e80c0715aca60da9ce8492",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D8A000"
+    },
+    {
+      "id": "block_13",
+      "kind": "number",
+      "content": "13",
+      "label": "數字 13 (Number 13)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_13.png",
+      "sha256": "61b2fa23347c95c0a80fd5653d307dfa6545b911828b0c7d892845d7b9ef8975",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#008C95"
+    },
+    {
+      "id": "block_14",
+      "kind": "number",
+      "content": "14",
+      "label": "數字 14 (Number 14)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_14.png",
+      "sha256": "c321fb073e1ad2a5af705a50536b39a2b4901278720bfbed872accd2ba929447",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D81B60"
+    },
+    {
+      "id": "block_15",
+      "kind": "number",
+      "content": "15",
+      "label": "數字 15 (Number 15)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_15.png",
+      "sha256": "463976f733fcdb41fc9a6f65212d7ee58bccb15b0add80000b407101ca9d1eba",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#1687D9"
+    },
+    {
+      "id": "block_16",
+      "kind": "number",
+      "content": "16",
+      "label": "數字 16 (Number 16)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_16.png",
+      "sha256": "86198345466f892dcf6ff459a8901752dd279935c3794f92e05a842b6575ae1f",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#14996B"
+    },
+    {
+      "id": "block_17",
+      "kind": "number",
+      "content": "17",
+      "label": "數字 17 (Number 17)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_17.png",
+      "sha256": "5f3810669f9bda7066aac6f25938bf1f7f61d3b5fd848b79e176d632ca51ad86",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#F28C28"
+    },
+    {
+      "id": "block_18",
+      "kind": "number",
+      "content": "18",
+      "label": "數字 18 (Number 18)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_18.png",
+      "sha256": "9bedd06d6db119b59b8becba76e0823a1983375bbd11db6f0c0a6d9462463a4a",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#8E44AD"
+    },
+    {
+      "id": "block_19",
+      "kind": "number",
+      "content": "19",
+      "label": "數字 19 (Number 19)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_19.png",
+      "sha256": "0c7f7a2a2e1f7bb3325760eb216e73a3c4394570c366603996b9471aa02093e1",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#D8A000"
+    },
+    {
+      "id": "block_20",
+      "kind": "number",
+      "content": "20",
+      "label": "數字 20 (Number 20)",
+      "style_category": "glyph_diecut_v2",
+      "runtime_path": "assets/stickers/block_20.png",
+      "sha256": "7b762a4418525062ae956771c70b7b9b7885f436237d6786703b9a4b383e68c8",
+      "source_font": "segoeuib.ttf",
+      "provenance": "Deterministic local Pillow text render; no AI image generation.",
+      "dimensions": [
+        220,
+        220
+      ],
+      "color": "#008C95"
+    }
+  ]
+}

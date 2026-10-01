@@ -14,7 +14,12 @@ CATEGORIES = {
     "animals": "Animals", "vehicles": "Vehicles",
     "fruit_vegetables": "Fruits & vegetables", "food_snacks": "Food & snacks",
     "everyday_props": "Everyday props",
+    "toys": "Toys",
 }
+CATEGORY_ORDER = [
+    "All assets", "Sprites", "Cantonese badges", "Letters", "Numbers",
+    "Toys", "Animals", "Vehicles", "Fruits & vegetables", "Food & snacks", "Everyday props",
+]
 
 
 def preview(path: Path, size: int) -> str:
@@ -31,6 +36,9 @@ def preview(path: Path, size: int) -> str:
 
 def build() -> Path:
     manifest = json.loads((ROOT / "config" / "artwork_release_v1.json").read_text(encoding="utf-8"))
+    phonics_path = ROOT / "config" / "phonics_release_v2.json"
+    phonics_manifest = json.loads(phonics_path.read_text(encoding="utf-8")) if phonics_path.exists() else None
+    expansion = json.loads((ROOT / "config" / "props_release_v2.json").read_text(encoding="utf-8"))
     badges = {
         "badge_routine_brush_teeth": ("刷牙", "BRUSH TEETH"),
         "badge_routine_wash_hands": ("洗手", "WASH HANDS"),
@@ -40,7 +48,7 @@ def build() -> Path:
         "badge_bedtime_sleep": ("瞓覺", "SLEEP"),
     }
     assets = []
-    for asset in manifest["assets"]:
+    for asset in manifest["assets"] + expansion["assets"]:
         relative = asset["runtime_path"]
         path = (ROOT / relative).resolve()
         if not path.is_relative_to(ROOT):
@@ -71,25 +79,58 @@ def build() -> Path:
             has_transparency = image.convert("RGBA").getchannel("A").histogram()[0] > 0
         assets.append({
             "id": asset["id"], "name": name, "category": category,
-            "batch": "Approved props" if kind == "prop" else "Family sprites" if kind == "sprite" else "Cantonese badges",
+            "batch": "Prop expansion v2" if asset in expansion["assets"] else "Approved props" if kind == "prop" else "Family sprites" if kind == "sprite" else "Cantonese badges",
             "order": 3 if kind == "prop" else 2, "notes": note, "flagged": kind == "prop",
             "history": False, "status": "installed", "subtitle": subtitle,
             "dimensions": dimensions, "sourceDimensions": asset.get("source_size", dimensions),
             "provider": asset["provider"], "alpha": "Transparent exterior · RGBA" if has_transparency else "Opaque background",
             "path": relative, "url": quote(relative, safe="/"), "installedUrl": None,
             "prompt": json.dumps({
-                "release": manifest["release_id"], "asset_id": asset["id"],
+                "release": expansion["release_id"] if asset in expansion["assets"] else manifest["release_id"], "asset_id": asset["id"],
                 "sha256": asset["sha256"], "source_sha256": asset["source_sha256"],
                 "processing": asset["processing"], "replaces_existing_asset": bool(asset.get("previous_runtime_sha256")),
             }, ensure_ascii=False, indent=2),
             "thumb": preview(path, 360), "large": preview(path, 1040), "reference": reference,
         })
+    if phonics_manifest:
+        for asset in phonics_manifest["assets"]:
+            relative = asset["runtime_path"]
+            path = (ROOT / relative).resolve()
+            if not path.is_relative_to(ROOT):
+                raise ValueError(f"Asset path must stay within the repository: {relative}")
+            if hashlib.sha256(path.read_bytes()).hexdigest() != asset["sha256"]:
+                raise ValueError(f"Phonics manifest hash mismatch: {relative}")
+            if asset["kind"] not in {"letter", "number"}:
+                raise ValueError(f"Unsupported phonics asset kind: {asset['kind']}")
+            with Image.open(path) as image:
+                dimensions = list(image.size)
+                has_transparency = image.convert("RGBA").getchannel("A").histogram()[0] > 0
+            category = "Letters" if asset["kind"] == "letter" else "Numbers"
+            assets.append({
+                "id": asset["id"], "name": asset["label"], "category": category,
+                "batch": "Phonics stickers", "order": 4, "notes": "Local font-rendered glyph sticker with transparent exterior, white die-cut outline, and no box/tile background.",
+                "flagged": False, "history": False, "status": "installed",
+                "subtitle": f"Content: {asset['content']}",
+                "dimensions": dimensions, "sourceDimensions": dimensions,
+                "provider": "Local Pillow font render",
+                "alpha": "Transparent exterior · RGBA" if has_transparency else "Opaque background",
+                "path": relative, "url": quote(relative, safe="/"), "installedUrl": None,
+                "prompt": json.dumps({
+                    "release": phonics_manifest["release_id"], "asset_id": asset["id"],
+                    "sha256": asset["sha256"], "source_font": Path(asset["source_font"]).name,
+                    "provenance": asset["provenance"], "style_category": asset["style_category"],
+                    "color": asset["color"],
+                }, ensure_ascii=False, indent=2),
+                "thumb": preview(path, 360), "large": preview(path, 1040), "reference": None,
+            })
     if len(assets) != len({a["id"] for a in assets}):
         raise ValueError("Duplicate IDs in release manifest")
+    categories = [category for category in CATEGORY_ORDER if category == "All assets" or any(a["category"] == category for a in assets)]
     template = (Path(__file__).parent / "asset_portal_template.html").read_text(encoding="utf-8")
     if template.count("__ASSET_DATA__") != 1:
         raise ValueError("Portal template must have exactly one data marker")
-    data = json.dumps({"assets": assets}, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+    data = json.dumps({"assets": assets, "categories": categories,
+                       "excluded": expansion["excluded_unrecovered_ids"]}, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     result = template.replace("__ASSET_DATA__", data)
     if "file:///" in result or "C:\\\\" in result or "copilot.cloud.microsoft/chat/" in result:
         raise ValueError("Portal must not contain private local paths or conversation URLs")

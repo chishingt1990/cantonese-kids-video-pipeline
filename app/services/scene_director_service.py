@@ -319,7 +319,7 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
     elif expanded_prop and not is_hygiene:
         if scene.get("background") not in PRESET_BACKGROUNDS:
             bg = {"animals": "park", "vehicles": "park", "fruit_vegetables": "kitchen",
-                  "food_snacks": "kitchen", "everyday_props": "playroom"}[expanded_prop["category"]]
+                  "food_snacks": "kitchen", "everyday_props": "playroom", "toys": "playroom"}[expanded_prop["category"]]
         chars.extend([
             {"name": "levi", "pose": "pointing", "scale": 1.0, "x_percent": 28.0, "y_percent": 81.481, "flip": False, "layer": 1},
             {"name": "luca", "pose": "clapping", "scale": 1.0, "x_percent": 72.0, "y_percent": 81.481, "flip": True, "layer": 1},

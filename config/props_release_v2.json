@@ -1,0 +1,2202 @@
+{
+  "release_id": "props_release_v2",
+  "description": "56 recovered new prop images. Eight uncompleted generation requests are not assets.",
+  "asset_count": 56,
+  "requested_count": 64,
+  "excluded_unrecovered_ids": [
+    "prop_teddy_bear",
+    "prop_toy_robot",
+    "prop_beach_bucket_set",
+    "prop_scooter",
+    "prop_cherries",
+    "prop_pink_guava",
+    "prop_lychee",
+    "prop_siu_mai_plate"
+  ],
+  "assets": [
+    {
+      "id": "prop_rocking_horse",
+      "kind": "prop",
+      "name": "Rocking Horse",
+      "chinese": "搖搖馬",
+      "category": "toys",
+      "runtime_path": "assets/stickers/prop_rocking_horse.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1001
+      ],
+      "sha256": "d0f2d1608e2ad06d0256aa6f6d1f25af45c546f5b4a2efd70805040ae0e6b2cf",
+      "source_sha256": "a92d1f70503ec74b8fee8a088465f9fc94ecea25461e657768d02f11ecb9be64",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "71c1f1e61e387991f7d03d707d2a8706e2469c5bc7842e072436db68858f7bfb",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          55,
+          58,
+          1217,
+          1194
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_stacking_rings",
+      "kind": "prop",
+      "name": "Stacking Rings",
+      "chinese": "套圈玩具",
+      "category": "toys",
+      "runtime_path": "assets/stickers/prop_stacking_rings.png",
+      "mode": "RGBA",
+      "size": [
+        750,
+        1024
+      ],
+      "sha256": "d48696a004fce220eee699d2052be1d16c50c35290c4756670f5882afe6e636e",
+      "source_sha256": "f984b9193937ad96ff462be18048f051f12ef02dcf91f70d6bd5a03b36d6806a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "90204da213db7b57e06559f7a131f05cf1407641240ce7dbdb03a993367d21f0",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          217,
+          77,
+          1038,
+          1205
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_toy_rocket",
+      "kind": "prop",
+      "name": "Toy Rocket",
+      "chinese": "玩具火箭",
+      "category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_rocket.png",
+      "mode": "RGBA",
+      "size": [
+        782,
+        1024
+      ],
+      "sha256": "840449854fe63566e7bba596ed7f14e684b1b6a5b0e0fb61f88b96695f12d3f4",
+      "source_sha256": "b5946d70f2a715724a6faa3c31ecb7fa470df272cab69d11cac380efad0bbc6f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "458e9a2868bc93e57b982a84b78fc2e7c9983a353b170b5e8c5d3337ca3d2af1",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          189,
+          49,
+          1066,
+          1203
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_toy_xylophone",
+      "kind": "prop",
+      "name": "Toy Xylophone",
+      "chinese": "玩具木琴",
+      "category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_xylophone.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        737
+      ],
+      "sha256": "f767c9955e6ef12a748f657e292c9fe5592d697d73a43a0097177dd991c70633",
+      "source_sha256": "5da4d8038e46ecff66436f1fa5645e5c966d539caa4a01d81f2859eab14dcfea",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "a08c5a226c74e23aab811ce85cf9f10a61fe9f7e05ab09e542a89daddb6431a1",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          22,
+          195,
+          1232,
+          1060
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_spinning_top",
+      "kind": "prop",
+      "name": "Spinning Top",
+      "chinese": "陀螺",
+      "category": "toys",
+      "runtime_path": "assets/stickers/prop_spinning_top.png",
+      "mode": "RGBA",
+      "size": [
+        822,
+        1024
+      ],
+      "sha256": "bc438821ecf2cde814919ae8bea3b7839cd2ba08b55eca1763ec21d9c3a9ecfc",
+      "source_sha256": "dc472d83c0cc117965df44b7f3c5efe2f0f093f532131967fffc668d801fadee",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "8dbfd57caa16a7ff2bd99c066f333628b9632bb092c6d59d59b9a7e7593f7f3a",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          176,
+          57,
+          1089,
+          1199
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_medical_helicopter",
+      "kind": "prop",
+      "name": "Medical Helicopter",
+      "chinese": "醫療直升機",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_medical_helicopter.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        721
+      ],
+      "sha256": "f7aa288e8942aadd6740e997db2700a779e475e26e8ea5dc51bf789faf893e5a",
+      "source_sha256": "03d5178c96fde6ca904229a94abb8d0bf683f6dc4a43f37ce1f6c213d521ea13",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "34ca6a81d7ea7f95bafe5327eac86612b67a80d7d717d4595b4537af52bc3f78",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          47,
+          216,
+          1225,
+          1040
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_rescue_ambulance",
+      "kind": "prop",
+      "name": "Rescue Ambulance",
+      "chinese": "救援救護車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_rescue_ambulance.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        748
+      ],
+      "sha256": "1448c5bacfafbac43f4b638cc16fc481d0410bc0069e4434ff14759b84fba9ae",
+      "source_sha256": "0cde2299d1a4d80f32f27ffe76cb1a0d5c4a00b2adc135db0b281fad2f9b31a5",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "1a4fa430c304e9fef679ac114bba282aba4c2ce19ef6c62d4ca4c062d319a5c1",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          19,
+          194,
+          1236,
+          1078
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_box_truck",
+      "kind": "prop",
+      "name": "Box Truck",
+      "chinese": "貨車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_box_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        771
+      ],
+      "sha256": "93bc20acdde926fff2adbcdf39f1b985771d991d6f7c41e858a62ac33901d1ac",
+      "source_sha256": "aecbc60b1eaec095a1cc18f3bc24c6c802d23c2fe62d1f48068b002a723575e6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "97d880280a7818807cd50979861d0b3e7afdad8e0a0cf7589f213372b43dfdf9",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          41,
+          190,
+          1219,
+          1072
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_tow_truck",
+      "kind": "prop",
+      "name": "Tow Truck",
+      "chinese": "拖車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_tow_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        785
+      ],
+      "sha256": "71f5b4454cd66abaf67fb87de2fed9be2a1294fab30c2b9be20c1682629955bb",
+      "source_sha256": "e1a7fcbbdd16f6bbe12d7516c304e49e621beaa0f32fff1b682d1a51e4c5fdba",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "5de9d93a95b1a7de7f9b64a1591726eccde06d3f15799401833c19ac16c18f04",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          24,
+          167,
+          1234,
+          1090
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_garbage_truck",
+      "kind": "prop",
+      "name": "Garbage Truck",
+      "chinese": "垃圾車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_garbage_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        717
+      ],
+      "sha256": "1dc9c53aa3a9fc4cd84c677c9d7769e2cccd9733d085c98da03b411ad083fa2b",
+      "source_sha256": "7e2ac3603f733be5c0888b030bc4ed00b7e392df319ddc4b6f810f7553e66d44",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "623993b845191cfed30db2c10b7dd9dc21144227bbdfcb38f992ab1335a726b6",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          24,
+          210,
+          1231,
+          1049
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_cement_mixer",
+      "kind": "prop",
+      "name": "Cement Mixer",
+      "chinese": "石屎車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_cement_mixer.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        802
+      ],
+      "sha256": "7e1f999a42f58ad5d1025014b01b52c3f8e948ef2aaa2dbd630d8aac68aca725",
+      "source_sha256": "d5bcfa5b62c5d565faa5d40eb9787ba10452ad3e4a084dfe8ecf853e6ebeeebc",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "b2ccdc96306549fe2f55d72f2528091e91239ac3a18a59fd307dfe6ea4fb453a",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          31,
+          159,
+          1232,
+          1096
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_tanker_truck",
+      "kind": "prop",
+      "name": "Tanker Truck",
+      "chinese": "運油車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_tanker_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        676
+      ],
+      "sha256": "42f6ed60593397b3d592992a8d1da965269b600a6d31749cff55739c7822b9f4",
+      "source_sha256": "470f09990ec466ef7493dc7bd5df7504d22b93af2fd12aaabe1505192f1c3299",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "6e08839040728bc25fa90b2596dbb085dfc039b4d96ec744ef9cc224e0fcae9b",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          24,
+          245,
+          1230,
+          1035
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_flatbed_truck",
+      "kind": "prop",
+      "name": "Flatbed Truck",
+      "chinese": "平板貨車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_flatbed_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        638
+      ],
+      "sha256": "d8cc4ee8e71ab50efd834159e962824e7ba09ed7247cfa73da1e89e5ecee330f",
+      "source_sha256": "8fe7c0ea2b82ea5e6112334a7d39bd3d1247a3a242c93521fb884bbb4d402eca",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "acddba8f3d20392de4b235c3b445af8d6276cc988f08a3d62ea4c48301bd0963",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          21,
+          253,
+          1233,
+          1001
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_double_decker_bus",
+      "kind": "prop",
+      "name": "Double Decker Bus",
+      "chinese": "雙層巴士",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_double_decker_bus.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        839
+      ],
+      "sha256": "c1b71983f5e98c418439c4fdd6fbaf07919e16ecf87188df9cef4cba3191c765",
+      "source_sha256": "217cbddca15f2ed6e208871e268ac54cc1cc213836b3f531190761269bd2d533",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "fcbd1112709cc02e39d247ce13cb70b8bc82b4c7020da54c8a93ba2456546132",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          34,
+          152,
+          1230,
+          1128
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_delivery_van",
+      "kind": "prop",
+      "name": "Delivery Van",
+      "chinese": "送貨客貨車",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_delivery_van.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        692
+      ],
+      "sha256": "48dfcaf2420f34e65e4e35d93145e04593c8cfbcd10b444daedd020f71d126d6",
+      "source_sha256": "698c39e28434f7b02614c093083e3ef7f2f9a37239e40973e639bae8aee28e9f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "0489c0017d522b0da0fe52597f8cd8b9a6505814ec7a907c10cadc5889f128f1",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          25,
+          237,
+          1242,
+          1053
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_ferry",
+      "kind": "prop",
+      "name": "Ferry",
+      "chinese": "渡輪",
+      "category": "vehicles",
+      "runtime_path": "assets/stickers/prop_ferry.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        851
+      ],
+      "sha256": "9244bc69564a0029fd332ab1f06f2de42ac05ab1b76b18f9bd616c562669a332",
+      "source_sha256": "d7f94db208e4d77fcbbe7e1348133a2840dbfe868e64f37e602346173370dabb",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "7615861fba0e2c6352ae078bc76ec9c742eb883cd3042651d8140d2d07108879",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          30,
+          121,
+          1222,
+          1108
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_raspberries",
+      "kind": "prop",
+      "name": "Raspberries",
+      "chinese": "紅桑子",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_raspberries.png",
+      "mode": "RGBA",
+      "size": [
+        1018,
+        1024
+      ],
+      "sha256": "fae1214241e6b1368ae3ff34f20b659ee4897ab7be61f94502c59645eec8cc42",
+      "source_sha256": "fa09e0801e27a72ff5eb0d2cbf9e3fd637731ca5deda5eecbed12ef6ed74d070",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "66a3c631a88fb318299db495aaf251df6810f24807fa7e65f591b3d8b0d9f758",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          60,
+          49,
+          1210,
+          1206
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_mandarin",
+      "kind": "prop",
+      "name": "Mandarin",
+      "chinese": "柑",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_mandarin.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        961
+      ],
+      "sha256": "ad7aea94e0be46ce67daa646ced2d8434c7ae63c4b0297efa8a8b8b29ab53c26",
+      "source_sha256": "48af3718a7dc10cafa6c5bb7377f6935c8f471339a3548371bc5e279ead42dab",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "949234ba3c9772684eab0112e805d84ddf33685d97c7a5ffebabaae44c5c781a",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          145,
+          152,
+          1174,
+          1117
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_apricot",
+      "kind": "prop",
+      "name": "Apricot",
+      "chinese": "杏",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_apricot.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        892
+      ],
+      "sha256": "84fc04bfdaaa293f36814ee80a6cc0686846fc242233732dd39ad7c52f1f2245",
+      "source_sha256": "eedc38117cc6c61221646853e251ff70487768f96dbbf04d2cb7fac5388e935b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "8ec6dacd99e35ce6c1854d030b86fb755d538d2842dfd8d76b622e24223ec0a3",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          52,
+          127,
+          1203,
+          1127
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_lemon",
+      "kind": "prop",
+      "name": "Lemon",
+      "chinese": "檸檬",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_lemon.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        816
+      ],
+      "sha256": "ea5bfe7c45d935054a9b8cd47682b8baf232b7a19f79500c209641b32fb33c6e",
+      "source_sha256": "8e4372d0cd71f06832e6edf1f9996a6af662e4358792dbf05fd804b1bc2af5c1",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "f22d3bd4d79500515b565e0ae52abba24519fcc6a6e288bcc151e328b797fe17",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          94,
+          176,
+          1218,
+          1068
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_starfruit",
+      "kind": "prop",
+      "name": "Starfruit",
+      "chinese": "楊桃",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_starfruit.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        815
+      ],
+      "sha256": "8892bab5043efd0825363a8eb551ad33e718f9f361431c4e7923565af6ace4bb",
+      "source_sha256": "d7606d91c5c04c5398c5568bb5762919a8439dcdf3fe6eb85de2f95593e2d8c6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "175df58d9fd97a8af7f37086a9397d9ca2d415a64e3c7c1889587f2f306c44fd",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          53,
+          171,
+          1207,
+          1086
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_kiwi",
+      "kind": "prop",
+      "name": "Kiwi",
+      "chinese": "奇異果",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_kiwi.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        795
+      ],
+      "sha256": "71c30c9043e4e36de99558c188658c5c1a291c24c81c33ffd316b293bab13318",
+      "source_sha256": "b6c0a867c4e91bb23c5eeecfedfa3e3f7e0175d3b3503eeea844b895b579073b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "b95d5241bf67fdf2a9650518ee82ebc8f083b0a2a1fc071ba5f95b9a03357742",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          47,
+          186,
+          1211,
+          1086
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_green_apple",
+      "kind": "prop",
+      "name": "Green Apple",
+      "chinese": "青蘋果",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_green_apple.png",
+      "mode": "RGBA",
+      "size": [
+        918,
+        1024
+      ],
+      "sha256": "1ea07dac6d9e7ec607ffd95d61b728a5fa913fc6a29d44fc77f67188798286cf",
+      "source_sha256": "94fef5fbdbbeb28f2cd1a52f9c2c07ea87f3c399d1d4281b07300890c4d47ac0",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "a2a1d02672bac50872e3c60157e4c7a45817b74ebf4fe29a216623e67a312238",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          156,
+          93,
+          1098,
+          1146
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_blueberries",
+      "kind": "prop",
+      "name": "Blueberries",
+      "chinese": "藍莓",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_blueberries.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        849
+      ],
+      "sha256": "4175fdd5eaf3a3985ccd680967fdc88d7a0b92fdd72e88d1459ca73841e8dc10",
+      "source_sha256": "6f5d85b3ef9c861d993553525e6997ef1eba77597ec1eba597d4a0e3781d6d73",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "6210c218356f30d4a999817bd1975c6a5c4c17022a2e727ae93c4c4286a40f4f",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          83,
+          162,
+          1197,
+          1083
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_blue_grapes",
+      "kind": "prop",
+      "name": "Blue Grapes",
+      "chinese": "藍葡萄",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_blue_grapes.png",
+      "mode": "RGBA",
+      "size": [
+        946,
+        1024
+      ],
+      "sha256": "a4adfc2b7108b01e6f727172260843bd2f720feb6a7011780e4ad0dd78045636",
+      "source_sha256": "2dd26e3849bac1bbc87985ebcca646f057c7ac2f65a242a821be6541cad2eda4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "4beef7d6dcece3551982cc6f54e25cdfff9357eb4c98f4d23c2908a5b23b54b5",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          111,
+          75,
+          1143,
+          1193
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_purple_grapes",
+      "kind": "prop",
+      "name": "Purple Grapes",
+      "chinese": "紫葡萄",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_purple_grapes.png",
+      "mode": "RGBA",
+      "size": [
+        793,
+        1024
+      ],
+      "sha256": "1044c1f331217543e9275963dd999d035932afc997ca1ab68d4e378f25945bc3",
+      "source_sha256": "8683ea829c2cbbc86081ff46b4620374d129b04aa9ea5b04fb29c26fdfc85f16",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "0d0a26c756aad033c2dbd7ea2150e300d20b7529e905ae4c31c33aed41880ffe",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          163,
+          36,
+          1079,
+          1225
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_purple_plum",
+      "kind": "prop",
+      "name": "Purple Plum",
+      "chinese": "紫布冧",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_purple_plum.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1003
+      ],
+      "sha256": "fb326208bebdb6b63437d5863ede57b4164f384a48aee395faa490b111389af7",
+      "source_sha256": "65ee95f9419e5d310bf2c6bc77d9a8ae3cd9e76b6ea6602c5391196a5ce9d9dd",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "2dfd35778b7768361d7309ce7201dafdeecb0469f9be83be6178f9fd0c56168c",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          99,
+          116,
+          1155,
+          1150
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_red_dragonfruit",
+      "kind": "prop",
+      "name": "Red Dragonfruit",
+      "chinese": "紅肉火龍果",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_red_dragonfruit.png",
+      "mode": "RGBA",
+      "size": [
+        950,
+        1024
+      ],
+      "sha256": "c0fcf90ef89a9fe3a612ad241fde8f84dab8e67a1d05d6fe0152cf6afaef8c57",
+      "source_sha256": "72aac64b1063107deac58dbfe180f63db91633ebe63f971656997369ae193f59",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "215ff600ac6e06b2a6fa41b5f025a050b21c687cc7e6b6ce40d7c9acb041b132",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          93,
+          48,
+          1168,
+          1208
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_coconut_half",
+      "kind": "prop",
+      "name": "Coconut Half",
+      "chinese": "椰子",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_coconut_half.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        952
+      ],
+      "sha256": "137b88a5e34de6fd14b0e3bb25af63fb73f25030c77419d6a049068af9ee4ece",
+      "source_sha256": "6a82f43ab84971485a70a6ced4b6855cbd32253777c707bbd9c327c737940445",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "76f48d8f77957f40cb4cd906185d3c2cf870a9b109f06651bae2e3866b905de5",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          49,
+          102,
+          1219,
+          1189
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_tomato",
+      "kind": "prop",
+      "name": "Tomato",
+      "chinese": "番茄",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_tomato.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        999
+      ],
+      "sha256": "3a63ba0b4812c27f63fdde24715ab0e51ace27e2307deac77503ab7dfc82e80b",
+      "source_sha256": "989e78cda110b1718c068f5a9b403f70787653eba08163d48c55c3aa2b98e2c1",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "1257eb32962b2eaa9a0ec3900c5ca4cfd41d0e356cc52737917e18b654bdf40d",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          89,
+          107,
+          1165,
+          1156
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_cucumber",
+      "kind": "prop",
+      "name": "Cucumber",
+      "chinese": "青瓜",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_cucumber.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        875
+      ],
+      "sha256": "dbba3843f49feef07f700b6ff61107a68a5fc01a4e2c35444624b86ab0b102d6",
+      "source_sha256": "9d37dd1bfb80459336f856d86b3d29911389117a1c3aefe6848d5883bba57368",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "97f0008cae3c72ded164cf42ea4b61fbd4148a1744b5859c2cde4625b598ca18",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          55,
+          145,
+          1207,
+          1127
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_red_bell_pepper",
+      "kind": "prop",
+      "name": "Red Bell Pepper",
+      "chinese": "紅燈籠椒",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_red_bell_pepper.png",
+      "mode": "RGBA",
+      "size": [
+        840,
+        1024
+      ],
+      "sha256": "9f94fca957d7e9d8e81defa13c405f5d2407ea593ed80791ba094c68ec716bc0",
+      "source_sha256": "832588e43916ef7c2c2e628ea7e9b46aadd92418adeb63a73bdce04e25f500d3",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "46e01c02c68588c70893747659354880145b84d5ce202569838932cc79a4b8fe",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          170,
+          71,
+          1084,
+          1189
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_yellow_bell_pepper",
+      "kind": "prop",
+      "name": "Yellow Bell Pepper",
+      "chinese": "黃燈籠椒",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_yellow_bell_pepper.png",
+      "mode": "RGBA",
+      "size": [
+        827,
+        1024
+      ],
+      "sha256": "094ec8bda666f6befe20a96b0768c9c6fc555cf9dbc2d01dfc22f0c12238d952",
+      "source_sha256": "fe98c8e1e3c3de55f7ac611d77ace54ee524f422381d967712a35ee08b7b8ebe",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "fd46e9db4dc2f76eec076eb7d83b04dcd38b56b5bba4d9fb48b66bf82bd43c21",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          186,
+          80,
+          1070,
+          1179
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_peas",
+      "kind": "prop",
+      "name": "Peas",
+      "chinese": "青豆",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_peas.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        805
+      ],
+      "sha256": "df183304caab28d084b1673b3eaac1e7b1c4cb190b2a51772e2dd099af8c42a3",
+      "source_sha256": "ebbc2a6973e338f84889f819e531c1f9e96e4e20be783cded7a3dad433fbcab7",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "685de12c481bed647d8b15f5d12a7cd8d00aafba266c583ff390dc8d9e31bcef",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          61,
+          167,
+          1209,
+          1066
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_spinach",
+      "kind": "prop",
+      "name": "Spinach",
+      "chinese": "菠菜",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_spinach.png",
+      "mode": "RGBA",
+      "size": [
+        884,
+        1024
+      ],
+      "sha256": "44298513bf983baaf0ba663334cedc7eb6ea980c62861b7112ac1db3b8dfd8a3",
+      "source_sha256": "258d7ebe9d0cfdf5262d458b8c01ef7e72f4183d8d211c4c5970dd58286f441f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "6a1c0e4bb425645497ec9f200314bef256d78fee1ba81fd9765937047ee86ceb",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          151,
+          31,
+          1182,
+          1228
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_aubergine",
+      "kind": "prop",
+      "name": "Aubergine",
+      "chinese": "茄子",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_aubergine.png",
+      "mode": "RGBA",
+      "size": [
+        956,
+        1024
+      ],
+      "sha256": "96326de7abbf225b8c24f71cba08e02afbdf6598410886f9b23f97ce875cd054",
+      "source_sha256": "9fd0c1d4d382f36e8702aa684dd6339f038b66a1a8726baa47dfe6f4d0c28a11",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "68b976666c2eb0db33aede49d84e6215a86757ae903cc1674234dc98afd859db",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          111,
+          69,
+          1156,
+          1190
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_pumpkin",
+      "kind": "prop",
+      "name": "Pumpkin",
+      "chinese": "南瓜",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_pumpkin.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        970
+      ],
+      "sha256": "aac5685a513e4661a6788d10852d9c5c515ccfc0300227192c650fcdc379874b",
+      "source_sha256": "af244bf664ace2644a02c34d9088fa67abb0d95e2efda1e547890bad2f047810",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "9250de194944c331a1d3e3795fafc59a3c5a854e684cb40cb5037222eb01d8dc",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          74,
+          99,
+          1181,
+          1147
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_mushrooms",
+      "kind": "prop",
+      "name": "Mushrooms",
+      "chinese": "蘑菇",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_mushrooms.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1016
+      ],
+      "sha256": "4e2654396f7800d403523df3425130189b708ae9c894bb29afd001998c51e2c3",
+      "source_sha256": "4ccdd43fd6cd3f280298605b3c067431d5493b73ea4285bb10f1c149f85c87ad",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "f949618a9f2c6d57549ffbfb082b18e524b347b0e4d71589a401555462c1d2ee",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          72,
+          78,
+          1184,
+          1181
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_cauliflower",
+      "kind": "prop",
+      "name": "Cauliflower",
+      "chinese": "椰菜花",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_cauliflower.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        924
+      ],
+      "sha256": "a2236defa0b9e5128132fa0609ff7f185ce0a7427a8f9e7cee339b7d6d8bb84b",
+      "source_sha256": "78e8bf3966b48d4fc6e02009e116ccda2bb34f933872d5aa0de845eecc4fb2a9",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "b52e03b2728d602003240f07e1d4d7b34f4548b9aad73115498d9031fd8e17dd",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          37,
+          93,
+          1223,
+          1161
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_lettuce",
+      "kind": "prop",
+      "name": "Lettuce",
+      "chinese": "生菜",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_lettuce.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        952
+      ],
+      "sha256": "8b4d92333f4a595606ad89561912ff0ca9873501618c14386cec11cc5abbe152",
+      "source_sha256": "0edf0dad5b5bddb03893aff396502adfa638e68d9aa42a31c0abf4019f958998",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "79f18eb587199b4da4ee0aa5fce178f3407e7b1181d10f01b77abe867070a25c",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          70,
+          110,
+          1204,
+          1163
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_sweet_potato",
+      "kind": "prop",
+      "name": "Sweet Potato",
+      "chinese": "番薯",
+      "category": "fruit_vegetables",
+      "runtime_path": "assets/stickers/prop_sweet_potato.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        691
+      ],
+      "sha256": "6096ccbee61ed74cae91171fb6542a2b2ea64d97d4092ba446f78321f3615b22",
+      "source_sha256": "b706c7cdc1bc2dafe12ff191a792ec9f51c735f4fd7349f36f9720625d6fba92",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "3f2a8629b419aeb9eaa8147add1580a3169e5a650fd1b4a5d37164b76e20a74e",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          46,
+          238,
+          1207,
+          1015
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_fried_chicken_plate",
+      "kind": "prop",
+      "name": "Fried Chicken Plate",
+      "chinese": "炸雞",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_fried_chicken_plate.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        754
+      ],
+      "sha256": "96757ae1308efe4d2444095fbed3d2e274c1eac6ca83aec4b78d9e21e32257de",
+      "source_sha256": "794f292a4c4415c3595c593647c991b295d97f1fc930cef3f58b56f80e2df3dd",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "2c0b69b98cae199d5010299d83d4285daae5d9c5c91214f320d3fe480aa294ec",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          29,
+          180,
+          1226,
+          1056
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_fries",
+      "kind": "prop",
+      "name": "Fries",
+      "chinese": "薯條",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_fries.png",
+      "mode": "RGBA",
+      "size": [
+        854,
+        1024
+      ],
+      "sha256": "35a410513e10fab7204a1719d9e93dc68da29d870b24d823aa0bbe18d4db049a",
+      "source_sha256": "ed5bb03d7310ee1de8430b619b525ac7c3befb36d518a012a5ad9c78b7d09120",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "7ce329119d5e6ca1e826a870d058814758b5e21aba85e45644e92d0ad6f6a2b0",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          180,
+          83,
+          1071,
+          1155
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_shrimp_plate",
+      "kind": "prop",
+      "name": "Shrimp Plate",
+      "chinese": "熟蝦",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_shrimp_plate.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        736
+      ],
+      "sha256": "e860f7b681634cef326ae8f5b0add5c5a8d51b7f92b463b29e640d3c635db1d3",
+      "source_sha256": "d4e973c5b9be4f86f3d488ecbe79b930b2053851b6635044a9bed35c2af9fe47",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "207d3aa17f6dbd3703c50abb4de56d8c9a5c7ec1f08b8c93c5f5c5f12955213f",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          30,
+          204,
+          1224,
+          1057
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_steamed_fish_plate",
+      "kind": "prop",
+      "name": "Steamed Fish Plate",
+      "chinese": "蒸魚",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_steamed_fish_plate.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        633
+      ],
+      "sha256": "3ff21f8ac7b3d7b1803302144b08412c4248f8f9e319a1b9277605abfabda812",
+      "source_sha256": "95b451988e09dc3533d10fac11aa604d3784389198575e26ed1202dbc14c790b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "a32c0e3527e5ae126e9786bfc2bfff247e83d73533889a78f110c4c7148767e6",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          11,
+          251,
+          1247,
+          1007
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_har_gow_plate",
+      "kind": "prop",
+      "name": "Har Gow Plate",
+      "chinese": "蝦餃",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_har_gow_plate.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        741
+      ],
+      "sha256": "010b43a59e21f1ed73444eb3ee7619604a301a92ad0eb63848f868a4fce3abbb",
+      "source_sha256": "f2f0c997fa7b6bfd1ea35cb3f849e434455ff4b61ab6955d10284ab42f58dea6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "64d83175e47c0622c2d56393550e19603bf18808dd5c33c2523960516f65f3d5",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          24,
+          211,
+          1230,
+          1079
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_char_siu_bao",
+      "kind": "prop",
+      "name": "Char Siu Bao",
+      "chinese": "叉燒包",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_char_siu_bao.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        731
+      ],
+      "sha256": "d847f10c603285098508fd8e61f1028378346c066e09289eb6c28a552123891e",
+      "source_sha256": "4e5669d6e38f53f1b6331fd7ca63ec52f6717f8140e386d0b6d0570b89218c4a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "bdea38a840cca0d36033a6944c6caff5e03a3f781d00b61bf6472d712f5268f5",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          38,
+          209,
+          1218,
+          1046
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_rice_noodle_rolls",
+      "kind": "prop",
+      "name": "Rice Noodle Rolls",
+      "chinese": "腸粉",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_rice_noodle_rolls.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        663
+      ],
+      "sha256": "4e5c3989ce676717b19187a1b698b8e4e049e54698bfe1b5b15d5caa48488bca",
+      "source_sha256": "07d1787f6d7c26bdff3a64dda785d34ce7adaf08a750b1355991979e06a06698",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "6b2805391f34cfae22d60a0e0193c85562cc3367d3a8855e569d218fd5e05dcf",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          20,
+          238,
+          1235,
+          1018
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_spring_rolls",
+      "kind": "prop",
+      "name": "Spring Rolls",
+      "chinese": "春卷",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_spring_rolls.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        762
+      ],
+      "sha256": "ca52c9b39808a88e2125fec4e780be859965b459c97d7e5709a234d4cc9634db",
+      "source_sha256": "a2dd1d55236f082be254d9b6cbac928db2ef22e15bbc85607e1e0d2d4be073ce",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "9d759b5bc91477ef0e7a7bd1c38cf3b2d520a9cdc9996228e2c4769f657cd2c4",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          48,
+          203,
+          1207,
+          1061
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_wonton_soup",
+      "kind": "prop",
+      "name": "Wonton Soup",
+      "chinese": "雲吞湯",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_wonton_soup.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        808
+      ],
+      "sha256": "e831b27fe2f9af6a74fa139d2e268b3eecfc5852f00f7fe8eedaf3a96dcc42c3",
+      "source_sha256": "9e6616b27792d69f770eff5db551e47b53141db425df599b8bb94e66c0c4080c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "ee80a7d65270d643adbdbdfd51b4cd0ce2320a5ebed0ff8a381d28dbbb4c4125",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          50,
+          184,
+          1205,
+          1092
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_fried_rice",
+      "kind": "prop",
+      "name": "Fried Rice",
+      "chinese": "炒飯",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_fried_rice.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        659
+      ],
+      "sha256": "f2e2d5e85d28536c2ac30ebba1c90c21d48788ab633c91c08582ae0e922bbdb0",
+      "source_sha256": "f068e7f4073785be2de767fd22dab3afadd4e0e8af1ca50e952c4affb07e13b4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "8650949df0b7bad74a24356a73272116b99f99efc6ae24aff7a3d1a6af3f888b",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          30,
+          251,
+          1224,
+          1013
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_stir_fried_noodles",
+      "kind": "prop",
+      "name": "Stir Fried Noodles",
+      "chinese": "炒麵",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_stir_fried_noodles.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        588
+      ],
+      "sha256": "2a38561f324f178a974fc138a5c298e9118b01e1e8b322f5ea5dda687974e5ce",
+      "source_sha256": "803bbce543cf7fe6111c7e772e2cbcea78df0a528c877a075602c3b5a2655fb6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "d7c0500b8e20e38233018ed6601c6c89144e3da1e68ee7c5b3bac1a2211be1ce",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          20,
+          285,
+          1235,
+          974
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_turnip_cake",
+      "kind": "prop",
+      "name": "Turnip Cake",
+      "chinese": "蘿蔔糕",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_turnip_cake.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        705
+      ],
+      "sha256": "81efe06999ed16e1d945a5a38c1b330d12c7f6d0476850c6058e60c23bc6386f",
+      "source_sha256": "089f7dbc8249bc31f98190f3dac94a2ca6a6c45530750eea5349496ff8d12cb1",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "93edf45d3a2ea10792601d8bc0defc7cc5e150108e4219b369eae5cde66b6983",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          30,
+          225,
+          1223,
+          1041
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_curry_fish_balls",
+      "kind": "prop",
+      "name": "Curry Fish Balls",
+      "chinese": "咖喱魚蛋",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_curry_fish_balls.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        851
+      ],
+      "sha256": "8d06881a10b49f2dacde37475daa33a9507c14999ee94cdd14e8e215a2a86a65",
+      "source_sha256": "d72b5fdf584c4ec583d8efa46ee4396c7e937dbf4b7098fbfe90f4324cb3edce",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "b4e3b069c3fc8866060efcf4b1a916e9563fea39691acb073129eec590f37786",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          67,
+          179,
+          1188,
+          1108
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_egg_waffle",
+      "kind": "prop",
+      "name": "Egg Waffle",
+      "chinese": "雞蛋仔",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_egg_waffle.png",
+      "mode": "RGBA",
+      "size": [
+        679,
+        1024
+      ],
+      "sha256": "1eaa125c9aaaa37d11845fd83cc3cb48ac51c260794ad304614f2b2da1345661",
+      "source_sha256": "689fd6f42874b9a06a437e205e8bc20f9a524c6096a6f6acf9c2677ab268b045",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "7fee9d9b58f39fcc108c0c8a0ba6ca67282be58df48874840df20f8b6698b2fc",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          279,
+          32,
+          1066,
+          1228
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    },
+    {
+      "id": "prop_sesame_balls",
+      "kind": "prop",
+      "name": "Sesame Balls",
+      "chinese": "煎堆",
+      "category": "food_snacks",
+      "runtime_path": "assets/stickers/prop_sesame_balls.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        720
+      ],
+      "sha256": "125501b0526233d32a94a290b5b1582ad2f50817b82136e812d2bce28ee2d417",
+      "source_sha256": "972bc993e1e26ec9c90381fc6cc328de26601b0836b8612ac4d5c488c1040c1b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "prompt_sha256": "b4780556fa6f35d36d88fc5bcceb82c6b0d2630954ffb787ba9c427826086a52",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_requested_release",
+      "previous_runtime_sha256": null,
+      "review_note": "Released at user request. Matte illustration is the target; some tonal variation remains. Toys and vehicles use angled perspective.",
+      "processing": {
+        "alpha_cleanup": "alpha<=2 to0; alpha>=250 to255",
+        "crop_ltrb": [
+          23,
+          195,
+          1232,
+          1039
+        ],
+        "max_content_size": [
+          1008,
+          1008
+        ],
+        "resampling": "LANCZOS downsample only",
+        "padding_each_side": 8
+      }
+    }
+  ]
+}

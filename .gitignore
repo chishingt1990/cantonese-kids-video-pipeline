@@ -30,6 +30,8 @@ config/cloned_voices.json
 temp_*
 test_*
 !test_artwork_release.py
+!test_phonics_release.py
+!test_props_release.py
 assets/sprites/test_*
 
 

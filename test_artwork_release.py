@@ -32,6 +32,14 @@ class TestArtworkRelease(unittest.TestCase):
             target = cls.scratch / asset["runtime_path"]
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / asset["runtime_path"], target)
+        for filename in ("phonics_release_v2.json", "props_release_v2.json"):
+            manifest_path = ROOT / "config" / filename
+            if manifest_path.exists():
+                shutil.copyfile(manifest_path, cls.scratch / "config" / filename)
+                for asset in json.loads(manifest_path.read_text(encoding="utf-8"))["assets"]:
+                    target = cls.scratch / asset["runtime_path"]
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(ROOT / asset["runtime_path"], target)
 
         def load(name, relative):
             target = cls.scratch / relative
@@ -42,6 +50,10 @@ class TestArtworkRelease(unittest.TestCase):
             spec.loader.exec_module(module)
             return module
 
+        cls.glyph = load("app.services.glyph_sticker_service", "app/services/glyph_sticker_service.py")
+        cls.glyph_modules = patch.dict(sys.modules, {"app.services.glyph_sticker_service": cls.glyph})
+        cls.glyph_modules.start()
+        cls.addClassCleanup(cls.glyph_modules.stop)
         cls.stickers = load("release_stickers", "app/services/sticker_service.py")
         cls.ai = types.ModuleType("app.services.ai_service")
         cls.ai.generate_ai_text = lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("offline test"))

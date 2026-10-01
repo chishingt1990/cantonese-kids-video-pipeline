@@ -152,12 +152,12 @@ details{font-size:12px;margin-top:14px}summary{cursor:pointer;color:var(--cp-tex
 <main>
  <header><div><span class="pill">Cantonese kids video studio</span><h1>Your generated assets</h1><p class="sub">Everything we created, in one place. Explore the artwork, see what is installed, and inspect what still needs review.</p></div><button id="theme" class="button" aria-label="Toggle light or dark theme">Theme</button></header>
  <section class="stats" aria-label="Library totals">
-  <button class="stat active" data-stat="all"><strong id="total">60</strong><span>Current assets</span></button>
-  <button class="stat" data-stat="installed"><strong id="installed">12</strong><span>Approved &amp; installed</span></button>
-  <button class="stat" data-stat="review"><strong id="candidates">48</strong><span>Not installed · review</span></button>
+   <button class="stat active" data-stat="all"><strong id="total">0</strong><span>Current assets</span></button>
+   <button class="stat" data-stat="installed"><strong id="installed">0</strong><span>Approved &amp; installed</span></button>
+   <button class="stat" data-stat="review"><strong id="candidates">0</strong><span>Not installed · review</span></button>
   <div class="stat"><strong>0</strong><span>New backgrounds generated</span></div>
  </section>
- <div class="notice"><strong>All 60 assets in this release were accepted for use.</strong> Matte remains the target; retained gradients, reflections or fine texture are documented rather than silently redrawn. The existing 16 backgrounds were audited, not newly generated.</div>
+  <div class="notice"><strong>The current assets in this portal were accepted for local use.</strong> Matte remains the target; retained gradients, reflections or fine texture are documented rather than silently redrawn. The existing 16 backgrounds were audited, not newly generated.</div>
  <div class="toolbar">
   <div class="field search"><label for="search">Find artwork</label><input id="search" type="search" placeholder="Search apple, Levi, vehicles, 刷牙…" autocomplete="off"></div>
   <div class="field"><label for="status">Status</label><select id="status"><option value="all">All statuses</option><option value="installed">Approved &amp; installed</option><option value="review">Not installed / review</option><option value="flagged">Finish / quality flagged</option></select></div>
@@ -181,10 +181,16 @@ details{font-size:12px;margin-top:14px}summary{cursor:pointer;color:var(--cp-tex
 <script id="asset-data" type="application/json">__ASSET_DATA__</script>
 <script>
 const DATA=JSON.parse(document.getElementById('asset-data').textContent);
+if(DATA.excluded?.length){
+ const panel=document.createElement('details'),summary=document.createElement('summary'),list=document.createElement('ul');
+ summary.textContent=DATA.excluded.length+' generation requests have no recovered image (excluded from counts)';
+ for(const id of DATA.excluded){const item=document.createElement('li');item.textContent=id.replace(/^prop_/,'').replaceAll('_',' ');list.append(item)}
+ panel.append(summary,list);document.querySelector('.notice').append(panel);
+}
 const $=id=>document.getElementById(id);
 const param=new URLSearchParams(location.search).get('clawpilotTheme');
 if(param==='light'||param==='dark')document.documentElement.dataset.theme=param;
-const categories=['All assets','Sprites','Cantonese badges','Animals','Vehicles','Fruits & vegetables','Food & snacks','Everyday props'];
+const categories=DATA.categories||['All assets','Sprites','Cantonese badges','Letters','Numbers','Animals','Vehicles','Fruits & vegetables','Food & snacks','Everyday props'];
 let category='All assets',visible=[],selectedIndex=0;
 function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e}
 const current=DATA.assets.filter(a=>!a.history);
