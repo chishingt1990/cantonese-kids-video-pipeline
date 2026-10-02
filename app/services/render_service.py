@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from app.services.audio_service import mix_scene_audio, get_audio_duration
 from app.services.sticker_service import get_or_render_sticker
+from app.services import family_catalog
 
 # In-memory job registry
 JOBS = {}
@@ -316,12 +317,12 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                         c_pos = c.get("position", "center")
                         sp = load_sprite(c_name, c_pose)
                         if sp:
-                            if c_name in ["dad", "mom", "grandparents_paternal", "grandparents_maternal", "auntie_cousins"]:
-                                base_h = 760
-                            elif c_name in ["dog", "family_dog", "spitz"]:
-                                base_h = 320
-                            else:
-                                base_h = 520
+                            # family_catalog.base_height_for merges legacy adult/toddler/pet
+                            # classification with the family-expansion v3 scale classes
+                            # (adult, older_child, toddler, pet) so new relatives and
+                            # contact composites are sized correctly instead of defaulting
+                            # to the 520px toddler base.
+                            base_h = family_catalog.base_height_for(c_name)
                             
                             c_scale = float(c.get("scale", 1.0))
                             target_h = int(base_h * c_scale * squash_y)

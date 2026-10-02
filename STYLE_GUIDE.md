@@ -321,3 +321,99 @@ Eight requests have no recovered output: teddy bear, toy robot, beach bucket set
 scooter, cherries, pink guava, lychee and siu mai plate. They are listed in
 `config/props_release_v2.json` and must not appear as generated assets or placeholder
 substitutions. Existing older assets with similar names remain unaffected.
+
+## 10. Family-Expansion v3 Release
+
+The user approved 53 of 54 generated family sprites on 2026-10-02 ("these are
+great. push to main"). The portal now includes **242 assets** across four manifests:
+60 original artwork, 73 phonics stickers, 56 props, and 53 family-expansion sprites.
+`config/family_release_v3.json` is the provenance manifest; it is not the runtime
+catalog. The runtime catalog lives in `app/services/family_catalog.py`, which the
+characters router, scene director and render service all import so new IDs do not
+have to be hardcoded in multiple places.
+
+**Scope.** 7 standalone standing identity references, 34 further solo poses, and
+12 contact composite sprites. The grandparents / auntie / cousin individual
+identities are new; they are additions to — not replacements for — the legacy
+two- and three-person group sprites (`grandparents_paternal`,
+`grandparents_maternal`, `auntie_cousins`), which remain intact with unchanged
+bytes and are still selectable. The new approved standing references may differ
+slightly from the extracted individuals in the legacy group art; that is
+expected and does not override the legacy group PNGs.
+
+**Excluded.** `paternal_grandpa_seated_storytelling_r01` was never downloaded
+(state `submission_uncertain` in the batch) and is explicitly excluded from the
+manifest; it must not be substituted by a placeholder or an alternate pose.
+
+**New runtime character IDs** (added to the `/api/characters/all` list and to the
+scene director allowlist alongside the existing eight IDs):
+
+| Runtime ID | Approved poses |
+|---|---|
+| `paternal_grandpa` | default, waving, offering_food_or_gift |
+| `paternal_grandma` | default, waving, seated_storytelling, offering_food_or_gift |
+| `maternal_grandpa` | default, waving, seated_storytelling, offering_food_or_gift |
+| `maternal_grandma` | default, waving, seated_storytelling, offering_food_or_gift |
+| `aunt_sister` | default, waving, crouching_to_talk, playing_helping |
+| `cousin_ryan` | default, waving, showing_toy, passing_toy, sitting_playing |
+| `cousin_younger` | default, waving, showing_toy, passing_toy, sitting_playing |
+
+Six new `mom_*` and six new `dad_*` poses (`listening_crouched`, `reading_book`,
+`offering_object`, `open_handed_explaining`, `comforting_open_arms`, `walking`)
+extend the existing adult allowlists in place without removing the historical
+`sitting`, `kneeling`, `teaching`, `drinking`, `kneeling_hug`, `holding_fruit`
+and `holding_bowl` poses.
+
+**Filename aliases.** The resolver resolves `auntie_<pose>.png` to
+`aunt_sister_<pose>.png` and `cousin_ben_<pose>.png` to
+`cousin_younger_<pose>.png`, so scripts and prior docs that still use the batch
+nicknames continue to resolve to the real runtime files. `cousin_younger` is
+displayed as "Cousin Ben (表弟)" in the character picker so the batch's "Ben"
+label is preserved for the user.
+
+**Anchor duplicates.** Each of the seven standalone standing references is
+written at both `assets/sprites/<id>_default.png` and
+`assets/sprites/<id>_standing.png` as byte-identical files, matching the
+existing convention that `<id>.png`, `<id>_default.png`, and the identity
+anchor can be separately tracked paths with identical bytes. The release
+counts these as seven unique approved assets with alias runtime paths, not
+fourteen; `alias_runtime_paths` on each manifest entry records the duplicates.
+
+**Contact composite sprites.** The twelve contact PNGs are stored under
+`assets/sprites/contact_<members>_<action>.png` with `members` and `action`
+metadata on the character record. Only `default` is a valid pose for a contact.
+When a director plan places a contact sprite, the sanitizer removes any
+separately staged inner members (e.g. a `contact_mom_levi_hug` plan drops a
+free-standing `mom` and `levi` from the same scene) so the kids are not drawn
+twice. Automatic contact selection from text alone is not implemented; contacts
+must be chosen explicitly in the UI or the LLM plan. This is called out in the
+system prompt so the director does not invent contact IDs. New individual IDs
+and their poses do NOT silently collapse to default: unknown pose names on a
+known character still reset to default per the existing rule, but every
+approved pose in the table above survives validation.
+
+**Scale classes.** `app/services/family_catalog.py` defines four classes with
+their render-canvas base heights: `adult` (760px), `older_child` (640px, for
+Ryan at 6-7y), `toddler` (520px, including Ben at 2-3y), and `pet` (320px).
+The renderer looks up the base height from this shared map so new relatives
+are not misclassified as toddlers and contact composites size to the tallest
+participant (all current contacts contain an adult, so they render at the
+760px adult base).
+
+**Export processing.** Each candidate PNG was normalized exactly like the
+Section 7 twin sprites: alpha ≤ 2 → 0, alpha ≥ 250 → 255 with intermediate
+edge alpha preserved, no RGB changes or resampling, crop to the normalized
+alpha bounding box, then add eight transparent pixels on every side.
+Contact originals arrived on a 1254×1254 square (the generator honoured the
+intent but not the full 1536px canvas request); their resolution was accepted
+as-is, not upscaled with fabricated detail. Original candidates in
+`design/2026-10-01-family-expansion/candidates/` and the 191 MB private
+`review.html` remain outside the repository.
+
+**Tests.** `test_family_release.py` exercises the manifest, the catalog
+module, the characters router, the sprite resolver (direct names, batch
+aliases, and the no-collision guard for `paternal_grandpa` vs the legacy
+`grandparents_paternal` group file), the scene-director pose validation and
+contact-duplication guard, and the preserved 189-asset legacy baseline.
+`test_phonics_release.py` was updated so its portal assertion expects 242
+assets with the new `Family sprites` and `Family contacts` categories.

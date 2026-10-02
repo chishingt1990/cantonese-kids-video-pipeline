@@ -17,7 +17,8 @@ CATEGORIES = {
     "toys": "Toys",
 }
 CATEGORY_ORDER = [
-    "All assets", "Sprites", "Cantonese badges", "Letters", "Numbers",
+    "All assets", "Sprites", "Family sprites", "Family contacts", "Cantonese badges",
+    "Letters", "Numbers",
     "Toys", "Animals", "Vehicles", "Fruits & vegetables", "Food & snacks", "Everyday props",
 ]
 
@@ -39,6 +40,8 @@ def build() -> Path:
     phonics_path = ROOT / "config" / "phonics_release_v2.json"
     phonics_manifest = json.loads(phonics_path.read_text(encoding="utf-8")) if phonics_path.exists() else None
     expansion = json.loads((ROOT / "config" / "props_release_v2.json").read_text(encoding="utf-8"))
+    family_path = ROOT / "config" / "family_release_v3.json"
+    family_manifest = json.loads(family_path.read_text(encoding="utf-8")) if family_path.exists() else None
     badges = {
         "badge_routine_brush_teeth": ("刷牙", "BRUSH TEETH"),
         "badge_routine_wash_hands": ("洗手", "WASH HANDS"),
@@ -122,6 +125,62 @@ def build() -> Path:
                     "color": asset["color"],
                 }, ensure_ascii=False, indent=2),
                 "thumb": preview(path, 360), "large": preview(path, 1040), "reference": None,
+            })
+    if family_manifest:
+        for asset in family_manifest["assets"]:
+            relative = asset["runtime_path"]
+            path = (ROOT / relative).resolve()
+            if not path.is_relative_to(ROOT):
+                raise ValueError(f"Asset path must stay within the repository: {relative}")
+            if hashlib.sha256(path.read_bytes()).hexdigest() != asset["sha256"]:
+                raise ValueError(f"Family manifest hash mismatch: {relative}")
+            for alias in asset.get("alias_runtime_paths", []):
+                alias_path = (ROOT / alias).resolve()
+                if not alias_path.is_relative_to(ROOT):
+                    raise ValueError(f"Alias path must stay within the repository: {alias}")
+                if hashlib.sha256(alias_path.read_bytes()).hexdigest() != asset["sha256"]:
+                    raise ValueError(f"Family alias hash mismatch: {alias}")
+            with Image.open(path) as image:
+                dimensions = list(image.size)
+                has_transparency = image.convert("RGBA").getchannel("A").histogram()[0] > 0
+            if asset["category"] == "solo":
+                category = "Family sprites"
+                name = asset["character_id"].replace("_", " ").title()
+                subtitle = asset["pose"].replace("_", " ").title()
+                members_tag = asset["character_id"]
+            else:
+                category = "Family contacts"
+                members = " + ".join(m["runtime_character_id"] for m in asset["members"])
+                name = members.replace("_", " ").title()
+                subtitle = asset["action"].replace("_", " ").title()
+                members_tag = members
+            reference = None
+            ref_paths = asset.get("primary_reference", {}).get("repository_relative_paths", [])
+            if ref_paths:
+                reference = preview(ROOT / ref_paths[0], 160)
+            assets.append({
+                "id": asset["id"], "name": name, "category": category,
+                "batch": "Family expansion v3",
+                "order": 2, "notes": (
+                    "Approved family-expansion v3 export. Alpha<=2 cleared, alpha>=250 set to 255, "
+                    "crop to alpha bbox, eight-pixel transparent padding; no RGB changes or resampling."
+                ),
+                "flagged": False, "history": False, "status": "installed",
+                "subtitle": subtitle,
+                "dimensions": dimensions, "sourceDimensions": asset.get("source_size", dimensions),
+                "provider": asset["provider"],
+                "alpha": "Transparent exterior · RGBA" if has_transparency else "Opaque background",
+                "path": relative, "url": quote(relative, safe="/"), "installedUrl": None,
+                "prompt": json.dumps({
+                    "release": family_manifest["release_id"], "asset_id": asset["id"],
+                    "sha256": asset["sha256"], "source_sha256": asset["source_sha256"],
+                    "processing": asset["processing"], "category": asset["category"],
+                    "pose_or_action": asset["pose"],
+                    "members": members_tag,
+                    "scale_class": asset["scale_class"],
+                    "alias_runtime_paths": asset.get("alias_runtime_paths", []),
+                }, ensure_ascii=False, indent=2),
+                "thumb": preview(path, 360), "large": preview(path, 1040), "reference": reference,
             })
     if len(assets) != len({a["id"] for a in assets}):
         raise ValueError("Duplicate IDs in release manifest")

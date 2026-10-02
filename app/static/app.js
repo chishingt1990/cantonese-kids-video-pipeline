@@ -945,12 +945,22 @@ function renderStageScene(idx) {
     const spriteFile = (poseObj && poseObj.sprite) ? poseObj.sprite : `${c.name}_${c.pose || 'default'}.png`;
     const spriteUrl = `/api/characters/sprite/${spriteFile}`;
     
-    // Proportional Base Heights: Adults ~72%, Toddlers ~50%, Dog ~30%
-    let baseHeightClass = 'h-[50%]'; // Toddlers
-    if (['dad', 'mom', 'grandparents_paternal', 'grandparents_maternal', 'auntie_cousins'].includes(c.name)) {
-      baseHeightClass = 'h-[72%]'; // Adults
-    } else if (c.name === 'dog') {
-      baseHeightClass = 'h-[30%]'; // Small Japanese Spitz dog
+    // Proportional Base Heights consumed from /api/characters/all metadata so
+    // new adult relatives and contact composites are not accidentally rendered
+    // at the 50% toddler default. Legacy IDs still receive their exact
+    // historical values (adult 72%, toddler 50%, dog 30%) via that metadata.
+    // The hardcoded fallback below only runs when the backend did not include
+    // stage_height_percent (older server builds), preserving prior behaviour.
+    let baseHeightClass;
+    if (typeof charMeta.stage_height_percent === 'number') {
+      baseHeightClass = `h-[${charMeta.stage_height_percent}%]`;
+    } else {
+      baseHeightClass = 'h-[50%]'; // Toddlers
+      if (['dad', 'mom', 'grandparents_paternal', 'grandparents_maternal', 'auntie_cousins'].includes(c.name)) {
+        baseHeightClass = 'h-[72%]'; // Adults
+      } else if (c.name === 'dog') {
+        baseHeightClass = 'h-[30%]'; // Small Japanese Spitz dog
+      }
     }
 
     const cScale = c.scale !== undefined ? parseFloat(c.scale) : 1.0;

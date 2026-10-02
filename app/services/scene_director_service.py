@@ -4,6 +4,7 @@ import re
 from typing import Dict, Any, List, Optional
 from app.services.ai_service import generate_ai_text
 from app.services.sticker_service import STICKER_CATALOG, RELEASE_PROPS, get_or_render_sticker
+from app.services import family_catalog
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,22 @@ CHARACTER_POSES = {
     "grandparents_maternal": ["default", "waving"],
     "auntie_cousins": ["default", "waving"]
 }
+
+# Merge the family-expansion v3 catalog so new individual relative IDs and
+# contact-sprite IDs survive director validation instead of silently collapsing
+# to "default". New mom/dad poses extend the parents' allowlist in place so
+# existing poses stay first in the list.
+for _new_cid, _new_poses in family_catalog.individual_poses().items():
+    _existing = CHARACTER_POSES.get(_new_cid, [])
+    _merged = list(_existing)
+    for _pose in _new_poses:
+        if _pose not in _merged:
+            _merged.append(_pose)
+    CHARACTER_POSES[_new_cid] = _merged
+for _contact in family_catalog.contact_sprites():
+    # Contact sprites are a single composite; only "default" is valid so director
+    # plans cannot ask for a pose that would collapse the composite.
+    CHARACTER_POSES.setdefault(_contact["id"], ["default"])
 
 # Reviewed bottom anchors for the new full-canvas 520px toddler exports.
 STARTER_POSE_Y = {"jumping": 800 / 1080 * 100, "dancing": 880 / 1080 * 100, "brushing_teeth": 880 / 1080 * 100}
@@ -110,6 +127,23 @@ DIRECTOR_SYSTEM_PROMPT += "\nApproved illustrated prop IDs (reuse these PNGs, do
     f"- {prop['id']}: {prop['chinese']} / {prop['english']}" for prop in RELEASE_PROPS
 )
 
+# Family-expansion v3 vocabulary (approved 2026-10-02). Appended rather than
+# rewriting DIRECTOR_SYSTEM_PROMPT so the existing twin/parent/legacy pose
+# listings above remain the canonical baseline for the prompt.
+_family_lines = ["", "Approved family-expansion v3 characters and poses (keep existing group IDs available too):"]
+for _cid, _poses in sorted(family_catalog.individual_poses().items()):
+    _family_lines.append(f"- {_cid}: {', '.join(_poses)}")
+_contact_entries = family_catalog.contact_sprites()
+if _contact_entries:
+    _family_lines.append(
+        "Contact composite sprites (pose must be \"default\"; do NOT also stage the inner "
+        "members separately, the sprite already contains both participants):"
+    )
+    for _entry in _contact_entries:
+        _members = " + ".join(_entry["members"])
+        _family_lines.append(f"- {_entry['id']}  ({_members}, action={_entry['action']})")
+DIRECTOR_SYSTEM_PROMPT += "\n".join(_family_lines) + "\n"
+
 def direct_single_scene(scene: Dict[str, Any], context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """Uses LLM visual reasoning to direct a scene, with an instant deterministic heuristic fallback."""
     user_prompt = f"""Direct this preschool scene:
@@ -148,6 +182,45 @@ def _validate_and_sanitize_plan(plan: Dict[str, Any], original_scene: Dict[str, 
         bg = "living_room"
     
     chars = plan.get("characters", [])
+    if not chars:
+        return _heuristic_fallback_director(original_scene)
+
+    # Composite contact sprites each already contain two or three family members.
+    # When a plan contains multiple contacts whose members overlap (e.g.
+    # ``contact_dad_luca_hug`` and ``contact_dad_cousin_younger_handholding``
+    # both include dad), rendering both would draw the shared member twice.
+    # Resolution rule: first valid contact wins; later contacts whose member
+    # set intersects any already-kept contact are dropped. Then any standalone
+    # member of a retained contact is also dropped so no inner participant is
+    # drawn alongside its composite. This mirrors the pre-release rule of
+    # resolving plan conflicts in document order (same ordering used by the
+    # heuristic director when it stages multiple characters).
+    kept_contact_members: set = set()
+    kept_contacts: list = []
+    filtered_chars: list = []
+    for c in chars:
+        name = c.get("name", "")
+        if family_catalog.is_contact_id(name):
+            members = set(family_catalog.contact_members(name) or [])
+            if members & kept_contact_members:
+                # Overlapping composite; skip to avoid double-rendering the
+                # shared member.
+                continue
+            kept_contact_members |= members
+            kept_contacts.append(name)
+            filtered_chars.append(c)
+        else:
+            filtered_chars.append(c)
+    # Second pass: drop standalone entries whose IDs are already shown inside
+    # a retained contact composite. Non-member characters pass through.
+    if kept_contact_members:
+        filtered_chars = [
+            c for c in filtered_chars
+            if family_catalog.is_contact_id(c.get("name", ""))
+            or c.get("name") not in kept_contact_members
+        ]
+    chars = filtered_chars
+    plan["characters"] = chars
     if not chars:
         return _heuristic_fallback_director(original_scene)
 

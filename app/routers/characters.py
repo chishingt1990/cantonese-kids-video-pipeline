@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from app.services.background_generator import generate_pastel_room, generate_iterative_background
 from app.services.character_generator import generate_custom_character_sprite
+from app.services import family_catalog
 
 router = APIRouter(prefix="/api/characters", tags=["characters"])
 
@@ -47,6 +48,11 @@ POSE_LABELS = {
     "eating_banana": "🍌 Eating Sweet Banana",
     "playing_ball": "🎾 Playing with Ball",
 }
+# Merge the family-expansion v3 pose vocabulary (standing, seated_storytelling,
+# offering_food_or_gift, listening_crouched, reading_book, walking, hug, ...)
+# so dynamic sprite discovery picks up human-readable labels for the new poses.
+for _pose_id, _label in family_catalog.pose_labels().items():
+    POSE_LABELS.setdefault(_pose_id, _label)
 
 @router.get("/")
 @router.get("/all")
@@ -192,6 +198,50 @@ def list_characters():
             "sprite_url": "/api/characters/sprite/auntie_cousins_default.png"
         }
     ]
+
+    # Append family-expansion v3 individual relatives and contact sprites.
+    # Legacy group entries above remain untouched for compatibility with
+    # existing episodes; new entries are additional selectable characters.
+    individual_poses = family_catalog.individual_poses()
+    for new_id in ("paternal_grandpa", "paternal_grandma", "maternal_grandpa",
+                   "maternal_grandma", "aunt_sister", "cousin_ryan", "cousin_younger"):
+        display = family_catalog.new_character_display(new_id) or {}
+        poses = []
+        for pose_id in individual_poses.get(new_id, ["default"]):
+            poses.append({
+                "id": pose_id,
+                "label": POSE_LABELS.get(pose_id, pose_id.replace("_", " ").title()),
+                "sprite": f"{new_id}_{pose_id}.png",
+            })
+        chars.append({
+            "id": new_id,
+            "name": display.get("name", new_id),
+            "role": display.get("role", "Family"),
+            "outfit": display.get("outfit", ""),
+            "hair": display.get("hair", ""),
+            "poses": poses,
+            "sprite_url": f"/api/characters/sprite/{new_id}_default.png",
+            "family_release": "v3",
+        })
+    for contact in family_catalog.contact_sprites():
+        sprite = os.path.basename(contact["runtime_path"])
+        chars.append({
+            "id": contact["id"],
+            "name": family_catalog.contact_display_name(contact["id"]),
+            "role": "Family Contact Sprite",
+            "outfit": "Composite contact (hug / handholding / adult carrying child)",
+            "hair": "",
+            "members": list(contact["members"]),
+            "action": contact["action"],
+            "scale_class": contact["scale_class"],
+            "poses": [{
+                "id": "default",
+                "label": "Default Composite",
+                "sprite": sprite,
+            }],
+            "sprite_url": f"/api/characters/sprite/{sprite}",
+            "family_release": "v3",
+        })
     
     # Dynamically scan sprites for all poses and custom additions
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -216,6 +266,18 @@ def list_characters():
                     "label": label,
                     "sprite": fname
                 })
+
+    # Expose a single source of truth for sizing: the stage-canvas height
+    # percent used by app/static/app.js and the render-canvas base height
+    # used by app/services/render_service.py. Legacy IDs resolve to their
+    # historical values (adult 72% / 760px, toddler 50% / 520px, dog
+    # 30% / 320px) via family_catalog's merged scale-class map; new family
+    # IDs and contact composites pick up adult / older_child classifications.
+    for char in chars:
+        cid = char["id"]
+        char["scale_class"] = family_catalog.scale_class_for(cid)
+        char["stage_height_percent"] = family_catalog.stage_height_percent_for(cid)
+        char["base_height_px"] = family_catalog.base_height_for(cid)
 
     return {"characters": chars}
 
@@ -244,34 +306,52 @@ def get_sprite(filename: str):
         "Expires": "0"
     }
 
+    # Serve the exact requested file first so legacy group filenames such as
+    # ``auntie_cousins_default.png`` are returned verbatim rather than being
+    # rewritten by the alias layer below.
     path = os.path.join(sprites_dir, clean_name)
     if os.path.exists(path):
         return FileResponse(path, media_type="image/png", headers=no_cache_headers)
-    
-    # Match against multi-word character prefixes
-    known_prefixes = [
-        "grandparents_paternal",
-        "grandparents_maternal",
-        "auntie_cousins",
-        "dad",
-        "mom",
-        "dog",
-        "levi",
-        "luca"
-    ]
+
+    # Family-expansion v3 filename aliases: scripts that still use the batch
+    # nicknames (``auntie_*.png``, ``cousin_ben_*.png``) resolve to the real
+    # runtime filenames (``aunt_sister_*``, ``cousin_younger_*``) so legacy
+    # references keep working without duplicating sprite bytes on disk.
+    # ``filename_alias_resolution`` returns None for protected canonical
+    # prefixes (``auntie_cousins_*``) to avoid clobbering legacy group IDs.
+    family_resolved = family_catalog.filename_alias_resolution(clean_name)
+    if family_resolved is not None:
+        clean_name = family_resolved
+        path = os.path.join(sprites_dir, clean_name)
+        if os.path.exists(path):
+            return FileResponse(path, media_type="image/png", headers=no_cache_headers)
+
+    # Match against multi-word character prefixes. Order is longest-first so
+    # ``paternal_grandpa_*`` is matched before any ``paternal_*`` substring and
+    # ``cousin_younger_*`` is matched before any ``cousin_*`` substring.
+    known_prefixes = family_catalog.known_character_prefixes()
     char_prefix = None
     for pfx in known_prefixes:
-        if clean_name.startswith(pfx):
+        token = f"{pfx}_"
+        if clean_name.startswith(token) or clean_name == f"{pfx}.png":
             char_prefix = pfx
             break
     if not char_prefix:
         char_prefix = clean_name.split("_")[0]
 
-    fallback_char = os.path.join(sprites_dir, f"{char_prefix}_default.png")
+    # Resolve aliases on the character prefix too, so e.g. ``cousin_ben_default.png``
+    # falls back to ``cousin_younger_default.png`` on the retry step. Protected
+    # canonical prefixes are preserved by returning them unchanged.
+    if char_prefix in family_catalog._PROTECTED_CANONICAL_PREFIXES:
+        aliased_prefix = char_prefix
+    else:
+        aliased_prefix = family_catalog.FILENAME_ALIAS_PREFIXES.get(char_prefix, char_prefix)
+
+    fallback_char = os.path.join(sprites_dir, f"{aliased_prefix}_default.png")
     if os.path.exists(fallback_char):
         return FileResponse(fallback_char, media_type="image/png", headers=no_cache_headers)
         
-    fallback_char_simple = os.path.join(sprites_dir, f"{char_prefix}.png")
+    fallback_char_simple = os.path.join(sprites_dir, f"{aliased_prefix}.png")
     if os.path.exists(fallback_char_simple):
         return FileResponse(fallback_char_simple, media_type="image/png", headers=no_cache_headers)
         

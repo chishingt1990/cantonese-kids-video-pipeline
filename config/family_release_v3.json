@@ -1,0 +1,2695 @@
+{
+  "schema_version": 1,
+  "release_id": "family_release_v3",
+  "status": "approved_complete_release",
+  "approval": "User reply 'these are great. push to main' on 2026-10-02 01:03 PDT after visual approval of 53 of 54 approved family-expansion jobs; one job (paternal_grandpa_seated_storytelling_r01) remained in submission_uncertain state and is excluded from this release manifest.",
+  "scope": "53 approved family sprites: 7 standalone standing identity references (paternal_grandpa, paternal_grandma, maternal_grandpa, maternal_grandma, aunt_sister, cousin_ryan, cousin_younger), 34 additional solo poses, and 12 contact sprites (hug, handholding, carrying_child).",
+  "note": "Provenance manifest, not the runtime catalog. Runtime catalogs load this file via app/services/family_catalog.py. Original candidate PNGs and the 191MB private review.html remain outside the repository.",
+  "scale_classes": {
+    "adult": {
+      "base_height_px": 760
+    },
+    "older_child": {
+      "base_height_px": 640
+    },
+    "toddler": {
+      "base_height_px": 520
+    },
+    "pet": {
+      "base_height_px": 320
+    }
+  },
+  "pose_labels": {
+    "standing": "🧍 Standing Reference",
+    "waving": "👋 Waving Hello",
+    "seated_storytelling": "📖 Seated Storytelling",
+    "offering_food_or_gift": "🎁 Offering Food / Gift",
+    "crouching_to_talk": "🧎 Crouching to Talk",
+    "playing_helping": "🧸 Playing & Helping",
+    "showing_toy": "🎲 Showing a Toy",
+    "passing_toy": "🤝 Passing a Toy",
+    "sitting_playing": "🧘 Sitting & Playing",
+    "listening_crouched": "🧎 Listening (Crouched)",
+    "reading_book": "📚 Reading a Book",
+    "offering_object": "🤲 Offering an Object",
+    "open_handed_explaining": "🗣️ Open-Handed Explaining",
+    "comforting_open_arms": "🤗 Comforting Open Arms",
+    "walking": "🚶 Walking",
+    "hug": "🤗 Shared Hug",
+    "handholding": "🤝 Holding Hands",
+    "carrying_child": "👶 Carrying Child"
+  },
+  "contact_action_labels": {
+    "hug": "Hug",
+    "handholding": "Hand-holding",
+    "carrying_child": "Adult Carrying Child"
+  },
+  "excluded_jobs": [
+    {
+      "job_id": "paternal_grandpa_seated_storytelling_r01",
+      "state": "submission_uncertain",
+      "character_ids": [
+        "paternal_grandpa"
+      ],
+      "pose": "seated_storytelling",
+      "reason": "Not downloaded; sprite bytes are not present locally."
+    }
+  ],
+  "assets": [
+    {
+      "id": "sprite_paternal_grandpa_default",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/paternal_grandpa_default.png",
+      "alias_runtime_paths": [
+        "assets/sprites/paternal_grandpa_standing.png"
+      ],
+      "source_filename": "paternal_grandpa_standing_r01.png",
+      "source_sha256": "8e1dd6ef9723c64a26731dbb920863d7b41a3f0aae2209a903f17cd618f59c02",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427"
+        ]
+      },
+      "prompt_sha256": "bda02926f9c1e88f52a85f83ab4c675eeada6a8ebc1d83239f87a15a4dbca41e",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1036229,
+        "alpha_ge_250_to_255_pixels": 518254,
+        "source_crop_ltrb": [
+          242,
+          18,
+          782,
+          1512
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        556,
+        1510
+      ],
+      "mode": "RGBA",
+      "sha256": "54a057aa023ce1835113b481b1dfe5e51b1b9727905f4bf52929de34cbc7a15d",
+      "pose": "default",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "paternal_grandpa",
+      "is_standalone_reference": true,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_paternal_grandma_default",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/paternal_grandma_default.png",
+      "alias_runtime_paths": [
+        "assets/sprites/paternal_grandma_standing.png"
+      ],
+      "source_filename": "paternal_grandma_standing_r01.png",
+      "source_sha256": "06eef594295ac3fcbc234d3f608fa8e7ad17720b2a1033daef7f4b61f75aa64e",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427"
+        ]
+      },
+      "prompt_sha256": "7d88cadc6c5f7b83fc1f1f5dfdf4e58efb22db1b5d634aa8d74b790a73a207dd",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1073279,
+        "alpha_ge_250_to_255_pixels": 485187,
+        "source_crop_ltrb": [
+          266,
+          37,
+          764,
+          1498
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        514,
+        1477
+      ],
+      "mode": "RGBA",
+      "sha256": "d64459712ea783e78a6a4a8340f8aedf7b0de27573b29735b6fa69a1dde24aaa",
+      "pose": "default",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "paternal_grandma",
+      "is_standalone_reference": true,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandpa_default",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandpa_default.png",
+      "alias_runtime_paths": [
+        "assets/sprites/maternal_grandpa_standing.png"
+      ],
+      "source_filename": "maternal_grandpa_standing_r01.png",
+      "source_sha256": "72f9bd7b2a060e4c755cb175125e8e28fb06049078b9f8a24f034b2e76faa547",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "b8053969f707cdc3b3cce5e9c56eb4cb85a2f4cc0e0d6178517fbcdd2a1cfff8",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1023985,
+        "alpha_ge_250_to_255_pixels": 535797,
+        "source_crop_ltrb": [
+          211,
+          26,
+          781,
+          1486
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        586,
+        1476
+      ],
+      "mode": "RGBA",
+      "sha256": "2a7ce45b02a21942b96d6874456317e6fa898dd40d3070d8eff3ce85c2a2b5e0",
+      "pose": "default",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandpa",
+      "is_standalone_reference": true,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandma_default",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandma_default.png",
+      "alias_runtime_paths": [
+        "assets/sprites/maternal_grandma_standing.png"
+      ],
+      "source_filename": "maternal_grandma_standing_r01.png",
+      "source_sha256": "016bce70a7927d33331ccc3f16ece40c742eaae483df8f3e17fd48b72735edce",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "6bc128ae32cf624ba4eeb8beabb02e1f76f7085bb98c3d02cddda6003fc75ae9",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1051147,
+        "alpha_ge_250_to_255_pixels": 508913,
+        "source_crop_ltrb": [
+          240,
+          51,
+          782,
+          1487
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        558,
+        1452
+      ],
+      "mode": "RGBA",
+      "sha256": "fb4ee6d152ba776cebe6c15884e3fc8ad434c8b1f0eb30a57db28b60a394f3bf",
+      "pose": "default",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandma",
+      "is_standalone_reference": true,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_aunt_sister_default",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/aunt_sister_default.png",
+      "alias_runtime_paths": [
+        "assets/sprites/aunt_sister_standing.png"
+      ],
+      "source_filename": "auntie_standing_r01.png",
+      "source_sha256": "edbd1087eba6d433f6d2409e8a0c8fbd67674117bb380caf15742c47394f1aa3",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "d740d85bab03804a2e0e80e9eec8122896125126f8de6b5fb21c5536c2888ef5",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1014103,
+        "alpha_ge_250_to_255_pixels": 541821,
+        "source_crop_ltrb": [
+          235,
+          19,
+          808,
+          1489
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        589,
+        1486
+      ],
+      "mode": "RGBA",
+      "sha256": "ea435c611b3c68de79c146b1fd0ce12549498e0f41ec92b201c381621af1c29b",
+      "pose": "default",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "aunt_sister",
+      "is_standalone_reference": true,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_cousin_ryan_default",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_ryan_default.png",
+      "alias_runtime_paths": [
+        "assets/sprites/cousin_ryan_standing.png"
+      ],
+      "source_filename": "cousin_ryan_standing_r01.png",
+      "source_sha256": "5304e130937f8454b283c7ee567e7359422a1adbd2907c26a6c049201b291fb1",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "4c77942858f737fab601ce20b098df8958bba6b490d0a70773708a11d28c785d",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1095582,
+        "alpha_ge_250_to_255_pixels": 459848,
+        "source_crop_ltrb": [
+          258,
+          86,
+          766,
+          1430
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        524,
+        1360
+      ],
+      "mode": "RGBA",
+      "sha256": "e84fa83a1885a0b9460e3d5238249c6fe1736b451e0051cf3a4f79031a7ceb16",
+      "pose": "default",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_ryan",
+      "is_standalone_reference": true,
+      "scale_class": "older_child"
+    },
+    {
+      "id": "sprite_cousin_younger_default",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_younger_default.png",
+      "alias_runtime_paths": [
+        "assets/sprites/cousin_younger_standing.png"
+      ],
+      "source_filename": "cousin_ben_standing_r01.png",
+      "source_sha256": "35b19695f131f3262f74812936b02321e3588c7d9bbd49ea06e34e8a3dd78464",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "f3e955920840af9e3a313d8fe4179dd657447c6a9908b0a117a2d498398628fb",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1085270,
+        "alpha_ge_250_to_255_pixels": 470905,
+        "source_crop_ltrb": [
+          228,
+          144,
+          779,
+          1447
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        567,
+        1319
+      ],
+      "mode": "RGBA",
+      "sha256": "45fa531f9bb12bcf842ea4b30bec06b8e2fa544a4fa06a4683bbacc54ad80d99",
+      "pose": "default",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_younger",
+      "is_standalone_reference": true,
+      "scale_class": "toddler"
+    },
+    {
+      "id": "sprite_mom_listening_crouched",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/mom_listening_crouched.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_listening_crouched_r01.png",
+      "source_sha256": "52904aa8b0d767416185b04debc2abd124666db1a8f7fb7aa67e4bf73d7fa295",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94"
+        ]
+      },
+      "prompt_sha256": "8b8c93f9b0b8c9afe86953ba050465b90bc8406dd23bedd94caefe8db464a7f3",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1004941,
+        "alpha_ge_250_to_255_pixels": 553177,
+        "source_crop_ltrb": [
+          181,
+          48,
+          819,
+          1463
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        654,
+        1431
+      ],
+      "mode": "RGBA",
+      "sha256": "940cfaaa17c5858ee07a07cfe3cfab60b8f22615a810bdc6d171599bb60552b5",
+      "pose": "listening_crouched",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "mom",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_mom_reading_book",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/mom_reading_book.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_reading_book_r01.png",
+      "source_sha256": "60946f217c6df62945dd8414a217288e5270567cb3a908e6cc60bfb6e79c7420",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94"
+        ]
+      },
+      "prompt_sha256": "3d646c28e527db65213682783ff77490d38621f4b3cea33fa2ee650c8ddb0d59",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1118142,
+        "alpha_ge_250_to_255_pixels": 437072,
+        "source_crop_ltrb": [
+          223,
+          19,
+          845,
+          1512
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        638,
+        1509
+      ],
+      "mode": "RGBA",
+      "sha256": "5503e62045bd555ca043d40810e97f59ad91aa8a1750aed8e5ef007b997bd9e3",
+      "pose": "reading_book",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "mom",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_mom_offering_object",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/mom_offering_object.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_offering_object_r01.png",
+      "source_sha256": "57831a6937e65e376bed78931e9e574a5631023457a6edf9aa5eec17da0dc7e1",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94"
+        ]
+      },
+      "prompt_sha256": "d93b7eca0fa171887146552531b2ddda27d02b46bd59f22f98e72ba1f29e2571",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1110546,
+        "alpha_ge_250_to_255_pixels": 444175,
+        "source_crop_ltrb": [
+          184,
+          10,
+          904,
+          1512
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        736,
+        1518
+      ],
+      "mode": "RGBA",
+      "sha256": "86b5e7605595763b35c4271cb22ac735355e30e6a7677de5a19489dcc09a0a21",
+      "pose": "offering_object",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "mom",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_mom_open_handed_explaining",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/mom_open_handed_explaining.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_open_handed_explaining_r01.png",
+      "source_sha256": "11fb27dbe74f1c694efba965cbf44e5c08fc6e9be8025885c38b14f331e77261",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94"
+        ]
+      },
+      "prompt_sha256": "11f26fb444e635016cda17e1769faf581b6ab728d1a2a16f75c40eedf78aafcd",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1169520,
+        "alpha_ge_250_to_255_pixels": 384653,
+        "source_crop_ltrb": [
+          250,
+          16,
+          896,
+          1508
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        662,
+        1508
+      ],
+      "mode": "RGBA",
+      "sha256": "d909aef3bbaedb66b527b3f67dc9407e89ee5e5854f3fc07d69c3deb801239ea",
+      "pose": "open_handed_explaining",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "mom",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_mom_comforting_open_arms",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/mom_comforting_open_arms.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_comforting_open_arms_r01.png",
+      "source_sha256": "ecadc1b125f583b178b97a2d6c8f4ae4bf9a32f08927113af54fac7057de03b7",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94"
+        ]
+      },
+      "prompt_sha256": "3bc5da646cfc29f0cd2ffec582a615ebf8c68766d0a6470674490e1e4cb99554",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1154013,
+        "alpha_ge_250_to_255_pixels": 402233,
+        "source_crop_ltrb": [
+          252,
+          20,
+          893,
+          1517
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        657,
+        1513
+      ],
+      "mode": "RGBA",
+      "sha256": "0b2ff5f941b810bca99ea465f7534db904dcd7708e66cd1e87b4d9351966b586",
+      "pose": "comforting_open_arms",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "mom",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_mom_walking",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/mom_walking.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_walking_r01.png",
+      "source_sha256": "3f1b0c46dbe60d238cf754c20bbd78c5e11d302dffe1d3d7a67ad577e3451878",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94"
+        ]
+      },
+      "prompt_sha256": "60d61b9a25c4ff61f4205d255c18e686ad4097f89e40986bf4db3ec9814b9de1",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1134730,
+        "alpha_ge_250_to_255_pixels": 419328,
+        "source_crop_ltrb": [
+          163,
+          12,
+          925,
+          1488
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        778,
+        1492
+      ],
+      "mode": "RGBA",
+      "sha256": "10dc7ad19ec97612a5dbfdb40d06d6c7cff9a8605b4a8ca46b96d4d2d1b2ce7f",
+      "pose": "walking",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "mom",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_dad_listening_crouched",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/dad_listening_crouched.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_listening_crouched_r01.png",
+      "source_sha256": "f0a961f09906e7f430807ef85149bbdb07c5c96fbd5abd09e9f98add98f94eb1",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9"
+        ]
+      },
+      "prompt_sha256": "d6d9092e2afc3034699eaa4c0ffb25af3a684dc9be9af74f49b186d45e307d70",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 902025,
+        "alpha_ge_250_to_255_pixels": 655531,
+        "source_crop_ltrb": [
+          141,
+          63,
+          918,
+          1471
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        793,
+        1424
+      ],
+      "mode": "RGBA",
+      "sha256": "7d6ff093987e9dd58eb0878ac23b711f46e96997f800705b3c5aec7e0a397540",
+      "pose": "listening_crouched",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "dad",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_dad_reading_book",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/dad_reading_book.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_reading_book_r01.png",
+      "source_sha256": "11ce14fa111a3542b3da50d83ad8981bebede60817afa73047c0594a57777226",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9"
+        ]
+      },
+      "prompt_sha256": "659d773e2732bcefe7ed6407fa1d9235145997feff0819c3e02f4f5f6eb57ace",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1106807,
+        "alpha_ge_250_to_255_pixels": 448706,
+        "source_crop_ltrb": [
+          200,
+          17,
+          810,
+          1516
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        626,
+        1515
+      ],
+      "mode": "RGBA",
+      "sha256": "14737077aac1c8b6f210c7c5e6522197c9934fcab9c21624a9502b08b5d40cff",
+      "pose": "reading_book",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "dad",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_dad_offering_object",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/dad_offering_object.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_offering_object_r01.png",
+      "source_sha256": "488e03c425ed9419aea5933a5a6df55d83c14eddeb0063be79963c0c2522eacc",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9"
+        ]
+      },
+      "prompt_sha256": "77522ac755c66868419be2ded696d7e898df47034531dc7c6335a7f244062988",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1077166,
+        "alpha_ge_250_to_255_pixels": 476760,
+        "source_crop_ltrb": [
+          76,
+          24,
+          977,
+          1501
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        917,
+        1493
+      ],
+      "mode": "RGBA",
+      "sha256": "2eb1bbfe9fa8cb99b4e6f657cabe9e5fbf42ad8e6f5bcbb2b5eccd1851e037f8",
+      "pose": "offering_object",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "dad",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_dad_open_handed_explaining",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/dad_open_handed_explaining.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_open_handed_explaining_r01.png",
+      "source_sha256": "e55fda71945fee73da762f330c3988ab1c0e8b6d927a1f912fc1ddd93d6e58eb",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9"
+        ]
+      },
+      "prompt_sha256": "3584384bbba771267e251b3102669e4ce576acc829686cb3e6d657d3332a6ae1",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1119244,
+        "alpha_ge_250_to_255_pixels": 436105,
+        "source_crop_ltrb": [
+          133,
+          14,
+          812,
+          1521
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        695,
+        1523
+      ],
+      "mode": "RGBA",
+      "sha256": "6e6d82534ae61fe89ae51ff1511ef1037f4dab2c958a2bb4a2d7e524e7245545",
+      "pose": "open_handed_explaining",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "dad",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_dad_comforting_open_arms",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/dad_comforting_open_arms.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_comforting_open_arms_r01.png",
+      "source_sha256": "cf14a8adc82cf0f1b0bcb2cd6b091a9bb38e07a870e6e51a6ec7e319b5996e47",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9"
+        ]
+      },
+      "prompt_sha256": "d715441760c52dfd3454a6c2606e8016614f639ab57c4130ba73fe3f4f29cee7",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1069701,
+        "alpha_ge_250_to_255_pixels": 482517,
+        "source_crop_ltrb": [
+          77,
+          19,
+          914,
+          1515
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        853,
+        1512
+      ],
+      "mode": "RGBA",
+      "sha256": "f81516d1003c7c672c3e805938231c4514d2f9ad4af57015f7ac0776a01303f8",
+      "pose": "comforting_open_arms",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "dad",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_dad_walking",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/dad_walking.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_walking_r01.png",
+      "source_sha256": "6b4eab88dcf8d780a21b19ee5369a669274c8bcdff365e0653c14c9fd39b162f",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9"
+        ]
+      },
+      "prompt_sha256": "c2266ed514c98976d90371df72f4773328eefee9f58b721548ac895655a06d82",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1141598,
+        "alpha_ge_250_to_255_pixels": 412832,
+        "source_crop_ltrb": [
+          196,
+          32,
+          861,
+          1479
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        681,
+        1463
+      ],
+      "mode": "RGBA",
+      "sha256": "80bf4fce6b58e9e1e18fddf66be2eccdf9c488413e111a31e9dbc14be47f3a9e",
+      "pose": "walking",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "dad",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_paternal_grandpa_waving",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/paternal_grandpa_waving.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_waving_r01.png",
+      "source_sha256": "7c43153163eab3c10e3d649b8d453c81cabcd4ac7dfa6b54cfcf47dfbccf1d59",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427"
+        ]
+      },
+      "prompt_sha256": "d7ca2e9bc1533ac720468d7d7019e19cb84b3d5cd26abe9471ce38de08047cd9",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1049257,
+        "alpha_ge_250_to_255_pixels": 505909,
+        "source_crop_ltrb": [
+          152,
+          25,
+          786,
+          1500
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        650,
+        1491
+      ],
+      "mode": "RGBA",
+      "sha256": "e4bbbb279fc1d4ed305acddf9f21fcd964d114fcd29f3150fe66c52b84f8f923",
+      "pose": "waving",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "paternal_grandpa",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_paternal_grandpa_offering_food_or_gift",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/paternal_grandpa_offering_food_or_gift.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_offering_food_or_gift_r01.png",
+      "source_sha256": "a91860d1411b8416bdc604d959c389f52c8ecffb3b1d3864364e5c3f84477b30",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427"
+        ]
+      },
+      "prompt_sha256": "b14db79db0904d519723b9a9345f0432eea945074414884dbac2237d7fb0147a",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1063540,
+        "alpha_ge_250_to_255_pixels": 493936,
+        "source_crop_ltrb": [
+          202,
+          15,
+          818,
+          1497
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        632,
+        1498
+      ],
+      "mode": "RGBA",
+      "sha256": "cd380b6bf4b03d6d718f59e430610caf534c639f7eb9b7529c48b9d2a6ea09c3",
+      "pose": "offering_food_or_gift",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "paternal_grandpa",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_paternal_grandma_waving",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/paternal_grandma_waving.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandma_waving_r01.png",
+      "source_sha256": "d3f4b57c69d12c787b78de37f45dba092d2effcfb858ea3a1cff44ceb540c1d0",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427"
+        ]
+      },
+      "prompt_sha256": "95639fb5d842ed9b9f666f02b0db576e1abbf5dfe3403f85c26656ac3b8be0d2",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1036954,
+        "alpha_ge_250_to_255_pixels": 520224,
+        "source_crop_ltrb": [
+          161,
+          32,
+          799,
+          1507
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        654,
+        1491
+      ],
+      "mode": "RGBA",
+      "sha256": "10f7f4953f0878c1febfcc0a21f8c4792931d3945a68f375f12b0f98c99fe95d",
+      "pose": "waving",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "paternal_grandma",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_paternal_grandma_seated_storytelling",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/paternal_grandma_seated_storytelling.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandma_seated_storytelling_r01.png",
+      "source_sha256": "ade06b005b49e0705608debb040603b1b685f86cd51b8ed93f3458159b4a8e89",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427"
+        ]
+      },
+      "prompt_sha256": "f3d229011d1e3b79601c796e4d7ec421373b87f3f47b94a49493c0b142f7c901",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 914145,
+        "alpha_ge_250_to_255_pixels": 639152,
+        "source_crop_ltrb": [
+          179,
+          42,
+          990,
+          1500
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        827,
+        1474
+      ],
+      "mode": "RGBA",
+      "sha256": "8b515cc849e523728e64c373bac17fd2606f2a502492610c65bcfafbe149ab17",
+      "pose": "seated_storytelling",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "paternal_grandma",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_paternal_grandma_offering_food_or_gift",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/paternal_grandma_offering_food_or_gift.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandma_offering_food_or_gift_r01.png",
+      "source_sha256": "dbd53749b190a50e15b9b8545d964175dfb669a14da43f67a42fb2190c5c2e31",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427"
+        ]
+      },
+      "prompt_sha256": "8309e28728bb1efbab43d5584fcaf616929bba9616ef235cbe801744f3b61ddc",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1057191,
+        "alpha_ge_250_to_255_pixels": 501307,
+        "source_crop_ltrb": [
+          220,
+          19,
+          807,
+          1519
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        603,
+        1516
+      ],
+      "mode": "RGBA",
+      "sha256": "ab75e288c09e6568d1bf79543ee51bbb86f7fd66aa7ffa622e2bb689908aa837",
+      "pose": "offering_food_or_gift",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "paternal_grandma",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandpa_waving",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandpa_waving.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_waving_r01.png",
+      "source_sha256": "c64720206a305364fa809e82b3c3c59075de85bb218da8a593a6204ff7b50308",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "b8d9b3a764f9b9975b4a2047c01988206c13378976138def34ffaa75cbebbc80",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1022187,
+        "alpha_ge_250_to_255_pixels": 533223,
+        "source_crop_ltrb": [
+          156,
+          12,
+          794,
+          1503
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        654,
+        1507
+      ],
+      "mode": "RGBA",
+      "sha256": "269aaa4aa24db18188a0c803412579c3fd79612638655a8c6e5e7992ffb101f8",
+      "pose": "waving",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandpa",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandpa_seated_storytelling",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandpa_seated_storytelling.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_seated_storytelling_r01.png",
+      "source_sha256": "c8d18b41ba3a038731ace3a6b3cc5f0bbc651ab92df53c47759ccc92013977fb",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "18ef15ac8ec4af06f387b8cb0bdff839b3c2006cd6a9c37a7c611d39d7061a02",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 935647,
+        "alpha_ge_250_to_255_pixels": 616316,
+        "source_crop_ltrb": [
+          101,
+          79,
+          975,
+          1469
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        890,
+        1406
+      ],
+      "mode": "RGBA",
+      "sha256": "2614929b8a7ca076c8c6ad7d4edc93677866ae607c2d2c60cc1351a7bef8b270",
+      "pose": "seated_storytelling",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandpa",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandpa_offering_food_or_gift",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandpa_offering_food_or_gift.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_offering_food_or_gift_r01.png",
+      "source_sha256": "5d6adb3413dce27de8ceac71c7050a9cc92fefb910e60574fd39188c2ea29edb",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "c78f60d40ba16750071af373142c9869e94acfe023c74026235b5bec27cf15a3",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1031745,
+        "alpha_ge_250_to_255_pixels": 525689,
+        "source_crop_ltrb": [
+          204,
+          15,
+          868,
+          1500
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        680,
+        1501
+      ],
+      "mode": "RGBA",
+      "sha256": "cc0ccffb5fbb0911d4a45fc9d5096e6c6faade289c0efc94ae01a6551d729219",
+      "pose": "offering_food_or_gift",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandpa",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandma_waving",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandma_waving.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandma_waving_r01.png",
+      "source_sha256": "3c86729bbacbb82de21599bf78325c0d309e549ee96d978a66d5b376a564fc61",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "3c387e152213c6b7f50114d0c8acf305e6aa86b4ad91dc88a562d56dbd87d88b",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1028149,
+        "alpha_ge_250_to_255_pixels": 529825,
+        "source_crop_ltrb": [
+          167,
+          36,
+          805,
+          1501
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        654,
+        1481
+      ],
+      "mode": "RGBA",
+      "sha256": "d7e52934ce9142cdf216dd1aa77894d14076828e00b993538e773cee94e00b16",
+      "pose": "waving",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandma",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandma_seated_storytelling",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandma_seated_storytelling.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandma_seated_storytelling_r01.png",
+      "source_sha256": "f7c26000b418529d8e5a93ceac067a455ee90f9a94b2f36dc4a5c21d8c8a7be5",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "5fa8b2ea7fdb137fe9fa09af136c54db9f3a0c7bd1e40f362a41d6e8c2f69bb0",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 907809,
+        "alpha_ge_250_to_255_pixels": 645310,
+        "source_crop_ltrb": [
+          150,
+          21,
+          993,
+          1479
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        859,
+        1474
+      ],
+      "mode": "RGBA",
+      "sha256": "25726c97d32b7d21fa05604a5ff44c42124329d360e3846c3163e6b209c12cc7",
+      "pose": "seated_storytelling",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandma",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_maternal_grandma_offering_food_or_gift",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/maternal_grandma_offering_food_or_gift.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandma_offering_food_or_gift_r01.png",
+      "source_sha256": "9c369d3bde948a03ce5dca18c50e0792242060dd1c57ff317b56bf7f250664f8",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818"
+        ]
+      },
+      "prompt_sha256": "1cc590d93ba56c70abcf668f65ef077834a38cce919b7ac52ebfc27de807cd4f",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1056446,
+        "alpha_ge_250_to_255_pixels": 502315,
+        "source_crop_ltrb": [
+          218,
+          33,
+          814,
+          1502
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        612,
+        1485
+      ],
+      "mode": "RGBA",
+      "sha256": "226bb4da70b8e7b6a8cce57d9bc05d7bbb506fd924fd0c2f05e4270af67563e3",
+      "pose": "offering_food_or_gift",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "maternal_grandma",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_aunt_sister_waving",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/aunt_sister_waving.png",
+      "alias_runtime_paths": [],
+      "source_filename": "auntie_waving_r01.png",
+      "source_sha256": "b373beceed5c7efd09a6914cdb4a452bdb56aebdaceffb13f9e170cd6d0077d4",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "8e917f3dc9b44990723b2c089ee84634f8e69ad0fdc4dd481845683aadede245",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1001407,
+        "alpha_ge_250_to_255_pixels": 554952,
+        "source_crop_ltrb": [
+          122,
+          23,
+          815,
+          1516
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        709,
+        1509
+      ],
+      "mode": "RGBA",
+      "sha256": "616da14fe53b48b0123738ea65335d7a31f913e602c1a15926b91e4470f442fd",
+      "pose": "waving",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "aunt_sister",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_aunt_sister_crouching_to_talk",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/aunt_sister_crouching_to_talk.png",
+      "alias_runtime_paths": [],
+      "source_filename": "auntie_crouching_to_talk_r01.png",
+      "source_sha256": "5b51292c5f3d11991597f3df9d01056d5e28e43c1bb55e0ef1a0e803c3b6e0f7",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "b6da996154d3deecf924a01d489cca0f6a4c778fabc1b2e26668892aa868834c",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 902232,
+        "alpha_ge_250_to_255_pixels": 655836,
+        "source_crop_ltrb": [
+          106,
+          63,
+          985,
+          1465
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        895,
+        1418
+      ],
+      "mode": "RGBA",
+      "sha256": "f0034812856712c3877c861cf3445a91afb4973d26cf21acb5bf27a721966f46",
+      "pose": "crouching_to_talk",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "aunt_sister",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_aunt_sister_playing_helping",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/aunt_sister_playing_helping.png",
+      "alias_runtime_paths": [],
+      "source_filename": "auntie_playing_helping_r01.png",
+      "source_sha256": "fd311ee2ddfbf7f7909d63e569b91ec4ff2aa1f4a3540dd33667ffd0b10f9f57",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "2558966156793a674fc714e729b886940e703e2138e55de752ae637240e89a7b",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 882317,
+        "alpha_ge_250_to_255_pixels": 675163,
+        "source_crop_ltrb": [
+          82,
+          98,
+          919,
+          1385
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        853,
+        1303
+      ],
+      "mode": "RGBA",
+      "sha256": "1dcbc407486f159409a5405d8306dae1e6d944abd0fec7dfbcd9149ca1cb79a1",
+      "pose": "playing_helping",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "aunt_sister",
+      "is_standalone_reference": false,
+      "scale_class": "adult"
+    },
+    {
+      "id": "sprite_cousin_ryan_waving",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_ryan_waving.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ryan_waving_r01.png",
+      "source_sha256": "a840ac522051e0381323e85e8f43ccc6276792b69a4b9fc328761180eb0cfcc7",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "98c8dc267c6a07a7094009f8c12c46b1251dcfb1f5692723398cce77ee07e075",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1024119,
+        "alpha_ge_250_to_255_pixels": 528521,
+        "source_crop_ltrb": [
+          195,
+          26,
+          873,
+          1486
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        694,
+        1476
+      ],
+      "mode": "RGBA",
+      "sha256": "e2312e186489874fb022777f2fd05bb7b79b9832bb688d2d7dc1b1ad5b624847",
+      "pose": "waving",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_ryan",
+      "is_standalone_reference": false,
+      "scale_class": "older_child"
+    },
+    {
+      "id": "sprite_cousin_ryan_showing_toy",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_ryan_showing_toy.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ryan_showing_toy_r01.png",
+      "source_sha256": "49338f1b0b94a58e009e69f52042b0938c5c138fbd9d249786011f06ba549229",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "94f1e39594fc3c0e9df6be2f4eb621a6fd2c3bd546a98ece85f4e370eaeebc84",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1063804,
+        "alpha_ge_250_to_255_pixels": 492073,
+        "source_crop_ltrb": [
+          181,
+          40,
+          834,
+          1454
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        669,
+        1430
+      ],
+      "mode": "RGBA",
+      "sha256": "b214cf8022a1cb4bab7708e9f28b4721001535e7ff8e15894283e624e24fb1b4",
+      "pose": "showing_toy",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_ryan",
+      "is_standalone_reference": false,
+      "scale_class": "older_child"
+    },
+    {
+      "id": "sprite_cousin_ryan_passing_toy",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_ryan_passing_toy.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ryan_passing_toy_r01.png",
+      "source_sha256": "7711b253097847893a8cd8a40e8ebe3defed2c5bbe702ef43eda1b92a14597de",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "7a1fa06b66e8e44005a9a690183ac71d7e463f54e4dc03c35a5fb99481a091c3",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1075787,
+        "alpha_ge_250_to_255_pixels": 479557,
+        "source_crop_ltrb": [
+          154,
+          46,
+          927,
+          1462
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        789,
+        1432
+      ],
+      "mode": "RGBA",
+      "sha256": "f2328bd7e55374fa31e363d6d05281dd437d3c135164b4386db21fc8406ebf04",
+      "pose": "passing_toy",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_ryan",
+      "is_standalone_reference": false,
+      "scale_class": "older_child"
+    },
+    {
+      "id": "sprite_cousin_ryan_sitting_playing",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_ryan_sitting_playing.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ryan_sitting_playing_r01.png",
+      "source_sha256": "2bf16de44146e680011068410c35a46437b6115bddc0522368b566f505a80d0d",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "a0a570eb63e588f0ee8467d9be325b46095f389128ffeb4db19418afcd061008",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 911458,
+        "alpha_ge_250_to_255_pixels": 647615,
+        "source_crop_ltrb": [
+          78,
+          107,
+          944,
+          1358
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        882,
+        1267
+      ],
+      "mode": "RGBA",
+      "sha256": "33d4d596ea9de7b331ea5f15f881e2e68dd5842a57ddcf5ed2c0d5ffecd69844",
+      "pose": "sitting_playing",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_ryan",
+      "is_standalone_reference": false,
+      "scale_class": "older_child"
+    },
+    {
+      "id": "sprite_cousin_younger_waving",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_younger_waving.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ben_waving_r01.png",
+      "source_sha256": "6026c4d404bde820b88a18ba738215910382cc6be378fef42d759553e148a633",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "2747f6da26796b22895a35b43ff8c2ef4c3e995afb9bca9a77d97cbe3b43b80a",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1074083,
+        "alpha_ge_250_to_255_pixels": 483738,
+        "source_crop_ltrb": [
+          148,
+          134,
+          850,
+          1406
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        718,
+        1288
+      ],
+      "mode": "RGBA",
+      "sha256": "651508a172ff51cca391abe98bb87e48c442abe9e885b168cbeb0c7768aeb912",
+      "pose": "waving",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_younger",
+      "is_standalone_reference": false,
+      "scale_class": "toddler"
+    },
+    {
+      "id": "sprite_cousin_younger_showing_toy",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_younger_showing_toy.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ben_showing_toy_r01.png",
+      "source_sha256": "671a68eaf186cfe252a4395c56dac98fa8c2af3e3624691eeb30036b67d32075",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "65924b9852916ce6a0aa6e8eb7ca563826080301a0dde9ddb13ced9e73bf1f8e",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1109674,
+        "alpha_ge_250_to_255_pixels": 449278,
+        "source_crop_ltrb": [
+          203,
+          126,
+          826,
+          1415
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        639,
+        1305
+      ],
+      "mode": "RGBA",
+      "sha256": "c211c30092a02581fa39345bac6fef3b4435e6ecceec6cab196d3b757d314e42",
+      "pose": "showing_toy",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_younger",
+      "is_standalone_reference": false,
+      "scale_class": "toddler"
+    },
+    {
+      "id": "sprite_cousin_younger_passing_toy",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_younger_passing_toy.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ben_passing_toy_r01.png",
+      "source_sha256": "df01188274cd255cc5ba135d67d6a04d81d737487a1ff64a7938e49760c1dba2",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "845e9a4d90b50c67061f42cc0e709fbfb16095e4cafde159561224d5577bef7d",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1142497,
+        "alpha_ge_250_to_255_pixels": 415510,
+        "source_crop_ltrb": [
+          222,
+          123,
+          948,
+          1374
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        742,
+        1267
+      ],
+      "mode": "RGBA",
+      "sha256": "0839d3e8faa8b94822a3e196b319a68a65cc251a1f8c8d799ec8732254db8d27",
+      "pose": "passing_toy",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_younger",
+      "is_standalone_reference": false,
+      "scale_class": "toddler"
+    },
+    {
+      "id": "sprite_cousin_younger_sitting_playing",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/cousin_younger_sitting_playing.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ben_sitting_playing_r01.png",
+      "source_sha256": "39a3f7ce2de534f0491bc46e960f650a41f320f08dc820af8ba2c3a0826bd8c1",
+      "source_size": [
+        1024,
+        1536
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "ca601ae3cf9ecc771225bcd75e3c6303c23e3efb7858e66668af147f2449cbb2",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1020869,
+        "alpha_ge_250_to_255_pixels": 540414,
+        "source_crop_ltrb": [
+          132,
+          236,
+          917,
+          1324
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        801,
+        1104
+      ],
+      "mode": "RGBA",
+      "sha256": "e38d71457e65a057f43581b4117624b06ab56836a71e893020f73965601dc86f",
+      "pose": "sitting_playing",
+      "visual_status": "user_approved",
+      "category": "solo",
+      "character_id": "cousin_younger",
+      "is_standalone_reference": false,
+      "scale_class": "toddler"
+    },
+    {
+      "id": "contact_mom_levi_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_levi_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_levi_hug_r01.png",
+      "source_sha256": "0caec6194a9deaf1d11efee9c612a2f8bdc18366d8cdcec7f5d7811b7d1b44ad",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "5168b706f9a6867e44461a63c509757ee5aea178609cbcdc2814563c6c56f0ff",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1021266,
+        "alpha_ge_250_to_255_pixels": 532862,
+        "source_crop_ltrb": [
+          328,
+          29,
+          954,
+          1218
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        642,
+        1205
+      ],
+      "mode": "RGBA",
+      "sha256": "68ff3475f916937c31e49084b4285ea004b6b9be07ced763c3588067e4432b08",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_dad_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_dad_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_luca_hug_r01.png",
+      "source_sha256": "7bb9fa1c58bf0335c4d11e5644af9f5924b9e3af5b8c46ea8f3f74c8f069ecb9",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "6d5caaefccad438a678f66bda571a22333a3d442f67cdcd69baee1828d9feb61",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1031902,
+        "alpha_ge_250_to_255_pixels": 525788,
+        "source_crop_ltrb": [
+          317,
+          12,
+          957,
+          1237
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        656,
+        1241
+      ],
+      "mode": "RGBA",
+      "sha256": "bacb438decb14686975a7343de4b0d898c6bac32f876e8b62d081b6893545583",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_paternal_grandma_cousin_ryan_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandma_cousin_ryan_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandma_cousin_ryan_hug_r01.png",
+      "source_sha256": "47a815e731c5aa539789a39b3857937d522b7a08bf1f0685e94a5cc7af90d095",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png",
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427",
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "8e6659884f2d4f971d3eeabba1722c42616a615336941966bd4c55e890501cc8",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 968140,
+        "alpha_ge_250_to_255_pixels": 586593,
+        "source_crop_ltrb": [
+          267,
+          43,
+          973,
+          1209
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        722,
+        1182
+      ],
+      "mode": "RGBA",
+      "sha256": "7f222e305d72d3c88ec358e97eea95615880ff6518ad6bc1aecf6514e46af4a0",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "cousin_ryan",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_maternal_grandpa_cousin_younger_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandpa_cousin_younger_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_cousin_ben_hug_r01.png",
+      "source_sha256": "e83f27ac1799e086f7903171cb205ae93ba4559a34e69ce692e24fe47859b089",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png",
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818",
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "4ca7e75448b61126d354ebe874ba8cc398ac7465dba732bc4192c53f61144986",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 971686,
+        "alpha_ge_250_to_255_pixels": 586720,
+        "source_crop_ltrb": [
+          256,
+          25,
+          978,
+          1223
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        738,
+        1214
+      ],
+      "mode": "RGBA",
+      "sha256": "529021d1351b4dd1f0e489fa03f70f498c4c3a2e9acbbc178d43a009b533d371",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "cousin_younger",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_paternal_grandpa_levi_handholding",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandpa_levi_handholding.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_levi_handholding_r01.png",
+      "source_sha256": "12764b74ee9b56c2f268e16a2cf7a809a86de248a5dbf7f51aa8d9155f995ff2",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "f82cb03f2dec9b4be5fecb74cce6019fe0aae4c581ca05acb2a5cc2309740c59",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1033974,
+        "alpha_ge_250_to_255_pixels": 513056,
+        "source_crop_ltrb": [
+          174,
+          10,
+          1079,
+          1239
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        921,
+        1245
+      ],
+      "mode": "RGBA",
+      "sha256": "5a330606ac54976580d6faf82e5304e0b0e3bf0c2fec03fa4079f84ee0d637c8",
+      "pose": "handholding",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "handholding",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_maternal_grandma_luca_handholding",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandma_luca_handholding.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandma_luca_handholding_r01.png",
+      "source_sha256": "4c6459077f8c102e1a12c2938e621ab236501213b5c8297b92e2955281b8c059",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "faeb771e6ffafa6a5b307f8666ad39daf4bc2b94eba1a18f08794fa119a0c316",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1066539,
+        "alpha_ge_250_to_255_pixels": 482951,
+        "source_crop_ltrb": [
+          178,
+          10,
+          1086,
+          1232
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        924,
+        1238
+      ],
+      "mode": "RGBA",
+      "sha256": "59ca2e09379bff49899674fc0e3d1740627c7d8e4efbfd886d7f7deee5893757",
+      "pose": "handholding",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "handholding",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_aunt_sister_cousin_ryan_handholding",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_aunt_sister_cousin_ryan_handholding.png",
+      "alias_runtime_paths": [],
+      "source_filename": "auntie_cousin_ryan_handholding_r01.png",
+      "source_sha256": "e4d917218d61a503238dc726d37698ddb79362ca24011d614235252993f756df",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "83f1051fefce18198caa74a6fc08f79b4bf0ac33c42fe3bab9b13db37acefb6c",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1058391,
+        "alpha_ge_250_to_255_pixels": 490542,
+        "source_crop_ltrb": [
+          216,
+          23,
+          1067,
+          1231
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        867,
+        1224
+      ],
+      "mode": "RGBA",
+      "sha256": "a7cb9cb423e59a5da88347160633040d847354647d95eb3233ee50126916ba54",
+      "pose": "handholding",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "handholding",
+      "members": [
+        {
+          "runtime_character_id": "aunt_sister",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "cousin_ryan",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_dad_cousin_younger_handholding",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_dad_cousin_younger_handholding.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_cousin_ben_handholding_r01.png",
+      "source_sha256": "0749ef68b1f725cde7ae0bde6f7ea2bab3ba50f31eeec456c5d7ea310410a849",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png",
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "338cf15ea33a2e9e282e34c543b0203a40ed2e0d62aa815eeaaa16b45115e636",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1138515,
+        "alpha_ge_250_to_255_pixels": 412103,
+        "source_crop_ltrb": [
+          201,
+          14,
+          1050,
+          1231
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        865,
+        1233
+      ],
+      "mode": "RGBA",
+      "sha256": "d379d94d5aa22b405fe8bf9b8f640471a40162a46342da16bf3524b3bdca0b27",
+      "pose": "handholding",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "handholding",
+      "members": [
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "cousin_younger",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_mom_cousin_ryan_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_cousin_ryan_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_cousin_ryan_carrying_child_r01.png",
+      "source_sha256": "923fee8259beca7a84b85799d95dc1d9c3e9979066ce62fa1dc2b7ebf184e409",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "5496a2d0e837be63cab3f6e9eafb8cd2adb754bf0e26eea780c8901752c8b95e",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1192791,
+        "alpha_ge_250_to_255_pixels": 360029,
+        "source_crop_ltrb": [
+          371,
+          0,
+          948,
+          1246
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        593,
+        1262
+      ],
+      "mode": "RGBA",
+      "sha256": "5decc4b9429eeeab9b552475766545ccda8198cd0f8f34a105dccbc5a8e5faac",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "cousin_ryan",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_paternal_grandpa_cousin_younger_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandpa_cousin_younger_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_cousin_ben_carrying_child_r01.png",
+      "source_sha256": "a41b768047d93e34868cfc011c7d2b760f35ec89c2384ce4da492ba926fdad35",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_paternal.png",
+          "assets/sprites/auntie_cousins.png"
+        ],
+        "sha256_list": [
+          "723491aed21fcdc6db6a48ea42539e4ac8ccd741c31a97d4d4c59a555772f427",
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703"
+        ]
+      },
+      "prompt_sha256": "6d749bb8a5fba268e8b563e99097f7f9da0095c9457dcbc427e0b7049283f6d0",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1171127,
+        "alpha_ge_250_to_255_pixels": 385732,
+        "source_crop_ltrb": [
+          357,
+          10,
+          915,
+          1244
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        574,
+        1250
+      ],
+      "mode": "RGBA",
+      "sha256": "904ef1b65419d7eb44ad7bb4505792530163a9cfa4d0a027debbda274bc6da9f",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "cousin_younger",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_maternal_grandma_levi_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandma_levi_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandma_levi_carrying_child_r01.png",
+      "source_sha256": "2a8f7557cacd5ff17483fda4aedc1e0dcd8b00cbeb140ab79013e4756953c5eb",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/grandparents_maternal.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "85a12092e9d61dc35a7b5a6c470ec321da81bb517888df0037eb6595155e7818",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "8b7794904783383d7d715d68c1f29b7c8182ea27289c6c1b528745b2358a6be1",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1160415,
+        "alpha_ge_250_to_255_pixels": 397317,
+        "source_crop_ltrb": [
+          354,
+          18,
+          901,
+          1237
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        563,
+        1235
+      ],
+      "mode": "RGBA",
+      "sha256": "0c6c6896c3cc8899a6c92cbf9b25dbc177f88d7137b65be1233f9721bcee93ac",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    },
+    {
+      "id": "contact_aunt_sister_luca_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_aunt_sister_luca_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "auntie_luca_carrying_child_r01.png",
+      "source_sha256": "124f8dd5941b835f0170418a6ab1a9adf5b2b81922bcaca3f2a2b10079b45958",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/auntie_cousins.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "707c46e53dd1dac5931a7d9a2a7b755ba6417546669ffefca973b0a24de96703",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "6e0e0e2d5936b1a19b7c424c3d01ee85e19bd28393180dbe3483d183e573d539",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1135800,
+        "alpha_ge_250_to_255_pixels": 422605,
+        "source_crop_ltrb": [
+          338,
+          14,
+          981,
+          1243
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        659,
+        1245
+      ],
+      "mode": "RGBA",
+      "sha256": "cf51a5cdbea8153f00b8817bf5645097852f7fb5ca51ec45f3687fad0b4a8e07",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "aunt_sister",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "scale_class": "adult"
+    }
+  ]
+}
