@@ -278,8 +278,21 @@ def list_characters():
         char["scale_class"] = family_catalog.scale_class_for(cid)
         char["stage_height_percent"] = family_catalog.stage_height_percent_for(cid)
         char["base_height_px"] = family_catalog.base_height_for(cid)
+        # Browsing-only categorisation. ``family_buckets`` is a list because
+        # multi-person composites (e.g. mom carrying Levi) belong to every
+        # participant's bucket, while solo characters map to exactly one.
+        # The runtime character ID, pose vocabulary and sprite_url are
+        # unchanged — the renderer still receives the composite asset ID on
+        # select so no duplicate participants are drawn.
+        char["family_buckets"] = family_catalog.buckets_for(cid)
 
-    return {"characters": chars}
+    return {
+        "characters": chars,
+        "family_buckets": [
+            {"id": bid, **family_catalog.BUCKETS[bid]}
+            for bid in family_catalog.BUCKET_ORDER
+        ],
+    }
 
 
 @router.get("/sprite/{filename}")

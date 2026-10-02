@@ -28,7 +28,15 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List, Optional
 
-CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "family_release_v3.json"
+# Family-expansion v3: 53 approved sprites (41 solo + 12 contact composite)
+# landed on 2026-10-02 after the user said 'these are great. push to main'.
+# Family-interactions v4: 32 additional contact composite sprites (26 twin
+# interactions + 6 four-person family groups) prepared on 2026-10-02 after
+# the user said 'these are great' (twins) and 'keep going' (groups). The two
+# manifests are aggregated here so that every helper function sees the union
+# without the v3 release's bytes or asset counts changing.
+V3_CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "family_release_v3.json"
+V4_CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "family_interactions_v4.json"
 
 # Legacy group IDs that this release does not modify. They remain selectable
 # so prior episodes keep rendering with their original composite art.
@@ -152,35 +160,91 @@ _RUNTIME_DISPLAY = {
 
 
 def _load() -> dict:
-    return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    return json.loads(V3_CONFIG_PATH.read_text(encoding="utf-8"))
+
+
+def _load_v4() -> Optional[dict]:
+    if V4_CONFIG_PATH.exists():
+        return json.loads(V4_CONFIG_PATH.read_text(encoding="utf-8"))
+    return None
+
+
+# Backwards-compatible alias so test fixtures and third-party scripts that
+# imported ``family_catalog.CONFIG_PATH`` still work. New code should prefer
+# the explicit ``V3_CONFIG_PATH`` / ``V4_CONFIG_PATH`` constants.
+CONFIG_PATH = V3_CONFIG_PATH
 
 
 @lru_cache(maxsize=1)
 def manifest() -> dict:
-    """Return the parsed family release manifest. Cached for process lifetime."""
+    """Return the parsed v3 release manifest. Preserved for back-compat with
+    tests that assert v3-specific asset counts (53 assets, 41 solo + 12 contact)
+    directly against ``manifest()["assets"]``.
+    """
     return _load()
 
 
 @lru_cache(maxsize=1)
+def manifest_v4() -> Optional[dict]:
+    """Return the parsed v4 interactions manifest, or None if not present."""
+    return _load_v4()
+
+
+@lru_cache(maxsize=1)
+def all_release_manifests() -> List[dict]:
+    """Return every family-release manifest in load order (v3 first, then v4).
+
+    Downstream helpers walk this list to build pose vocabularies, contact
+    sprite entries, scale-class maps and prefix lists so new releases do not
+    need per-manifest hardcoding.
+    """
+    manifests = [manifest()]
+    v4 = manifest_v4()
+    if v4 is not None:
+        manifests.append(v4)
+    return manifests
+
+
+def _all_assets() -> List[dict]:
+    """Union of every release manifest's ``assets`` list, in load order."""
+    collected: List[dict] = []
+    for release in all_release_manifests():
+        collected.extend(release.get("assets", []))
+    return collected
+
+
+@lru_cache(maxsize=1)
 def pose_labels() -> Dict[str, str]:
-    return dict(manifest()["pose_labels"])
+    """Aggregate pose labels across every release. Earlier releases win on
+    collision so the v3 user-facing wording stays authoritative."""
+    labels: Dict[str, str] = {}
+    for release in all_release_manifests():
+        for pose_id, label in release.get("pose_labels", {}).items():
+            labels.setdefault(pose_id, label)
+    return labels
 
 
 @lru_cache(maxsize=1)
 def contact_action_labels() -> Dict[str, str]:
-    return dict(manifest()["contact_action_labels"])
+    """Aggregate contact-action labels across every release. Earlier releases
+    win on collision."""
+    labels: Dict[str, str] = {}
+    for release in all_release_manifests():
+        for action, label in release.get("contact_action_labels", {}).items():
+            labels.setdefault(action, label)
+    return labels
 
 
 @lru_cache(maxsize=1)
 def individual_poses() -> Dict[str, List[str]]:
-    """Return ``{runtime_character_id: [pose_id, ...]}`` from the release manifest.
+    """Return ``{runtime_character_id: [pose_id, ...]}`` from every release.
 
     "default" is always first; downloaded poses are listed in the order they
-    appear in the manifest so the UI pose picker stays stable.
+    appear in the manifests so the UI pose picker stays stable.
     """
     by_char: Dict[str, List[str]] = {}
-    for asset in manifest()["assets"]:
-        if asset["category"] != "solo":
+    for asset in _all_assets():
+        if asset.get("category") != "solo":
             continue
         cid = asset["character_id"]
         pose = asset["pose"]
@@ -196,31 +260,39 @@ def individual_poses() -> Dict[str, List[str]]:
 
 @lru_cache(maxsize=1)
 def contact_sprites() -> List[dict]:
-    """Return contact entries ``[{id, runtime_path, members, action, scale_class}, ...]``."""
+    """Return contact entries from every release (v3 + v4).
+
+    Each entry is a flat dict with the keys the renderer / director need
+    (``id``, ``runtime_path``, ``action``, ``members``, ``member_roles``,
+    ``scale_class``, ``member_count``). ``member_count`` is derived so callers
+    that pre-dated v4's 3/4-member composites do not have to assume 2.
+    """
     result = []
-    for asset in manifest()["assets"]:
-        if asset["category"] != "contact":
+    for asset in _all_assets():
+        if asset.get("category") != "contact":
             continue
+        members = [m["runtime_character_id"] for m in asset["members"]]
         result.append({
             "id": asset["id"],
             "runtime_path": asset["runtime_path"],
             "action": asset["action"],
-            "members": [m["runtime_character_id"] for m in asset["members"]],
+            "members": members,
             "member_roles": [m["age_role"] for m in asset["members"]],
             "scale_class": asset["scale_class"],
+            "member_count": asset.get("member_count", len(members)),
         })
     return result
 
 
 @lru_cache(maxsize=1)
 def scale_class_map() -> Dict[str, str]:
-    """Return ``{character_or_contact_id: scale_class}`` merging legacy + release.
+    """Return ``{character_or_contact_id: scale_class}`` merging legacy + every release.
 
     Contact IDs are included so renderers can size composites correctly.
     """
     result = dict(LEGACY_SCALE_CLASS)
-    for asset in manifest()["assets"]:
-        if asset["category"] == "solo":
+    for asset in _all_assets():
+        if asset.get("category") == "solo":
             result[asset["character_id"]] = asset["scale_class"]
         else:
             result[asset["id"]] = asset["scale_class"]
@@ -290,8 +362,8 @@ def known_character_prefixes() -> List[str]:
     prefixes = set(LEGACY_GROUP_IDS) | {
         "dad", "mom", "dog", "levi", "luca",
     }
-    for asset in manifest()["assets"]:
-        if asset["category"] == "solo":
+    for asset in _all_assets():
+        if asset.get("category") == "solo":
             prefixes.add(asset["character_id"])
     # Include contact prefix and alias prefixes so filename classification
     # does not accidentally split e.g. ``cousin_ben`` into a bare ``cousin``.
@@ -312,3 +384,100 @@ def contact_display_name(contact_id: str) -> str:
 
 def new_character_display(char_id: str) -> Optional[Dict[str, str]]:
     return NEW_CHARACTER_DISPLAY.get(char_id)
+
+
+# ---------------------------------------------------------------------------
+# Simplified family browsing buckets
+# ---------------------------------------------------------------------------
+#
+# The studio's Family Member Palette and the portable asset portal both used to
+# render one top-level card per runtime character ID, which grew to ~15 chips
+# plus every contact composite after the family-expansion v3 release landed.
+# To tidy navigation without changing runtime behaviour, we expose a short,
+# human-centred bucket list and a map from runtime IDs to buckets. The buckets
+# are a *browsing categorisation only* — character IDs, legacy group IDs,
+# contact composite IDs, pose vocabularies and scale classes are untouched.
+#
+# Rules:
+#   * Mom carrying Levi (``contact_mom_cousin_ryan_carrying_child`` etc.) shows
+#     up in every participant's bucket (union of actual members).
+#   * Both paternal grandparents share one ``paternal_grandparents`` bucket;
+#     both maternal grandparents share one ``maternal_grandparents`` bucket.
+#   * Auntie, Ryan and Ben share the single ``auntie_cousins`` bucket, matching
+#     the legacy group ID semantics.
+#   * Internally each asset remains one unique entry — the UI dedupes by asset
+#     ID when counting, but renders it in every bucket it belongs to.
+
+BUCKET_ORDER: tuple = (
+    "levi",
+    "luca",
+    "mom",
+    "dad",
+    "paternal_grandparents",
+    "maternal_grandparents",
+    "auntie_cousins",
+    "doggy",
+)
+
+BUCKETS: Dict[str, Dict[str, str]] = {
+    "levi":                  {"label": "Levi",                   "emoji": "👦"},
+    "luca":                  {"label": "Luca",                   "emoji": "👶"},
+    "mom":                   {"label": "Mom",                    "emoji": "👩"},
+    "dad":                   {"label": "Dad",                    "emoji": "👨"},
+    "paternal_grandparents": {"label": "Paternal grandparents",  "emoji": "👴"},
+    "maternal_grandparents": {"label": "Maternal grandparents",  "emoji": "👵"},
+    "auntie_cousins":        {"label": "Auntie & cousins",       "emoji": "🧑‍🤝‍🧑"},
+    "doggy":                 {"label": "Doggy",                  "emoji": "🐶"},
+}
+
+# Which bucket does each solo runtime character / legacy group ID belong to?
+_SOLO_BUCKET: Dict[str, str] = {
+    "levi": "levi",
+    "luca": "luca",
+    "mom": "mom",
+    "dad": "dad",
+    "dog": "doggy",
+    "family_dog": "doggy",
+    "spitz": "doggy",
+    # New individual relatives land in the right grandparent / auntie bucket.
+    "paternal_grandpa": "paternal_grandparents",
+    "paternal_grandma": "paternal_grandparents",
+    "maternal_grandpa": "maternal_grandparents",
+    "maternal_grandma": "maternal_grandparents",
+    "aunt_sister": "auntie_cousins",
+    "cousin_ryan": "auntie_cousins",
+    "cousin_younger": "auntie_cousins",
+    # Legacy composite group IDs keep their obvious bucket.
+    "grandparents_paternal": "paternal_grandparents",
+    "grandparents_maternal": "maternal_grandparents",
+    "auntie_cousins": "auntie_cousins",
+}
+
+
+def bucket_for_character(char_id: str) -> Optional[str]:
+    """Return the bucket key for a solo runtime character or legacy group ID."""
+    return _SOLO_BUCKET.get(char_id)
+
+
+def buckets_for(char_or_contact_id: str) -> List[str]:
+    """Return the ordered, de-duplicated list of buckets a runtime ID appears in.
+
+    * Solo characters map to a single bucket via ``_SOLO_BUCKET``.
+    * Contact composites map to the *union* of their members' buckets so that,
+      e.g., ``contact_mom_levi_hug`` appears in both the Mom and Levi buckets.
+    * Auntie & cousins composites collapse to a single bucket entry even though
+      they contain multiple auntie_cousins members (auntie + Ryan, auntie + Ben,
+      etc.) so the shared sprite does not render twice inside the same bucket.
+    * Returned list follows ``BUCKET_ORDER`` for stable UI rendering.
+    * Unknown IDs return ``[]`` so callers can skip them safely.
+    """
+    members = contact_members(char_or_contact_id)
+    if members is None:
+        single = _SOLO_BUCKET.get(char_or_contact_id)
+        return [single] if single else []
+    seen: Dict[str, None] = {}
+    for member in members:
+        bucket = _SOLO_BUCKET.get(member)
+        if bucket is not None and bucket not in seen:
+            seen[bucket] = None
+    return [b for b in BUCKET_ORDER if b in seen]

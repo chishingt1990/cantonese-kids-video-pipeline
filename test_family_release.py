@@ -48,7 +48,8 @@ class TestFamilyRelease(unittest.TestCase):
         cls.manifest = json.loads((ROOT / "config" / "family_release_v3.json").read_text(encoding="utf-8"))
         (cls.scratch / "config").mkdir()
         for name in ("artwork_release_v1.json", "phonics_release_v2.json",
-                     "props_release_v2.json", "family_release_v3.json"):
+                     "props_release_v2.json", "family_release_v3.json",
+                     "family_interactions_v4.json"):
             source = ROOT / "config" / name
             if source.exists():
                 shutil.copyfile(source, cls.scratch / "config" / name)
@@ -187,7 +188,8 @@ class TestFamilyRelease(unittest.TestCase):
 
     def test_catalog_contact_sprites_metadata(self):
         contacts = {c["id"]: c for c in self.family.contact_sprites()}
-        self.assertEqual(len(contacts), 12)
+        # 12 v3 (2-person) composites + 32 v4 (24 2-person + 2 3-person + 6 4-person) = 44.
+        self.assertEqual(len(contacts), 44)
         for cid, members, action, scale in [
             ("contact_mom_levi_hug", ["mom", "levi"], "hug", "adult"),
             ("contact_maternal_grandpa_cousin_younger_hug",
@@ -250,9 +252,9 @@ class TestFamilyRelease(unittest.TestCase):
                 for pose in expected_poses:
                     self.assertIn(pose, pose_ids, f"{new_id} missing pose {pose}")
                 self.assertEqual(chars[new_id]["family_release"], "v3")
-        # All 12 contacts.
+        # All 44 contacts: 12 from v3 + 32 from v4.
         contact_ids = [c["id"] for c in response.json()["characters"] if c["id"].startswith("contact_")]
-        self.assertEqual(len(contact_ids), 12)
+        self.assertEqual(len(contact_ids), 44)
         for cid in contact_ids:
             self.assertEqual(chars[cid]["poses"][0]["id"], "default")
             self.assertTrue(chars[cid]["sprite_url"].startswith("/api/characters/sprite/contact_"))
@@ -384,13 +386,35 @@ class TestFamilyRelease(unittest.TestCase):
                 self.assertEqual(chars[cid]["scale_class"], cls)
                 self.assertEqual(chars[cid]["stage_height_percent"], pct)
                 self.assertEqual(chars[cid]["base_height_px"], base)
-        # Every contact composite must size to the adult class so the frontend
-        # never shrinks a mom+toddler hug to toddler proportions.
+        # Contact composites expose the right scale class per release. v3's 12
+        # contacts all include an adult; v4 adds 24 adult composites, 2 older-
+        # child (Ryan + twin) and 6 toddler (twin-pair + Ben-pair) composites.
         contact_ids = [cid for cid in chars if cid.startswith("contact_")]
-        self.assertEqual(len(contact_ids), 12)
-        for cid in contact_ids:
+        self.assertEqual(len(contact_ids), 44)
+        expected_scale_by_contact = {
+            # Known toddler-only contacts (6 total): the 4 levi+luca pairings
+            # and the 2 cousin_younger+twin pairings.
+            "contact_levi_luca_hug": "toddler",
+            "contact_levi_luca_holding_hands": "toddler",
+            "contact_levi_luca_reading_book_together": "toddler",
+            "contact_levi_luca_passing_toy": "toddler",
+            "contact_cousin_younger_levi_passing_toy": "toddler",
+            "contact_cousin_younger_luca_building_blocks_together": "toddler",
+            # Older-child composites (Ryan + twin).
+            "contact_cousin_ryan_levi_high_five": "older_child",
+            "contact_cousin_ryan_luca_reading_together": "older_child",
+        }
+        for cid, expected_cls in expected_scale_by_contact.items():
             with self.subTest(contact=cid):
-                self.assertEqual(chars[cid]["scale_class"], "adult")
+                self.assertIn(cid, chars, f"missing contact {cid}")
+                self.assertEqual(chars[cid]["scale_class"], expected_cls)
+        # Everything else is an adult-sized composite.
+        expected_adult_count = 44 - len(expected_scale_by_contact)
+        actual_adults = [cid for cid in contact_ids
+                         if chars[cid]["scale_class"] == "adult"]
+        self.assertEqual(len(actual_adults), expected_adult_count)
+        for cid in actual_adults:
+            with self.subTest(contact=cid):
                 self.assertEqual(chars[cid]["stage_height_percent"], 72)
                 self.assertEqual(chars[cid]["base_height_px"], 760)
 
@@ -534,6 +558,305 @@ class TestFamilyRelease(unittest.TestCase):
                       "contact_mom_levi_hug", "contact_dad_cousin_younger_handholding"):
             with self.subTest(token=token):
                 self.assertIn(token, prompt, f"Director prompt must mention {token}")
+
+    # --- Simplified family browsing buckets ---------------------------------
+
+    def test_catalog_bucket_order_and_metadata(self):
+        """The 8 user-facing buckets must stay in the agreed order and expose
+        a label plus emoji for the UI chip renderers (studio palette + portal)."""
+        self.assertEqual(
+            self.family.BUCKET_ORDER,
+            (
+                "levi", "luca", "mom", "dad",
+                "paternal_grandparents", "maternal_grandparents",
+                "auntie_cousins", "doggy",
+            ),
+        )
+        for bid in self.family.BUCKET_ORDER:
+            meta = self.family.BUCKETS[bid]
+            self.assertIn("label", meta)
+            self.assertIn("emoji", meta)
+
+    def test_catalog_solo_bucket_membership(self):
+        """Every solo runtime ID (legacy + v3 individuals) must map to exactly
+        one bucket and the mapping must match the user's request:
+        - both paternal grandparents land in paternal_grandparents
+        - both maternal grandparents land in maternal_grandparents
+        - auntie, Ryan and Ben all land in auntie_cousins
+        - the dog lands in doggy.
+        """
+        cases = {
+            "levi": "levi", "luca": "luca", "mom": "mom", "dad": "dad",
+            "dog": "doggy",
+            "paternal_grandpa": "paternal_grandparents",
+            "paternal_grandma": "paternal_grandparents",
+            "maternal_grandpa": "maternal_grandparents",
+            "maternal_grandma": "maternal_grandparents",
+            "aunt_sister": "auntie_cousins",
+            "cousin_ryan": "auntie_cousins",
+            "cousin_younger": "auntie_cousins",
+            # Legacy composite group IDs must retain their obvious bucket.
+            "grandparents_paternal": "paternal_grandparents",
+            "grandparents_maternal": "maternal_grandparents",
+            "auntie_cousins": "auntie_cousins",
+        }
+        for cid, bucket in cases.items():
+            with self.subTest(character=cid):
+                self.assertEqual(self.family.buckets_for(cid), [bucket])
+
+    def test_catalog_contact_sprite_union_membership(self):
+        """Multi-person contact sprites must appear in the union of every
+        actual participant's bucket — the UI shows them in each list but they
+        remain a single unique asset at the catalog level."""
+        expected = {
+            # Mom carrying Levi: Mom AND Levi buckets.
+            "contact_mom_levi_hug": ["levi", "mom"],
+            "contact_dad_luca_hug": ["luca", "dad"],
+            # Grandfather+Levi: paternal grandparents AND Levi.
+            "contact_paternal_grandpa_levi_handholding": [
+                "levi", "paternal_grandparents"],
+            # Grandma+Luca handholding: maternal grandparents AND Luca.
+            "contact_maternal_grandma_luca_handholding": [
+                "luca", "maternal_grandparents"],
+            # Auntie + Ryan: everyone collapses to a single auntie_cousins bucket.
+            "contact_aunt_sister_cousin_ryan_handholding": ["auntie_cousins"],
+            # Mom + Ryan carrying child: Mom AND auntie_cousins buckets.
+            "contact_mom_cousin_ryan_carrying_child": ["mom", "auntie_cousins"],
+            # Grandpa + Ben carrying child: paternal grandparents AND auntie_cousins.
+            "contact_paternal_grandpa_cousin_younger_carrying_child": [
+                "paternal_grandparents", "auntie_cousins"],
+            # Grandma + Levi carrying child: maternal grandparents AND Levi.
+            "contact_maternal_grandma_levi_carrying_child": [
+                "levi", "maternal_grandparents"],
+            # Auntie + Luca carrying child: Luca AND auntie_cousins.
+            "contact_aunt_sister_luca_carrying_child": ["luca", "auntie_cousins"],
+        }
+        for cid, buckets in expected.items():
+            with self.subTest(contact=cid):
+                self.assertEqual(
+                    self.family.buckets_for(cid), buckets,
+                    f"{cid} must appear in exactly {buckets} buckets",
+                )
+
+    def test_catalog_bucket_lookup_is_total_and_unique(self):
+        """Every solo character and every contact composite in the manifest
+        must be assigned to at least one bucket, and each contact's bucket list
+        must be deduplicated (auntie + Ryan + Ben composites collapse to a
+        single auntie_cousins entry; the paternal- and maternal-grandparent
+        4-person composites collapse to one paternal/maternal entry each)."""
+        contacts = self.family.contact_sprites()
+        self.assertEqual(len(contacts), 44)
+        for contact in contacts:
+            with self.subTest(contact=contact["id"]):
+                buckets = self.family.buckets_for(contact["id"])
+                self.assertGreaterEqual(len(buckets), 1)
+                self.assertEqual(len(buckets), len(set(buckets)),
+                                 "Buckets must be deduplicated")
+        solo_ids = {
+            "levi", "luca", "mom", "dad", "dog",
+            "paternal_grandpa", "paternal_grandma",
+            "maternal_grandpa", "maternal_grandma",
+            "aunt_sister", "cousin_ryan", "cousin_younger",
+            "grandparents_paternal", "grandparents_maternal", "auntie_cousins",
+        }
+        for cid in solo_ids:
+            with self.subTest(solo=cid):
+                self.assertEqual(len(self.family.buckets_for(cid)), 1)
+
+    def test_characters_endpoint_exposes_family_buckets_and_memberships(self):
+        """The /api/characters/ response must advertise the 8 top-level
+        buckets and, for every character, a ``family_buckets`` list.
+
+        Unique-count invariant: the response contains one entry per asset ID
+        (no composite is duplicated), even though a composite's bucket list has
+        multiple entries. The 8 legacy character IDs must stay present and
+        retain their original bucket (regression)."""
+        response = self.client.get("/api/characters/")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        bucket_ids = [b["id"] for b in payload["family_buckets"]]
+        self.assertEqual(bucket_ids, [
+            "levi", "luca", "mom", "dad",
+            "paternal_grandparents", "maternal_grandparents",
+            "auntie_cousins", "doggy",
+        ])
+        chars = payload["characters"]
+        # No duplicate IDs — one unique entry per asset.
+        ids = [c["id"] for c in chars]
+        self.assertEqual(len(ids), len(set(ids)))
+        # Legacy 8 IDs still functional.
+        char_map = {c["id"]: c for c in chars}
+        legacy_expected = {
+            "levi": "levi", "luca": "luca", "mom": "mom", "dad": "dad",
+            "dog": "doggy",
+            "grandparents_paternal": "paternal_grandparents",
+            "grandparents_maternal": "maternal_grandparents",
+            "auntie_cousins": "auntie_cousins",
+        }
+        for cid, bucket in legacy_expected.items():
+            with self.subTest(legacy=cid):
+                self.assertIn(cid, char_map, f"Legacy ID {cid} dropped")
+                self.assertEqual(char_map[cid]["family_buckets"], [bucket])
+        # Composite sprites expose multi-bucket lists in UI nav order.
+        self.assertEqual(
+            char_map["contact_mom_levi_hug"]["family_buckets"],
+            ["levi", "mom"],
+        )
+        self.assertEqual(
+            char_map["contact_paternal_grandpa_levi_handholding"]["family_buckets"],
+            ["levi", "paternal_grandparents"],
+        )
+        self.assertEqual(
+            char_map["contact_aunt_sister_cousin_ryan_handholding"]["family_buckets"],
+            ["auntie_cousins"],
+        )
+
+    def test_studio_frontend_uses_bucket_navigation(self):
+        """``app/static/app.js`` must render the simplified bucket chips and
+        consume the ``family_buckets`` metadata so the "too many top labels"
+        regression stays fixed. The composite ``char.id`` must be the value
+        passed to clickToDropFamilyMember so the renderer still receives the
+        original composite ID (no participant duplication)."""
+        js_text = (ROOT / "app" / "static" / "app.js").read_text(encoding="utf-8")
+        self.assertIn("activeFamilyBucket", js_text)
+        self.assertIn("family-bucket-chips", js_text)
+        self.assertIn("renderFamilyBucketChips", js_text)
+        self.assertIn("_charactersInBucket", js_text)
+        self.assertIn("clickToDropFamilyMember('${char.id}')", js_text,
+                      "Composite selection must still send char.id so the renderer "
+                      "gets the composite asset instead of a decomposed participant")
+        self.assertIn("data.family_buckets", js_text)
+        html = (ROOT / "app" / "static" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('id="family-bucket-chips"', html)
+        self.assertIn('id="outfit-bucket-chips"', html)
+
+    def test_portal_builder_tags_family_assets_with_buckets(self):
+        """``scripts/build_asset_portal.py`` must tag each family asset with
+        the same bucket list and emit ``family_buckets`` metadata, matching
+        the studio navigation (one browsing surface, one source of truth)."""
+        spec = importlib.util.spec_from_file_location(
+            "build_asset_portal", ROOT / "scripts" / "build_asset_portal.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertEqual(
+            list(module.FAMILY_BUCKET_ORDER),
+            ["levi", "luca", "mom", "dad",
+             "paternal_grandparents", "maternal_grandparents",
+             "auntie_cousins", "doggy"],
+        )
+        self.assertEqual(
+            module._buckets_for_members(["mom", "levi"]), ["levi", "mom"])
+        self.assertEqual(
+            module._buckets_for_members(["aunt_sister", "cousin_ryan"]),
+            ["auntie_cousins"])
+        self.assertEqual(
+            module._buckets_for_members(["paternal_grandpa", "levi"]),
+            ["levi", "paternal_grandparents"])
+        self.assertEqual(module._buckets_for_members(["mom"]), ["mom"])
+
+    def test_portal_tags_prior_twin_sprites_and_counts_all_family_at_59(self):
+        """Regression (bug 1): the 6 pre-release twin sprites in the ``Sprites``
+        category must also carry ``family_buckets`` so Levi's bucket shows his
+        own 3 poses + his 3 (v3) + 22 (v4) contact composites — not only the
+        v3 contacts.
+
+        Totals after family-interactions v4 lands: 274 unique assets, 91 with
+        any family bucket (6 twin sprites + 41 family-expansion v3 solos +
+        12 v3 contact composites + 32 v4 contact composites).
+        """
+        import re
+        spec = importlib.util.spec_from_file_location(
+            "build_asset_portal", ROOT / "scripts" / "build_asset_portal.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        output = module.build()
+        text = Path(output).read_text(encoding="utf-8")
+        match = re.search(
+            r'<script id="asset-data" type="application/json">(.*?)</script>',
+            text, re.S)
+        self.assertIsNotNone(match, "Portal must embed the asset JSON")
+        data = json.loads(match.group(1))
+        assets = data["assets"]
+        self.assertEqual(len(assets), 274,
+                         "Unique asset count must be 274 after family-interactions v4")
+        by_id = {a["id"]: a for a in assets}
+        for sid in ("levi_jumping", "levi_dancing", "levi_brushing_teeth"):
+            with self.subTest(sprite=sid):
+                self.assertIn(sid, by_id, f"Missing pre-release sprite {sid}")
+                self.assertEqual(by_id[sid]["family_buckets"], ["levi"],
+                                 f"{sid} must belong to the Levi bucket")
+        for sid in ("luca_jumping", "luca_dancing", "luca_brushing_teeth"):
+            with self.subTest(sprite=sid):
+                self.assertIn(sid, by_id)
+                self.assertEqual(by_id[sid]["family_buckets"], ["luca"],
+                                 f"{sid} must belong to the Luca bucket")
+        with_buckets = [a for a in assets if a.get("family_buckets")]
+        self.assertEqual(len(with_buckets), 91,
+                         "All-family count must be 91 (6 twin sprites + 41 solos + "
+                         "12 v3 contacts + 32 v4 contacts)")
+        # Props / letters / badges stay out of the family-bucket set.
+        for a in assets:
+            if a["category"] in {"Cantonese badges", "Letters", "Numbers",
+                                 "Animals", "Vehicles",
+                                 "Fruits & vegetables", "Food & snacks",
+                                 "Everyday props", "Toys"}:
+                with self.subTest(nonfamily=a["id"]):
+                    self.assertEqual(
+                        a.get("family_buckets") or [], [],
+                        f"Non-family asset {a['id']} must have no bucket")
+        # Levi/Luca bucket counts after v4: 3 twin poses + 3 v3 contacts + 22 v4
+        # contacts = 28 each (every v4 asset except the four-person maternal/
+        # paternal-grandparent group pair and the parent group pair that already
+        # include them).
+        levi_assets = [a for a in assets
+                       if "levi" in (a.get("family_buckets") or [])]
+        luca_assets = [a for a in assets
+                       if "luca" in (a.get("family_buckets") or [])]
+        self.assertEqual(len(levi_assets), 28,
+                         "Levi bucket must include 3 poses + 3 v3 contacts + 22 v4 contacts")
+        self.assertEqual(len(luca_assets), 28,
+                         "Luca bucket must include 3 poses + 3 v3 contacts + 22 v4 contacts")
+        # Bucket-count metadata exposed to the portal must agree.
+        buckets_meta = {b["id"]: b for b in data["family_buckets"]}
+        self.assertEqual(buckets_meta["levi"]["count"], 28)
+        self.assertEqual(buckets_meta["luca"]["count"], 28)
+        self.assertGreaterEqual(buckets_meta["mom"]["count"], 1)
+        self.assertEqual(buckets_meta["doggy"]["count"], 0,
+                         "No family-release doggy asset exists yet")
+
+    def test_portal_template_distinguishes_all_family_from_all_assets(self):
+        """Regression (bug 2): the "All family" chip must filter down to the
+        59 bucket-tagged assets instead of silently showing all 242 while the
+        chip count says 59. The template must therefore use an explicit
+        ``__all_family__`` sentinel distinct from the ``all`` no-filter value,
+        and must also show the family-bucket row when ``Sprites`` is active so
+        the pre-release twin poses are reachable from the simplified top nav.
+        """
+        template_text = (
+            ROOT / "scripts" / "asset_portal_template.html"
+        ).read_text(encoding="utf-8")
+        self.assertIn("'__all_family__'", template_text,
+                      "Template must use the __all_family__ sentinel for the "
+                      "'All family' chip so it does not alias the no-filter 'all'")
+        self.assertIn("buckets.length>0", template_text,
+                      "__all_family__ must filter to any-bucket assets, not to "
+                      "every asset")
+        self.assertIn("'Sprites','Family sprites','Family contacts'", template_text,
+                      "Family-bucket row must also appear in the 'Sprites' category "
+                      "so Levi/Luca pre-release poses are navigable")
+        # No contact-pair top-level chip: only the 8 highlevel family buckets
+        # should appear in the sub-nav. The template must not render per-contact
+        # buttons like ``contact_mom_levi_hug`` as its own chip.
+        self.assertNotIn("contact_mom_levi_hug", template_text,
+                         "Simplified nav must not surface composite IDs as chips")
+
+    def test_portal_rendered_output_contains_all_family_sentinel(self):
+        """The already-built ``generated-asset-portal.html`` ships the fixed
+        template so the preview copy is self-contained; no rebuild required
+        at page load."""
+        rendered = (ROOT / "generated-asset-portal.html").read_text(encoding="utf-8")
+        self.assertIn("'__all_family__'", rendered)
+        self.assertIn("buckets.length>0", rendered)
 
 
 if __name__ == "__main__":

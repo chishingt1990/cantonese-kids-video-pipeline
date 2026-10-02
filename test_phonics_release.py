@@ -112,9 +112,11 @@ class TestPhonicsRelease(unittest.TestCase):
         match = re.search(r'<script id="asset-data" type="application/json">(.*?)</script>', html)
         self.assertIsNotNone(match)
         data = json.loads(match.group(1))
-        # 189 pre-existing (60 artwork + 73 phonics + 56 props) + 53 approved
-        # family-expansion v3 assets = 242 unique assets.
-        self.assertEqual(len(data["assets"]), 242)
+        # 189 pre-existing (60 artwork + 73 phonics + 56 props)
+        #   + 53 family-expansion v3 (41 solo + 12 contact)
+        #   + 32 family-interactions v4 (26 twin interactions + 6 four-person group composites)
+        # = 274 unique assets.
+        self.assertEqual(len(data["assets"]), 274)
         self.assertEqual(len(data["excluded"]), 8)
         self.assertIn("Letters", data["categories"])
         self.assertIn("Numbers", data["categories"])
@@ -123,7 +125,8 @@ class TestPhonicsRelease(unittest.TestCase):
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Letters"]), 52)
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Numbers"]), 21)
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Family sprites"]), 41)
-        self.assertEqual(len([a for a in data["assets"] if a["category"] == "Family contacts"]), 12)
+        # v3 shipped 12 contact composites; v4 adds 32 (26 twin + 6 group) → 44.
+        self.assertEqual(len([a for a in data["assets"] if a["category"] == "Family contacts"]), 44)
         self.assertNotIn("file:///", html)
         self.assertNotIn("copilot.cloud.microsoft/chat/conversation/", html)
 

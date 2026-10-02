@@ -1,0 +1,2210 @@
+{
+  "schema_version": 1,
+  "release_id": "family_interactions_v4",
+  "status": "approved_local_integration",
+  "approval": "Twins batch: user said 'these are great' on 2026-10-02 08:30 PDT for the 26 twin-focused interactions. Groups batch: user said 'A. Approve all six' at 08:37 PDT and 'keep going' at 08:59 PDT after the local group-review HTML opened. The groups batch has not been publicly published; public publication of this v4 release is a separate step the user handles after reviewing the combined preview.",
+  "scope": "32 approved family-interaction composite sprites: 26 twin-focused (2- and 3-person) interactions and 6 four-person family-group composites. All v3 assets stay byte-identical; v4 is additive.",
+  "note": "Provenance manifest, not the runtime catalog. app/services/family_catalog.py aggregates this file with family_release_v3.json so individual pose vocabularies and contact IDs from both releases are visible to the director, characters router, render service and asset portal.",
+  "scale_classes": {
+    "adult": {
+      "base_height_px": 760
+    },
+    "older_child": {
+      "base_height_px": 640
+    },
+    "toddler": {
+      "base_height_px": 520
+    },
+    "pet": {
+      "base_height_px": 320
+    }
+  },
+  "pose_labels": {},
+  "contact_action_labels": {
+    "holding_hands": "Holding Hands",
+    "holding_both_hands": "Holding Both Hands",
+    "reading_book_together": "Reading a Book Together",
+    "passing_toy": "Passing a Toy",
+    "high_five": "High Five",
+    "reading_together": "Reading Together",
+    "building_blocks_together": "Building Blocks Together",
+    "play": "Playing Together"
+  },
+  "excluded_jobs": [],
+  "assets": [
+    {
+      "id": "contact_levi_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_levi_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "levi_luca_hug_r01.png",
+      "source_sha256": "aa340dcb61555ad2737d3c5fe25ad8affd1a2a1da10d7786e9452a4906e2c832",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "d90e945b5e5f827cef99d57d4cdcc91f2ed288f9dd9fa208cb204eb9e0b963c7",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1024065,
+        "alpha_ge_250_to_255_pixels": 529481,
+        "source_crop_ltrb": [
+          281,
+          8,
+          959,
+          1231
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        694,
+        1239
+      ],
+      "mode": "RGBA",
+      "sha256": "3b37fb2b365492628952788e9a11c1710e244d90cfeb5fea627bebd175674de0",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "toddler",
+      "library_groups": [
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_levi_luca_holding_hands",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_levi_luca_holding_hands.png",
+      "alias_runtime_paths": [],
+      "source_filename": "levi_luca_holding_hands_r01.png",
+      "source_sha256": "0e19b13c68f6be5dc87d4656d261d7942f66f57b60ac8fbef4615e34b01a5aa2",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "30705bebfeb4ad39e88ebb2f512d5fbdac65e855c717f1ffce9a20c7df570436",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 885021,
+        "alpha_ge_250_to_255_pixels": 657901,
+        "source_crop_ltrb": [
+          142,
+          17,
+          1097,
+          1208
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        971,
+        1207
+      ],
+      "mode": "RGBA",
+      "sha256": "35e5be032ea9dc0fbc3e3596cc94ae85f4e828757df35595434246433ec769cb",
+      "pose": "holding_hands",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "holding_hands",
+      "members": [
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "toddler",
+      "library_groups": [
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_levi_luca_reading_book_together",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_levi_luca_reading_book_together.png",
+      "alias_runtime_paths": [],
+      "source_filename": "levi_luca_reading_book_together_r01.png",
+      "source_sha256": "4bb580eecca3bbf2cee393b6e1beeea65a7a953ec0ec9328e58d70f4e1a4f736",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "eb7236cabb8d116a56e8520ad4730b79b117c85258a500c5ff5b42d15df3f306",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 728262,
+        "alpha_ge_250_to_255_pixels": 825658,
+        "source_crop_ltrb": [
+          90,
+          48,
+          1164,
+          1200
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1090,
+        1168
+      ],
+      "mode": "RGBA",
+      "sha256": "ad9b7133cda3d5620a71b6b1a3b61a6af25f1cabe665ecbf4b8e062eec0ec4ed",
+      "pose": "reading_book_together",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "reading_book_together",
+      "members": [
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "toddler",
+      "library_groups": [
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_levi_luca_passing_toy",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_levi_luca_passing_toy.png",
+      "alias_runtime_paths": [],
+      "source_filename": "levi_luca_passing_toy_r01.png",
+      "source_sha256": "07b88b43094139d8a3fc48245377efda829009085903d241bfd08c5386842d70",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "af73905e14d7876740160bb9f37b5c6353ae1f83658096d91fa1bba27a3da3ed",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 882947,
+        "alpha_ge_250_to_255_pixels": 661293,
+        "source_crop_ltrb": [
+          114,
+          0,
+          1147,
+          1238
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1049,
+        1254
+      ],
+      "mode": "RGBA",
+      "sha256": "cef41e44feadde798240944e77a8b85edabf7c044f6fea0a913eaca9e46f971e",
+      "pose": "passing_toy",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "passing_toy",
+      "members": [
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "toddler",
+      "library_groups": [
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_mom_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_luca_hug_r01.png",
+      "source_sha256": "23d462f902ba4c6a3557090e6e09f1b1aa8e7da70e5a25c812df8dc80aab471c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "3b8de0b1561c1739de7d0f5b26b7016994e5389b3120f25e58d606438618d557",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1033293,
+        "alpha_ge_250_to_255_pixels": 522918,
+        "source_crop_ltrb": [
+          329,
+          27,
+          943,
+          1224
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        630,
+        1213
+      ],
+      "mode": "RGBA",
+      "sha256": "8ee30122acba647bf1de1ae24e5739a41c3ffef9edaecb55925a4d94f6ef7cfe",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Mom",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_dad_levi_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_dad_levi_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_levi_hug_r01.png",
+      "source_sha256": "2c22390b364bc84b67cd18605003529952cee0566ba4d15d2c1bd7237b611025",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "95e603709cb0b865c240893f63e8c102fee25a6900d2ec426798f63b5b855d05",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1025300,
+        "alpha_ge_250_to_255_pixels": 531281,
+        "source_crop_ltrb": [
+          342,
+          12,
+          937,
+          1239
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        611,
+        1243
+      ],
+      "mode": "RGBA",
+      "sha256": "dcbb7577541af950d118d3963789a9f548f363f375ca9d44b62a060cecfd798f",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Dad",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_mom_levi_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_levi_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_levi_carrying_child_r01.png",
+      "source_sha256": "2d4c7095309cdf0a2ed112362eb6d3dc924460af7c06bcf538c098823d6896bb",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "ce7833ab570b5a6c9cb79ffbb561cb037fd103abf9c25162c9a50649634331d7",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1211474,
+        "alpha_ge_250_to_255_pixels": 345326,
+        "source_crop_ltrb": [
+          355,
+          8,
+          902,
+          1238
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        563,
+        1246
+      ],
+      "mode": "RGBA",
+      "sha256": "95c8198b041dba812e44e179917ed3df2908d59e113c1ce1157d6af945709e8e",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Mom",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_mom_luca_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_luca_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_luca_carrying_child_r01.png",
+      "source_sha256": "8a00ab3f368b3b1ffb5896cd52c1e03fe9b4b3c0e6ef4bb26e4ee110763e6342",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "d301fc5912bd037c815e935819e2e476028cf936839c63340551a4862d5eefba",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1233265,
+        "alpha_ge_250_to_255_pixels": 325003,
+        "source_crop_ltrb": [
+          363,
+          9,
+          854,
+          1239
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        507,
+        1246
+      ],
+      "mode": "RGBA",
+      "sha256": "1d5044a67250a0d32502537a2e60e828a2ff602354fd993620d534428049282e",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Mom",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_dad_levi_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_dad_levi_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_levi_carrying_child_r01.png",
+      "source_sha256": "48ad46eed6b45721dafc57fcc0e07c16ad7ae6c73ef6eca5af19e406ee9a60d7",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "0b34d9c62bed300be24f807d2daf52613c44586e88164e24257ed494914cdf80",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1230320,
+        "alpha_ge_250_to_255_pixels": 326958,
+        "source_crop_ltrb": [
+          393,
+          29,
+          878,
+          1235
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        501,
+        1222
+      ],
+      "mode": "RGBA",
+      "sha256": "b8dda593c3636706b382fb2e1fa01b62d3c4247039c8f0933de104de7645440a",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Dad",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_dad_luca_carrying_child",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_dad_luca_carrying_child.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_luca_carrying_child_r01.png",
+      "source_sha256": "f3fdb8574967fe8282763e9d963601bd20efcce6beb56fdbd6f4d34974f22f66",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "edc365cae1ecc22277b0296ecd584366bc74af0d0487f6f9420b79ee531a511f",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1230579,
+        "alpha_ge_250_to_255_pixels": 327874,
+        "source_crop_ltrb": [
+          391,
+          19,
+          895,
+          1231
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        520,
+        1228
+      ],
+      "mode": "RGBA",
+      "sha256": "fa5c38e396ec0cafe37cc7acec69ad1185b203572d4d38fa3396d4033d8fa1f1",
+      "pose": "carrying_child",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "carrying_child",
+      "members": [
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Dad",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_mom_levi_luca_holding_both_hands",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_levi_luca_holding_both_hands.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_levi_luca_holding_both_hands_r01.png",
+      "source_sha256": "d691396601cee380dfd61d40b9ec4f8a2ad9d7e077be1a140c6d0c03c660eeb1",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "3bf2415779c772a78bd2f25f3cbf7a2f313f32e8d056b770848cc868fc0e1518",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1009910,
+        "alpha_ge_250_to_255_pixels": 528186,
+        "source_crop_ltrb": [
+          194,
+          10,
+          1067,
+          1218
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        889,
+        1224
+      ],
+      "mode": "RGBA",
+      "sha256": "472099ed57048b11ef82b4cc573d1fba3abb9c0e0728a60870b2e58eb44f550f",
+      "pose": "holding_both_hands",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "holding_both_hands",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 3,
+      "scale_class": "adult",
+      "library_groups": [
+        "Mom",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_dad_levi_luca_holding_both_hands",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_dad_levi_luca_holding_both_hands.png",
+      "alias_runtime_paths": [],
+      "source_filename": "dad_levi_luca_holding_both_hands_r01.png",
+      "source_sha256": "5e5086a2f4e2b351f126b6cffa0279774aa2cf193e058b477172f9b20ce4fa92",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/dad.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "2103cc20045432bfac38236731afab7dcd30520c191c139b842efa34b4e95f60",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 970388,
+        "alpha_ge_250_to_255_pixels": 565574,
+        "source_crop_ltrb": [
+          123,
+          18,
+          1136,
+          1218
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1029,
+        1216
+      ],
+      "mode": "RGBA",
+      "sha256": "b170639d9cafe3b39cc7309a50702245f12045e59ebf6456299302f8eefe02b6",
+      "pose": "holding_both_hands",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "holding_both_hands",
+      "members": [
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 3,
+      "scale_class": "adult",
+      "library_groups": [
+        "Dad",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_paternal_grandpa_levi_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandpa_levi_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_levi_hug_r01.png",
+      "source_sha256": "378e15d0cc34faf73ddf470df4b00716648375669373c0c16c53e1274972ad2a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/paternal_grandpa_default.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "54a057aa023ce1835113b481b1dfe5e51b1b9727905f4bf52929de34cbc7a15d",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "4891d9d42f80e24b1cb331b163cde7e90a76734ecad5897707f3339cbb6fc46f",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 964021,
+        "alpha_ge_250_to_255_pixels": 591100,
+        "source_crop_ltrb": [
+          254,
+          25,
+          983,
+          1236
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        745,
+        1227
+      ],
+      "mode": "RGBA",
+      "sha256": "8fd7e86e953b3b4f351e5fc04ea127630e44c5c63889404bc6d214a54449ae79",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Paternal grandparents",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_paternal_grandpa_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandpa_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_luca_hug_r01.png",
+      "source_sha256": "12761e21a1f5e92c1b8436a698d36e94e3d4138d48861bbe5ecc2368ecbf9303",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/paternal_grandpa_default.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "54a057aa023ce1835113b481b1dfe5e51b1b9727905f4bf52929de34cbc7a15d",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "49e346e6b0054f36bc528af5e4872c623f4d880f9f29a91e4e18b83efa53e700",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 986466,
+        "alpha_ge_250_to_255_pixels": 570641,
+        "source_crop_ltrb": [
+          268,
+          10,
+          952,
+          1226
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        700,
+        1232
+      ],
+      "mode": "RGBA",
+      "sha256": "4a75daa80deca529804277460b23647e22c64b5d4a74aa44bd5c89eaadd9546d",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Paternal grandparents",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_paternal_grandma_levi_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandma_levi_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandma_levi_hug_r01.png",
+      "source_sha256": "9abb45c26fbe4c8bbc8b0583d8c239c2b62d6593189ad90895e724705948cfd7",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/paternal_grandma_default.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "d64459712ea783e78a6a4a8340f8aedf7b0de27573b29735b6fa69a1dde24aaa",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "db910ded31773d1e9d1605671d6355ccc4af19b9d48c41f6bbb4591ba63069e9",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 957529,
+        "alpha_ge_250_to_255_pixels": 599863,
+        "source_crop_ltrb": [
+          274,
+          9,
+          983,
+          1236
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        725,
+        1243
+      ],
+      "mode": "RGBA",
+      "sha256": "2f317d5e8afff2db25971073d5b93996f845c863c674a4e8a846b50524c3e069",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Paternal grandparents",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_paternal_grandma_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandma_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandma_luca_hug_r01.png",
+      "source_sha256": "5749b1725b171abf9e286ddf89df2cfce98cd76abe767dce1f6a32b9b644d689",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/paternal_grandma_default.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "d64459712ea783e78a6a4a8340f8aedf7b0de27573b29735b6fa69a1dde24aaa",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "43b2efee8e1ad2d8927010265e85863248346164fae2ac9a00f844beb4759132",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 1004772,
+        "alpha_ge_250_to_255_pixels": 552439,
+        "source_crop_ltrb": [
+          321,
+          35,
+          981,
+          1222
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        676,
+        1203
+      ],
+      "mode": "RGBA",
+      "sha256": "3b769d284ad5f27a53657cd55e86a43f39750ecf33a13a39d34c426b7b6dd414",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Paternal grandparents",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_maternal_grandpa_levi_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandpa_levi_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_levi_hug_r01.png",
+      "source_sha256": "e1c903a3393be6da01a0440d41ecf0804f369dcef66dbd39fbcce148105fc7ea",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/maternal_grandpa_default.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "2a7ce45b02a21942b96d6874456317e6fa898dd40d3070d8eff3ce85c2a2b5e0",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "fbf84c785376135acc74505755799df9a921015c23f0a72a0d5fb0f989238ad1",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 952518,
+        "alpha_ge_250_to_255_pixels": 604232,
+        "source_crop_ltrb": [
+          278,
+          11,
+          979,
+          1240
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        717,
+        1245
+      ],
+      "mode": "RGBA",
+      "sha256": "758997b3cdcfe1fb07878b023687a28878ab04506aa27f0bd382d53cf2221431",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Maternal grandparents",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_maternal_grandpa_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandpa_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_luca_hug_r01.png",
+      "source_sha256": "d9a4577505d24c6fbf23eb503058321ff9e988ea1df290f79a237f31cf5f6fe5",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/maternal_grandpa_default.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "2a7ce45b02a21942b96d6874456317e6fa898dd40d3070d8eff3ce85c2a2b5e0",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "2bc67d3d7df691a57fb57038f71af851cf5e5ed49ad7b4bf8c4feb11760963f9",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 994984,
+        "alpha_ge_250_to_255_pixels": 563808,
+        "source_crop_ltrb": [
+          287,
+          33,
+          940,
+          1226
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        669,
+        1209
+      ],
+      "mode": "RGBA",
+      "sha256": "dfedd5eb2f2591bf7a1fe1e7f8f8a3eecc68c92dadfaae258a0fda84a79f83ea",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Maternal grandparents",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_maternal_grandma_levi_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandma_levi_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandma_levi_hug_r01.png",
+      "source_sha256": "2df00998908deb3b9bc93c22e7e02c97659188dfb5b139f4ec486fa802021044",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/maternal_grandma_default.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "fb4ee6d152ba776cebe6c15884e3fc8ad434c8b1f0eb30a57db28b60a394f3bf",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "e9e9ad74dc62ea47127b47a5f6cee5c016c2ea14d454dc5e4949bde5cc537d77",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 969670,
+        "alpha_ge_250_to_255_pixels": 589333,
+        "source_crop_ltrb": [
+          280,
+          14,
+          962,
+          1236
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        698,
+        1238
+      ],
+      "mode": "RGBA",
+      "sha256": "4cfe6308d791934d55688b848eb10c793566ec2e452a3d8439244caa5e631ea0",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Maternal grandparents",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_maternal_grandma_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandma_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandma_luca_hug_r01.png",
+      "source_sha256": "060f56d3abb2e1010760248527a275018768601751087c613c34d56cb2cfac6b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/maternal_grandma_default.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "fb4ee6d152ba776cebe6c15884e3fc8ad434c8b1f0eb30a57db28b60a394f3bf",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "54280b626b73961b4a75adfcd8eb1b3ccb999e34f3038a96345156b5f3385213",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 937111,
+        "alpha_ge_250_to_255_pixels": 621495,
+        "source_crop_ltrb": [
+          283,
+          12,
+          966,
+          1235
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        699,
+        1239
+      ],
+      "mode": "RGBA",
+      "sha256": "b9e5ec80700a9482ae089d9d473b1237b275acf9d902bd269c274bb0a3e11c1b",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Maternal grandparents",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_aunt_sister_levi_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_aunt_sister_levi_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "aunt_sister_levi_hug_r01.png",
+      "source_sha256": "359d3e7ef138e3531bf0ba88a07d7ec578d28700f9046402127b3a279846051e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/aunt_sister_default.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "ea435c611b3c68de79c146b1fd0ce12549498e0f41ec92b201c381621af1c29b",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "fca04a99822d1d6e003c450455a1329fb301e1d42360a0e45f93568237e80de9",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 936909,
+        "alpha_ge_250_to_255_pixels": 618121,
+        "source_crop_ltrb": [
+          282,
+          14,
+          979,
+          1238
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        713,
+        1240
+      ],
+      "mode": "RGBA",
+      "sha256": "f68b6a171c32ae423c93147a120197c729de3b0d00655636b5d1660c96b53f36",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "aunt_sister",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Auntie & cousins",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_aunt_sister_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_aunt_sister_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "aunt_sister_luca_hug_r01.png",
+      "source_sha256": "90fe42f6931fbac9b1a9d8aae3522c010515a414aee6e7755507039efd46e1d9",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/aunt_sister_default.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "ea435c611b3c68de79c146b1fd0ce12549498e0f41ec92b201c381621af1c29b",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "e8773cf441b98f7f03fc0b1500dfd14e52ba9c939cb69a001071dd598c9a7700",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 918680,
+        "alpha_ge_250_to_255_pixels": 639896,
+        "source_crop_ltrb": [
+          267,
+          8,
+          990,
+          1227
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        739,
+        1235
+      ],
+      "mode": "RGBA",
+      "sha256": "fb907a2c1625563a25d47aa17676f655be34ce1be8ba4065f4b7d70ae30d7654",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "aunt_sister",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "adult",
+      "library_groups": [
+        "Auntie & cousins",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_cousin_ryan_levi_high_five",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_cousin_ryan_levi_high_five.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ryan_levi_high_five_r01.png",
+      "source_sha256": "18a76677d9925db19c8194f8f61cc8a2c442e75c974bf61f2e9c8a66dcaabb16",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/cousin_ryan_default.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "e84fa83a1885a0b9460e3d5238249c6fe1736b451e0051cf3a4f79031a7ceb16",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "0dedcb86836aaa9f464ed6905cb1efc46d79167beaaa166d99e1c777f12e94ea",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 897913,
+        "alpha_ge_250_to_255_pixels": 643384,
+        "source_crop_ltrb": [
+          116,
+          30,
+          1153,
+          1217
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1053,
+        1203
+      ],
+      "mode": "RGBA",
+      "sha256": "2debd665cc37833811bb37a5afead96c8b8a19c1780020542df351b0b7404ed7",
+      "pose": "high_five",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "high_five",
+      "members": [
+        {
+          "runtime_character_id": "cousin_ryan",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "older_child",
+      "library_groups": [
+        "Auntie & cousins",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_cousin_ryan_luca_reading_together",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_cousin_ryan_luca_reading_together.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_ryan_luca_reading_together_r01.png",
+      "source_sha256": "9bbf6e510c76266e317bf12396968c6bccd8258f220b18bdc8ecb1513f2cb26e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/cousin_ryan_default.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "e84fa83a1885a0b9460e3d5238249c6fe1736b451e0051cf3a4f79031a7ceb16",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "e78bfd5c41959271a1521aa3e72b2d277061e4c8c438621b3925be07f00879af",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 683607,
+        "alpha_ge_250_to_255_pixels": 869210,
+        "source_crop_ltrb": [
+          80,
+          17,
+          1178,
+          1223
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1114,
+        1222
+      ],
+      "mode": "RGBA",
+      "sha256": "81f3f2bdbbfb8c98afe5372ec2031aac90a654dc08d6a3136b73f8b0aa77aae3",
+      "pose": "reading_together",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "reading_together",
+      "members": [
+        {
+          "runtime_character_id": "cousin_ryan",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "older_child",
+      "library_groups": [
+        "Auntie & cousins",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_cousin_younger_levi_passing_toy",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_cousin_younger_levi_passing_toy.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_younger_levi_passing_toy_r01.png",
+      "source_sha256": "eda03c6d860336ec7ec4471b2602c676ad93738bbf4eb838bd4ce4a84ca5e660",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/cousin_younger_default.png",
+          "assets/sprites/levi.png"
+        ],
+        "sha256_list": [
+          "45fa531f9bb12bcf842ea4b30bec06b8e2fa544a4fa06a4683bbacc54ad80d99",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649"
+        ]
+      },
+      "prompt_sha256": "276ab3005e3469674fae00a98211a3d19ebe02d5f03621e47d94bb2aeb83b80f",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 932113,
+        "alpha_ge_250_to_255_pixels": 613239,
+        "source_crop_ltrb": [
+          133,
+          14,
+          1144,
+          1236
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1027,
+        1238
+      ],
+      "mode": "RGBA",
+      "sha256": "84d93281f452168791d695bd4ad39c269d4e89e14d50dbb8f937f9834f245e8a",
+      "pose": "passing_toy",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "passing_toy",
+      "members": [
+        {
+          "runtime_character_id": "cousin_younger",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "toddler",
+      "library_groups": [
+        "Auntie & cousins",
+        "Levi"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_cousin_younger_luca_building_blocks_together",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_cousin_younger_luca_building_blocks_together.png",
+      "alias_runtime_paths": [],
+      "source_filename": "cousin_younger_luca_building_blocks_together_r01.png",
+      "source_sha256": "96716259bbbb59eacf478d48eb0564415f04bd32a4269a7547d4c0172ec0f408",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/cousin_younger_default.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "45fa531f9bb12bcf842ea4b30bec06b8e2fa544a4fa06a4683bbacc54ad80d99",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "06d5817e88538dd85cbc96163342c61d57263d653c19206b1b752335c81e4df8",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 704007,
+        "alpha_ge_250_to_255_pixels": 845692,
+        "source_crop_ltrb": [
+          39,
+          23,
+          1195,
+          1218
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1172,
+        1211
+      ],
+      "mode": "RGBA",
+      "sha256": "c0ff1e13d0fb5ce849710d2291b938f07d9897a8f8bf2b7930d7520918543fda",
+      "pose": "building_blocks_together",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "building_blocks_together",
+      "members": [
+        {
+          "runtime_character_id": "cousin_younger",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 2,
+      "scale_class": "toddler",
+      "library_groups": [
+        "Auntie & cousins",
+        "Luca"
+      ],
+      "source_batch": "twins",
+      "approval_statement": "User reply 'these are great' on 2026-10-02 08:30 PDT, following the exact outbound preview recorded in approval_evidence (26 twin-focused interaction composites with reference filenames and sha256). This approval covers both library grouping and image generation; public publication is handled as a separate step."
+    },
+    {
+      "id": "contact_mom_dad_levi_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_dad_levi_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_dad_levi_luca_group_hug_r01.png",
+      "source_sha256": "a394f82d3b93fdc56ec80de569aa49375b7ec4a90ff906db3a8a49cb719abb30",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/dad.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "7b6a2e1ee8eef76d02ce2c1e2e575658c59debe19f8e8b84edde2efd0baca8ef",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 755516,
+        "alpha_ge_250_to_255_pixels": 798712,
+        "source_crop_ltrb": [
+          29,
+          53,
+          1225,
+          1170
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1212,
+        1133
+      ],
+      "mode": "RGBA",
+      "sha256": "1489609fe4255e8753ba5fa93896c1a275f6d078294f8c3513c94b674efe5a95",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 4,
+      "scale_class": "adult",
+      "library_groups": [
+        "Mom",
+        "Dad",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "groups",
+      "approval_statement": "User reply 'A. Approve all six' on 2026-10-02 08:37 PDT authorised the six family-group generations; the local group review HTML opened at 08:59 PDT and the user replied 'keep going' to continue local prep. This manifest records approval for local integration only — public publication is a separate step the user handles after reviewing the combined preview."
+    },
+    {
+      "id": "contact_mom_dad_levi_luca_play",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_mom_dad_levi_luca_play.png",
+      "alias_runtime_paths": [],
+      "source_filename": "mom_dad_levi_luca_group_play_r01.png",
+      "source_sha256": "deccb7ca74ba5f5bf5699d1da4f0658396e929aa11f6f966d4f9d3f7ab936c3c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/mom.png",
+          "assets/sprites/dad.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "feeecbae9c0949f4aabb279ead8bdc854934f00928ac6019296bcb161b273e94",
+          "dfe687647b448ab8260e8a18fec2b754d5aae3ebe52042c87c70f04111f20cd9",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "ec12a2d2b5213655db64bbdecb161121c8ee218f8c07dcd892d1fc663f87134a",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 785034,
+        "alpha_ge_250_to_255_pixels": 764160,
+        "source_crop_ltrb": [
+          18,
+          105,
+          1245,
+          1151
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1243,
+        1062
+      ],
+      "mode": "RGBA",
+      "sha256": "069091467d4a6a684357456858743f5384e2b1e91bb84d6c0f3ee80732f512ec",
+      "pose": "play",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "play",
+      "members": [
+        {
+          "runtime_character_id": "mom",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "dad",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 4,
+      "scale_class": "adult",
+      "library_groups": [
+        "Mom",
+        "Dad",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "groups",
+      "approval_statement": "User reply 'A. Approve all six' on 2026-10-02 08:37 PDT authorised the six family-group generations; the local group review HTML opened at 08:59 PDT and the user replied 'keep going' to continue local prep. This manifest records approval for local integration only — public publication is a separate step the user handles after reviewing the combined preview."
+    },
+    {
+      "id": "contact_paternal_grandpa_paternal_grandma_levi_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandpa_paternal_grandma_levi_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_paternal_grandma_levi_luca_group_hug_r01.png",
+      "source_sha256": "c8a9f71ca5cb0f1a37baa8d92ab8194298a2ba3d9cc16330dd60cf5bb74242a6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/paternal_grandpa_default.png",
+          "assets/sprites/paternal_grandma_default.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "54a057aa023ce1835113b481b1dfe5e51b1b9727905f4bf52929de34cbc7a15d",
+          "d64459712ea783e78a6a4a8340f8aedf7b0de27573b29735b6fa69a1dde24aaa",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "dfedfcb72e4cf83d726f8b367dca178d6d2363169c9549b59bf45a1a5f12193e",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 630666,
+        "alpha_ge_250_to_255_pixels": 919609,
+        "source_crop_ltrb": [
+          40,
+          24,
+          1222,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1198,
+        1220
+      ],
+      "mode": "RGBA",
+      "sha256": "515305a82cd170cbfe4e1720ed483310a8368be8d25855335cb8d502d958f2a7",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "paternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 4,
+      "scale_class": "adult",
+      "library_groups": [
+        "Paternal grandparents",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "groups",
+      "approval_statement": "User reply 'A. Approve all six' on 2026-10-02 08:37 PDT authorised the six family-group generations; the local group review HTML opened at 08:59 PDT and the user replied 'keep going' to continue local prep. This manifest records approval for local integration only — public publication is a separate step the user handles after reviewing the combined preview."
+    },
+    {
+      "id": "contact_paternal_grandpa_paternal_grandma_levi_luca_play",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_paternal_grandpa_paternal_grandma_levi_luca_play.png",
+      "alias_runtime_paths": [],
+      "source_filename": "paternal_grandpa_paternal_grandma_levi_luca_group_play_r01.png",
+      "source_sha256": "8d44f011a756dc5d9b48de6f3bfd860c918e57bdb57812a4dd11cdfeeb74057d",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/paternal_grandpa_default.png",
+          "assets/sprites/paternal_grandma_default.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "54a057aa023ce1835113b481b1dfe5e51b1b9727905f4bf52929de34cbc7a15d",
+          "d64459712ea783e78a6a4a8340f8aedf7b0de27573b29735b6fa69a1dde24aaa",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "b14932b05ee886567a6f310af5ded94343c6eea1dff1c3fd3993e721431addee",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 943052,
+        "alpha_ge_250_to_255_pixels": 606764,
+        "source_crop_ltrb": [
+          6,
+          231,
+          1253,
+          992
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1263,
+        777
+      ],
+      "mode": "RGBA",
+      "sha256": "308ba6d9df90640f451d41a3e315255810a5e8e42df6fee7a4127581211235ac",
+      "pose": "play",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "play",
+      "members": [
+        {
+          "runtime_character_id": "paternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "paternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 4,
+      "scale_class": "adult",
+      "library_groups": [
+        "Paternal grandparents",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "groups",
+      "approval_statement": "User reply 'A. Approve all six' on 2026-10-02 08:37 PDT authorised the six family-group generations; the local group review HTML opened at 08:59 PDT and the user replied 'keep going' to continue local prep. This manifest records approval for local integration only — public publication is a separate step the user handles after reviewing the combined preview."
+    },
+    {
+      "id": "contact_maternal_grandpa_maternal_grandma_levi_luca_hug",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandpa_maternal_grandma_levi_luca_hug.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_maternal_grandma_levi_luca_group_hug_r01.png",
+      "source_sha256": "963775a7e4074aa34661c859a32021d6bb27991d58174eae3d55b38678a7dbb1",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/maternal_grandpa_default.png",
+          "assets/sprites/maternal_grandma_default.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "2a7ce45b02a21942b96d6874456317e6fa898dd40d3070d8eff3ce85c2a2b5e0",
+          "fb4ee6d152ba776cebe6c15884e3fc8ad434c8b1f0eb30a57db28b60a394f3bf",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "6d1d620f6b9d7be8fd5d515d766c3961529235613c090b6893c8a7511b1d8387",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 538159,
+        "alpha_ge_250_to_255_pixels": 1010096,
+        "source_crop_ltrb": [
+          37,
+          31,
+          1219,
+          1222
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1198,
+        1207
+      ],
+      "mode": "RGBA",
+      "sha256": "ba28e425dbccaa019673bca07a0e0ebba6576b3bd37c2edc4ccb9bcfb654ff77",
+      "pose": "hug",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "hug",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "maternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 4,
+      "scale_class": "adult",
+      "library_groups": [
+        "Maternal grandparents",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "groups",
+      "approval_statement": "User reply 'A. Approve all six' on 2026-10-02 08:37 PDT authorised the six family-group generations; the local group review HTML opened at 08:59 PDT and the user replied 'keep going' to continue local prep. This manifest records approval for local integration only — public publication is a separate step the user handles after reviewing the combined preview."
+    },
+    {
+      "id": "contact_maternal_grandpa_maternal_grandma_levi_luca_play",
+      "kind": "sprite",
+      "runtime_path": "assets/sprites/contact_maternal_grandpa_maternal_grandma_levi_luca_play.png",
+      "alias_runtime_paths": [],
+      "source_filename": "maternal_grandpa_maternal_grandma_levi_luca_group_play_r01.png",
+      "source_sha256": "d66db8027a628aad248afb52785f440a05704ef043a18602ae6c075fb296beb5",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "primary_reference": {
+        "repository_relative_paths": [
+          "assets/sprites/maternal_grandpa_default.png",
+          "assets/sprites/maternal_grandma_default.png",
+          "assets/sprites/levi.png",
+          "assets/sprites/luca.png"
+        ],
+        "sha256_list": [
+          "2a7ce45b02a21942b96d6874456317e6fa898dd40d3070d8eff3ce85c2a2b5e0",
+          "fb4ee6d152ba776cebe6c15884e3fc8ad434c8b1f0eb30a57db28b60a394f3bf",
+          "472e9bb0ec6f224873a07fe947f64652df7a427847b467b9cff3a886329eb649",
+          "91276983e56c5f99d45df77ea05fd7afbaa048fbcc9c83bc774830daeb9bcaf1"
+        ]
+      },
+      "prompt_sha256": "01e6757f2b7d06733272234f8596ef6882b85a7eee11f67119120132ab793c6e",
+      "provider": "Microsoft 365 Copilot Designer",
+      "processing": {
+        "rgb_changes": false,
+        "alpha_le_2_to_zero_pixels": 798935,
+        "alpha_ge_250_to_255_pixels": 749569,
+        "source_crop_ltrb": [
+          1,
+          140,
+          1249,
+          1062
+        ],
+        "transparent_padding_each_side": 8,
+        "resampling": "none"
+      },
+      "size": [
+        1264,
+        938
+      ],
+      "mode": "RGBA",
+      "sha256": "de767d625abbde83b837408fae4d2191be6b4ff8401617111a5136ac55be08d8",
+      "pose": "play",
+      "visual_status": "user_approved",
+      "category": "contact",
+      "action": "play",
+      "members": [
+        {
+          "runtime_character_id": "maternal_grandpa",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "maternal_grandma",
+          "age_role": "adult"
+        },
+        {
+          "runtime_character_id": "levi",
+          "age_role": "child"
+        },
+        {
+          "runtime_character_id": "luca",
+          "age_role": "child"
+        }
+      ],
+      "member_count": 4,
+      "scale_class": "adult",
+      "library_groups": [
+        "Maternal grandparents",
+        "Levi",
+        "Luca"
+      ],
+      "source_batch": "groups",
+      "approval_statement": "User reply 'A. Approve all six' on 2026-10-02 08:37 PDT authorised the six family-group generations; the local group review HTML opened at 08:59 PDT and the user replied 'keep going' to continue local prep. This manifest records approval for local integration only — public publication is a separate step the user handles after reviewing the combined preview."
+    }
+  ]
+}

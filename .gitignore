@@ -33,6 +33,7 @@ test_*
 !test_phonics_release.py
 !test_props_release.py
 !test_family_release.py
+!test_family_interactions_release.py
 assets/sprites/test_*
 
 

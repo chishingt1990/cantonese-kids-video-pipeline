@@ -4,6 +4,25 @@ let selectedAge = '1-2 years (Toddlers)';
 let currentIdeas = [];
 let allCharacters = [];
 let allBackgrounds = [];
+// Simplified family browsing buckets (populated from /api/characters/).
+// Rendered as a single row of highlevel chips above the Family Member Palette
+// and the outfit modal character picker so the top no longer shows one chip
+// per runtime ID. Composite contact sprites appear in each participant's
+// bucket but remain a single unique asset — selecting one still returns the
+// original composite ID to the renderer. Falls back to a hardcoded list that
+// matches the backend when the API response omits `family_buckets`.
+const DEFAULT_FAMILY_BUCKETS = [
+  { id: 'levi',                  label: 'Levi',                  emoji: '👦' },
+  { id: 'luca',                  label: 'Luca',                  emoji: '👶' },
+  { id: 'mom',                   label: 'Mom',                   emoji: '👩' },
+  { id: 'dad',                   label: 'Dad',                   emoji: '👨' },
+  { id: 'paternal_grandparents', label: 'Paternal grandparents', emoji: '👴' },
+  { id: 'maternal_grandparents', label: 'Maternal grandparents', emoji: '👵' },
+  { id: 'auntie_cousins',        label: 'Auntie & cousins',      emoji: '🧑‍🤝‍🧑' },
+  { id: 'doggy',                 label: 'Doggy',                 emoji: '🐶' },
+];
+let familyBuckets = DEFAULT_FAMILY_BUCKETS.slice();
+let activeFamilyBucket = 'levi';
 let allStickers = [];
 let activeStageSceneIdx = 0;
 let draggedCharacterId = null;
@@ -504,6 +523,9 @@ async function loadCharactersList() {
       const res = await fetch('/api/characters/');
       const data = await res.json();
       allCharacters = data.characters || [];
+      if (Array.isArray(data.family_buckets) && data.family_buckets.length > 0) {
+        familyBuckets = data.family_buckets;
+      }
     } catch (e) {
       console.error(e);
     }
@@ -1510,23 +1532,96 @@ function removeCharacterFromScene(sceneIdx, cIdx) {
 }
 
 // Draggable Family Member Palette
+// Top row = highlevel family buckets (Levi, Luca, Mom, Dad, Paternal
+// grandparents, Maternal grandparents, Auntie & cousins, Doggy). Body =
+// every character/contact asset whose ``family_buckets`` list contains the
+// active bucket. Multi-person contact composites appear in each
+// participant's bucket but click-selecting them still sends the original
+// composite ID (``char.id``) to clickToDropFamilyMember, so the renderer
+// receives the composite asset and no participant is duplicated. Each
+// unique asset remains one entry; counts are per-bucket, not multiplied.
+function _bucketsFor(char) {
+  // Fallback for pre-release server responses that lack ``family_buckets``.
+  if (Array.isArray(char.family_buckets) && char.family_buckets.length) {
+    return char.family_buckets;
+  }
+  const LEGACY = {
+    levi: ['levi'], luca: ['luca'], mom: ['mom'], dad: ['dad'],
+    dog: ['doggy'], family_dog: ['doggy'], spitz: ['doggy'],
+    grandparents_paternal: ['paternal_grandparents'],
+    grandparents_maternal: ['maternal_grandparents'],
+    auntie_cousins: ['auntie_cousins'],
+  };
+  return LEGACY[char.id] || [];
+}
+
+function _charactersInBucket(bucketId) {
+  return allCharacters.filter(c => _bucketsFor(c).includes(bucketId));
+}
+
+function renderFamilyBucketChips() {
+  const container = document.getElementById('family-bucket-chips');
+  if (!container) return;
+  const counts = {};
+  familyBuckets.forEach(b => { counts[b.id] = _charactersInBucket(b.id).length; });
+  container.innerHTML = familyBuckets.map(b => {
+    const active = b.id === activeFamilyBucket;
+    const count = counts[b.id] || 0;
+    return `
+      <button type="button"
+        onclick="selectFamilyBucket('${b.id}')"
+        aria-pressed="${active}"
+        class="px-2.5 py-1.5 rounded-full text-[10px] font-bold border transition flex items-center gap-1 shrink-0 ${
+          active
+            ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
+            : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300 hover:bg-amber-50/60'
+        }">
+        <span aria-hidden="true">${b.emoji}</span>
+        <span>${b.label}</span>
+        <span class="text-[9px] opacity-70">${count}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function selectFamilyBucket(bucketId) {
+  activeFamilyBucket = bucketId;
+  renderFamilyBucketChips();
+  renderDraggableFamilyRoster();
+}
+
 function renderDraggableFamilyRoster() {
+  renderFamilyBucketChips();
   const container = document.getElementById('draggable-family-roster');
   if (!container) return;
-  container.innerHTML = allCharacters.map(char => `
-    <div 
-      draggable="true" 
+  const members = _charactersInBucket(activeFamilyBucket);
+  if (members.length === 0) {
+    container.innerHTML = `<div class="col-span-2 text-[11px] text-stone-400 py-3 text-center">No family members in this bucket yet.</div>`;
+    return;
+  }
+  container.innerHTML = members.map(char => {
+    const isContact = Array.isArray(char.members) && char.members.length > 1;
+    const buckets = _bucketsFor(char);
+    const sharedBadge = (isContact || buckets.length > 1)
+      ? `<span class="text-[8px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full mt-0.5 inline-block">Shared</span>`
+      : '';
+    return `
+    <div
+      draggable="true"
       ondragstart="handleRosterDragStart(event, '${char.id}')"
       onclick="clickToDropFamilyMember('${char.id}')"
+      title="${char.name.replace(/"/g, '&quot;')}"
       class="p-2 rounded-2xl border border-stone-200 hover:border-amber-400 bg-stone-50 hover:bg-amber-50/60 transition flex items-center gap-2 cursor-grab active:cursor-grabbing select-none"
     >
       <img src="${char.sprite_url}" class="w-8 h-8 object-contain rounded-lg bg-white pointer-events-none">
-      <div>
-        <div class="font-bold text-[11px] text-stone-800 leading-tight">${char.name.split('/')[0].trim()}</div>
-        <div class="text-[9px] text-stone-400 leading-tight">${char.role}</div>
+      <div class="min-w-0">
+        <div class="font-bold text-[11px] text-stone-800 leading-tight truncate">${char.name.split('/')[0].trim()}</div>
+        <div class="text-[9px] text-stone-400 leading-tight truncate">${char.role}</div>
+        ${sharedBadge}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function clickToDropFamilyMember(charId) {
@@ -1549,6 +1644,72 @@ function clickToDropFamilyMember(charId) {
   renderStageScene(activeStageSceneIdx);
 }
 
+// Separate active bucket for the outfit modal so it does not reset the stage
+// palette's active bucket when the user switches tools.
+let activeOutfitBucket = 'levi';
+
+function _ensureOutfitBucketContains(charId) {
+  const char = allCharacters.find(c => c.id === charId);
+  if (!char) return;
+  const buckets = _bucketsFor(char);
+  if (buckets.length && !buckets.includes(activeOutfitBucket)) {
+    activeOutfitBucket = buckets[0];
+  }
+}
+
+function renderOutfitBucketChips() {
+  const container = document.getElementById('outfit-bucket-chips');
+  if (!container) return;
+  container.innerHTML = familyBuckets.map(b => {
+    const count = _charactersInBucket(b.id).length;
+    const active = b.id === activeOutfitBucket;
+    return `
+      <button type="button" onclick="selectOutfitBucket('${b.id}')"
+        aria-pressed="${active}"
+        class="px-2.5 py-1 rounded-full text-[10px] font-bold border transition flex items-center gap-1 shrink-0 ${
+          active
+            ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
+            : 'bg-white text-stone-600 border-stone-200 hover:border-amber-300 hover:bg-amber-50/60'
+        }">
+        <span aria-hidden="true">${b.emoji}</span><span>${b.label}</span>
+        <span class="text-[9px] opacity-70">${count}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function selectOutfitBucket(bucketId) {
+  activeOutfitBucket = bucketId;
+  renderOutfitBucketChips();
+  renderOutfitCharPicker();
+}
+
+function renderOutfitCharPicker() {
+  const picker = document.getElementById('outfit-char-picker');
+  if (!picker) return;
+  const members = _charactersInBucket(activeOutfitBucket);
+  if (members.length === 0) {
+    picker.innerHTML = `<div class="text-[11px] text-stone-400 py-2 px-1">No members.</div>`;
+    return;
+  }
+  picker.innerHTML = members.map(char => {
+    const isSel = char.id === (activeOutfitModalChar || 'levi');
+    const isComposite = Array.isArray(char.members) && char.members.length > 1;
+    const sharedTag = isComposite
+      ? `<span class="text-[7px] font-bold uppercase tracking-wider text-amber-700">Shared</span>`
+      : '';
+    return `
+      <button type="button" onclick="selectOutfitModalChar('${char.id}')" id="opt-char-${char.id}" class="p-2 rounded-2xl border-2 transition flex flex-col items-center gap-1 shrink-0 ${
+        isSel ? 'border-amber-500 bg-amber-50 shadow-xs' : 'border-stone-200 hover:border-amber-300 bg-stone-50'
+      }">
+        <img src="${char.sprite_url}" class="w-9 h-9 object-contain rounded-lg bg-white">
+        <span class="text-[10px] font-extrabold text-stone-800 truncate w-full text-center">${char.name.split('/')[0].trim()}</span>
+        ${sharedTag}
+      </button>
+    `;
+  }).join('');
+}
+
 // AI Custom Outfit & Pose Studio
 let activeOutfitModalChar = 'levi';
 
@@ -1557,21 +1718,12 @@ function openCustomOutfitModal() {
   if (!modal) return;
   modal.classList.remove('hidden');
 
-  // Populate dynamic character picker with ALL family members
-  const picker = document.getElementById('outfit-char-picker');
-  if (picker && allCharacters.length > 0) {
-    picker.innerHTML = allCharacters.map(char => {
-      const isSel = char.id === (activeOutfitModalChar || 'levi');
-      return `
-        <button type="button" onclick="selectOutfitModalChar('${char.id}')" id="opt-char-${char.id}" class="p-2 rounded-2xl border-2 transition flex flex-col items-center gap-1 shrink-0 ${
-          isSel ? 'border-amber-500 bg-amber-50 shadow-xs' : 'border-stone-200 hover:border-amber-300 bg-stone-50'
-        }">
-          <img src="/api/characters/sprite/${char.id}_default.png" class="w-9 h-9 object-contain rounded-lg bg-white">
-          <span class="text-[10px] font-extrabold text-stone-800 truncate w-full text-center">${char.name.split('/')[0].trim()}</span>
-        </button>
-      `;
-    }).join('');
-  }
+  // Populate bucket row + filtered character picker. Starting bucket mirrors
+  // the currently-selected character so the picker opens on the right page
+  // even when the user drilled directly in from a composite sprite.
+  _ensureOutfitBucketContains(activeOutfitModalChar || 'levi');
+  renderOutfitBucketChips();
+  renderOutfitCharPicker();
 
   selectOutfitModalChar(activeOutfitModalChar || 'levi');
 }
@@ -1600,7 +1752,13 @@ function selectOutfitModalChar(charId) {
 
   // Always reset live preview image to the newly selected character's base sprite to prevent cross-character corruption
   const img = document.getElementById('outfit-live-preview-img');
-  if (img) img.src = `/api/characters/sprite/${charId}_default.png`;
+  if (img) {
+    // Composite contact sprites don't have a ``<id>_default.png`` filename —
+    // use their advertised sprite_url so the preview shows the composite PNG
+    // instead of 404ing into an unrelated fallback.
+    const charObj = allCharacters.find(c => c.id === charId);
+    img.src = (charObj && charObj.sprite_url) || `/api/characters/sprite/${charId}_default.png`;
+  }
   const badge = document.getElementById('preview-status-badge');
   if (badge) {
     badge.innerText = 'Base Sprite';

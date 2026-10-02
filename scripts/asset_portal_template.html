@@ -136,6 +136,10 @@ dt{color:var(--cp-text-muted)}dd{margin:0}
 details{font-size:12px;margin-top:14px}summary{cursor:pointer;color:var(--cp-text-muted)}pre{white-space:pre-wrap;font:12px/1.6 "Segoe UI",Aptos,Calibri,sans-serif}
 .ref{display:flex;align-items:center;gap:14px;margin-top:16px}.ref img{height:104px;width:70px;object-fit:contain;background:var(--cp-surface-soft);border-radius:8px;padding:5px}
 [hidden]{display:none!important}
+.family-buckets{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px}
+.family-bucket{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid var(--cp-border);background:var(--cp-surface);color:var(--cp-text-muted);cursor:pointer;font:600 12px/1 "Segoe UI",Aptos,Calibri,sans-serif}
+.family-bucket[aria-pressed="true"]{background:var(--cp-accent-soft);border-color:var(--cp-accent);color:var(--cp-accent)}
+.family-bucket span.count{opacity:.6;font-weight:500}
 @media(min-width:1650px){.preview{height:235px}.grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:1000px){.shell{grid-template-columns:190px minmax(0,1fr)}aside{padding:24px 12px}main{padding:26px 22px}.stats{grid-template-columns:repeat(2,1fr)}.modal-body{grid-template-columns:1fr}.large-preview{height:360px}.detail{max-height:none}.modal-head{position:static}dialog{overflow:auto}}
 @media(max-width:650px){.shell{display:block}aside{position:static;height:auto;padding:15px;border-right:0;border-bottom:1px solid var(--cp-border)}.brand{margin:0 0 8px}.sidebar-note,aside .eyebrow{display:none}#categories{display:flex;gap:5px;overflow:auto}.nav{white-space:nowrap;width:auto;font-size:12px}.nav span:last-child{display:none}main{padding:22px 15px}h1{font-size:27px}header{gap:10px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.preview{height:165px}.card-info{padding:11px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:24px}.results{align-items:flex-start;flex-direction:column}.modal-head{padding:10px}.large-preview{height:290px}}
@@ -166,6 +170,10 @@ details{font-size:12px;margin-top:14px}summary{cursor:pointer;color:var(--cp-tex
   <button class="button" id="reset">Reset</button>
  </div>
  <div class="results"><span id="resultCount" role="status" aria-live="polite"></span><label hidden><input id="history" type="checkbox"> Earlier versions excluded from release</label></div>
+ <!-- Family-bucket sub-nav. Visible only while the Family sprites / Family
+      contacts category (or All assets) is active. Composite contacts appear
+      in every participant's bucket but remain a single unique asset. -->
+ <div id="familyBuckets" class="family-buckets" aria-label="Family buckets" hidden></div>
  <div class="grid" id="grid"></div>
  <div class="empty" id="empty" hidden>No matching assets. Try another search or reset the filters.</div>
  <footer>Embedded previews work offline. PNG links are relative to this repository and open the installed production exports. Generation-source files and earlier trials are not bundled. Rebuild this page with python scripts\build_asset_portal.py after updating the release manifest.</footer>
@@ -191,7 +199,19 @@ const $=id=>document.getElementById(id);
 const param=new URLSearchParams(location.search).get('clawpilotTheme');
 if(param==='light'||param==='dark')document.documentElement.dataset.theme=param;
 const categories=DATA.categories||['All assets','Sprites','Cantonese badges','Letters','Numbers','Animals','Vehicles','Fruits & vegetables','Food & snacks','Everyday props'];
-let category='All assets',visible=[],selectedIndex=0;
+const FAMILY_BUCKETS=DATA.family_buckets||[];
+// Categories that may contain family-tagged assets. The pre-release twin
+// sprites live in ``Sprites`` so Levi/Luca buckets include their own poses,
+// not just contact composites.
+const FAMILY_CATEGORIES=new Set(['Sprites','Family sprites','Family contacts']);
+// familyBucket values:
+//   'all'            → no bucket filter (default; shows every asset in the
+//                      current category, including non-family categories).
+//   '__all_family__' → show only assets with a non-empty ``family_buckets``.
+//                      Set when the user clicks the "All family" chip —
+//                      must NOT reveal props/letters/badges in ``All assets``.
+//   <bucket id>      → show only assets whose ``family_buckets`` contains it.
+let category='All assets',visible=[],selectedIndex=0,familyBucket='all';
 function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e}
 const current=DATA.assets.filter(a=>!a.history);
 $('total').textContent=current.length;
@@ -200,13 +220,42 @@ $('candidates').textContent=current.filter(a=>a.status!=='installed').length;
 for(const c of categories){
  const button=el('button','nav');button.type='button';button.dataset.category=c;button.setAttribute('aria-pressed',String(c===category));
  button.append(el('span','',c),el('span','',c==='All assets'?current.length:current.filter(a=>a.category===c).length));
- button.addEventListener('click',()=>{category=c;render()});$('categories').append(button);
+ button.addEventListener('click',()=>{category=c;familyBucket='all';render()});$('categories').append(button);
+}
+if(FAMILY_BUCKETS.length){
+ const bucketsNode=$('familyBuckets');
+ // "All family" counts every asset with a non-empty family_buckets list
+ // (59 today = 6 pre-release twin sprites + 41 family-expansion v3 solos +
+ // 12 contact composites). Props/letters/badges stay excluded.
+ const familyTotal=current.filter(a=>Array.isArray(a.family_buckets)&&a.family_buckets.length>0).length;
+ const allBtn=el('button','family-bucket');allBtn.type='button';allBtn.dataset.bucket='__all_family__';allBtn.setAttribute('aria-pressed','false');
+ allBtn.append(el('span','','All family'),el('span','count',String(familyTotal)));
+ allBtn.addEventListener('click',()=>{familyBucket='__all_family__';render()});bucketsNode.append(allBtn);
+ for(const b of FAMILY_BUCKETS){
+  const btn=el('button','family-bucket');btn.type='button';btn.dataset.bucket=b.id;btn.setAttribute('aria-pressed',String(b.id===familyBucket));
+  btn.append(el('span','',(b.emoji?b.emoji+' ':'')+b.label),el('span','count',String(b.count||0)));
+  btn.addEventListener('click',()=>{familyBucket=b.id;render()});bucketsNode.append(btn);
+ }
 }
 for(const b of [...new Set(DATA.assets.map(a=>a.batch))]){const o=el('option','',b);o.value=b;$('batch').append(o)}
 function stateNode(a){return el('span','state '+(a.history?'revision':a.status),a.history?'Earlier version':a.status==='installed'?'Approved · installed':'Candidate · not installed')}
 function render(){
  const query=$('search').value.trim().toLocaleLowerCase(),status=$('status').value,batch=$('batch').value;
- visible=DATA.assets.filter(a=>($('history').checked||!a.history)&&(category==='All assets'||a.category===category)&&(batch==='all'||a.batch===batch)&&(status==='all'||status==='flagged'&&a.flagged||status==='installed'&&a.status==='installed'||status==='review'&&a.status!=='installed')&&[a.name,a.category,a.batch,a.id,a.subtitle].join(' ').toLocaleLowerCase().includes(query));
+ const familyActive=category==='All assets'||FAMILY_CATEGORIES.has(category);
+ if(!familyActive)familyBucket='all';
+ // familyPredicate separates:
+ //   'all'            → no filter (every category passes through unchanged)
+ //   '__all_family__' → asset must have at least one bucket (any-bucket)
+ //   <bucket id>      → asset must contain that specific bucket
+ // Props/letters/badges have an empty ``family_buckets`` list, so "All family"
+ // correctly hides them from "All assets" instead of showing every asset.
+ const familyPredicate=a=>{
+  if(familyBucket==='all')return true;
+  const buckets=Array.isArray(a.family_buckets)?a.family_buckets:[];
+  if(familyBucket==='__all_family__')return buckets.length>0;
+  return buckets.includes(familyBucket);
+ };
+ visible=DATA.assets.filter(a=>($('history').checked||!a.history)&&(category==='All assets'||a.category===category)&&(batch==='all'||a.batch===batch)&&(status==='all'||status==='flagged'&&a.flagged||status==='installed'&&a.status==='installed'||status==='review'&&a.status!=='installed')&&familyPredicate(a)&&[a.name,a.category,a.batch,a.id,a.subtitle].join(' ').toLocaleLowerCase().includes(query));
  const sort=$('sort').value;visible.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):sort==='category'?a.category.localeCompare(b.category)||a.name.localeCompare(b.name):b.order-a.order||a.name.localeCompare(b.name));
  $('grid').replaceChildren();
  visible.forEach((a,index)=>{
@@ -216,10 +265,13 @@ function render(){
   if(a.flagged)info.append(el('span','flag','Finish / quality note'));
   card.append(preview,info);card.addEventListener('click',()=>open(index));$('grid').append(card);
  });
- $('resultCount').textContent=`Showing ${visible.length} of ${$('history').checked?DATA.assets.length:current.length} assets${category==='All assets'?'':' · '+category}`;
+ const bucketLabel=familyBucket==='all'?'':familyBucket==='__all_family__'?' · All family':' · '+((FAMILY_BUCKETS.find(b=>b.id===familyBucket)||{}).label||familyBucket);
+ $('resultCount').textContent=`Showing ${visible.length} of ${$('history').checked?DATA.assets.length:current.length} assets${category==='All assets'?'':' · '+category}${bucketLabel}`;
  $('empty').hidden=visible.length!==0;
  document.querySelectorAll('.nav').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.category===category)));
  document.querySelectorAll('[data-stat]').forEach(b=>b.classList.toggle('active',b.dataset.stat===status));
+ document.querySelectorAll('.family-bucket').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.bucket===familyBucket)));
+ const bucketsNode=$('familyBuckets');if(bucketsNode)bucketsNode.hidden=!familyActive||FAMILY_BUCKETS.length===0;
 }
 function open(index){
  selectedIndex=(index+visible.length)%visible.length;const a=visible[selectedIndex];
@@ -236,7 +288,7 @@ function open(index){
  if(!$('modal').open)$('modal').showModal();
 }
 ['search','status','batch','sort','history'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',render));
-$('reset').onclick=()=>{$('search').value='';$('status').value='all';$('batch').value='all';$('sort').value='recent';$('history').checked=false;category='All assets';render()};
+$('reset').onclick=()=>{$('search').value='';$('status').value='all';$('batch').value='all';$('sort').value='recent';$('history').checked=false;category='All assets';familyBucket='all';render()};
 document.querySelectorAll('[data-stat]').forEach(b=>b.onclick=()=>{$('status').value=b.dataset.stat;render()});
 $('theme').onclick=()=>document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';
 $('close').onclick=()=>$('modal').close();$('prev').onclick=()=>open(selectedIndex-1);$('next').onclick=()=>open(selectedIndex+1);

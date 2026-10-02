@@ -400,6 +400,12 @@
               <h4 class="font-extrabold text-xs text-stone-800 uppercase tracking-wider">Family Member Palette</h4>
               <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">👆 Drag to Scene</span>
             </div>
+            <!-- Simplified top-level buckets (Levi · Luca · Mom · Dad ·
+                 Paternal grandparents · Maternal grandparents · Auntie &
+                 cousins · Doggy). Composite "shared" sprites appear in each
+                 participant's bucket but click/drag still sends the original
+                 composite ID to the renderer. -->
+            <div id="family-bucket-chips" class="flex flex-wrap gap-1.5" aria-label="Family buckets"></div>
             <p class="text-[11px] text-stone-400">Drag any family member directly onto the 16:9 canvas to place them anywhere:</p>
             <div id="draggable-family-roster" class="grid grid-cols-2 gap-2 max-h-[240px] overflow-y-auto pr-1">
               <!-- Draggable roster items -->
@@ -683,8 +689,12 @@
       <div class="space-y-3">
         <div>
           <label class="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">1. Select Character</label>
+          <!-- Highlevel family-bucket row mirroring the Family Member Palette
+               so the outfit studio also opens with 8 chips instead of a long
+               scroller of every runtime ID. -->
+          <div id="outfit-bucket-chips" class="flex flex-wrap gap-1.5 mb-2" aria-label="Family buckets"></div>
           <div class="grid grid-cols-4 sm:grid-cols-8 gap-2 overflow-x-auto pb-1" id="outfit-char-picker">
-            <!-- Dynamically populated from allCharacters -->
+            <!-- Dynamically populated from allCharacters filtered by activeOutfitBucket -->
           </div>
           <input type="hidden" id="modal-outfit-char" value="levi">
         </div>
