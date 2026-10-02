@@ -34,6 +34,8 @@ test_*
 !test_props_release.py
 !test_family_release.py
 !test_family_interactions_release.py
+!test_legacy_sticker_cleanup.py
+!test_library_expansion_release.py
 assets/sprites/test_*
 
 

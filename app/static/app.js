@@ -24,6 +24,7 @@ const DEFAULT_FAMILY_BUCKETS = [
 let familyBuckets = DEFAULT_FAMILY_BUCKETS.slice();
 let activeFamilyBucket = 'levi';
 let allStickers = [];
+let activeStickerCategory = 'all';
 let activeStageSceneIdx = 0;
 let draggedCharacterId = null;
 let draggedStickerId = null;
@@ -500,10 +501,67 @@ async function loadStickersCatalog() {
   }
 }
 
+function stickerRenderUrl(sticker) {
+  const stickerId = sticker.id || sticker.sticker_id || 'badge_thank_you';
+  const params = new URLSearchParams();
+  ['type', 'content', 'chinese', 'english', 'color_theme', 'icon', 'letter', 'number', 'category', 'kind'].forEach(key => {
+    if (sticker[key] !== undefined && sticker[key] !== null && `${sticker[key]}` !== '') {
+      params.set(key, sticker[key]);
+    }
+  });
+  const suffix = params.toString() ? `?${params.toString()}` : '';
+  return `/api/scene-director/stickers/render/${encodeURIComponent(stickerId)}.png${suffix}`;
+}
+
+function isStorybookStickerCategory(sticker, category) {
+  if (category === 'all') return true;
+  const sid = (sticker.id || '').toLowerCase();
+  const meta = (sticker.category || '').toLowerCase();
+  if (category === 'word') return sticker.type === 'word' || sid.startsWith('badge_') || sid.startsWith('word_') || sid.startsWith('vocab_');
+  if (category === 'phonics') return ['letter', 'number', 'block'].includes(sticker.type) || sid.startsWith('block_');
+  if (category === 'vehicles') return meta ? meta === 'vehicles' : ['car', 'bus', 'truck', 'train', 'plane', 'airplane', 'boat', 'canoe', 'kayak', 'tram', 'submarine', 'balloon', 'blimp'].some(k => sid.includes(k));
+  if (category === 'toys') return meta === 'toys';
+  if (category === 'shapes') return sticker.type === 'shape' || meta === 'shapes' || sid.startsWith('shape_');
+  if (category === 'food') return meta ? ['fruit_vegetables', 'food_snacks', 'foodfruit'].includes(meta) : ['banana', 'apple', 'dim_sum', 'fruit', 'siu_mai', 'har_gow', 'egg_tart', 'watermelon', 'strawberry', 'milk', 'cookie', 'bowl', 'cup', 'spoon', 'meal'].some(k => sid.includes(k));
+  if (category === 'animals') return meta ? meta === 'animals' : ['dog', 'duck', 'cat', 'kitty', 'bunny', 'frog'].some(k => sid.includes(k));
+  return false;
+}
+
+function renderStorybookStickerFilters() {
+  const filters = document.getElementById('storybook-sticker-filters');
+  if (!filters) return;
+  const categories = [
+    ['all', 'All'],
+    ['word', 'Badges'],
+    ['phonics', 'Phonics'],
+    ['vehicles', 'Vehicles'],
+    ['toys', 'Toys'],
+    ['shapes', 'Shapes'],
+    ['food', 'Food'],
+    ['animals', 'Animals'],
+  ];
+  filters.innerHTML = categories
+    .map(([id, label]) => {
+      const count = allStickers.filter(st => isStorybookStickerCategory(st, id)).length;
+      if (id !== 'all' && count === 0) return '';
+      const active = activeStickerCategory === id;
+      return `<button type="button" onclick="setStorybookStickerCategory('${id}')" class="px-2 py-1 rounded-full border ${active ? 'bg-amber-500 text-white border-amber-500' : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-amber-50'}">${label} (${count})</button>`;
+    })
+    .join('');
+}
+
+function setStorybookStickerCategory(category) {
+  activeStickerCategory = category;
+  renderStorybookStickerFilters();
+  renderStorybookStickersPalette();
+}
+
 function renderStorybookStickersPalette() {
   const container = document.getElementById('storybook-stickers-palette');
   if (!container) return;
-  container.innerHTML = allStickers.map(st => `
+  renderStorybookStickerFilters();
+  const visibleStickers = allStickers.filter(st => isStorybookStickerCategory(st, activeStickerCategory));
+  container.innerHTML = visibleStickers.map(st => `
     <div 
       onclick="addStickerToActiveScene('${st.id}')"
       draggable="true"
@@ -511,7 +569,7 @@ function renderStorybookStickersPalette() {
       title="${st.label || st.id} (Click or drag to place)"
       class="p-1.5 bg-stone-50 hover:bg-amber-50 rounded-2xl border border-stone-200 hover:border-amber-400 cursor-pointer transition flex flex-col items-center justify-center gap-1 group shadow-xs hover:shadow-sm"
     >
-      <img src="/api/scene-director/stickers/render/${st.id}.png" class="h-10 w-auto object-contain pointer-events-none group-hover:scale-105 transition-transform" alt="${st.label || st.id}">
+      <img src="${stickerRenderUrl(st)}" class="h-10 w-auto object-contain pointer-events-none group-hover:scale-105 transition-transform" alt="${st.label || st.id}">
       <span class="text-[9px] font-bold text-stone-700 text-center leading-tight truncate w-full px-1">${st.chinese || st.letter || st.number || st.label || st.id}</span>
     </div>
   `).join('');
@@ -1055,7 +1113,7 @@ function renderStageScene(idx) {
 
           <!-- Sticker Graphic -->
           <img 
-            src="/api/scene-director/stickers/render/${stickerId}.png" 
+            src="${stickerRenderUrl(s)}"
             class="h-16 w-auto max-w-[140px] object-contain filter drop-shadow-md select-none pointer-events-none" 
             alt="${s.content || stickerId}"
           >
@@ -1190,6 +1248,8 @@ function handleStageDrop(e) {
       type: stMeta.type || 'word',
       content: stMeta.chinese || stMeta.letter || stMeta.number || stMeta.icon || '',
       english: stMeta.english || '',
+      category: stMeta.category || '',
+      kind: stMeta.kind || '',
       color_theme: stMeta.color_theme || 'amber',
       x_percent: xPercent,
       y_percent: yPercent,
@@ -1250,6 +1310,8 @@ function addStickerToActiveScene(stickerId) {
     type: stMeta.type || 'word',
     content: stMeta.chinese || stMeta.letter || stMeta.number || stMeta.icon || '',
     english: stMeta.english || '',
+    category: stMeta.category || '',
+    kind: stMeta.kind || '',
     color_theme: stMeta.color_theme || 'amber',
     x_percent: safeX,
     y_percent: safeY,

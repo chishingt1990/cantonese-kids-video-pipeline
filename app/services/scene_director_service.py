@@ -3,7 +3,12 @@ import logging
 import re
 from typing import Dict, Any, List, Optional
 from app.services.ai_service import generate_ai_text
-from app.services.sticker_service import STICKER_CATALOG, RELEASE_PROPS, get_or_render_sticker
+from app.services.sticker_service import (
+    STICKER_CATALOG,
+    RELEASE_PROPS,
+    get_or_render_sticker,
+    normalize_sticker_info,
+)
 from app.services import family_catalog
 
 logger = logging.getLogger(__name__)
@@ -123,8 +128,8 @@ Return ONLY a valid JSON object matching this schema:
   ]
 }
 """
-DIRECTOR_SYSTEM_PROMPT += "\nApproved illustrated prop IDs (reuse these PNGs, do not invent replacements):\n" + "\n".join(
-    f"- {prop['id']}: {prop['chinese']} / {prop['english']}" for prop in RELEASE_PROPS
+DIRECTOR_SYSTEM_PROMPT += "\nApproved illustrated prop and shape IDs (reuse these PNGs, do not invent replacements):\n" + "\n".join(
+    f"- {prop['id']} ({prop.get('category', 'props')}): {prop['chinese']} / {prop['english']}" for prop in RELEASE_PROPS
 )
 
 # Family-expansion v3 vocabulary (approved 2026-10-02). Appended rather than
@@ -247,6 +252,7 @@ def _validate_and_sanitize_plan(plan: Dict[str, Any], original_scene: Dict[str, 
     stickers = plan.get("stickers", [])
     valid_stickers = []
     for s in stickers:
+        s = normalize_sticker_info(s)
         s_id = s.get("id")
         if s_id in STARTER_BADGES:
             # Keep plan coordinates, but never relabel an approved cached image.
@@ -392,7 +398,8 @@ def _heuristic_fallback_director(scene: Dict[str, Any], context: Optional[Dict[s
     elif expanded_prop and not is_hygiene:
         if scene.get("background") not in PRESET_BACKGROUNDS:
             bg = {"animals": "park", "vehicles": "park", "fruit_vegetables": "kitchen",
-                  "food_snacks": "kitchen", "everyday_props": "playroom", "toys": "playroom"}[expanded_prop["category"]]
+                  "food_snacks": "kitchen", "foodfruit": "kitchen", "everyday_props": "playroom",
+                  "toys": "playroom", "shapes": "playroom"}.get(expanded_prop["category"], "playroom")
         chars.extend([
             {"name": "levi", "pose": "pointing", "scale": 1.0, "x_percent": 28.0, "y_percent": 81.481, "flip": False, "layer": 1},
             {"name": "luca", "pose": "clapping", "scale": 1.0, "x_percent": 72.0, "y_percent": 81.481, "flip": True, "layer": 1},

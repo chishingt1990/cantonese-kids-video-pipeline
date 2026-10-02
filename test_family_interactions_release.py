@@ -446,9 +446,9 @@ class TestFamilyInteractionsRelease(unittest.TestCase):
         self.assertIn("dad", names)
 
     # -------------------------------------------------------- portal totals
-    def test_portal_totals_after_v4(self):
-        """Portal must reach exactly 274 unique assets with 44 Family contacts
-        and 91 bucket-tagged assets after v4 lands."""
+    def test_portal_totals_after_v4_and_library_v5(self):
+        """Portal must reach 374 unique assets after the 100-sticker v5 release,
+        while preserving 44 Family contacts and 91 bucket-tagged assets."""
         spec = importlib.util.spec_from_file_location(
             "build_asset_portal", ROOT / "scripts" / "build_asset_portal.py")
         module = importlib.util.module_from_spec(spec)
@@ -459,11 +459,13 @@ class TestFamilyInteractionsRelease(unittest.TestCase):
             r'<script id="asset-data" type="application/json">(.*?)</script>',
             text, re.S)
         data = json.loads(match.group(1))
-        self.assertEqual(len(data["assets"]), 274)
+        self.assertEqual(len(data["assets"]), 374)
         family_contacts = [a for a in data["assets"] if a["category"] == "Family contacts"]
         self.assertEqual(len(family_contacts), 44)
         self.assertEqual(
             len([a for a in data["assets"] if a["category"] == "Family sprites"]), 41)
+        self.assertEqual(
+            len([a for a in data["assets"] if a["batch"] == "Library expansion v5"]), 100)
         with_bucket = [a for a in data["assets"] if a.get("family_buckets")]
         self.assertEqual(len(with_bucket), 91,
                          "6 twin sprites + 41 v3 solos + 12 v3 contacts + 32 v4 contacts")

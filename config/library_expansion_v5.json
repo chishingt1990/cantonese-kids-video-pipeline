@@ -1,0 +1,4134 @@
+{
+  "release_id": "library_expansion_v5",
+  "status": "approved_local_integration",
+  "description": "100 approved new library stickers promoted from the 2026-10-02 library expansion batch. Legacy cleanup repairs are intentionally excluded from this count.",
+  "asset_count": 100,
+  "prior_portal_asset_count": 274,
+  "expected_portal_asset_count": 374,
+  "partitions": {
+    "vehicles": 20,
+    "toys": 20,
+    "shapes": 12,
+    "foodfruit": 28,
+    "animals": 20
+  },
+  "category_counts": {
+    "vehicles": 20,
+    "toys": 20,
+    "fruit_vegetables": 20,
+    "food_snacks": 8,
+    "animals": 20,
+    "shapes": 12
+  },
+  "method_counts": {
+    "copilot_text": 88,
+    "local_vector": 12
+  },
+  "source_states": {
+    "downloaded": 88,
+    "local_rendered_candidate": 12
+  },
+  "privacy": "No absolute local paths, prompt bodies, conversation URLs, approval transcripts, account identifiers, or runner logs are stored in this release manifest.",
+  "assets": [
+    {
+      "id": "prop_canoe",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Canoe",
+      "chinese": "獨木舟",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_canoe.png",
+      "mode": "RGBA",
+      "size": [
+        1151,
+        1038
+      ],
+      "sha256": "405c7026cf8aefcdf249f8bfe0625ac7678819c1797cd24dab0e4156547d8080",
+      "source_sha256": "42740d96a613853c01f9510674400c13a90a2e3713c7f6acabd3287eac07a72e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_canoe_r01.source.png",
+      "prompt_sha256": "141767d48524fc859a18cae1e4843be4a1638a561668c49d0b16e2ef3dec44e0",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          62,
+          206,
+          1197,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 1
+    },
+    {
+      "id": "prop_kayak",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Kayak",
+      "chinese": "皮艇",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_kayak.png",
+      "mode": "RGBA",
+      "size": [
+        1170,
+        1192
+      ],
+      "sha256": "3a345f269d4fa3fd8add8da98fc15cd49b5a509d5192463b62b42eefaa846f05",
+      "source_sha256": "81a514beeb664265b62f9c27742f54f32ecc83b07aeb1861932c651fc919ceb7",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_kayak_r01.source.png",
+      "prompt_sha256": "afd6818d64aeb8210551acb9d907df55d1d43e122ef5332ed8f2cac4856aa646",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          53,
+          52,
+          1207,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 2
+    },
+    {
+      "id": "prop_rowboat",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Rowboat",
+      "chinese": "划艇",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_rowboat.png",
+      "mode": "RGBA",
+      "size": [
+        1226,
+        1161
+      ],
+      "sha256": "8b4cbb48e9fe3f4f894f96ec2b87cd70092b90e3631656f9fdd709dbec1aeeca",
+      "source_sha256": "a9f21fe468a1629f549e5cb1eaa4f88fb72b39591a0821cf88b4c2c896b986e9",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_rowboat_r01.source.png",
+      "prompt_sha256": "55f332f96833176fbf2418400aa3fdaf9258afc7fa3cab03d0bb3e09893dc278",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          22,
+          53,
+          1232,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 3
+    },
+    {
+      "id": "prop_speedboat",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Speedboat",
+      "chinese": "快艇",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_speedboat.png",
+      "mode": "RGBA",
+      "size": [
+        1204,
+        1159
+      ],
+      "sha256": "120a7d401c2cba3b997d1c23b231ded60420a432bb196815aec4fa7d5d8690c9",
+      "source_sha256": "c7814e45f2e8fe35d5f33749f0efe77452ae548e3144b2085ef3e9bd531e7845",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_speedboat_r01.source.png",
+      "prompt_sha256": "8c982c6cac412c31a1f2258691bd512e0b9e3caff4f4cb7f7bafb8f9a59b7bb8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          33,
+          53,
+          1221,
+          1196
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 4
+    },
+    {
+      "id": "prop_paddle_boat",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Paddle Boat",
+      "chinese": "腳踏船",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_paddle_boat.png",
+      "mode": "RGBA",
+      "size": [
+        1205,
+        1012
+      ],
+      "sha256": "440de70585603faee58edb9b9a924f6564f6e662a07565e439b999e1344d8056",
+      "source_sha256": "3d0d9b24114285049d8a23fa48e05456fe38fb5771cae17156dc9f82c919b824",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_paddle_boat_r01.source.png",
+      "prompt_sha256": "53b58df00041697dab0c2a8a1e29fb672003588a06b774e271cb81388121cea5",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          38,
+          202,
+          1227,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 5
+    },
+    {
+      "id": "prop_submarine",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Submarine",
+      "chinese": "潛水艇",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_submarine.png",
+      "mode": "RGBA",
+      "size": [
+        1163,
+        1112
+      ],
+      "sha256": "d90f8a89612a8c70019ea2dd93de23be22ef8889c0bdf622145c5ddd904cbfb3",
+      "source_sha256": "7061765b5ce394a92d76fbac34213858771581eb1cc63a6d917ddd02da1e47cf",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_submarine_r01.source.png",
+      "prompt_sha256": "8d45d16c28328d14b1364809b34a6e8369886d064ab1f8b9d642d1dcd09cc09d",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          59,
+          102,
+          1206,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 6
+    },
+    {
+      "id": "prop_hot_air_balloon",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Hot Air Balloon",
+      "chinese": "熱氣球",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_hot_air_balloon.png",
+      "mode": "RGBA",
+      "size": [
+        1175,
+        1238
+      ],
+      "sha256": "a4c2af35606b4ce18745a467cd09e9112742a8e88612d100b5497fd3ffe747a9",
+      "source_sha256": "ba1b90f2947f9c6fa5b69ce17f2a0e3121d7430f6caac74d4cc1a072da00212d",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_hot_air_balloon_r01.source.png",
+      "prompt_sha256": "7e374b9efbe54978d0dd9dd0eef240c8af33358cb6a4b4ae0cf021ddd042665e",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          41,
+          16,
+          1200,
+          1238
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 7
+    },
+    {
+      "id": "prop_blimp",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Blimp",
+      "chinese": "飛船",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_blimp.png",
+      "mode": "RGBA",
+      "size": [
+        1217,
+        1093
+      ],
+      "sha256": "ce6b57eb2badd3afc8f7e776901ce61b1d61cbb557de1295491fc6710abfb75b",
+      "source_sha256": "b7cc09e7fb4b95756cfcd2fed0a01f231451562011ed63edbed2a52d61be7ad3",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_blimp_r01.source.png",
+      "prompt_sha256": "ff646d3ab16233d0f835d7400f783b2d54c4c8dcdca8b3ed74066cef2048cd00",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          33,
+          107,
+          1234,
+          1184
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 8
+    },
+    {
+      "id": "prop_cable_car",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Cable Car",
+      "chinese": "纜車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_cable_car.png",
+      "mode": "RGBA",
+      "size": [
+        1165,
+        1230
+      ],
+      "sha256": "9e487723448f158a625ebf6280e1e33ccbc5b66d5f1a91cfddce3f22b5594845",
+      "source_sha256": "26df22c5b97fb4ec05fc1088bdf15d6fa0f787411c494e4ec195d9281176f86d",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_cable_car_r01.source.png",
+      "prompt_sha256": "f52bff9304c13063b0823b45f4bd33a824aafa0b66561921e7bad8daf27c880a",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          43,
+          14,
+          1192,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 9
+    },
+    {
+      "id": "prop_monorail",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Monorail",
+      "chinese": "單軌列車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_monorail.png",
+      "mode": "RGBA",
+      "size": [
+        1241,
+        1191
+      ],
+      "sha256": "b81e4b6b47d942af449856ab38d57e13aad7d975bd6c6b554f7f5960da98da92",
+      "source_sha256": "e92b414ddbfcacfc1a9ecec34a66b7469c7f061aa448c90bd1dd2c926d6e5fbc",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_monorail_r01.source.png",
+      "prompt_sha256": "63f889bd0c5fdcff1fec391c06e93c3fb6ba0412d37f29feaec41f13d1d4d588",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          14,
+          53,
+          1239,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 10
+    },
+    {
+      "id": "prop_tram",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Tram",
+      "chinese": "電車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_tram.png",
+      "mode": "RGBA",
+      "size": [
+        1239,
+        1185
+      ],
+      "sha256": "313ec9857e067aca731ba23617f7281ec1e16eab5c9907797d2b2360b8cd9528",
+      "source_sha256": "05fa7c8cf6a45f506b26215354413cda26fcfc05b67b61509780ca7f2dfa14b6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_tram_r01.source.png",
+      "prompt_sha256": "a27cf13901ca4a3347eeeb0a7f03d018dcba6f5ed6abedf7dcfc12793586a14e",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          53,
+          1223,
+          1222
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 11
+    },
+    {
+      "id": "prop_motorcycle",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Motorcycle",
+      "chinese": "電單車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_motorcycle.png",
+      "mode": "RGBA",
+      "size": [
+        1246,
+        1249
+      ],
+      "sha256": "880febbd15d4a5b8b6bba52ccde385086a5d39f5b92eea3581046ce53a65a672",
+      "source_sha256": "6b2a63c834eb778275e1a5245c451c8bb118bd97d6857dfc4ef34eea5d65bea3",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_motorcycle_r01.source.png",
+      "prompt_sha256": "56122cf1efa79ee1a97c1b9e71e6b85f381b5421f2b3f3871640ffc0e61e124a",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          21,
+          1230,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 12
+    },
+    {
+      "id": "prop_pickup_truck",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pickup Truck",
+      "chinese": "輕型貨車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_pickup_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1235,
+        1169
+      ],
+      "sha256": "01b7c8a808f92be3f8fd64909d4cdaa80bc3038083cff578de2a616ae24da9af",
+      "source_sha256": "81ebef1af21272f51c44d67f63ed913dc43684f6962ba259bb51c4b368271914",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pickup_truck_r01.source.png",
+      "prompt_sha256": "9116b451831ebd4faefaa57cc2544ee33f28be143bcc1e4b93c3d4ad2703fe0d",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          18,
+          77,
+          1237,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 13
+    },
+    {
+      "id": "prop_golf_cart",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Golf Cart",
+      "chinese": "高爾夫球車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_golf_cart.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1225
+      ],
+      "sha256": "3cee0d54c57fd1559654b756de566773492c43ea4bacb028861ee6cb505fdfbb",
+      "source_sha256": "157bac7626864986c721c95e9f765b2f0633fe6f3263c49e4a5a4c4c09b31ac5",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_golf_cart_r01.source.png",
+      "prompt_sha256": "abcb8af22ae9e00f6d6511712bbee155b8e284031104418e3dc41dfadf48d1cc",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          19,
+          1238,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 14
+    },
+    {
+      "id": "prop_camper_van",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Camper Van",
+      "chinese": "露營車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_camper_van.png",
+      "mode": "RGBA",
+      "size": [
+        1242,
+        1235
+      ],
+      "sha256": "1a01dfebcbd5785bea0070c48a958a02457ea239056b8b27e7e16a38b28ff02d",
+      "source_sha256": "bd89b69fff4d582d8b35262ea360cb3727a7fc7fbe2e58fa6895c503abfbd1cb",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_camper_van_r01.source.png",
+      "prompt_sha256": "b649e5b4f85c3c0a1257e9911006f33c5dadd5760ec50a0136f6e3760741ecd5",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          9,
+          1226,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 15
+    },
+    {
+      "id": "prop_snowplow_truck",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Snowplow Truck",
+      "chinese": "除雪車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_snowplow_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1220,
+        1175
+      ],
+      "sha256": "7ab68003ad07d633bf2940eaf427f0bfce5a7e3ec27fafe3e98cc8676e7a8c88",
+      "source_sha256": "c8a160c7e53709dd0b392c39bd6fc06185fc991ccd50c325151225d3c52cf090",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_snowplow_truck_r01.source.png",
+      "prompt_sha256": "e9527f0f16673a8242b5a9c464a6776773539e4ed4176fd72464f6732d91b6f5",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          32,
+          39,
+          1236,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 16
+    },
+    {
+      "id": "prop_street_sweeper",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Street Sweeper",
+      "chinese": "掃街車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_street_sweeper.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1175
+      ],
+      "sha256": "3ab8958fe8cee633f2f92c601ebc54b79cd80cb69f7a6f609471e34c985b3061",
+      "source_sha256": "97f038339dbf39c92313fb21fba761bb352f2de67b090694de33a8f245380049",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_street_sweeper_r01.source.png",
+      "prompt_sha256": "8c3fdc34136785903064ee4ec03795caf58ca35cafe07db80c4202128c7a19f8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          95,
+          1238,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 17
+    },
+    {
+      "id": "prop_ice_cream_truck",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Ice Cream Truck",
+      "chinese": "雪糕車",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_ice_cream_truck.png",
+      "mode": "RGBA",
+      "size": [
+        1205,
+        1181
+      ],
+      "sha256": "824b8f910219775964b174834dac3c290cc1b337fcb40de8106a91e351b3f9f6",
+      "source_sha256": "5c42ca9ef1230525b56877c2ab5b9f7f529695c26bf7f804a2852c55974dfb5a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_ice_cream_truck_r01.source.png",
+      "prompt_sha256": "f00cbde634a4ad3824f782c06e25c91e40c357cabd3d8d47ae2caa28a1b7496e",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          40,
+          89,
+          1229,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 18
+    },
+    {
+      "id": "prop_bulldozer",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Bulldozer",
+      "chinese": "推土機",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_bulldozer.png",
+      "mode": "RGBA",
+      "size": [
+        1244,
+        1215
+      ],
+      "sha256": "aaedd6e38a1168adad219691bb74b704d7dc8aab54b9d467a4dd14f3900ad329",
+      "source_sha256": "c2daeea3f627a90831af99436f596d5dd76e1dd621dcf025b16391ac65b2195e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_bulldozer_r01.source.png",
+      "prompt_sha256": "3821d6a07b54ec75f8c647609b82f09df772ad7deb57a83f2f343c917cb97676",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          13,
+          55,
+          1241,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 19
+    },
+    {
+      "id": "prop_steamroller",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Steamroller",
+      "chinese": "壓路機",
+      "category": "vehicles",
+      "original_category": "vehicles",
+      "runtime_path": "assets/stickers/prop_steamroller.png",
+      "mode": "RGBA",
+      "size": [
+        1211,
+        1166
+      ],
+      "sha256": "4e9f7fe44fb11d6378fb87631c65f6be1e3968aa52802028622f51abe5032729",
+      "source_sha256": "2881d8207b5554f53e9758b1996aff81b6194431a64029ac8f6c09db78c8277c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_steamroller_r01.source.png",
+      "prompt_sha256": "e6d31f0087926ded86a21edee6c0540ebaffbed2d1b02666ee993e1a1ff0b961",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          30,
+          104,
+          1225,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 20
+    },
+    {
+      "id": "prop_toy_drum",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toy Drum",
+      "chinese": "玩具鼓",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_drum.png",
+      "mode": "RGBA",
+      "size": [
+        1113,
+        1223
+      ],
+      "sha256": "62c5efff4a64b72ee5ce9494fea9a3e6d6e206d3998ab7e7d2730e25a5e9868f",
+      "source_sha256": "e688a5cd022299f11adbfc5f1f4ae7fd34ceeee4cf4ed01cdb49721a03528aea",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_toy_drum_r01.source.png",
+      "prompt_sha256": "62ad053374ab6cbd18e818db24b3b9f363b7b06f36a8d49e4a55ab54a5f0e9f4",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          125,
+          21,
+          1222,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 21
+    },
+    {
+      "id": "prop_tambourine",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Tambourine",
+      "chinese": "鈴鼓",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_tambourine.png",
+      "mode": "RGBA",
+      "size": [
+        1204,
+        1079
+      ],
+      "sha256": "b4f0aaa0148f6878f76e5ffa7910c611a57657ccbbd2910df8b7790dfdf98d14",
+      "source_sha256": "0a7ae9e1c6f9aeea9cc83f1c75533958b327345fad8c4e97f71b8da0e4a17c07",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_tambourine_r01.source.png",
+      "prompt_sha256": "88a29624a17bb94cea7e76ed45d4e022b6cf618c573da7dba9a45245801644a2",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          36,
+          73,
+          1224,
+          1136
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 22
+    },
+    {
+      "id": "prop_yo_yo",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Yo-Yo",
+      "chinese": "溜溜球",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_yo_yo.png",
+      "mode": "RGBA",
+      "size": [
+        1148,
+        1046
+      ],
+      "sha256": "a006416a6226163dfa370ae3b812c1f1aaa2309281ef740a1888d6735249074d",
+      "source_sha256": "d68430ac9b883273dda0e726c6ffb1a28d53cb8eb92e626c3d98462de3d99935",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_yo_yo_r01.source.png",
+      "prompt_sha256": "60848cd32a345651efc0deef6ce675ab22429bcea116c39ffc8982c2982ce3df",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          95,
+          152,
+          1227,
+          1182
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 23
+    },
+    {
+      "id": "prop_hand_puppet",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Hand Puppet",
+      "chinese": "手偶",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_hand_puppet.png",
+      "mode": "RGBA",
+      "size": [
+        1173,
+        1220
+      ],
+      "sha256": "7936587c45aca8ce072124627de4601eba773bd312774930f4886772195b2392",
+      "source_sha256": "d8cc8e8fa238ec1fb8ff3d5e638a49bf0a6e8883c6f699439ed0f0dbdaea76c3",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_hand_puppet_r01.source.png",
+      "prompt_sha256": "f22b006c475e86a07edf1245dfb9ca4603c0185eea77e2e7fc223aed88d8f6b8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          41,
+          24,
+          1198,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 24
+    },
+    {
+      "id": "prop_kaleidoscope",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Kaleidoscope",
+      "chinese": "萬花筒",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_kaleidoscope.png",
+      "mode": "RGBA",
+      "size": [
+        1234,
+        1146
+      ],
+      "sha256": "f2940c20ae15a667d5fdfb749f009c3aa0a116e7eaf8e57936371217b5bc281d",
+      "source_sha256": "3d9a5d5a2747ec0953604495b44d7686e7c49e68410b33088639e1e1fb84de29",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_kaleidoscope_r01.source.png",
+      "prompt_sha256": "f87a1bec72e6a1fdca76efe13a17abf1fef21f1a37261a8196751efd3b04b78f",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          20,
+          53,
+          1238,
+          1183
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 25
+    },
+    {
+      "id": "prop_jack_in_the_box",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Jack-in-the-Box",
+      "chinese": "彈跳盒玩具",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_jack_in_the_box.png",
+      "mode": "RGBA",
+      "size": [
+        1111,
+        1209
+      ],
+      "sha256": "a436b9073ab2baacf301eb12f22b077a172acda6babd49b011c7fb78713c91f3",
+      "source_sha256": "0f69c214077876ca3342169e9edbe0d4fde23d0be62cc4969baadccc8312ce63",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_jack_in_the_box_r01.source.png",
+      "prompt_sha256": "27e9a00e176aa81d2437184dd6670612c47d9b882bc09b4d6fedc9f8f80456f8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          97,
+          35,
+          1192,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 26
+    },
+    {
+      "id": "prop_nesting_cups",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Nesting Cups",
+      "chinese": "疊疊杯",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_nesting_cups.png",
+      "mode": "RGBA",
+      "size": [
+        1105,
+        1164
+      ],
+      "sha256": "68b9917002e882e3cd414c1996462e32a3adab3aa7bd2fa96322221d5268c39d",
+      "source_sha256": "66752d811b30dae4111741ee494a5f65cab266683deef1c011aa0dfd81000ab9",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_nesting_cups_r01.source.png",
+      "prompt_sha256": "6356a79a3f98915830fae8cbaf0ee17488797d559ce2da4c3b22938acffaa7a4",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          103,
+          80,
+          1192,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 27
+    },
+    {
+      "id": "prop_shape_sorter_cube",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Shape Sorter Cube",
+      "chinese": "形狀配對盒",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_shape_sorter_cube.png",
+      "mode": "RGBA",
+      "size": [
+        1211,
+        1185
+      ],
+      "sha256": "c83917445b3530f8f86c8b652e59b409e172d42a4074357b09b67998ce996fc9",
+      "source_sha256": "61b43e8c703048ead67d7b2d1734d836d5a460366fa9b82445538e8f81eccb98",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_shape_sorter_cube_r01.source.png",
+      "prompt_sha256": "0a3fbea01c222f24148922753de55e31d9c9dfd80a9a16f6bdcb11a5e040d21e",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          29,
+          1195,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 28
+    },
+    {
+      "id": "prop_bead_maze",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Bead Maze",
+      "chinese": "串珠迷宮",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_bead_maze.png",
+      "mode": "RGBA",
+      "size": [
+        1167,
+        1139
+      ],
+      "sha256": "48d979afc75e01d47b842031fb4cce238355fd211da6e317a60a546ed387bff6",
+      "source_sha256": "7477b4eb13e3584fcf35b22b87dcd76814f4c2ffd22e907a2ea49d67aad9612d",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_bead_maze_r01.source.png",
+      "prompt_sha256": "33c795d6a0c07e0f01abba1fbf52f11d27720c8ac39b67ff633ea38a45095b20",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          84,
+          51,
+          1235,
+          1174
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 29
+    },
+    {
+      "id": "prop_jigsaw_puzzle_board",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Jigsaw Puzzle Board",
+      "chinese": "拼圖板",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_jigsaw_puzzle_board.png",
+      "mode": "RGBA",
+      "size": [
+        1234,
+        1157
+      ],
+      "sha256": "b2b48580475a02580788aa69dd96f08d41d80f769b3ce5a994f48dacd58c67b5",
+      "source_sha256": "694ab69f628f84e9b3c79135fd582831d1a65f3f4cabd9b4936da94562f06903",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_jigsaw_puzzle_board_r01.source.png",
+      "prompt_sha256": "a4a5f26be06c60ad8c8a829dd7a231b2c12d347f79283f0c2dc357f566d01da2",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          81,
+          1218,
+          1222
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 30
+    },
+    {
+      "id": "prop_toy_telephone",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toy Telephone",
+      "chinese": "玩具電話",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_telephone.png",
+      "mode": "RGBA",
+      "size": [
+        1238,
+        1139
+      ],
+      "sha256": "4da197ce33264407b19df485006f453efcc96ae4083d061d8e826b0c809668ec",
+      "source_sha256": "c75634b63446b39ec0490394223a9bcda146d5754146de07adcce01e32900254",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_toy_telephone_r01.source.png",
+      "prompt_sha256": "34e03734a6fb7c508915cd3e7a49e58aa137e8f8df2fd09942137bf49f4b6e4e",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          83,
+          1222,
+          1206
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 31
+    },
+    {
+      "id": "prop_toy_camera",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toy Camera",
+      "chinese": "玩具相機",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_camera.png",
+      "mode": "RGBA",
+      "size": [
+        1216,
+        1123
+      ],
+      "sha256": "1831ce01ac0520123dad8f2a7ae47775e42a713e57fc76ae8e108f78c6dffb53",
+      "source_sha256": "4fe8e91f516e655fa351135497c6b9dec8abf3b94371808979c5b6622fb69712",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_toy_camera_r01.source.png",
+      "prompt_sha256": "cb8397df261001b77f01cc18bdb4082eb662f0f19f3194c7f6d39a9a64488d35",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          2,
+          75,
+          1202,
+          1182
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 32
+    },
+    {
+      "id": "prop_toy_trumpet",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toy Trumpet",
+      "chinese": "玩具小號",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_trumpet.png",
+      "mode": "RGBA",
+      "size": [
+        1208,
+        1225
+      ],
+      "sha256": "85db454ace537f962ecb666c66d58aafd5ff317e60f0dea857b817f8b71fd315",
+      "source_sha256": "15dbd718d735b8690023357f76226a15c1b8ecbe84c458945feca231fb3e09aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_toy_trumpet_r01.source.png",
+      "prompt_sha256": "32e9914b46da0480fa125c63f13808d6ab5756df8dea4c077f613edfe51449ba",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          31,
+          21,
+          1223,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 33
+    },
+    {
+      "id": "prop_toy_dinosaur",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toy Dinosaur",
+      "chinese": "玩具恐龍",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_dinosaur.png",
+      "mode": "RGBA",
+      "size": [
+        1197,
+        1157
+      ],
+      "sha256": "b941680e0b31992f62bd448e150cde6eb43628c142c3e65c7cc0c43651449e1d",
+      "source_sha256": "ae9387dc1ec54596e73fa0844692d59c7c2867c908ed4e3692c5e16eb823baaf",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_toy_dinosaur_r01.source.png",
+      "prompt_sha256": "9bf2a3b228eb21da4275531942aacb988b590507fd1591ac83682b1da1ab9bab",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          49,
+          65,
+          1230,
+          1206
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 34
+    },
+    {
+      "id": "prop_toy_toolbox",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toy Toolbox",
+      "chinese": "玩具工具箱",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_toolbox.png",
+      "mode": "RGBA",
+      "size": [
+        1196,
+        1075
+      ],
+      "sha256": "e2ca665fb01b70759e42125311b4caea63e40d8f7d1494e02d51af28f0bcd262",
+      "source_sha256": "00e1a628ea3cc816ca5b010755d99da497efa99107334f37b452fd3c15eccb56",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_toy_toolbox_r01.source.png",
+      "prompt_sha256": "635ab9c444dce998ebfd8b56d44020edc95107bcff344017309621036fca594c",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          36,
+          47,
+          1216,
+          1106
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 35
+    },
+    {
+      "id": "prop_pretend_tea_set",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pretend Tea Set",
+      "chinese": "茶具玩具",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_pretend_tea_set.png",
+      "mode": "RGBA",
+      "size": [
+        1207,
+        1086
+      ],
+      "sha256": "6311f1a9f7fba85d8926c36a12c3bc0275ca7b51ceec74f73592f916284ec1a4",
+      "source_sha256": "ee01c0f2f2e4c550295c88fc9bc77fb72486770165ec26a07bfd1eec5e4fae01",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pretend_tea_set_r01.source.png",
+      "prompt_sha256": "b3628aa4372d7fed3a84095dc744ca6146a156c666173daa100706ac04c6bd85",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          35,
+          111,
+          1226,
+          1181
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 36
+    },
+    {
+      "id": "prop_toy_cash_register",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toy Cash Register",
+      "chinese": "玩具收銀機",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_toy_cash_register.png",
+      "mode": "RGBA",
+      "size": [
+        1219,
+        1167
+      ],
+      "sha256": "225a4fca587fd1030e10d9add0256a61503fb1672361cb6f6e2b7967581ef6fb",
+      "source_sha256": "276cfc8810ce197cd7b124121b85b525c39368ea7577b5d79f20b0f03231290f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_toy_cash_register_r01.source.png",
+      "prompt_sha256": "dec05f3ac9f36f9e3a8a93b0b2315567801ab3811995547b3ebf81fd9e6a1ec5",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          36,
+          23,
+          1239,
+          1174
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 37
+    },
+    {
+      "id": "prop_maracas",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Maracas",
+      "chinese": "沙槌",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_maracas.png",
+      "mode": "RGBA",
+      "size": [
+        1121,
+        1098
+      ],
+      "sha256": "b6b01934ad8ecd4844b0685162b00c1217d7b03a1965217149e48eafc6615da6",
+      "source_sha256": "038acf8395368fbc2550737e4946ffb86b38ace3d4cb75522f014546630077d6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_maracas_r01.source.png",
+      "prompt_sha256": "be3d5be4dd4d13bb935add5b00d47f9aa4d6d40d534eca995ab1f911c0f0e3dc",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          97,
+          116,
+          1202,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 38
+    },
+    {
+      "id": "prop_slinky",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Slinky",
+      "chinese": "彈簧圈",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_slinky.png",
+      "mode": "RGBA",
+      "size": [
+        1210,
+        1161
+      ],
+      "sha256": "acec2a1952fa177d526b2a1b5397613dcd3e8b9377f78059bbfd30c43b06727c",
+      "source_sha256": "24d6f4b2e19be612a635f8de4f236f3cec5af9c0f75be74fffa2ad66fe05ac0d",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_slinky_r01.source.png",
+      "prompt_sha256": "a480ee3d513dd2ed6d999b43e13b50d859f8ed1514e1b1a900b8360558f3c2ae",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          38,
+          53,
+          1232,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 39
+    },
+    {
+      "id": "prop_pull_along_wagon",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pull-Along Wagon",
+      "chinese": "拖拉小車",
+      "category": "toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_pull_along_wagon.png",
+      "mode": "RGBA",
+      "size": [
+        1171,
+        1191
+      ],
+      "sha256": "1bbe445d61d375e1e59b8e5bdaf81187aeb44d1a7689e0f8dda5c9a1c845553e",
+      "source_sha256": "eb20e3cf59bbc7ebaa52b6b7e41e7dfd166363f765af754ccb0121a66c800875",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pull_along_wagon_r01.source.png",
+      "prompt_sha256": "cd8ce072c567bdd4462d08e7982197b93380f3e86ec6987d1c781990a3e25571",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          55,
+          53,
+          1210,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 40
+    },
+    {
+      "id": "prop_peach",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Peach",
+      "chinese": "桃",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_peach.png",
+      "mode": "RGBA",
+      "size": [
+        1161,
+        1150
+      ],
+      "sha256": "87eebdb86b3d8129f42376fc36e12363d46363c752e23460199cb0d63ec246cf",
+      "source_sha256": "8323d6bde9b445194faec01b61a3e80e2dce56a7b7ae88c6b35f82f1269b0050",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_peach_r01.source.png",
+      "prompt_sha256": "043188e86b751bbb0e497ff23a2400d4c382c6860e95b1d47aac404774903f73",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          57,
+          94,
+          1202,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 41
+    },
+    {
+      "id": "prop_grapefruit",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Grapefruit",
+      "chinese": "西柚",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_grapefruit.png",
+      "mode": "RGBA",
+      "size": [
+        1197,
+        1093
+      ],
+      "sha256": "45890f3d4f73b89ea6841f483d22b142f94852af7bbbd4f762c1b711aee0d0ce",
+      "source_sha256": "b2873e5af56a1e8d557cb314130f85bb86de8c1f386385f7f980fbaa5ab43e5f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_grapefruit_r01.source.png",
+      "prompt_sha256": "dcc58719b8e02fceb585c6403e1643e0090a20bc0821ed957ead29e5c39e94c5",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          41,
+          151,
+          1222,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 42
+    },
+    {
+      "id": "prop_lime",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Lime",
+      "chinese": "青檸",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_lime.png",
+      "mode": "RGBA",
+      "size": [
+        1197,
+        1193
+      ],
+      "sha256": "0de4a2ac4d5e07771afec80db551f4e57d26211a4fe140025b0618be8fad5353",
+      "source_sha256": "b5422106c89d606ba9728061cde2fd1b684574a7a34c526352bfa8dc1a2e0d27",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_lime_r01.source.png",
+      "prompt_sha256": "0281d495e4fed5fb358978164c1e2a6c1493d949302a3f15a4c3727697c54b6c",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          41,
+          53,
+          1222,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 43
+    },
+    {
+      "id": "prop_papaya",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Papaya",
+      "chinese": "木瓜",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_papaya.png",
+      "mode": "RGBA",
+      "size": [
+        1037,
+        1196
+      ],
+      "sha256": "d75715845d49b7a0326e68455bf3d79e636c5b11e354a68770504fad5e1e0dd3",
+      "source_sha256": "b0ee9cdd35fd2709cd5ac251a8985d26a736c133a896fc223c5ad03a6fe7beb5",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_papaya_r01.source.png",
+      "prompt_sha256": "07df5cd27e531f617060c100debddfd73436c641110b5a98fd03017235ad9d1d",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          178,
+          50,
+          1199,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 44
+    },
+    {
+      "id": "prop_pomegranate",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pomegranate",
+      "chinese": "石榴",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_pomegranate.png",
+      "mode": "RGBA",
+      "size": [
+        1111,
+        1177
+      ],
+      "sha256": "e492f33ecb7e3fb219c673404fb3fa3608cce70c6ab380ac0658704a0510cb4a",
+      "source_sha256": "e3ae8795153c6607c4da3cd6fc8ea115debc1af6b66a889538f01ce72066cb8b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pomegranate_r01.source.png",
+      "prompt_sha256": "c37da9c48c9608ff4a7530006b65d98ccce2dca470d6ae344ab654499a6d70fd",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          97,
+          69,
+          1192,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 45
+    },
+    {
+      "id": "prop_avocado",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Avocado",
+      "chinese": "牛油果",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_avocado.png",
+      "mode": "RGBA",
+      "size": [
+        1166,
+        1162
+      ],
+      "sha256": "4a5b22e22fbe212229164bd3cb81ee54e68fa4079b3d2d94585af4791ac09496",
+      "source_sha256": "f66872440a53e154fd12e842a434fa78ff18c6b7a5ba3c731a78233250d4466e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_avocado_r01.source.png",
+      "prompt_sha256": "5fcd68f4b2a8eceb635afe8f56ad71c136ff550b3be0ed8909010499ea6e2980",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          49,
+          84,
+          1199,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 46
+    },
+    {
+      "id": "prop_fig",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Fig",
+      "chinese": "無花果",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_fig.png",
+      "mode": "RGBA",
+      "size": [
+        1158,
+        1148
+      ],
+      "sha256": "f09f9575775b711c8802aea7ba63cc0f2ba3ff130a2d585399e6044efffdb57d",
+      "source_sha256": "11effe9028d54ab79488833f73db7fd76129ac9f9b4f1b44cd967bf1dd179988",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_fig_r01.source.png",
+      "prompt_sha256": "fe99933db665a9b29cd6e769d3bb75d95bff5e52621726c0f24e0c2b79284b9b",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          57,
+          98,
+          1199,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 47
+    },
+    {
+      "id": "prop_persimmon",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Persimmon",
+      "chinese": "柿",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_persimmon.png",
+      "mode": "RGBA",
+      "size": [
+        1218,
+        1127
+      ],
+      "sha256": "54291a73223d29c29715eada096db83c57071a7d71f3803fcd0bea9a614f4096",
+      "source_sha256": "35dcaf1ffe6070077c3eed9c83ad6595470722fff5c7473219f7cfa0b3d274fd",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_persimmon_r01.source.png",
+      "prompt_sha256": "545e0408fdf91c723193ff35dc62a364a99f62076d628187b5551580d96ae176",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          119,
+          1202,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 48
+    },
+    {
+      "id": "prop_pomelo",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pomelo",
+      "chinese": "柚子",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_pomelo.png",
+      "mode": "RGBA",
+      "size": [
+        1218,
+        1129
+      ],
+      "sha256": "1abcb6f27d962ed33eef7a7dece2fdacc78ce898b10c477115904fdc7396d02f",
+      "source_sha256": "ce3998546cb8c1e2816d6926f965ae5e2d3fb0dd67338cb7cc928717b5167e55",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pomelo_r01.source.png",
+      "prompt_sha256": "5978368a1ef1ea8c41c52c5528d8a72e19aca709c3e17d4ce714d778348d473d",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          77,
+          1202,
+          1190
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 49
+    },
+    {
+      "id": "prop_passion_fruit",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Passion Fruit",
+      "chinese": "百香果",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_passion_fruit.png",
+      "mode": "RGBA",
+      "size": [
+        1175,
+        1145
+      ],
+      "sha256": "515771dedf7e73be16aad7a84ef85358dc120cc5574beb87f8012e010def41ea",
+      "source_sha256": "3ee3da30e015cb69c9468eaccae2e268c0452cf4ce9091fca6fbb0380158be3d",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_passion_fruit_r01.source.png",
+      "prompt_sha256": "ba6840bc41ac5aebb8fa940fa947288b5b335fa8800c120502a1ae3ac2d5b29b",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          50,
+          101,
+          1209,
+          1230
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 50
+    },
+    {
+      "id": "prop_cantaloupe",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Cantaloupe",
+      "chinese": "哈密瓜",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_cantaloupe.png",
+      "mode": "RGBA",
+      "size": [
+        1235,
+        1191
+      ],
+      "sha256": "30cbb693863e0c61c84157b89e684fb04a9316e55493e8294913ff228e6234d0",
+      "source_sha256": "087d585494d137f32b267f9eed9c63915cb45d25d452b9da1037c6271a9addd7",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_cantaloupe_r01.source.png",
+      "prompt_sha256": "7e48a23fec0bef84820f1c0cf3cc73e1717ebda029d5dc76dd7b37cb15d9e742",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          9,
+          1219,
+          1184
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 51
+    },
+    {
+      "id": "prop_honeydew_melon",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Honeydew Melon",
+      "chinese": "蜜瓜",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_honeydew_melon.png",
+      "mode": "RGBA",
+      "size": [
+        1105,
+        1068
+      ],
+      "sha256": "38a846173d56c3fc5b0048e1d5a6a9bfc132c65721a7a765159801119fdf5ccc",
+      "source_sha256": "0e32ee4240fcae64c239e96bb167363d6af6afa74fe6bc473cdfe96c30feb9f4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_honeydew_melon_r01.source.png",
+      "prompt_sha256": "da4fe3e983ea68bb3c095e52de4589e51e35f5260aec88f11f36547f9f2055fe",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          47,
+          130,
+          1136,
+          1182
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 52
+    },
+    {
+      "id": "prop_potato",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Potato",
+      "chinese": "薯仔",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_potato.png",
+      "mode": "RGBA",
+      "size": [
+        1248,
+        1165
+      ],
+      "sha256": "25a0aee957cf8e356d8cbf7be1f377c38242b2d41fba04f551f97923f5450729",
+      "source_sha256": "5f611c592318fabf8edfff42ed1601882a81cf6e6b9b688071253dd8a7c904cd",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_potato_r01.source.png",
+      "prompt_sha256": "788a6db09c507fadc3ffbe512d43e16cccc941b2141add1b4450df91abf12677",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          79,
+          1232,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 53
+    },
+    {
+      "id": "prop_onion",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Onion",
+      "chinese": "洋蔥",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_onion.png",
+      "mode": "RGBA",
+      "size": [
+        1119,
+        1210
+      ],
+      "sha256": "b78262d417ee8959ae35196ee9070d99d124d3cec1493a0b4322e3429f217cef",
+      "source_sha256": "7667dac2a83f5b5aea821d991e4cfb671eeec75aaa7ef8ef1b2a0e62cd5575ff",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_onion_r01.source.png",
+      "prompt_sha256": "be786f90792c374469d2ed29fc29a98d024d6e5f9ef6ca285f3ca98e93250ec0",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          97,
+          34,
+          1200,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 54
+    },
+    {
+      "id": "prop_garlic_bulb",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Garlic Bulb",
+      "chinese": "蒜頭",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_garlic_bulb.png",
+      "mode": "RGBA",
+      "size": [
+        1151,
+        1155
+      ],
+      "sha256": "71cf2d1d65e0994a5480590c17af40b7c6ebf9c907387a1f3739bdea118e4e7a",
+      "source_sha256": "6c38ca731ef0b92fc4ea38078c15e22e5463f8fede2225ed35b029dc12241ceb",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_garlic_bulb_r01.source.png",
+      "prompt_sha256": "42e2ad0cfc87a7c334e17c7620fa1407728edea407fbe68dbee0828f6e8b8c4f",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          57,
+          89,
+          1192,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 55
+    },
+    {
+      "id": "prop_zucchini",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Zucchini",
+      "chinese": "翠玉瓜",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_zucchini.png",
+      "mode": "RGBA",
+      "size": [
+        1107,
+        1098
+      ],
+      "sha256": "805e47d1ceb007e273ba91228d129a365906ce8cc4704b099757116cc436e2f7",
+      "source_sha256": "0e5352a54bf440d3959d1efffa38ebdeb2c397e099175cdc4f7620d604fd1818",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_zucchini_r01.source.png",
+      "prompt_sha256": "5a927c196d05826f491045cfee0d2223972ed7d07438083bbce36fd6be3f6ac7",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          83,
+          114,
+          1174,
+          1196
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 56
+    },
+    {
+      "id": "prop_celery",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Celery",
+      "chinese": "西芹",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_celery.png",
+      "mode": "RGBA",
+      "size": [
+        1221,
+        1243
+      ],
+      "sha256": "f321a43948d0d8f9adabdeac95967278fec42602db2ad4f49649ac254470e01d",
+      "source_sha256": "fc980d581c98ab6851e5a59eaaa67e49ba080d21cf1fead25b00eba9237504b3",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_celery_r01.source.png",
+      "prompt_sha256": "f0f0c75547f19929815b879ae6f2dfc0e086ec39edc31de6e48f18e626310583",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          27,
+          1205,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 57
+    },
+    {
+      "id": "prop_cabbage",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Cabbage",
+      "chinese": "椰菜",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_cabbage.png",
+      "mode": "RGBA",
+      "size": [
+        1236,
+        1235
+      ],
+      "sha256": "a0f0b941b9be59f3b6826b5a5b32ef783f5628f003bd7840f256c701a3208afe",
+      "source_sha256": "03e2b94cce94f401e88da80d9a3e1bcf0579f99ba864c1a35f5ad5a1a9bb4d5e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_cabbage_r01.source.png",
+      "prompt_sha256": "06abbc25f51360e1f59715f00dbe4ab198704b67780ae018bafe42bd7fd26f47",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          9,
+          1220,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 58
+    },
+    {
+      "id": "prop_asparagus",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Asparagus",
+      "chinese": "蘆筍",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_asparagus.png",
+      "mode": "RGBA",
+      "size": [
+        1175,
+        1223
+      ],
+      "sha256": "59912211d65cd52085db16d5daf923c8f5cc4d210a6903bad2eab20454d8f0c3",
+      "source_sha256": "198e3984a5dd0bc3ac4110aef70d48b53b9b0d2275306d322ba760a6fdeb5057",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_asparagus_r01.source.png",
+      "prompt_sha256": "956e6c018e2af57fb27ad8c33fc031873b83f2706595325fb4ae33df40682852",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          33,
+          21,
+          1192,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 59
+    },
+    {
+      "id": "prop_beetroot",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Beetroot",
+      "chinese": "紅菜頭",
+      "category": "fruit_vegetables",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_beetroot.png",
+      "mode": "RGBA",
+      "size": [
+        1173,
+        1222
+      ],
+      "sha256": "7df84bcd6835093127b6d91e49d6e7366941b51a749e1f2e27a09472408a728b",
+      "source_sha256": "d277484d4e9e045fde26ee07996acfa5e2865e48b22e2e5c35e4cfebce53f858",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_beetroot_r01.source.png",
+      "prompt_sha256": "dc85cfd8b718f4f98bd09829ef31d5bd45ea875facc6bff656ed27630175f2ee",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          41,
+          26,
+          1198,
+          1232
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 60
+    },
+    {
+      "id": "prop_pancake_stack",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pancake Stack",
+      "chinese": "班戟",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_pancake_stack.png",
+      "mode": "RGBA",
+      "size": [
+        1164,
+        1157
+      ],
+      "sha256": "c0a654ed4e952ec46e77470803b9a6d452a6e13bd77771e1e98545f9196cc17d",
+      "source_sha256": "50c22d83b99bc5bbff41b16804282f3bbd44fd485e69c8742b89ce8470742567",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pancake_stack_r01.source.png",
+      "prompt_sha256": "44cbd679c77a6db9e01a448dcd5fe4eaff895d04c399c9a1413c2bc3bda59adf",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          31,
+          113,
+          1179,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 61
+    },
+    {
+      "id": "prop_pizza_slice",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pizza Slice",
+      "chinese": "薄餅",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_pizza_slice.png",
+      "mode": "RGBA",
+      "size": [
+        1161,
+        1128
+      ],
+      "sha256": "a6276c230415171fcf69b8c8d3ee52ad606b2fa8d0790b8dd44e5b71ff59739f",
+      "source_sha256": "a0a22490ae79c0fda8fac0076cb3b541744a1fbfbe90a6a4956c1aebbb92b370",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pizza_slice_r01.source.png",
+      "prompt_sha256": "575f617c1cda996b0f7d9b283cf3b1fd8add0bd843d53cd945ba75ce68211536",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          65,
+          88,
+          1210,
+          1200
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 62
+    },
+    {
+      "id": "prop_cupcake",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Cupcake",
+      "chinese": "杯子蛋糕",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_cupcake.png",
+      "mode": "RGBA",
+      "size": [
+        909,
+        1171
+      ],
+      "sha256": "317708c1a23d5a99438872006e549391a4ad2032a4759a6eccf4e36616e9f3da",
+      "source_sha256": "12d83fc915c50a988a5e41cab178b1955c00e3c75911fff7a8f60776d61b0458",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_cupcake_r01.source.png",
+      "prompt_sha256": "91713844a92b3b7c0ce9e7a010ac1d9e8f8c6653f66de855d3e3507d2af02b54",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          182,
+          53,
+          1075,
+          1208
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 63
+    },
+    {
+      "id": "prop_yogurt_bowl",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Yogurt Bowl",
+      "chinese": "乳酪碗",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_yogurt_bowl.png",
+      "mode": "RGBA",
+      "size": [
+        1265,
+        1177
+      ],
+      "sha256": "97dccc685d5a71ddb3861e9522d7567adbcd0a2aec2d4e63d2c49a5a26f51b50",
+      "source_sha256": "662dac0a84f7e3bd5cc66303a4f27ccb5588b0eda3da58c14cff6a645030378c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_yogurt_bowl_r01.source.png",
+      "prompt_sha256": "02e9602d2f19067badce80d9238bed8244f86fc98bbc123fc39c292f15ece43a",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          2,
+          53,
+          1251,
+          1214
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 64
+    },
+    {
+      "id": "prop_macaroni_and_cheese",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Macaroni and Cheese",
+      "chinese": "芝士通粉",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_macaroni_and_cheese.png",
+      "mode": "RGBA",
+      "size": [
+        1172,
+        1217
+      ],
+      "sha256": "a890d43bcab1d39a768b60a58daadc90b419e10eba220afee1609f3aa191b84d",
+      "source_sha256": "2dcd8fd0e45f51836a0848eed02143b6f4e7575b7bf904d5c1bdc9a3a4fb69fc",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_macaroni_and_cheese_r01.source.png",
+      "prompt_sha256": "cc7f2d20c553856c8fffb0f24e49d5104863925b4ae1a33936fed50efe12fa94",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          49,
+          53,
+          1205,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 65
+    },
+    {
+      "id": "prop_spaghetti_plate",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Spaghetti Plate",
+      "chinese": "意粉",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_spaghetti_plate.png",
+      "mode": "RGBA",
+      "size": [
+        1211,
+        990
+      ],
+      "sha256": "93228c31057f1faec89e4fb5fa2d77d440bdad4e6b8fe6d3889e2acf4465cf55",
+      "source_sha256": "338dd42d9b9ecdaca5bb8d80ae6e2f590347d24dc473f78d2ba944875c0b1c81",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_spaghetti_plate_r01.source.png",
+      "prompt_sha256": "a86018f0d7d31d9785694d685dfdb8f9aaedac1299940771661ca45450f012d8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          45,
+          208,
+          1240,
+          1182
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 66
+    },
+    {
+      "id": "prop_sushi_roll_trio",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Sushi Rolls",
+      "chinese": "壽司卷",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_sushi_roll_trio.png",
+      "mode": "RGBA",
+      "size": [
+        1138,
+        1159
+      ],
+      "sha256": "0f414ab40b4f5bfaeaa4ea3b6542d65acf09271d218ee50932fba7bcd4f5dad3",
+      "source_sha256": "5f8f14a357f7227b6da982a4f362157abb92e9b92baa0ed2ef20e586b4996f4e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_sushi_roll_trio_r01.source.png",
+      "prompt_sha256": "fa429cbd603e93138a29d5be274b1757f235aaad686c1922fe77c0e30f6602a5",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          67,
+          47,
+          1189,
+          1190
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 67
+    },
+    {
+      "id": "prop_oatmeal_bowl",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Oatmeal Bowl",
+      "chinese": "燕麥粥",
+      "category": "food_snacks",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_oatmeal_bowl.png",
+      "mode": "RGBA",
+      "size": [
+        1221,
+        1078
+      ],
+      "sha256": "c8914a30d1f1fa388b0cf3a8f1165d8e932e05d13b08f303dee99f308189c3eb",
+      "source_sha256": "679b67faa8c5395f1c8bd79e993c458103d2fa6465e7b47860a8ddc77476c8e4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_oatmeal_bowl_r01.source.png",
+      "prompt_sha256": "50a7acadbe4b62940d7cc1989784ebeb7ecf662cf14e1d69b43d73838832eaef",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          152,
+          1205,
+          1214
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 68
+    },
+    {
+      "id": "prop_zebra",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Zebra",
+      "chinese": "斑馬",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_zebra.png",
+      "mode": "RGBA",
+      "size": [
+        1207,
+        1213
+      ],
+      "sha256": "40525f44ee5c305787c9e72ae6d2b5719b48cbbce50e3f88813e34ba61396371",
+      "source_sha256": "c8d1dcc3ac14a8461072019bd996446393445d70789ad9dac59899c7e5f637e8",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_zebra_r01.source.png",
+      "prompt_sha256": "45f232ad458805a6456468052904297238b5345cde5d2efa7ebb6497df7d8796",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          33,
+          31,
+          1224,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 69
+    },
+    {
+      "id": "prop_hippopotamus",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Hippopotamus",
+      "chinese": "河馬",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_hippopotamus.png",
+      "mode": "RGBA",
+      "size": [
+        1210,
+        1146
+      ],
+      "sha256": "8e4fed1813850ec21856669253070330d2552bb69953e620a5560c11a3334c47",
+      "source_sha256": "d5ae80024b3b15a338d55bde0ac7716300df55bc277ccbc2db0f3b90390a432b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_hippopotamus_r01.source.png",
+      "prompt_sha256": "5c85b99fd3b48b5c751f7408f8272764d308e0056da3430ebc746138e6c28d21",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          42,
+          51,
+          1236,
+          1181
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 70
+    },
+    {
+      "id": "prop_rhinoceros",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Rhinoceros",
+      "chinese": "犀牛",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_rhinoceros.png",
+      "mode": "RGBA",
+      "size": [
+        1213,
+        1159
+      ],
+      "sha256": "a8fbb141d09360a6e11ba491d6dddefcf6d7857563a29697ad406d56e5f6ae70",
+      "source_sha256": "6c937b04460d60974aea52586456ba261db3f6b29304f144880d2d2aa2dc1a3e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_rhinoceros_r01.source.png",
+      "prompt_sha256": "7b8f1f17df221ba2a5f224e8f6409b1066f5df96e314125520cd1d4bd2fd5120",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          25,
+          47,
+          1222,
+          1190
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 71
+    },
+    {
+      "id": "prop_koala",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Koala",
+      "chinese": "樹熊",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_koala.png",
+      "mode": "RGBA",
+      "size": [
+        1197,
+        1222
+      ],
+      "sha256": "b866aa0f066854d4a4db34c651129455a6ca3ef29eaf84da709dbf239747dd19",
+      "source_sha256": "b91bd82d96ec233c0c11bd034d38318b8646d4be3ea462fbb0a8abdd19042e3e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_koala_r01.source.png",
+      "prompt_sha256": "94f702fdf6f61fb6c540a978b758846ca83e5c8a23a04a2e5d54ef6a3e13b3cc",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          41,
+          26,
+          1222,
+          1232
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 72
+    },
+    {
+      "id": "prop_sheep",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Sheep",
+      "chinese": "綿羊",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_sheep.png",
+      "mode": "RGBA",
+      "size": [
+        1240,
+        1218
+      ],
+      "sha256": "13ae9820158edfcb6aff15430edaed192f2c1e70621ec097da44b8107259285c",
+      "source_sha256": "1b2aa7a302ead3dbb491f093dda431efed736352d8c2afbbb25e70129e578c71",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_sheep_r01.source.png",
+      "prompt_sha256": "446d7a4007d724b6c34f02508a33075f954d6bc504349bbc56c61e72c2e34403",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          52,
+          1224,
+          1254
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 73
+    },
+    {
+      "id": "prop_goat",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Goat",
+      "chinese": "山羊",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_goat.png",
+      "mode": "RGBA",
+      "size": [
+        1240,
+        1231
+      ],
+      "sha256": "48568005b29bbbc3bdff9a6b90790bcfb58d21d88d9c883a485f06b60a331295",
+      "source_sha256": "d8c581a12af153cc91b1be3e7548a288e888773908091dff3af689e31134cba4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_goat_r01.source.png",
+      "prompt_sha256": "d5983e023298a0753e828465b3fb6ed3d94b9d0423f29a14d52561bcbd28f2b8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          0,
+          21,
+          1224,
+          1236
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 74
+    },
+    {
+      "id": "prop_cow",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Cow",
+      "chinese": "奶牛",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_cow.png",
+      "mode": "RGBA",
+      "size": [
+        1205,
+        1186
+      ],
+      "sha256": "68a6adcf74047a87543632cc2a17a59db4be2e5a994a8442f4d83d0ffd7b8b0d",
+      "source_sha256": "be33121091e2a552f14e820146f8f3084ae5f0b05acb8f80fdd21a48b76eccc6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_cow_r01.source.png",
+      "prompt_sha256": "8e13a4807c32ccd4347333703b268f4c2b4327264bc2a34f11db5eb3c457a53e",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          33,
+          58,
+          1222,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 75
+    },
+    {
+      "id": "prop_pig",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pig",
+      "chinese": "小豬",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_pig.png",
+      "mode": "RGBA",
+      "size": [
+        1159,
+        1231
+      ],
+      "sha256": "8da17a7522c6a6e6f9c9772b9e17dff76be528adf0ff6b8e030733a850bd5c6d",
+      "source_sha256": "72b9b65b5097b77b5352849ac627851f9cd4130e71fd8a1138d20114f31d923f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_pig_r01.source.png",
+      "prompt_sha256": "e62bb5dc1bdeb9a9c223c4049bae8530be1c1ce00ccd205113cb23b3743257b9",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          59,
+          23,
+          1202,
+          1238
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 76
+    },
+    {
+      "id": "prop_deer",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Deer",
+      "chinese": "小鹿",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_deer.png",
+      "mode": "RGBA",
+      "size": [
+        1185,
+        1233
+      ],
+      "sha256": "37368f4b62431258358f8690ff9699b2da02b50cb80bfa97a4e80c591066847d",
+      "source_sha256": "6ddc732f3d0e421f113500f68b556a2f79035152532b44cd347a535eacb19fe6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_deer_r01.source.png",
+      "prompt_sha256": "e6402bdcd2bb4aa4b6b02d54ed6b8c4276bc5efe6750a8cd618f0541ae3b8f95",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          33,
+          16,
+          1202,
+          1233
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 77
+    },
+    {
+      "id": "prop_fox",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Fox",
+      "chinese": "狐狸",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_fox.png",
+      "mode": "RGBA",
+      "size": [
+        1160,
+        1223
+      ],
+      "sha256": "3bf8d0b879f67897447cf393534b98f105861899684bbe1dfe1f8482748d6820",
+      "source_sha256": "76fe4ac806c2c1ce58bfa78db64a07d041848555bbdbbdb604b8d8374e455176",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_fox_r01.source.png",
+      "prompt_sha256": "50ae6b23149ada65a9505efa4345bf5a6c64ef5af5faa14201245397b0c8359a",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          64,
+          21,
+          1208,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 78
+    },
+    {
+      "id": "prop_squirrel",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Squirrel",
+      "chinese": "松鼠",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_squirrel.png",
+      "mode": "RGBA",
+      "size": [
+        1189,
+        1213
+      ],
+      "sha256": "56376d747ab6e6c1624f12c5fdbe4014fac0ee0fbcd6db2d1908196acabbbf4a",
+      "source_sha256": "39bc1363a6468901d032700e543bccf50ff1c27dafa153f705e165c8c0658a32",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_squirrel_r01.source.png",
+      "prompt_sha256": "ade2d311326976266bfc11b6ca880dcb4e666d97fc57a0d747d3dfc7fb6a31d4",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          27,
+          19,
+          1200,
+          1216
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 79
+    },
+    {
+      "id": "prop_hedgehog",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Hedgehog",
+      "chinese": "刺蝟",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_hedgehog.png",
+      "mode": "RGBA",
+      "size": [
+        1160,
+        1223
+      ],
+      "sha256": "7a85b485afca6f535c0118f8fa268291d3f885ecca4244cdb8a3b2ae70bff6c2",
+      "source_sha256": "7a8c83c174dfb99d1c143beab34c566447ebfb66e0f08826bc2a3654e46889d5",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_hedgehog_r01.source.png",
+      "prompt_sha256": "24f989698acb8dbfd5016e60c9a369290219399bcc5bf101555bd2706f208ee9",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          78,
+          21,
+          1222,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 80
+    },
+    {
+      "id": "prop_owl",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Owl",
+      "chinese": "貓頭鷹",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_owl.png",
+      "mode": "RGBA",
+      "size": [
+        1183,
+        1195
+      ],
+      "sha256": "7c7c32e644c706c51338bea284a9767320b6435642ff5c8a649b160aa2afb822",
+      "source_sha256": "ed92bb553073a2f4f20d2c4b5dabf94ee18a8c8a15f1eb1ecf2cadc1db4ad072",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_owl_r01.source.png",
+      "prompt_sha256": "b5cd7f8771362b562d1d71eafd08113ae364d75fba4621fa8b992c2f8d89ebe3",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          71,
+          49,
+          1238,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 81
+    },
+    {
+      "id": "prop_seal",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Seal",
+      "chinese": "海豹",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_seal.png",
+      "mode": "RGBA",
+      "size": [
+        1220,
+        1129
+      ],
+      "sha256": "b0145937872aefbd12499c2cc785eb88e62c70b71b7d18d5c6a1a5a9f588d956",
+      "source_sha256": "61cec20e2d353b060e77eb690a1d895a8f28c81b205ebd8629efea2a4e105cf6",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_seal_r01.source.png",
+      "prompt_sha256": "51aaddffd1b103990ccd0c53bd6fe8b085f20b3b09179429349d2ca3096593b8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          33,
+          115,
+          1237,
+          1228
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 82
+    },
+    {
+      "id": "prop_otter",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Otter",
+      "chinese": "水獺",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_otter.png",
+      "mode": "RGBA",
+      "size": [
+        1175,
+        1231
+      ],
+      "sha256": "728f826da21fa286cc6571eae8c440e066d1e186c6d783d2d882aea84a3f66bd",
+      "source_sha256": "fce985bc9a485e9d6589c7a73ef1976d16d79c8534afd0ae3ee6a3b0a80a03b2",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_otter_r01.source.png",
+      "prompt_sha256": "c12a6de9f9f1cc6ca30899b063daa9d13ae425b5d9540746305653827478a6e2",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          63,
+          21,
+          1222,
+          1236
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 83
+    },
+    {
+      "id": "prop_dolphin",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Dolphin",
+      "chinese": "海豚",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_dolphin.png",
+      "mode": "RGBA",
+      "size": [
+        1171,
+        1161
+      ],
+      "sha256": "ada99899841b91a785076ba87f2552a1868cd23738fe4109ab2442a54e9c15b4",
+      "source_sha256": "1feb18d5dd4f2a28ab72ce2fd89f230a0d15d8bf817221dcd6345ca2d1491f65",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_dolphin_r01.source.png",
+      "prompt_sha256": "743e34da3dfb9f7c71f819c4a5fe51889d5456e0784ea2a3653917b7c39db5e1",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          47,
+          53,
+          1202,
+          1198
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 84
+    },
+    {
+      "id": "prop_whale",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Whale",
+      "chinese": "鯨魚",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_whale.png",
+      "mode": "RGBA",
+      "size": [
+        1210,
+        1159
+      ],
+      "sha256": "a0c19565b7d57d9191d5d85383e9a1969618a8a9868dc87ed315f7e74f27afbb",
+      "source_sha256": "3c5002d1548539695d9bad143c508666d8ac99a8868aba13fb42250bd626bb1b",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_whale_r01.source.png",
+      "prompt_sha256": "6cfd2f58c34ef26525dbfe479690d8c35a0bf4c24bdfd3b5410bf9ef13b47a83",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          42,
+          53,
+          1236,
+          1196
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 85
+    },
+    {
+      "id": "prop_camel",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Camel",
+      "chinese": "駱駝",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_camel.png",
+      "mode": "RGBA",
+      "size": [
+        1189,
+        1205
+      ],
+      "sha256": "0cd7aab5414ef809764c12e236e3bb20e4b498bc542f54cb8b23deba5a3b5efd",
+      "source_sha256": "d2ff523aa5e36354bd2bb808470b7b2ba7a13a0c318d908644facb5353091a52",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_camel_r01.source.png",
+      "prompt_sha256": "600f5bab667c92b226ff189eb97e65ee81fa58f0450048d2b38e5e6f96813c04",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          25,
+          21,
+          1198,
+          1210
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 86
+    },
+    {
+      "id": "prop_kangaroo",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Kangaroo",
+      "chinese": "袋鼠",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_kangaroo.png",
+      "mode": "RGBA",
+      "size": [
+        1163,
+        1220
+      ],
+      "sha256": "82b30078aec39b640401fb1b16f920bc2cb376df5232078c1175492d3baaa34a",
+      "source_sha256": "a33a22c380223cd41cf7862b5b88c668bebf69632e73c89b836470b01a0d1d55",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_kangaroo_r01.source.png",
+      "prompt_sha256": "f7e18aedf7149cca84c02a249f359245d3597f363f5ae32646ff2c85ad8eb600",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          57,
+          21,
+          1204,
+          1225
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 87
+    },
+    {
+      "id": "prop_alpaca",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Alpaca",
+      "chinese": "羊駝",
+      "category": "animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_alpaca.png",
+      "mode": "RGBA",
+      "size": [
+        1175,
+        1241
+      ],
+      "sha256": "0f25d73ad9135658f6254ae2756097c2823dd55af33474361fa8c3acb51bb485",
+      "source_sha256": "f75b1acc4e1c4382237073126cacd2f487cff5ef44d60569274a7d6a00f633a2",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_basename": "prop_alpaca_r01.source.png",
+      "prompt_sha256": "562fffbc3398e08278b75802a824b0db86886711ff76db21f07ae0588cf40ec7",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          41,
+          13,
+          1200,
+          1238
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 88
+    },
+    {
+      "id": "shape_circle",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Circle",
+      "chinese": "圓形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_circle.png",
+      "mode": "RGBA",
+      "size": [
+        769,
+        769
+      ],
+      "sha256": "ae1070566036e3fc81ac1d3db6c286ea477061b7977444d80ee8fb427d1603cb",
+      "source_sha256": "8cca7339f7a1e42c86de2153935ab0c3a1552ea5ce09b83568bd105ccb214428",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_circle.png",
+      "prompt_sha256": "98b690903c72bd0c5442ff4cf7def4da2b634d024b6b2ee71fc02dabeeb70d77",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          136,
+          136,
+          889,
+          889
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 89
+    },
+    {
+      "id": "shape_triangle",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Triangle",
+      "chinese": "三角形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_triangle.png",
+      "mode": "RGBA",
+      "size": [
+        790,
+        784
+      ],
+      "sha256": "822ea149717f8fdb4bf205cedfc4f2650cc38f5dabd05492ad1a4c2529506b99",
+      "source_sha256": "473e6e7345274161541a754b769ad84e7ba13db9349178a3056070042c488ddc",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_triangle.png",
+      "prompt_sha256": "2ca6828748803259710ce5cb192e55d096bf5c95375e3614b3506bd019b5d3c0",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          125,
+          131,
+          899,
+          899
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 90
+    },
+    {
+      "id": "shape_square",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Square",
+      "chinese": "正方形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_square.png",
+      "mode": "RGBA",
+      "size": [
+        768,
+        768
+      ],
+      "sha256": "3456c52f375e93c0e1825d5d7d3b21d4b0450428d95e7b61b7bac8a1c69ef9b9",
+      "source_sha256": "d71a9d98477555a1c6721b21b14fa9d44f55edc4ffa508af971dcddbd50955eb",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_square.png",
+      "prompt_sha256": "6601509e87d7379ce5cd8500275155ce54ca7fb835040245ef81579e9c87224e",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          137,
+          137,
+          889,
+          889
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 91
+    },
+    {
+      "id": "shape_rectangle",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Rectangle",
+      "chinese": "長方形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_rectangle.png",
+      "mode": "RGBA",
+      "size": [
+        780,
+        520
+      ],
+      "sha256": "9b894d642698a6b6fcc77c3aa13e98a5ec7b5ab48905b6d42c1ab9d98e7fcfa1",
+      "source_sha256": "d6f83abf94f0334b44155fec83855bd895379b2f3ebedb180aedf9aebedcaf2c",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_rectangle.png",
+      "prompt_sha256": "a55dda55cc7422d1b723ead9f8f9fbe13e7ee1f56ade38a771d5503c2d22373e",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          131,
+          261,
+          895,
+          765
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 92
+    },
+    {
+      "id": "shape_oval",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Oval",
+      "chinese": "橢圓形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_oval.png",
+      "mode": "RGBA",
+      "size": [
+        803,
+        562
+      ],
+      "sha256": "a3567d7654e37193aefcbf1681c6c2ff8c726ef5922be9f2471ab02c312189e3",
+      "source_sha256": "395af13c50accb68692bb00a05abb39511462564c1d69e9a5969ebab012cb0c9",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_oval.png",
+      "prompt_sha256": "3e2799b7c63fad949cdd262ba92503e159d6d8454d50e9660842734212ef903b",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          119,
+          239,
+          906,
+          785
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 93
+    },
+    {
+      "id": "shape_diamond",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Diamond",
+      "chinese": "菱形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_diamond.png",
+      "mode": "RGBA",
+      "size": [
+        790,
+        787
+      ],
+      "sha256": "dd3fcb5691595af98cafa4c20720ddd15db046d8008529c0c291254569acbcee",
+      "source_sha256": "e6d04b11213538dae648c865b4f3dc9aa7b83ea8c5dee44848b0d41fb2e1bac7",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_diamond.png",
+      "prompt_sha256": "c78885e811f241ec12dac55c8801f139ae3c47866165693a816f6600f03f7b49",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          125,
+          128,
+          899,
+          899
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 94
+    },
+    {
+      "id": "shape_pentagon",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Pentagon",
+      "chinese": "五邊形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_pentagon.png",
+      "mode": "RGBA",
+      "size": [
+        754,
+        717
+      ],
+      "sha256": "40ac401c108963134873f7558c313899e01934bf97a2db5daad7441526196c44",
+      "source_sha256": "9eeb8397a6fcfd667894432696e1c973648ebdf91cde3ead5719b734875cd08d",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_pentagon.png",
+      "prompt_sha256": "3f8b3066ecc711483c9508a4b8950ca6bbc69059b7e84255f49e3fdd06e57915",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          143,
+          142,
+          881,
+          843
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 95
+    },
+    {
+      "id": "shape_hexagon",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Hexagon",
+      "chinese": "六邊形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_hexagon.png",
+      "mode": "RGBA",
+      "size": [
+        690,
+        790
+      ],
+      "sha256": "111a6465ec5b3549863f9b49a3b57a1a69dea74eea66969e4e71c45ab0026026",
+      "source_sha256": "480d1203162f2c9936e59e95da592d13c8e853db8dafb384b528e4ad491aec55",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_hexagon.png",
+      "prompt_sha256": "0cd80fb7708fef1cf313c588c3b6d28db214e355d079ff9ff47454f9414a397e",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          175,
+          125,
+          849,
+          899
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 96
+    },
+    {
+      "id": "shape_octagon",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Octagon",
+      "chinese": "八邊形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_octagon.png",
+      "mode": "RGBA",
+      "size": [
+        734,
+        734
+      ],
+      "sha256": "2c442679eff8e2147480826a68bbbbe34add6ce86d22d4c00c0a859cba141828",
+      "source_sha256": "939ec5a4018ca59953d91fd5b928b2e7ce4c02e5e9a1e42b33b8b6514c89b79b",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_octagon.png",
+      "prompt_sha256": "6fbc7568ade4b9d938595f329c2469fb3126eb2adb7d0cdf22f8545837431a1f",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          153,
+          153,
+          871,
+          871
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 97
+    },
+    {
+      "id": "shape_heart",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Heart",
+      "chinese": "心形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_heart.png",
+      "mode": "RGBA",
+      "size": [
+        791,
+        790
+      ],
+      "sha256": "2df2b1b2dd066b1558336aff452e0ff1757a73a418caf603aad3c405d464d62c",
+      "source_sha256": "6b75d9ad26d9cf44019fbf7828f6ee045772c85082ab1fa3697febaef3487d1c",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_heart.png",
+      "prompt_sha256": "fc30184c78ce86295b49c82273d50408e3962a3196e1cc08106cbe2ea73b5ec0",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          125,
+          125,
+          900,
+          899
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 98
+    },
+    {
+      "id": "shape_star",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Star",
+      "chinese": "星形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_star.png",
+      "mode": "RGBA",
+      "size": [
+        754,
+        712
+      ],
+      "sha256": "c064401605f996c7a17df92c38f6a4c7620505340506362d43c95b3a3c238935",
+      "source_sha256": "85894230a3a21679459fbe535d96ef340250407b8a4fb3556d26d895d0a7578f",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_star.png",
+      "prompt_sha256": "69e5e6f0b409cb89f029c68cd205f46c99a1bdda1d14ee8cf69281090ddb446b",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          143,
+          132,
+          881,
+          828
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 99
+    },
+    {
+      "id": "shape_semicircle",
+      "kind": "shape",
+      "catalog_type": "shape",
+      "name": "Semicircle",
+      "chinese": "半圓形",
+      "category": "shapes",
+      "original_category": "shapes",
+      "runtime_path": "assets/stickers/shape_semicircle.png",
+      "mode": "RGBA",
+      "size": [
+        781,
+        412
+      ],
+      "sha256": "6dce819a5c15294ae19676017464261b95f83ba08a6f1bcd74d84b605782cb28",
+      "source_sha256": "d98e2539817cf4a8ebc94ca13792d0afd72f163332beaa4ccf1fbcc1622cc450",
+      "source_size": [
+        1024,
+        1024
+      ],
+      "source_basename": "shape_semicircle.png",
+      "prompt_sha256": "20b6cb7e59df55704cca5ca7ebe352b19e9edf9db14b12d7d0bd0ea66f9714cf",
+      "method": "local_vector",
+      "provider": "Local Pillow vector render",
+      "visual_status": "user_approved_100_release",
+      "release_id": "library_expansion_v5",
+      "previous_runtime_sha256": null,
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": [
+          130,
+          130,
+          895,
+          526
+        ],
+        "transparent_padding_each_side": 8,
+        "source_preserved_outside_repository": true
+      },
+      "order": 100
+    }
+  ]
+}

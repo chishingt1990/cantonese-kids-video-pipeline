@@ -106,7 +106,7 @@ class TestPhonicsRelease(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(hashlib.sha256(response.content).hexdigest(), before[1])
 
-    def test_asset_portal_counts_189_and_categories(self):
+    def test_asset_portal_counts_374_and_categories(self):
         output = build_asset_portal()
         html = output.read_text(encoding="utf-8")
         match = re.search(r'<script id="asset-data" type="application/json">(.*?)</script>', html)
@@ -115,8 +115,8 @@ class TestPhonicsRelease(unittest.TestCase):
         # 189 pre-existing (60 artwork + 73 phonics + 56 props)
         #   + 53 family-expansion v3 (41 solo + 12 contact)
         #   + 32 family-interactions v4 (26 twin interactions + 6 four-person group composites)
-        # = 274 unique assets.
-        self.assertEqual(len(data["assets"]), 274)
+        # = 274 unique assets, then library-expansion v5 adds 100 stickers.
+        self.assertEqual(len(data["assets"]), 374)
         self.assertEqual(len(data["excluded"]), 8)
         self.assertIn("Letters", data["categories"])
         self.assertIn("Numbers", data["categories"])
@@ -127,6 +127,8 @@ class TestPhonicsRelease(unittest.TestCase):
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Family sprites"]), 41)
         # v3 shipped 12 contact composites; v4 adds 32 (26 twin + 6 group) → 44.
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Family contacts"]), 44)
+        self.assertEqual(len([a for a in data["assets"] if a["category"] == "Shapes"]), 12)
+        self.assertEqual(len([a for a in data["assets"] if a["batch"] == "Library expansion v5"]), 100)
         self.assertNotIn("file:///", html)
         self.assertNotIn("copilot.cloud.microsoft/chat/conversation/", html)
 

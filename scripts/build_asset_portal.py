@@ -15,11 +15,12 @@ CATEGORIES = {
     "fruit_vegetables": "Fruits & vegetables", "food_snacks": "Food & snacks",
     "everyday_props": "Everyday props",
     "toys": "Toys",
+    "shapes": "Shapes",
 }
 CATEGORY_ORDER = [
     "All assets", "Sprites", "Family sprites", "Family contacts", "Cantonese badges",
     "Letters", "Numbers",
-    "Toys", "Animals", "Vehicles", "Fruits & vegetables", "Food & snacks", "Everyday props",
+    "Toys", "Shapes", "Animals", "Vehicles", "Fruits & vegetables", "Food & snacks", "Everyday props",
 ]
 
 # Simplified family-browsing buckets used by the portable asset portal and the
@@ -83,6 +84,8 @@ def build() -> Path:
     phonics_path = ROOT / "config" / "phonics_release_v2.json"
     phonics_manifest = json.loads(phonics_path.read_text(encoding="utf-8")) if phonics_path.exists() else None
     expansion = json.loads((ROOT / "config" / "props_release_v2.json").read_text(encoding="utf-8"))
+    library_path = ROOT / "config" / "library_expansion_v5.json"
+    library_manifest = json.loads(library_path.read_text(encoding="utf-8")) if library_path.exists() else None
     family_path = ROOT / "config" / "family_release_v3.json"
     family_manifest = json.loads(family_path.read_text(encoding="utf-8")) if family_path.exists() else None
     family_v4_path = ROOT / "config" / "family_interactions_v4.json"
@@ -296,6 +299,47 @@ def build() -> Path:
                 "thumb": preview(path, 360), "large": preview(path, 1040), "reference": reference,
                 "family_buckets": asset_buckets,
             })
+    if library_manifest:
+        for asset in library_manifest["assets"]:
+            relative = asset["runtime_path"]
+            path = (ROOT / relative).resolve()
+            if not path.is_relative_to(ROOT):
+                raise ValueError(f"Library asset path must stay within the repository: {relative}")
+            if hashlib.sha256(path.read_bytes()).hexdigest() != asset["sha256"]:
+                raise ValueError(f"Library expansion v5 hash mismatch: {relative}")
+            if asset["kind"] not in {"prop", "shape"}:
+                raise ValueError(f"Unsupported library expansion asset kind: {asset['kind']}")
+            with Image.open(path) as image:
+                dimensions = list(image.size)
+                has_transparency = image.convert("RGBA").getchannel("A").histogram()[0] > 0
+            category = CATEGORIES[asset["category"]]
+            notes = (
+                "Approved library-expansion v5 sticker. Source pixels were crop/pad promoted "
+                "without RGB resampling; original downloaded bytes remain outside the repository."
+            )
+            if asset["kind"] == "shape":
+                notes = "Approved local vector shape sticker with continuous closed outline and preserved geometry."
+            assets.append({
+                "id": asset["id"], "name": asset["name"], "category": category,
+                "batch": "Library expansion v5",
+                "order": 5, "notes": notes,
+                "flagged": False, "history": False, "status": "installed",
+                "subtitle": asset["chinese"],
+                "dimensions": dimensions, "sourceDimensions": asset.get("source_size", dimensions),
+                "provider": asset["provider"],
+                "alpha": "Transparent exterior · RGBA" if has_transparency else "Opaque background",
+                "path": relative, "url": quote(relative, safe="/"), "installedUrl": None,
+                "prompt": json.dumps({
+                    "release": library_manifest["release_id"], "asset_id": asset["id"],
+                    "sha256": asset["sha256"], "source_sha256": asset["source_sha256"],
+                    "prompt_sha256": asset["prompt_sha256"],
+                    "processing": asset["processing"], "category": asset["category"],
+                    "original_category": asset["original_category"],
+                    "kind": asset["kind"],
+                }, ensure_ascii=False, indent=2),
+                "thumb": preview(path, 360), "large": preview(path, 1040), "reference": None,
+                "family_buckets": [],
+            })
     if len(assets) != len({a["id"] for a in assets}):
         raise ValueError("Duplicate IDs in release manifest")
     categories = [category for category in CATEGORY_ORDER if category == "All assets" or any(a["category"] == category for a in assets)]
@@ -313,7 +357,7 @@ def build() -> Path:
         raise ValueError("Portal template must have exactly one data marker")
     data = json.dumps({"assets": assets, "categories": categories,
                        "family_buckets": family_buckets_meta,
-                       "excluded": expansion["excluded_unrecovered_ids"]}, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+                        "excluded": expansion["excluded_unrecovered_ids"]}, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     result = template.replace("__ASSET_DATA__", data)
     if "file:///" in result or "C:\\\\" in result or "copilot.cloud.microsoft/chat/" in result:
         raise ValueError("Portal must not contain private local paths or conversation URLs")

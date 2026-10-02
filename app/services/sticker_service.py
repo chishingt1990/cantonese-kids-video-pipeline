@@ -508,21 +508,33 @@ STICKER_CATALOG = [
     }
 ]
 
-with open(os.path.join(os.path.dirname(STICKER_DIR), "..", "config", "artwork_release_v1.json"), encoding="utf-8") as release_file:
+CONFIG_DIR = os.path.join(os.path.dirname(STICKER_DIR), "..", "config")
+
+with open(os.path.join(CONFIG_DIR, "artwork_release_v1.json"), encoding="utf-8") as release_file:
     _release = json.load(release_file)
-with open(os.path.join(os.path.dirname(STICKER_DIR), "..", "config", "props_release_v2.json"), encoding="utf-8") as release_file:
+with open(os.path.join(CONFIG_DIR, "props_release_v2.json"), encoding="utf-8") as release_file:
     _prop_expansion = json.load(release_file)
+_library_expansion_path = os.path.join(CONFIG_DIR, "library_expansion_v5.json")
+if os.path.exists(_library_expansion_path):
+    with open(_library_expansion_path, encoding="utf-8") as release_file:
+        _library_expansion = json.load(release_file)
+else:
+    _library_expansion = {"assets": []}
 RELEASE_PROPS = [
     {
-        "id": asset["id"], "type": "icon",
+        "id": asset["id"],
+        "type": asset.get("catalog_type", "shape" if asset.get("kind") == "shape" else "icon"),
         "label": f"{asset['chinese']} ({asset['name']})",
         "chinese": asset["chinese"], "english": asset["name"],
-        "icon": asset["id"].removeprefix("prop_"),
-        "content": asset["id"].removeprefix("prop_"),
+        "icon": asset["id"].removeprefix("prop_").removeprefix("shape_"),
+        "content": asset["id"].removeprefix("prop_").removeprefix("shape_"),
         "category": asset["category"],
         "release_addition": asset.get("previous_runtime_sha256") is None,
+        "kind": asset.get("kind", "prop"),
+        "source_release": asset.get("release_id"),
     }
-    for asset in _release["assets"] + _prop_expansion["assets"] if asset["kind"] == "prop"
+    for asset in _release["assets"] + _prop_expansion["assets"] + _library_expansion["assets"]
+    if asset["kind"] in {"prop", "shape"}
 ]
 _release_prop_ids = {prop["id"] for prop in RELEASE_PROPS}
 _phonics_catalog = phonics_catalog_records()
@@ -530,18 +542,122 @@ _phonics_ids = phonics_catalog_ids()
 STICKER_CATALOG = [s for s in STICKER_CATALOG if s["id"] not in _release_prop_ids and s["id"] not in _phonics_ids] + _phonics_catalog + RELEASE_PROPS
 
 
+LEGACY_STICKER_ALIASES = {
+    "badge_take_turns": "badge_take_turns_v1",
+    "word_take_turns": "badge_take_turns_v1",
+    "badge_play_together": "badge_play_together_v1",
+    "vocab_play_together": "badge_play_together_v1",
+    "badge_vocab_一齊玩": "badge_play_together_v1",
+    "badge_hug": "badge_big_hug",
+    "prop_toy_car_red": "prop_toy_car",
+    "sticker_duckling": "badge_duckling",
+}
+
+HIDDEN_REVIEWED_LEGACY_IDS = {
+    # Truncated dynamic IDs remain directly renderable for old projects, but they
+    # are not useful as selectable gallery cards.
+    "badge_vocab_A 係 Ap",
+    "badge_vocab_C 係 Ca",
+}
+
+REVIEWED_DISCOVERED_STICKERS = {
+    "badge_duckling": {
+        "id": "badge_duckling", "type": "word", "label": "鴨仔 (DUCKLING)",
+        "chinese": "鴨仔", "english": "DUCKLING", "color_theme": "amber",
+    },
+    "vocab_banana": {
+        "id": "vocab_banana", "type": "word", "label": "香蕉 (BANANA)",
+        "chinese": "香蕉", "english": "BANANA", "color_theme": "amber",
+    },
+    "badge_spoon": {
+        "id": "badge_spoon", "type": "word", "label": "匙羹 (SPOON)",
+        "chinese": "匙羹", "english": "SPOON", "color_theme": "amber",
+    },
+    "badge_family_love": {
+        "id": "badge_family_love", "type": "word", "label": "幸福一家 (Happy Family)",
+        "chinese": "幸福一家", "english": "HAPPY FAMILY", "color_theme": "gold",
+    },
+    "badge_grandparents": {
+        "id": "badge_grandparents", "type": "word", "label": "爺爺 嫲嫲 (Grandparents)",
+        "chinese": "爺爺 嫲嫲", "english": "GRANDPARENTS", "color_theme": "rose",
+    },
+    "badge_hiking": {
+        "id": "badge_hiking", "type": "word", "label": "行山 (Hiking)",
+        "chinese": "行山", "english": "HIKING", "color_theme": "emerald",
+    },
+    "word_hiking": {
+        "id": "word_hiking", "type": "word", "label": "行山 (Hiking)",
+        "chinese": "行山", "english": "HIKING", "color_theme": "emerald",
+    },
+    "badge_mealtime": {
+        "id": "badge_mealtime", "type": "word", "label": "好美味！ (So Yummy!)",
+        "chinese": "好美味！", "english": "SO YUMMY!", "color_theme": "gold",
+    },
+    "vocab_patience": {
+        "id": "vocab_patience", "type": "word", "label": "耐心 (Patience)",
+        "chinese": "耐心", "english": "PATIENCE", "color_theme": "purple",
+    },
+    "vocab_slide": {
+        "id": "vocab_slide", "type": "word", "label": "滑梯 (Slide)",
+        "chinese": "滑梯", "english": "SLIDE", "color_theme": "sky",
+    },
+}
+
+
+def resolve_sticker_id(sticker_id: str) -> str:
+    """Resolve reviewed legacy aliases to a canonical sticker id without cycles."""
+    current = (sticker_id or "").replace(".png", "")
+    seen = set()
+    while current in LEGACY_STICKER_ALIASES:
+        if current in seen:
+            raise ValueError(f"Sticker alias cycle detected at {current}")
+        seen.add(current)
+        current = LEGACY_STICKER_ALIASES[current]
+    return current
+
+
+def normalize_sticker_info(sticker_info: Dict[str, Any]) -> Dict[str, Any]:
+    """Return a copy whose id and immutable catalog text match the canonical art."""
+    normalized = dict(sticker_info)
+    original_id = normalized.get("id") or "sticker_custom"
+    if original_id == "badge_play_together":
+        text = f"{normalized.get('content', '')} {normalized.get('chinese', '')} {normalized.get('english', '')}".lower()
+        canonical_id = "badge_take_turns_v1" if ("輪流" in text or "輪住" in text or "turn" in text) else "badge_play_together_v1"
+    else:
+        canonical_id = resolve_sticker_id(original_id)
+    if canonical_id != original_id:
+        canonical = next((dict(s) for s in STICKER_CATALOG if s["id"] == canonical_id), None)
+        if canonical is None:
+            canonical = REVIEWED_DISCOVERED_STICKERS.get(canonical_id, {"id": canonical_id})
+        positional = {k: v for k, v in normalized.items() if k in {
+            "x_percent", "y_percent", "scale", "rotation_deg", "layer"
+        }}
+        normalized = {**canonical, **positional, "id": canonical_id, "legacy_id": original_id}
+    return normalized
+
+
 def get_all_stickers_catalog() -> List[Dict[str, Any]]:
     """Returns all stickers by merging the static catalog with any extra sticker PNG files found in assets/stickers/."""
-    catalog_map = {s["id"]: dict(s) for s in STICKER_CATALOG}
+    catalog_map = {
+        s["id"]: dict(s)
+        for s in STICKER_CATALOG
+        if s["id"] not in LEGACY_STICKER_ALIASES
+        and s["id"] not in HIDDEN_REVIEWED_LEGACY_IDS
+    }
     
     if os.path.exists(STICKER_DIR):
         for f in sorted(os.listdir(STICKER_DIR)):
             if not f.endswith(".png"):
                 continue
             s_id = f[:-4]
+            if s_id in LEGACY_STICKER_ALIASES or s_id in HIDDEN_REVIEWED_LEGACY_IDS:
+                continue
             if s_id in catalog_map:
                 continue
-                
+            if s_id in REVIEWED_DISCOVERED_STICKERS:
+                catalog_map[s_id] = dict(REVIEWED_DISCOVERED_STICKERS[s_id])
+                continue
+
             # Determine type & label
             if s_id.startswith("badge_") or s_id.startswith("word_") or s_id.startswith("vocab_"):
                 s_type = "word"
@@ -557,6 +673,10 @@ def get_all_stickers_catalog() -> List[Dict[str, Any]]:
                 else:
                     clean_name = clean_name.upper()
                     label = f"字母 {clean_name} (Letter {clean_name})"
+            elif s_id.startswith("shape_"):
+                s_type = "shape"
+                clean_name = s_id.replace("shape_", "").replace("_", " ").title()
+                label = f"🔷 {clean_name}"
             elif s_id.startswith("prop_") or s_id.startswith("sticker_"):
                 s_type = "icon"
                 clean_name = s_id.replace("prop_", "").replace("sticker_", "").replace("_", " ").title()
@@ -934,6 +1054,7 @@ def generate_prop_icon(icon_name: str, size: int = 180) -> Image.Image:
 
 def get_or_render_sticker(sticker_info: Dict[str, Any], force: bool = False) -> str:
     """Returns absolute file path to the transparent sticker PNG, generating if not present."""
+    sticker_info = normalize_sticker_info(sticker_info)
     s_id = sticker_info.get("id") or "sticker_custom"
     clean_id = s_id.replace(".png", "")
     file_path = os.path.join(STICKER_DIR, f"{clean_id}.png")

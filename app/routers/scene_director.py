@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
@@ -12,6 +12,8 @@ from app.services.sticker_service import (
     STICKER_CATALOG,
     get_all_stickers_catalog,
     get_or_render_sticker,
+    normalize_sticker_info,
+    resolve_sticker_id,
     STICKER_DIR
 )
 
@@ -71,9 +73,15 @@ def list_stickers():
     return {"stickers": get_all_stickers_catalog()}
 
 @router.get("/stickers/render/{sticker_id}")
-def render_sticker_image(sticker_id: str):
+def render_sticker_image(sticker_id: str, request: Request):
     """Returns transparent PNG of the requested sticker, generating if needed."""
     clean_id = os.path.basename(sticker_id.split("?")[0].replace(".png", ""))
+    query_info = {
+        key: value for key, value in request.query_params.items()
+        if key in {"type", "content", "chinese", "english", "color_theme", "icon", "letter", "number", "category", "kind"}
+    }
+    sticker_info = normalize_sticker_info({"id": clean_id, **query_info})
+    resolved_id = sticker_info["id"]
     
     no_cache_headers = {
         "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -83,23 +91,24 @@ def render_sticker_image(sticker_id: str):
     
     # Check if exact PNG file exists on disk
     direct_candidates = [
+        os.path.join(STICKER_DIR, f"{resolved_id}.png"),
+        os.path.join(STICKER_DIR, f"prop_{resolved_id.replace('prop_', '')}.png"),
+        os.path.join(STICKER_DIR, f"badge_{resolved_id.replace('badge_', '')}.png"),
+        os.path.join(STICKER_DIR, f"block_{resolved_id.replace('block_', '')}.png"),
         os.path.join(STICKER_DIR, f"{clean_id}.png"),
-        os.path.join(STICKER_DIR, f"prop_{clean_id.replace('prop_', '')}.png"),
-        os.path.join(STICKER_DIR, f"badge_{clean_id.replace('badge_', '')}.png"),
-        os.path.join(STICKER_DIR, f"block_{clean_id.replace('block_', '')}.png")
     ]
     for cand in direct_candidates:
         if os.path.exists(cand):
             return FileResponse(cand, media_type="image/png", headers=no_cache_headers)
             
     all_catalog = get_all_stickers_catalog()
-    match = next((s for s in all_catalog if s["id"] == clean_id), None)
+    match = next((s for s in all_catalog if s["id"] == resolved_id), None)
     
     if match:
-        path = get_or_render_sticker(match)
+        path = get_or_render_sticker({**match, **query_info, "id": clean_id})
     else:
         # Custom on-the-fly badge
-        path = get_or_render_sticker({"id": clean_id, "type": "word", "chinese": clean_id, "english": ""})
+        path = get_or_render_sticker({**sticker_info, "type": sticker_info.get("type", "word"), "chinese": sticker_info.get("chinese", resolved_id), "english": sticker_info.get("english", "")})
 
     if os.path.exists(path):
         return FileResponse(path, media_type="image/png", headers=no_cache_headers)

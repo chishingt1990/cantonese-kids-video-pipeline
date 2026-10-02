@@ -135,6 +135,7 @@ Despite the test variable name `opaque_px`, alpha > 0 is **not** proof of opacit
 - Phonics letter/number stickers must be deterministic local font renders with transparent RGBA exteriors, vivid matte colored glyph fills, and a close white die-cut outline following the glyph contours. Do not use box, tile, circle, or pill backgrounds for alphabet/number stickers. Preserve interior counters/holes in glyphs such as `A`, `B`, `0`, and `8`; multi-digit numbers should be the union of digit contours with no enclosing badge.
 - `get_or_render_sticker(..., force=False)` reuses an existing file (or matching `prop_` file). `force=True` can overwrite it; missing files can be generated at module import through `ensure_base_stickers()`. Do not delete the sticker directory or import the application as a read-only review shortcut.
 - Repairs to existing stickers require their own reviewed replacement batch. Do not regenerate all stickers during character-pose preparation.
+- Library expansion v5 adds approved prop PNGs and local vector shape PNGs as stickers. Shape stickers are standalone geometry props (`type: shape` in the runtime catalog), not phonics blocks, word badges, or fallback icons; preserve their aspect ratios and transparent exterior instead of stretching them into square glyphs.
 
 ---
 

@@ -719,6 +719,7 @@
     function isStickerMatch(s, category) {
       if (category === 'all') return true;
       const sid = (s.id || '').toLowerCase();
+      const metaCategory = (s.category || '').toLowerCase();
       if (category === 'word') {
         return s.type === 'word' || sid.startsWith('badge_') || sid.startsWith('word_') || sid.startsWith('vocab_');
       }
@@ -726,13 +727,23 @@
         return s.type === 'letter' || s.type === 'number' || s.type === 'block' || sid.startsWith('block_');
       }
       if (category === 'vehicle') {
-        return ['car', 'bus', 'truck', 'train', 'plane', 'airplane'].some(k => sid.includes(k));
+        return metaCategory ? metaCategory === 'vehicles' : ['car', 'bus', 'truck', 'train', 'plane', 'airplane', 'boat', 'canoe', 'kayak', 'tram', 'submarine', 'balloon', 'blimp'].some(k => sid.includes(k));
+      }
+      if (category === 'toy') {
+        return metaCategory === 'toys';
+      }
+      if (category === 'shape') {
+        return s.type === 'shape' || metaCategory === 'shapes' || sid.startsWith('shape_');
       }
       if (category === 'food') {
-        return ['banana', 'apple', 'dim_sum', 'fruit', 'siu_mai', 'har_gow', 'egg_tart', 'watermelon', 'strawberry', 'milk', 'cookie', 'bowl', 'cup', 'spoon', 'meal'].some(k => sid.includes(k));
+        return metaCategory ? (metaCategory === 'fruit_vegetables' || metaCategory === 'food_snacks' || metaCategory === 'foodfruit') :
+          ['banana', 'apple', 'dim_sum', 'fruit', 'siu_mai', 'har_gow', 'egg_tart', 'watermelon', 'strawberry', 'milk', 'cookie', 'bowl', 'cup', 'spoon', 'meal', 'peach', 'melon', 'pizza', 'pancake', 'sushi', 'oatmeal'].some(k => sid.includes(k));
       }
-      if (category === 'nature') {
-        return ['dog', 'duck', 'cat', 'kitty', 'bunny', 'frog', 'sun', 'rainbow', 'star', 'bubble', 'heart', 'sparkle', 'washcloth', 'toothbrush', 'crayons', 'balloon', 'gift', 'hat'].some(k => sid.includes(k));
+      if (category === 'animal') {
+        return metaCategory ? metaCategory === 'animals' : ['dog', 'duck', 'cat', 'kitty', 'bunny', 'frog', 'zebra', 'hippo', 'rhino', 'koala', 'sheep', 'goat', 'cow', 'pig', 'deer', 'fox', 'squirrel', 'hedgehog', 'owl', 'seal', 'otter', 'dolphin', 'whale', 'camel', 'kangaroo', 'alpaca'].some(k => sid.includes(k));
+      }
+      if (category === 'other') {
+        return !['word', 'block', 'vehicle', 'toy', 'shape', 'food', 'animal'].some(c => isStickerMatch(s, c));
       }
       return true;
     }
@@ -746,18 +757,24 @@
         word: stickersData.filter(s => isStickerMatch(s, 'word')).length,
         block: stickersData.filter(s => isStickerMatch(s, 'block')).length,
         vehicle: stickersData.filter(s => isStickerMatch(s, 'vehicle')).length,
+        toy: stickersData.filter(s => isStickerMatch(s, 'toy')).length,
+        shape: stickersData.filter(s => isStickerMatch(s, 'shape')).length,
         food: stickersData.filter(s => isStickerMatch(s, 'food')).length,
-        nature: stickersData.filter(s => isStickerMatch(s, 'nature')).length,
+        animal: stickersData.filter(s => isStickerMatch(s, 'animal')).length,
+        other: stickersData.filter(s => isStickerMatch(s, 'other')).length,
       };
 
       const categories = [
         { id: 'all', label: `All (${counts.all})` },
         { id: 'word', label: `💬 Badges (${counts.word})` },
         { id: 'block', label: `🧱 Phonics (${counts.block})` },
-        { id: 'vehicle', label: `🚗 Vehicles & Toys (${counts.vehicle})` },
-        { id: 'food', label: `🍎 Food (${counts.food})` },
-        { id: 'nature', label: `🐶 Animals & Props (${counts.nature})` },
-      ];
+        { id: 'vehicle', label: `🚗 Vehicles (${counts.vehicle})` },
+        { id: 'toy', label: `🧸 Toys (${counts.toy})` },
+        { id: 'shape', label: `🔷 Shapes (${counts.shape})` },
+        { id: 'food', label: `🍎 Food & fruit (${counts.food})` },
+        { id: 'animal', label: `🐶 Animals (${counts.animal})` },
+        { id: 'other', label: `✨ Other props (${counts.other})` },
+      ].filter(cat => cat.id === 'all' || counts[cat.id] > 0);
 
       container.innerHTML = categories.map(cat => `
         <button onclick="filterStickers('${cat.id}', this)" class="sticker-filter-btn px-3 py-1.5 rounded-xl ${activeStickerFilter === cat.id ? 'bg-amber-500 text-white font-bold shadow-xs' : 'bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold'} text-xs">
@@ -784,18 +801,18 @@
       const filtered = stickersData.filter(s => isStickerMatch(s, category));
 
       filtered.forEach(stk => {
-        const imgUrl = `/api/scene-director/stickers/render/${stk.id}?v=${Date.now()}`;
+        const imgUrl = `${stickerRenderUrl(stk)}${stickerRenderUrl(stk).includes('?') ? '&' : '?'}v=${Date.now()}`;
         const card = document.createElement('div');
         card.className = 'bg-white rounded-2xl p-3 border border-stone-200 shadow-xs flex flex-col justify-between space-y-2 hover:border-amber-300 transition-all group';
         
         card.innerHTML = `
           <div>
-            <div class="sprite-preview-box h-28 w-full rounded-xl flex items-center justify-center p-2 relative overflow-hidden transition-colors ${currentGlobalBg} cursor-pointer" onclick="openLightbox('${stk.label || stk.id}', '${stk.id}.png — Educational Sticker', '${imgUrl}')">
+            <div class="sprite-preview-box h-28 w-full rounded-xl flex items-center justify-center p-2 relative overflow-hidden transition-colors ${currentGlobalBg} cursor-pointer" onclick="openLightbox('${stk.label || stk.id}', '${stk.category || stk.type || 'Sticker'} — Educational Sticker', '${imgUrl}')">
               <img src="${imgUrl}" alt="${stk.label || stk.id}" class="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200">
             </div>
             <div class="mt-2 text-center">
               <div class="font-bold text-xs text-stone-800 truncate tc-font">${stk.label || stk.id}</div>
-              <div class="text-[10px] text-stone-400 capitalize truncate">${stk.id}</div>
+              <div class="text-[10px] text-stone-400 capitalize truncate">${(stk.category || stk.type || 'Sticker').replaceAll('_', ' ')}</div>
             </div>
           </div>
 
@@ -989,11 +1006,24 @@
 
       if (stickerId && stickerId !== 'none') {
         stickerBox.style.display = 'block';
-        stickerImg.src = `/api/scene-director/stickers/render/${stickerId}`;
+        const stickerInfo = stickersData.find(s => s.id === stickerId) || { id: stickerId };
+        stickerImg.src = stickerRenderUrl(stickerInfo);
         stickerBox.style.top = `${stickerY}%`;
       } else {
         stickerBox.style.display = 'none';
       }
+    }
+
+    function stickerRenderUrl(sticker) {
+      const stickerId = sticker.id || sticker.sticker_id || 'badge_thank_you';
+      const params = new URLSearchParams();
+      ['type', 'content', 'chinese', 'english', 'color_theme', 'icon', 'letter', 'number', 'category', 'kind'].forEach(key => {
+        if (sticker[key] !== undefined && sticker[key] !== null && `${sticker[key]}` !== '') {
+          params.set(key, sticker[key]);
+        }
+      });
+      const suffix = params.toString() ? `?${params.toString()}` : '';
+      return `/api/scene-director/stickers/render/${encodeURIComponent(stickerId)}.png${suffix}`;
     }
 
     function stageSpriteInSandbox(charId, poseId) {
