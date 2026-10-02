@@ -730,6 +730,21 @@ class TestFamilyRelease(unittest.TestCase):
         self.assertIn('id="family-bucket-chips"', html)
         self.assertIn('id="outfit-bucket-chips"', html)
 
+    def test_main_review_gallery_uses_shared_family_buckets(self):
+        """The gallery linked by the studio must not create a pill per actor."""
+        html = (ROOT / "app" / "static" / "review.html").read_text(encoding="utf-8")
+        self.assertIn("familyBuckets = data.family_buckets", html)
+        self.assertIn("...familyBuckets].forEach(bucket", html)
+        self.assertIn("(c.family_buckets || []).includes(activeCharFilter)", html)
+        self.assertNotIn("c.id !== activeCharFilter", html)
+        self.assertNotIn("c.name.split(' ')[0]", html)
+        self.assertIn("button.dataset.bucket = bucket.id", html)
+        self.assertIn("card.dataset.characterId = char.id", html)
+        self.assertIn("const poseCaption = char.members ? char.name : pose.label", html)
+        self.assertIn("stageSpriteInSandbox('${char.id}', '${pose.id}')", html)
+        index = (ROOT / "app" / "static" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('href="/review"', index)
+
     def test_portal_builder_tags_family_assets_with_buckets(self):
         """``scripts/build_asset_portal.py`` must tag each family asset with
         the same bucket list and emit ``family_buckets`` metadata, matching
