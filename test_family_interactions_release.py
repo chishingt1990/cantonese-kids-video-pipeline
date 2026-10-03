@@ -15,7 +15,7 @@ Covers:
   does not collide with any v3 ID / runtime path.
 * Scene director preserves v4 composite IDs and keeps the first-wins overlap
   rule working for 3- and 4-person composites.
-* Portal shows 274 unique assets, 44 Family contacts, 91 bucket-tagged assets.
+* Portal shows 403 unique assets, 44 Family contacts, 91 bucket-tagged assets.
 * Approval evidence is recorded accurately — twins batch quoted 'these are
   great', groups batch quoted 'A. Approve all six' + 'keep going'. The
   manifest never claims the v4 release has been publicly published.
@@ -447,7 +447,7 @@ class TestFamilyInteractionsRelease(unittest.TestCase):
 
     # -------------------------------------------------------- portal totals
     def test_portal_totals_after_v4_and_library_v5(self):
-        """Portal must reach 374 unique assets after the 100-sticker v5 release,
+        """Portal must reach 403 unique assets after targeted-repairs v6,
         while preserving 44 Family contacts and 91 bucket-tagged assets."""
         spec = importlib.util.spec_from_file_location(
             "build_asset_portal", ROOT / "scripts" / "build_asset_portal.py")
@@ -459,13 +459,15 @@ class TestFamilyInteractionsRelease(unittest.TestCase):
             r'<script id="asset-data" type="application/json">(.*?)</script>',
             text, re.S)
         data = json.loads(match.group(1))
-        self.assertEqual(len(data["assets"]), 374)
+        self.assertEqual(len(data["assets"]), 403)
         family_contacts = [a for a in data["assets"] if a["category"] == "Family contacts"]
         self.assertEqual(len(family_contacts), 44)
         self.assertEqual(
             len([a for a in data["assets"] if a["category"] == "Family sprites"]), 41)
         self.assertEqual(
             len([a for a in data["assets"] if a["batch"] == "Library expansion v5"]), 100)
+        self.assertEqual(
+            len([a for a in data["assets"] if a["batch"] == "Targeted repairs v6"]), 29)
         with_bucket = [a for a in data["assets"] if a.get("family_buckets")]
         self.assertEqual(len(with_bucket), 91,
                          "6 twin sprites + 41 v3 solos + 12 v3 contacts + 32 v4 contacts")

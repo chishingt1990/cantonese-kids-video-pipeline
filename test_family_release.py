@@ -775,9 +775,10 @@ class TestFamilyRelease(unittest.TestCase):
         own 3 poses + his 3 (v3) + 22 (v4) contact composites — not only the
         v3 contacts.
 
-        Totals after family-interactions v4 lands: 274 unique assets, 91 with
+        Totals after targeted-repairs v6 lands: 403 unique assets, 91 with
         any family bucket (6 twin sprites + 41 family-expansion v3 solos +
-        12 v3 contact composites + 32 v4 contact composites).
+        12 v3 contact composites + 32 v4 contact composites). Later prop and
+        background releases do not add family-bucketed assets.
         """
         import re
         spec = importlib.util.spec_from_file_location(
@@ -792,8 +793,8 @@ class TestFamilyRelease(unittest.TestCase):
         self.assertIsNotNone(match, "Portal must embed the asset JSON")
         data = json.loads(match.group(1))
         assets = data["assets"]
-        self.assertEqual(len(assets), 274,
-                         "Unique asset count must be 274 after family-interactions v4")
+        self.assertEqual(len(assets), 403,
+                         "Unique asset count must be 403 after targeted-repairs v6")
         by_id = {a["id"]: a for a in assets}
         for sid in ("levi_jumping", "levi_dancing", "levi_brushing_teeth"):
             with self.subTest(sprite=sid):
