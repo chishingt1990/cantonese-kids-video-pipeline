@@ -1,0 +1,1145 @@
+{
+  "release_id": "artwork_repairs_v6",
+  "status": "installed_locally_pending_main_review",
+  "description": "Targeted approved repair release: 27 prop replacements copied from approved candidates, two watercolor backgrounds cropped/resized to 16:9 runtime PNGs, and one wrong-subject washcloth explicitly excluded.",
+  "asset_count": 29,
+  "prop_count": 27,
+  "background_count": 2,
+  "excluded_count": 1,
+  "prior_portal_asset_count": 374,
+  "expected_portal_asset_count": 403,
+  "source_batch_id": "targeted-art-repairs-30",
+  "privacy": {
+    "contains_private_paths": false,
+    "contains_prompts": false,
+    "contains_user_quotes": false,
+    "source_originals_preserved_outside_repository": true,
+    "has_chat_links": false
+  },
+  "integrity_rule": "Before promotion, every target runtime file sha256 had to match its recorded previous_runtime_sha256/source_sha256; mismatches abort promotion.",
+  "category_rule": "Sticker UI categories are resolved through app.services.sticker_categories role-before-topic metadata; manifest display_category records the effective bucket used by studio, review, and portal.",
+  "background_export_note": "Backgrounds were generated at 1536x1024 RGB, cropped with source_crop_ltrb, then resized with Lanczos to 1920x1080 RGB runtime PNGs. This is an aspect-preserving crop+resize export, not a native generated-HD claim.",
+  "assets": [
+    {
+      "id": "prop_star",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Star",
+      "chinese": "星星",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_star.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4ddfa519c3b150df8884813426140afedd7bd8cc1ff2709fbde5a7a765c9a765",
+      "previous_runtime_sha256": "1ef3542914c5dfcc4923c580d2cd1311c167d94bee8ced801f94fcccc2973540",
+      "source_sha256": "4ddfa519c3b150df8884813426140afedd7bd8cc1ff2709fbde5a7a765c9a765",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_star_repair_r02.source.png",
+      "prompt_sha256": "e8c08523075ccbb0647089484257ad218e04fae48b4fe6bf58ea9c2e96b8f54c",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_toothbrush_blue",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Blue Toothbrush",
+      "chinese": "藍色牙刷",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_toothbrush_blue.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f1f79e5989bd76553bed9d7c9b77c41dac80c18104410b16c30f7258c21ba3dd",
+      "previous_runtime_sha256": "b96d60d7f1713beb5edc9b2e78099caf49a12235820b62320be2bdc800fbeadd",
+      "source_sha256": "f1f79e5989bd76553bed9d7c9b77c41dac80c18104410b16c30f7258c21ba3dd",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_toothbrush_blue_repair_r02.source.png",
+      "prompt_sha256": "86117bd15662d5280f266b204f6c635c1b2607f258069a0614bc32f47ba374dc",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_toothbrush_yellow",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Yellow Toothbrush",
+      "chinese": "黃色牙刷",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_toothbrush_yellow.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9b6994c7d64c6d889fe934e16faeeb8cb25b51e485dad39c1da5369db86392df",
+      "previous_runtime_sha256": "1dec739b679fea8226b28eaf71c604d8d107f39faec7a2e7af6c29a833f04c1b",
+      "source_sha256": "9b6994c7d64c6d889fe934e16faeeb8cb25b51e485dad39c1da5369db86392df",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_toothbrush_yellow_repair_r02.source.png",
+      "prompt_sha256": "a9692c41f4ea49f9a14a5fcbf2fddc85ee923ffa0f0f0a28e8e62e179f609448",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_soap_bubbles",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Soap Bubbles",
+      "chinese": "肥皂泡泡",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_soap_bubbles.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "b884e8f85a54db507b1d42ce37283771de1d1155853aa61063507af3c288d336",
+      "previous_runtime_sha256": "cae5efee3285cba14bd2ae5ae350683fefffe0466f78c53681e2511b2b10f722",
+      "source_sha256": "b884e8f85a54db507b1d42ce37283771de1d1155853aa61063507af3c288d336",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_soap_bubbles_repair_r02.source.png",
+      "prompt_sha256": "c9280bab448a23a1cacef134cfdb54d779f9455880fd56d9c43f50e435e0a346",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_block_tower",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "ABC Block Tower",
+      "chinese": "積木塔",
+      "category": "toys",
+      "display_category": "Toys",
+      "original_category": "toys",
+      "runtime_path": "assets/stickers/prop_block_tower.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2929407ccf9936ed24191e25a28e063411e85427bb345c7e670c22fc33a7a56c",
+      "previous_runtime_sha256": "0e3ae4836fcce63606fc82de4692ac8708af54d035dd4df125fb7d354990cfde",
+      "source_sha256": "b884e8f85a54db507b1d42ce37283771de1d1155853aa61063507af3c288d336",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_block_tower_repair_r02.final_abc.png",
+      "prompt_sha256": "cda68f14f6d8f8e1495f9477cef2019462868502dccf944ba529b72b810e0f13",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform",
+        "local_postprocess": "ABC letters added in isolated execution folder before approval; unmodified provider PNG preserved outside repository."
+      }
+    },
+    {
+      "id": "prop_picture_book",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Open Picture Book",
+      "chinese": "故事書",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_picture_book.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1c622bb99d9af33d8218c675d69613748e6bf8b74ffd5edf06f3cc3f47411021",
+      "previous_runtime_sha256": "62cfdc0ed313bb06685a703e7e6c61354cb54f9355635e0b0e843f77816cd675",
+      "source_sha256": "1c622bb99d9af33d8218c675d69613748e6bf8b74ffd5edf06f3cc3f47411021",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_picture_book_repair_r02.source.png",
+      "prompt_sha256": "8461c2e86334caac1b6d862fbb98629e48897f3e57feea26ef9c19efef8a44f4",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_crayons",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Wax Crayons",
+      "chinese": "彩色蠟筆",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_crayons.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9ffa8a0496490251c524c0a255150ccc9d4bae07a89ce8097f0bb57c11c94a5f",
+      "previous_runtime_sha256": "6057a916c18149d8105888e2fce337f935d9e9a81d76e38023b1aa6679474195",
+      "source_sha256": "9ffa8a0496490251c524c0a255150ccc9d4bae07a89ce8097f0bb57c11c94a5f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_crayons_repair_r02.source.png",
+      "prompt_sha256": "c278584e9cfcbc410e0c2d9842ae916f4056341ae38b27a5847f2c8c7563ab89",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_rainbow",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Pastel Rainbow",
+      "chinese": "彩虹",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_rainbow.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "96f20f7068b846fb3c079815ba3a7a1283edc43aa504d2ff8002a80b883c0306",
+      "previous_runtime_sha256": "d9b097eb896ab297bcae740a09f26a3bda61c2b8f267a8dfc00763cccf736724",
+      "source_sha256": "96f20f7068b846fb3c079815ba3a7a1283edc43aa504d2ff8002a80b883c0306",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_rainbow_repair_r02.source.png",
+      "prompt_sha256": "a29378b7fee13d4859dd2858ae0c7853e3ce9dbdcc9239d16217d36287fa87d6",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_sun_smiling",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Smiling Sun",
+      "chinese": "太陽",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_sun_smiling.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2ba9edbc74eacab0275fa5ca8e3e9f9dea7afebc59f8117f477ebf5c419374fb",
+      "previous_runtime_sha256": "ffc5726149effde0f1f1e22953b05cec2d50784d3197c5766ab99fa9b8e5aecb",
+      "source_sha256": "2ba9edbc74eacab0275fa5ca8e3e9f9dea7afebc59f8117f477ebf5c419374fb",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_sun_smiling_repair_r02.source.png",
+      "prompt_sha256": "b8e6fdf1142660d0ad7d860f6055a74b7990c401a8555705d9efeaa768b343d1",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_gift_box",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Gift Box",
+      "chinese": "禮物盒",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_gift_box.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7732b14a6d9fc8038dd828419b4c3b0d03d50b333da10c8e93954ec1716a66f2",
+      "previous_runtime_sha256": "25c641c0249616024c0407fd0bca6f1875891765b57cbbd7bd5d65bf520cd020",
+      "source_sha256": "7732b14a6d9fc8038dd828419b4c3b0d03d50b333da10c8e93954ec1716a66f2",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_gift_box_repair_r02.source.png",
+      "prompt_sha256": "d5d436f7f8bce4bff9a38e9968e9330ef10b3ed06f0c9ddb98cd068b7edae3d2",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_party_hat",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Party Hat",
+      "chinese": "生日帽",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_party_hat.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2c501566ec38fb4ce73bc74736c10f511857eeb669f6212b86ec2db40c325bc2",
+      "previous_runtime_sha256": "671bdd7266820f9bf4d997821f3ee364d22b36c57cace25e6f649346bda203a2",
+      "source_sha256": "2c501566ec38fb4ce73bc74736c10f511857eeb669f6212b86ec2db40c325bc2",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_party_hat_repair_r02.source.png",
+      "prompt_sha256": "fa7ace93296efc75afc0b6e0ba497fe430fe91816e94cc15e8cb28402425c32b",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_banana",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Banana",
+      "chinese": "香蕉",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_banana.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c22a58d2525ce6926a4ef14f169d8853f5f02c66c9c775e50efea73ccf27ef39",
+      "previous_runtime_sha256": "333b26e7fef6e6f49eed3d280b9155912532f6fdccdd29ada034ee04b5eb52e5",
+      "source_sha256": "c22a58d2525ce6926a4ef14f169d8853f5f02c66c9c775e50efea73ccf27ef39",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_banana_repair_r02.source.png",
+      "prompt_sha256": "680ecfea95f354559259a402a0f0f40f539d46299820f227e752b5cdb4b7baf8",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_dim_sum_basket",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Steaming Dim Sum",
+      "chinese": "點心蒸籠",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_dim_sum_basket.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "579d8a5b2e48bc7587965a98fdabc706b16bd3b7655286150d56b846f300f68e",
+      "previous_runtime_sha256": "7cc7234fb8f257bb2f4b762b5da9ce91a5554d30d3624f4c755fb7ed6c9d2020",
+      "source_sha256": "579d8a5b2e48bc7587965a98fdabc706b16bd3b7655286150d56b846f300f68e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_dim_sum_basket_repair_r02.source.png",
+      "prompt_sha256": "e4fb4c8d7a398bb858dd1ac40f08f252c221b16db589eef23555aadc120002d5",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_fruit_plate",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Fruit Slices Plate",
+      "chinese": "水果拼盤",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_fruit_plate.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "47012021899fb13e977c09c4aef70ea0c92b1df67bf994d2b679c1e4a09cd090",
+      "previous_runtime_sha256": "16b80b45835a0633b79bc79cd558e4fe6915d329d80ea974e6b77fb6ca2bed5e",
+      "source_sha256": "47012021899fb13e977c09c4aef70ea0c92b1df67bf994d2b679c1e4a09cd090",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_fruit_plate_repair_r02.source.png",
+      "prompt_sha256": "320f01f390cff103d09058b055551721c86ebd813283ffaedc3eacb7cf73bedd",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_sippy_cup",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toddler Sippy Cup",
+      "chinese": "飲水杯",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_sippy_cup.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "81ec6695775011dcb8af7db15b2a913423fd8540f94a74031b0f4ff780981aee",
+      "previous_runtime_sha256": "8fadbe5f6a986eceab650b98e59c27f8add056b49ae09f48ed0f6dde1f9020ed",
+      "source_sha256": "81ec6695775011dcb8af7db15b2a913423fd8540f94a74031b0f4ff780981aee",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_sippy_cup_repair_r02.source.png",
+      "prompt_sha256": "98e814a0349b4f226ea7e5011074a865242f32ab432afd9493be63e732ce405a",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_toddler_bowl",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Toddler Bowl & Spoon",
+      "chinese": "幼兒餐碗",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_toddler_bowl.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "be4f4d2c132d92b43f394b394577b5b110d8e2207a754f8db24af9188d64b291",
+      "previous_runtime_sha256": "b98b2ea0be82a6ce0d96c256065a5eafcc20867c58ee86c3457baeb4a11ddec0",
+      "source_sha256": "be4f4d2c132d92b43f394b394577b5b110d8e2207a754f8db24af9188d64b291",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_toddler_bowl_repair_r02.source.png",
+      "prompt_sha256": "7c59d3dd0184583e8ace9a79b006b2a5aa0964b1f5468e5700f8f14e42caa50d",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_har_gow",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Shrimp Dumpling",
+      "chinese": "蝦餃",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_har_gow.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "bc5b0a9fee2f4c12b1b9efdaf2cbe7a6a8123e541af6a3cce7e5336d98ce1998",
+      "previous_runtime_sha256": "ce9809f38e4ff7a2a0dabb9bdf12b1dc602237ae35dc0a7c5c59187bc12f467d",
+      "source_sha256": "bc5b0a9fee2f4c12b1b9efdaf2cbe7a6a8123e541af6a3cce7e5336d98ce1998",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_har_gow_repair_r02.source.png",
+      "prompt_sha256": "922fb88ef614a8e93559d962d2c46390bcca94153d341fb7b3eb89e95f01f044",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_siu_mai",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Siu Mai",
+      "chinese": "燒賣",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_siu_mai.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f71f428c441c51b1cfeac19e472db4aa04a0100359b7d453dbbd249f61502d2f",
+      "previous_runtime_sha256": "4b57852ff98170568dd7e4550bdc6351dd9a30bb127d33684edc42c3556d068f",
+      "source_sha256": "f71f428c441c51b1cfeac19e472db4aa04a0100359b7d453dbbd249f61502d2f",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_siu_mai_repair_r02.source.png",
+      "prompt_sha256": "00cfac7fe82cc1f610888205ccc4b260359da83fc8daa4d393af85f1ad746b5c",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_egg_tart",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Egg Tart",
+      "chinese": "蛋撻",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_egg_tart.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "cbc29649ba8ddb3a0fdf3f74c8fdfcf035922d23dc8a29ec97ee18a41e0114d9",
+      "previous_runtime_sha256": "8242d4886761139cd11d0a585c22b697824312ef3e89b2e77b5c0ef9ba7592b2",
+      "source_sha256": "cbc29649ba8ddb3a0fdf3f74c8fdfcf035922d23dc8a29ec97ee18a41e0114d9",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_egg_tart_repair_r02.source.png",
+      "prompt_sha256": "830d0b0a6fc259bb3b9d018980eaeb3317dfeee5db234d965ec67dbbd92e064b",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_watermelon_slice",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Watermelon",
+      "chinese": "西瓜",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_watermelon_slice.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "072c24fe47a0e6510fc1e7862697b7877331add6af91bc906a118495d4a1dd1a",
+      "previous_runtime_sha256": "b25abdc0989c506814104cd4579ea63e1b5cc379e6e8a859ff4868fee53e1c43",
+      "source_sha256": "072c24fe47a0e6510fc1e7862697b7877331add6af91bc906a118495d4a1dd1a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_watermelon_slice_repair_r02.source.png",
+      "prompt_sha256": "5f978f6724d996fda42462029408e3c555185263186b683e931066c247f2d665",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_strawberry",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Strawberry",
+      "chinese": "士多啤梨",
+      "category": "foodfruit",
+      "display_category": "FoodFruit",
+      "original_category": "foodfruit",
+      "runtime_path": "assets/stickers/prop_strawberry.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f01211c62afeeb9f5916e24abf59cb55d0d0a05b94bdcda636afb62246d1903a",
+      "previous_runtime_sha256": "176b79295c55611003c6fc52c69c0b1999cb1f0dba8d1894be4bd6fb9dc258b0",
+      "source_sha256": "f01211c62afeeb9f5916e24abf59cb55d0d0a05b94bdcda636afb62246d1903a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_strawberry_repair_r02.source.png",
+      "prompt_sha256": "c335708ac91508efa270472881e2a4ff60d3e78fe78d72d817954e3000c48710",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_milk_bottle",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Milk Bottle",
+      "chinese": "奶樽",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_milk_bottle.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "87b7fdc0ad5d4e2016f4e863db638bb622d751b3186c6dc35b50bcbba3e3e556",
+      "previous_runtime_sha256": "cf94bfd3b4f916943fc3aa5762188ecb4bcaeb3a55da773a66b32688c6a6e75a",
+      "source_sha256": "87b7fdc0ad5d4e2016f4e863db638bb622d751b3186c6dc35b50bcbba3e3e556",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_milk_bottle_repair_r02.source.png",
+      "prompt_sha256": "a9f1a0775ef6914de1bd863355901c937094fec2fd5d3e44fa690f88c03c41d9",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_kitty_cat",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Kitty Cat",
+      "chinese": "貓咪",
+      "category": "animals",
+      "display_category": "Animals",
+      "original_category": "animals",
+      "runtime_path": "assets/stickers/prop_kitty_cat.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "cf2ebd57816bc14736ae4dda91335c6b5120229bd89abdfc22f222e499490f1e",
+      "previous_runtime_sha256": "9d5053ed0da20c1a16871abb01821078cdbf654685bcf0a019868804fc93b3d0",
+      "source_sha256": "cf2ebd57816bc14736ae4dda91335c6b5120229bd89abdfc22f222e499490f1e",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_kitty_cat_repair_r02.source.png",
+      "prompt_sha256": "e0b54da140f2d263df670d867caaed6a9d97bd541b2f10a4cbef6f9f62b2ed6e",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_balloon_red",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Red Balloon",
+      "chinese": "紅氣球",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_balloon_red.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4b309fe68816e721b2c234d28bd4d5fed64c19e9a3c5e20e6f05263f51734b58",
+      "previous_runtime_sha256": "424c12323a966e17eafee143d3e820d5da5b98a10b9f7c03a6a009cb79e45c74",
+      "source_sha256": "4b309fe68816e721b2c234d28bd4d5fed64c19e9a3c5e20e6f05263f51734b58",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_balloon_red_repair_r02.source.png",
+      "prompt_sha256": "7cbaf097c07a5d2857181835e5b3bcd355d26e925970dacb75b58043b46a2abe",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_balloon_yellow",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Yellow Balloon",
+      "chinese": "黃氣球",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_balloon_yellow.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0e34ac7faa59d47255583cf5e492458ab2d5c07b00328ffc82367470316729b7",
+      "previous_runtime_sha256": "e9f29813641fe945c57f3545d71e76ff0476124673698afd596b1790ebc3f5d0",
+      "source_sha256": "0e34ac7faa59d47255583cf5e492458ab2d5c07b00328ffc82367470316729b7",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_balloon_yellow_repair_r02.source.png",
+      "prompt_sha256": "39c64e1945d69c228c8af1b2f8c9972c33ae0b3f387f490441f926de87c516bb",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_balloon_blue",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Blue Balloon",
+      "chinese": "藍氣球",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_balloon_blue.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "6b359b3e605c74d9e2bd45efa8cfce690bc2f4938de157ca250356b04280b641",
+      "previous_runtime_sha256": "a102495f5502f903a60728f7f7b8ad19a0c4e762436138ee8bfb5d49d6da2ffe",
+      "source_sha256": "6b359b3e605c74d9e2bd45efa8cfce690bc2f4938de157ca250356b04280b641",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_balloon_blue_repair_r02.source.png",
+      "prompt_sha256": "3dd1075a3cba93d6d63b4bbe9736ea925b94a8aa4410a4d3a90900aa4053b8fc",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "prop_balloon_green",
+      "kind": "prop",
+      "catalog_type": "icon",
+      "name": "Green Balloon",
+      "chinese": "綠氣球",
+      "category": "everyday_props",
+      "display_category": "OtherProps",
+      "original_category": "everyday_props",
+      "runtime_path": "assets/stickers/prop_balloon_green.png",
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e5c8d8b755a4bce88c2fb28e221f791d55827bfc834cba16c3368957ae082454",
+      "previous_runtime_sha256": "a7d242cee74f237a71f6b34671767da9f7761a980ed222bdec3ac364063677b5",
+      "source_sha256": "e5c8d8b755a4bce88c2fb28e221f791d55827bfc834cba16c3368957ae082454",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "source_mode": "RGBA",
+      "source_basename": "prop_balloon_green_repair_r02.source.png",
+      "prompt_sha256": "24575e03945f72c97777aeaefecb7fe35b552463b4dff83c84fbaa6381546f65",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "resampling": "none",
+        "crop_ltrb": null,
+        "transparent_padding_each_side": null,
+        "source_preserved_outside_repository": true,
+        "promotion": "candidate PNG copied byte-for-byte to runtime path; no recolor, crop, padding, or geometric transform"
+      }
+    },
+    {
+      "id": "bg_supermarket",
+      "kind": "background",
+      "name": "Preschool Market & Fruit Stand",
+      "category": "backgrounds",
+      "display_category": "Backgrounds",
+      "runtime_path": "assets/backgrounds/bg_supermarket.png",
+      "mode": "RGB",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "e0bc1dc3373eb42d1befc1f017ebb6ae6cc7117101365cdaffd1dbf6b55a102f",
+      "previous_runtime_sha256": "c562e2878f5db1c5efce9daedfbc27f0fe9d4ab87d1f44c82c632fb3716827c8",
+      "source_sha256": "71c96b3bc5dc38d0f28e098d31c2f87944a837635306ba64b5a34ce1deb97e7c",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "source_mode": "RGB",
+      "source_basename": "bg_supermarket_repair_r02.source.png",
+      "prompt_sha256": "60ee6349d3178a3d3ddc0b069e438a7365d8f76045928a5393bbdf590c652354",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "source_preserved_outside_repository": true,
+        "source_crop_ltrb": [
+          0,
+          120,
+          1536,
+          984
+        ],
+        "crop_reason": "1536x1024 generated 3:2-ish watercolor background cropped to 16:9 preserving central standing floor and room context.",
+        "resampling": "LANCZOS resize after crop to 1920x1080; not a native generated-HD claim",
+        "native_generated_resolution": false,
+        "output_resolution_claim": "1920x1080 runtime export from approved 1536x1024 source crop"
+      }
+    },
+    {
+      "id": "bg_art_room",
+      "kind": "background",
+      "name": "Watercolor Art Studio & Easel",
+      "category": "backgrounds",
+      "display_category": "Backgrounds",
+      "runtime_path": "assets/backgrounds/bg_art_room.png",
+      "mode": "RGB",
+      "size": [
+        1920,
+        1080
+      ],
+      "sha256": "433d121ce594565434c20b9890a11e11a218d420b3ad2d3e90a11596d9b862a0",
+      "previous_runtime_sha256": "a1b26b80abbcd974d40f6c393478c842d87d752a94ab495f11a3c43db27d429b",
+      "source_sha256": "fc8fca135e98f5044fa1986881e34a5846a1be5542b01ead3b3b872cc01fe761",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "source_mode": "RGB",
+      "source_basename": "bg_art_room_repair_r02.source.png",
+      "prompt_sha256": "639bedc260144833413f8b4eee96ea5d39c162e1ffe42c44f537e7b87113dd5d",
+      "method": "copilot_text",
+      "provider": "Microsoft 365 Copilot",
+      "visual_status": "user_approved_targeted_repair",
+      "release_id": "artwork_repairs_v6",
+      "processing": {
+        "rgb_changes": false,
+        "source_preserved_outside_repository": true,
+        "source_crop_ltrb": [
+          0,
+          120,
+          1536,
+          984
+        ],
+        "crop_reason": "1536x1024 generated 3:2-ish watercolor background cropped to 16:9 preserving central standing floor and room context.",
+        "resampling": "LANCZOS resize after crop to 1920x1080; not a native generated-HD claim",
+        "native_generated_resolution": false,
+        "output_resolution_claim": "1920x1080 runtime export from approved 1536x1024 source crop"
+      }
+    }
+  ],
+  "excluded": [
+    {
+      "id": "prop_washcloth",
+      "kind": "prop",
+      "runtime_path": "assets/stickers/prop_washcloth.png",
+      "previous_runtime_sha256": "2086556613bb09117b9be56fe9c2756aeb49f7e290de26a70f5e6079b79a0e28",
+      "source_sha256": "9b6994c7d64c6d889fe934e16faeeb8cb25b51e485dad39c1da5369db86392df",
+      "source_basename": "prop_washcloth_repair_r02.source.png",
+      "state": "downloaded_wrong_subject",
+      "reason": "Downloaded image was the wrong subject and duplicated the yellow toothbrush candidate; existing washcloth retained byte-exact."
+    }
+  ]
+}

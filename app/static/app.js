@@ -515,16 +515,7 @@ function stickerRenderUrl(sticker) {
 
 function isStorybookStickerCategory(sticker, category) {
   if (category === 'all') return true;
-  const sid = (sticker.id || '').toLowerCase();
-  const meta = (sticker.category || '').toLowerCase();
-  if (category === 'word') return sticker.type === 'word' || sid.startsWith('badge_') || sid.startsWith('word_') || sid.startsWith('vocab_');
-  if (category === 'phonics') return ['letter', 'number', 'block'].includes(sticker.type) || sid.startsWith('block_');
-  if (category === 'vehicles') return meta ? meta === 'vehicles' : ['car', 'bus', 'truck', 'train', 'plane', 'airplane', 'boat', 'canoe', 'kayak', 'tram', 'submarine', 'balloon', 'blimp'].some(k => sid.includes(k));
-  if (category === 'toys') return meta === 'toys';
-  if (category === 'shapes') return sticker.type === 'shape' || meta === 'shapes' || sid.startsWith('shape_');
-  if (category === 'food') return meta ? ['fruit_vegetables', 'food_snacks', 'foodfruit'].includes(meta) : ['banana', 'apple', 'dim_sum', 'fruit', 'siu_mai', 'har_gow', 'egg_tart', 'watermelon', 'strawberry', 'milk', 'cookie', 'bowl', 'cup', 'spoon', 'meal'].some(k => sid.includes(k));
-  if (category === 'animals') return meta ? meta === 'animals' : ['dog', 'duck', 'cat', 'kitty', 'bunny', 'frog'].some(k => sid.includes(k));
-  return false;
+  return (sticker.ui_category || '').toLowerCase() === category;
 }
 
 function renderStorybookStickerFilters() {
@@ -539,6 +530,7 @@ function renderStorybookStickerFilters() {
     ['shapes', 'Shapes'],
     ['food', 'Food'],
     ['animals', 'Animals'],
+    ['other', 'Other props'],
   ];
   filters.innerHTML = categories
     .map(([id, label]) => {

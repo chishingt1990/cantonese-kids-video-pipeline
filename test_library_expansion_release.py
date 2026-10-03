@@ -138,8 +138,9 @@ class TestLibraryExpansionRelease(unittest.TestCase):
         match = re.search(r'<script id="asset-data" type="application/json">(.*?)</script>', text)
         self.assertIsNotNone(match)
         data = json.loads(match.group(1))
-        self.assertEqual(len(data["assets"]), 374)
+        self.assertEqual(len(data["assets"]), 403)
         self.assertEqual(len([a for a in data["assets"] if a["batch"] == "Library expansion v5"]), 100)
+        self.assertEqual(len([a for a in data["assets"] if a["batch"] == "Targeted repairs v6"]), 29)
         v5 = [a for a in data["assets"] if a["batch"] == "Library expansion v5"]
         self.assertEqual(len([a for a in v5 if a["category"] == "Shapes"]), 12)
         self.assertEqual(len([a for a in v5 if a["category"] == "Animals"]), 20)

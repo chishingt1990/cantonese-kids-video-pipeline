@@ -4,24 +4,31 @@ import base64
 import hashlib
 import io
 import json
+import sys
 from pathlib import Path
 from urllib.parse import quote
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-CATEGORIES = {
-    "animals": "Animals", "vehicles": "Vehicles",
-    "fruit_vegetables": "Fruits & vegetables", "food_snacks": "Food & snacks",
-    "everyday_props": "Everyday props",
-    "toys": "Toys",
-    "shapes": "Shapes",
-}
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from app.services.sticker_categories import attach_sticker_category_metadata
 CATEGORY_ORDER = [
-    "All assets", "Sprites", "Family sprites", "Family contacts", "Cantonese badges",
-    "Letters", "Numbers",
-    "Toys", "Shapes", "Animals", "Vehicles", "Fruits & vegetables", "Food & snacks", "Everyday props",
+    "All assets", "Backgrounds", "Sprites", "Family sprites", "Family contacts", "Cantonese badges",
+    "Phonics", "Toys", "Shapes", "Animals", "Vehicles", "Food & fruit", "Other props",
 ]
+PORTAL_CATEGORY_LABELS = {
+    "WordBadges": "Cantonese badges",
+    "Phonics": "Phonics",
+    "Vehicles": "Vehicles",
+    "Toys": "Toys",
+    "Shapes": "Shapes",
+    "FoodFruit": "Food & fruit",
+    "Animals": "Animals",
+    "OtherProps": "Other props",
+}
 
 # Simplified family-browsing buckets used by the portable asset portal and the
 # studio Family Member Palette. Multi-person contact composites belong to the
@@ -79,6 +86,16 @@ def preview(path: Path, size: int) -> str:
     return "data:image/webp;base64," + base64.b64encode(output.getvalue()).decode("ascii")
 
 
+def portal_sticker_category(asset: dict) -> str:
+    record = {
+        "id": asset["id"],
+        "type": asset.get("catalog_type", "shape" if asset.get("kind") == "shape" else "icon"),
+        "kind": asset.get("kind"),
+        "category": asset.get("category"),
+    }
+    return PORTAL_CATEGORY_LABELS[attach_sticker_category_metadata(record)["display_category"]]
+
+
 def build() -> Path:
     manifest = json.loads((ROOT / "config" / "artwork_release_v1.json").read_text(encoding="utf-8"))
     phonics_path = ROOT / "config" / "phonics_release_v2.json"
@@ -90,6 +107,8 @@ def build() -> Path:
     family_manifest = json.loads(family_path.read_text(encoding="utf-8")) if family_path.exists() else None
     family_v4_path = ROOT / "config" / "family_interactions_v4.json"
     family_v4_manifest = json.loads(family_v4_path.read_text(encoding="utf-8")) if family_v4_path.exists() else None
+    repairs_path = ROOT / "config" / "artwork_repairs_v6.json"
+    repairs_manifest = json.loads(repairs_path.read_text(encoding="utf-8")) if repairs_path.exists() else None
     badges = {
         "badge_routine_brush_teeth": ("刷牙", "BRUSH TEETH"),
         "badge_routine_wash_hands": ("洗手", "WASH HANDS"),
@@ -122,12 +141,12 @@ def build() -> Path:
             sprite_char = asset["id"].split("_", 1)[0]
             sprite_family_buckets = _buckets_for_members([sprite_char])
         elif kind == "badge":
-            category = "Cantonese badges"
+            category = portal_sticker_category({"id": asset["id"], "kind": "badge", "catalog_type": "word"})
             name, subtitle = badges[asset["id"]]
             note = "Approved local typography export. Traditional Chinese glyphs were rendered using Microsoft JhengHei; lettering is not AI-generated."
             reference = None
         elif kind == "prop":
-            category = CATEGORIES[asset["category"]]
+            category = portal_sticker_category(asset)
             name, subtitle = asset["name"], asset["chinese"]
             note = asset["review_note"]
             reference = None
@@ -165,7 +184,11 @@ def build() -> Path:
             with Image.open(path) as image:
                 dimensions = list(image.size)
                 has_transparency = image.convert("RGBA").getchannel("A").histogram()[0] > 0
-            category = "Letters" if asset["kind"] == "letter" else "Numbers"
+            category = portal_sticker_category({
+                "id": asset["id"],
+                "kind": asset["kind"],
+                "catalog_type": asset["kind"],
+            })
             assets.append({
                 "id": asset["id"], "name": asset["label"], "category": category,
                 "batch": "Phonics stickers", "order": 4, "notes": "Local font-rendered glyph sticker with transparent exterior, white die-cut outline, and no box/tile background.",
@@ -312,7 +335,7 @@ def build() -> Path:
             with Image.open(path) as image:
                 dimensions = list(image.size)
                 has_transparency = image.convert("RGBA").getchannel("A").histogram()[0] > 0
-            category = CATEGORIES[asset["category"]]
+            category = portal_sticker_category(asset)
             notes = (
                 "Approved library-expansion v5 sticker. Source pixels were crop/pad promoted "
                 "without RGB resampling; original downloaded bytes remain outside the repository."
@@ -340,6 +363,57 @@ def build() -> Path:
                 "thumb": preview(path, 360), "large": preview(path, 1040), "reference": None,
                 "family_buckets": [],
             })
+    if repairs_manifest:
+        for asset in repairs_manifest["assets"]:
+            relative = asset["runtime_path"]
+            path = (ROOT / relative).resolve()
+            if not path.is_relative_to(ROOT):
+                raise ValueError(f"Targeted repair asset path must stay within the repository: {relative}")
+            if hashlib.sha256(path.read_bytes()).hexdigest() != asset["sha256"]:
+                raise ValueError(f"Targeted repair v6 hash mismatch: {relative}")
+            if asset["kind"] not in {"prop", "background"}:
+                raise ValueError(f"Unsupported targeted repair asset kind: {asset['kind']}")
+            with Image.open(path) as image:
+                dimensions = list(image.size)
+                has_transparency = image.convert("RGBA").getchannel("A").histogram()[0] > 0
+            if asset["kind"] == "background":
+                category = "Backgrounds"
+                subtitle = "1920x1080 16:9 runtime export"
+                alpha = "Opaque RGB background"
+                notes = (
+                    "Approved targeted-repair v6 watercolor background. Generated source was "
+                    f"{asset['source_size'][0]}x{asset['source_size'][1]}, cropped "
+                    f"{asset['processing']['source_crop_ltrb']} and Lanczos-resized to 1920x1080; "
+                    "not a native generated-HD claim."
+                )
+            else:
+                category = portal_sticker_category(asset)
+                subtitle = asset["chinese"]
+                alpha = "Transparent exterior · RGBA" if has_transparency else "Opaque background"
+                notes = (
+                    "Approved targeted-repair v6 prop. Candidate PNG copied byte-for-byte to the "
+                    "runtime filename; no recolor, crop, padding, or geometric transform."
+                )
+            assets.append({
+                "id": asset["id"], "name": asset["name"], "category": category,
+                "batch": "Targeted repairs v6",
+                "order": 6, "notes": notes,
+                "flagged": False, "history": False, "status": "installed",
+                "subtitle": subtitle,
+                "dimensions": dimensions, "sourceDimensions": asset.get("source_size", dimensions),
+                "provider": asset["provider"],
+                "alpha": alpha,
+                "path": relative, "url": quote(relative, safe="/"), "installedUrl": None,
+                "prompt": json.dumps({
+                    "release": repairs_manifest["release_id"], "asset_id": asset["id"],
+                    "sha256": asset["sha256"], "previous_runtime_sha256": asset["previous_runtime_sha256"],
+                    "source_sha256": asset["source_sha256"], "source_basename": asset["source_basename"],
+                    "processing": asset["processing"], "kind": asset["kind"],
+                    "display_category": asset.get("display_category"),
+                }, ensure_ascii=False, indent=2),
+                "thumb": preview(path, 360), "large": preview(path, 1040), "reference": None,
+                "family_buckets": [],
+            })
     if len(assets) != len({a["id"] for a in assets}):
         raise ValueError("Duplicate IDs in release manifest")
     categories = [category for category in CATEGORY_ORDER if category == "All assets" or any(a["category"] == category for a in assets)]
@@ -355,9 +429,12 @@ def build() -> Path:
     template = (Path(__file__).parent / "asset_portal_template.html").read_text(encoding="utf-8")
     if template.count("__ASSET_DATA__") != 1:
         raise ValueError("Portal template must have exactly one data marker")
+    excluded = list(expansion["excluded_unrecovered_ids"])
+    if repairs_manifest:
+        excluded.extend(item["id"] for item in repairs_manifest.get("excluded", []))
     data = json.dumps({"assets": assets, "categories": categories,
-                       "family_buckets": family_buckets_meta,
-                        "excluded": expansion["excluded_unrecovered_ids"]}, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+                        "family_buckets": family_buckets_meta,
+                         "excluded": excluded}, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     result = template.replace("__ASSET_DATA__", data)
     if "file:///" in result or "C:\\\\" in result or "copilot.cloud.microsoft/chat/" in result:
         raise ValueError("Portal must not contain private local paths or conversation URLs")

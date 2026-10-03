@@ -9,6 +9,7 @@ from app.services.glyph_sticker_service import (
     catalog_records as phonics_catalog_records,
     render_glyph_sticker,
 )
+from app.services.sticker_categories import attach_sticker_category_metadata
 
 STICKER_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "assets", "stickers")
 os.makedirs(STICKER_DIR, exist_ok=True)
@@ -520,6 +521,12 @@ if os.path.exists(_library_expansion_path):
         _library_expansion = json.load(release_file)
 else:
     _library_expansion = {"assets": []}
+_artwork_repairs_path = os.path.join(CONFIG_DIR, "artwork_repairs_v6.json")
+if os.path.exists(_artwork_repairs_path):
+    with open(_artwork_repairs_path, encoding="utf-8") as release_file:
+        _artwork_repairs = json.load(release_file)
+else:
+    _artwork_repairs = {"assets": []}
 RELEASE_PROPS = [
     {
         "id": asset["id"],
@@ -533,7 +540,7 @@ RELEASE_PROPS = [
         "kind": asset.get("kind", "prop"),
         "source_release": asset.get("release_id"),
     }
-    for asset in _release["assets"] + _prop_expansion["assets"] + _library_expansion["assets"]
+    for asset in _release["assets"] + _prop_expansion["assets"] + _library_expansion["assets"] + _artwork_repairs["assets"]
     if asset["kind"] in {"prop", "shape"}
 ]
 _release_prop_ids = {prop["id"] for prop in RELEASE_PROPS}
@@ -592,6 +599,10 @@ REVIEWED_DISCOVERED_STICKERS = {
     "badge_mealtime": {
         "id": "badge_mealtime", "type": "word", "label": "好美味！ (So Yummy!)",
         "chinese": "好美味！", "english": "SO YUMMY!", "color_theme": "gold",
+    },
+    "sticker_man_man_lai": {
+        "id": "sticker_man_man_lai", "type": "word", "label": "慢慢嚟 (Take Your Time)",
+        "chinese": "慢慢嚟", "english": "TAKE YOUR TIME", "color_theme": "emerald",
     },
     "vocab_patience": {
         "id": "vocab_patience", "type": "word", "label": "耐心 (Patience)",
@@ -692,7 +703,7 @@ def get_all_stickers_catalog() -> List[Dict[str, Any]]:
                 "icon": s_id
             }
             
-    return list(catalog_map.values())
+    return [attach_sticker_category_metadata(item) for item in catalog_map.values()]
 
 
 THEME_COLORS = {

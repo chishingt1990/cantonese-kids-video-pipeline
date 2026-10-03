@@ -36,6 +36,8 @@ test_*
 !test_family_interactions_release.py
 !test_legacy_sticker_cleanup.py
 !test_library_expansion_release.py
+!test_sticker_category_metadata.py
+!test_artwork_repairs_v6.py
 assets/sprites/test_*
 
 

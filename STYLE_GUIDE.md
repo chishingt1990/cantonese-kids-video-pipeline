@@ -437,3 +437,36 @@ After the family-expansion v3 release landed on 2026-10-02, the user approved tw
 **Export processing.** Same alpha<=2→0 / alpha>=250→255 / crop-to-bbox / 8-pixel-pad convention as Sections 7 and 10. No RGB change, no resample. All 32 source candidates arrived as 1254×1254 RGBA PNGs and are preserved verbatim in `design/2026-10-02-twins-interactions/candidates/` and `design/2026-10-02-family-groups/candidates/`; the private review HTMLs stay outside the repository.
 
 **Tests.** `test_family_interactions_release.py` covers the v4 manifest shape and counts, hash and 8-px padding integrity, v3 immutability, catalog aggregation (including 3- and 4-person member distribution), scale-class distribution, bucket union behaviour, characters-router friendly names, sprite-resolver direct serves without collision, scene-director preservation of 4-person composite IDs and the first-wins overlap rule across 4-member composites, portal totals (274 assets / 44 Family contacts / 91 bucket-tagged), and that approval wording quotes the user accurately without claiming a public push. `test_phonics_release.py` and `test_family_release.py` had their portal-total assertions bumped from 242/59 to 274/91 (with Levi and Luca bucket counts updated from 6 to 28). Baseline suites run clean: `test_artwork_release`, `test_phonics_release`, `test_props_release`, `test_family_release` and `test_family_interactions_release` together produce 66 passing tests.
+
+## 12. Targeted Artwork Repairs v6
+
+The targeted-repairs v6 release installs 29 approved assets: 27 static props and
+two background replacements. `config/artwork_repairs_v6.json` is the sanitized
+provenance manifest. It records each target file's previous runtime SHA, approved
+candidate/source SHA, final runtime SHA, effective sticker display category, and
+promotion processing. It intentionally does not include full local paths, prompts,
+conversation URLs, user quotes, runner logs, or private review HTML.
+
+**Props.** The 27 prop candidates are copied byte-for-byte to their existing
+`assets/stickers/prop_*.png` runtime filenames. No recoloring, stretching,
+cropping, alpha cleanup, or padding is applied during promotion. The accepted prop
+candidate resolution is 1254×1254 RGBA with transparent exterior. `prop_block_tower`
+uses the reviewed `final_abc.png` local-letter candidate; the unmodified provider
+PNG remains outside the repository.
+
+**Excluded.** `prop_washcloth` is explicitly excluded from the release because the
+downloaded candidate duplicated the yellow toothbrush / wrong subject. The existing
+runtime washcloth remains byte-exact and must not be substituted by the wrong
+candidate or a generated placeholder.
+
+**Backgrounds.** `bg_supermarket` and `bg_art_room` were generated as 1536×1024
+RGB watercolor images. Runtime exports crop `[0, 120, 1536, 984]` to obtain a
+1536×864 16:9 window that preserves the central standing floor and room context,
+then resize with Lanczos to 1920×1080 RGB. This is an honest crop+resize runtime
+export, not native generated HD and not a non-uniform stretch.
+
+**Catalog and portal.** Static repaired props are now manifest-backed catalog
+entries and share the same role-before-topic category resolver used by the studio,
+review page, and portable portal. The two repaired backgrounds appear in the
+portal's Backgrounds category. The portal total after v6 is 403 unique assets; v6
+adds 29 unique IDs and one explicit washcloth exclusion.

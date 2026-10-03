@@ -106,7 +106,7 @@ class TestPhonicsRelease(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(hashlib.sha256(response.content).hexdigest(), before[1])
 
-    def test_asset_portal_counts_374_and_categories(self):
+    def test_asset_portal_counts_403_and_categories(self):
         output = build_asset_portal()
         html = output.read_text(encoding="utf-8")
         match = re.search(r'<script id="asset-data" type="application/json">(.*?)</script>', html)
@@ -115,20 +115,21 @@ class TestPhonicsRelease(unittest.TestCase):
         # 189 pre-existing (60 artwork + 73 phonics + 56 props)
         #   + 53 family-expansion v3 (41 solo + 12 contact)
         #   + 32 family-interactions v4 (26 twin interactions + 6 four-person group composites)
-        # = 274 unique assets, then library-expansion v5 adds 100 stickers.
-        self.assertEqual(len(data["assets"]), 374)
-        self.assertEqual(len(data["excluded"]), 8)
-        self.assertIn("Letters", data["categories"])
-        self.assertIn("Numbers", data["categories"])
+        # = 274 unique assets, then library-expansion v5 adds 100 stickers,
+        # and targeted-repairs v6 adds 27 static props plus 2 backgrounds.
+        self.assertEqual(len(data["assets"]), 403)
+        self.assertEqual(len(data["excluded"]), 9)
+        self.assertIn("Phonics", data["categories"])
         self.assertIn("Family sprites", data["categories"])
         self.assertIn("Family contacts", data["categories"])
-        self.assertEqual(len([a for a in data["assets"] if a["category"] == "Letters"]), 52)
-        self.assertEqual(len([a for a in data["assets"] if a["category"] == "Numbers"]), 21)
+        self.assertEqual(len([a for a in data["assets"] if a["category"] == "Phonics"]), 73)
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Family sprites"]), 41)
         # v3 shipped 12 contact composites; v4 adds 32 (26 twin + 6 group) → 44.
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Family contacts"]), 44)
         self.assertEqual(len([a for a in data["assets"] if a["category"] == "Shapes"]), 12)
         self.assertEqual(len([a for a in data["assets"] if a["batch"] == "Library expansion v5"]), 100)
+        self.assertEqual(len([a for a in data["assets"] if a["batch"] == "Targeted repairs v6"]), 29)
+        self.assertEqual(len([a for a in data["assets"] if a["category"] == "Backgrounds"]), 2)
         self.assertNotIn("file:///", html)
         self.assertNotIn("copilot.cloud.microsoft/chat/conversation/", html)
 
