@@ -2,7 +2,7 @@
 
 This guide is the source of truth for **new** backgrounds, characters, and educational stickers. It does not certify every existing asset as conforming. Background texture and character finish are deliberately different: watercolor environments, clean matte characters.
 
-Reviewed against all **201 tracked images** on `main` at `3048052` on 2026-09-30: 16 backgrounds, 28 character/concept files (including 8 SVGs), 68 sprites, 88 stickers, and one project thumbnail. The review covered contact sheets of every image, rendered SVGs, full-size twin anchors, and image dimensions/alpha metadata. This is not a frame-by-frame review of every possible scene.
+Reviewed against the full tracked image library on `main` at `d3ea928` on 2026-10-04 00:15 PDT: backgrounds, character/concept files, sprites, and stickers. The review covered contact sheets of every image category, rendered SVGs, full-size twin anchors, and image dimensions/alpha metadata. This is not a frame-by-frame review of every possible scene.
 
 ## 0. Reference Authority and Change Boundaries
 
@@ -31,7 +31,7 @@ If a requested change would alter an anchor's identity, outfit, family compositi
    - Rounded toddler-safe corners on all furniture (chairs, shelves, tables).
    - These are recurring indoor motifs, not mandatory decorations in every scene. Do not add windows or bunting to outdoor scenes merely to match a keyword list.
 - **Stage Ground Line & Character Staging**:
-   - Deliver a **1920x1080, 16:9, opaque RGB PNG**, matching the 16 existing backgrounds. The primary style references are `assets/backgrounds/bg_kitchen.png`, `bg_playroom.png`, and `bg_beach.png`.
+   - Deliver a **1920x1080, 16:9, opaque RGB PNG**. The primary style references are `assets/backgrounds/bg_kitchen.png`, `bg_playroom.png`, and `bg_beach.png`. (Recent scene backgrounds arrived at larger 16:9 sizes such as 2048x1152; 1920x1080 remains the delivery target.)
    - Composition target: an unobstructed standing area around **y = 720-880 px** and a low-detail subtitle region around **y = 910-1050 px**. These are design targets, not enforced renderer bounds.
    - Actual runtime discrepancy: the renderer's missing-`y_percent` fallback is **880 px**, while the scene-director prompt specifies **88% = 950.4 px** at 1080p (truncated to 950 before animation). Do not equate these values or claim feet are automatically subtitle-safe. Review the actual staged scene and adjust placement explicitly.
    - Leave usable space for the intended cast. One to five characters is a composition goal, not proof that all five fit every existing background. Tables, tubs, shelves, playground equipment, and foreground foliage can occlude bodies or make feet appear to float.
@@ -181,10 +181,9 @@ This audit did not modify any of these images. A catalog entry or an old "approv
 | Rigid-transform actions | Several cheering/waving/playing variants retain a standing silhouette with tilt or added overlay; `levi_sleeping.png` / `luca_sleeping.png` remain upright rather than reclining. | Judge the visible action, not the filename; redraw the joints and balance. |
 | Background removal/framing | Twins' default alpha bounds touch all four canvas edges; some other assets have soft pale edge/shadow residue. | Preserve complete silhouettes, eight-pixel export padding, and review on light/dark backgrounds. |
 | Historical concepts | SVGs and JPG variations differ in head proportions, fringe, collars, shoes, texture and facial styling. | Do not mix styles or average the twins' identities. |
-| Empty/placeholder-looking props | Examples include `prop_apple.png`, `prop_bus.png`, `prop_cookie.png` and `prop_train.png`; visible backing shapes/glyph failures do not read as the named object. | Reject at semantic visual review even if alpha/pixel tests pass. |
 | Missing glyphs/internal text | `badge_vocab_A 係 Ap.png` / `badge_vocab_C 係 Ca.png` contain broken-looking glyphs; `vocab_banana.png` displays `vocab_banana` instead of a usable vocabulary label. | Inspect real rendered glyphs and meaning, not only filenames/metadata. |
 | Duplicate/mixed badge systems | `sticker_*`, `badge_*`, `vocab_*` and `word_*` coexist with inconsistent layouts. | Select the badge or prop contract deliberately; do not require all objects to be pills. |
-| Scene-specific composition | The 16 backgrounds vary in usable floor area and foreground clutter; the sample thumbnail embeds a completed scene and title. | Stage-test backgrounds; the thumbnail is not an isolated asset/reference master. |
+| Scene-specific composition | Backgrounds vary in usable floor area and foreground clutter; the sample thumbnail embeds a completed scene and title. | Stage-test backgrounds; the thumbnail is not an isolated asset/reference master. |
 | Expanded background overlays | Staging previews reveal large flat overlays in the six expanded scenes (`art_room`, `backyard_garden`, `duck_pond`, `farm_field`, `playground`, `supermarket`), sometimes retaining incompatible indoor context. Generic twin positions also intersect furniture in kitchen/dining/reading scenes. | Review environment coherence separately from palette. Retain originals, use action-specific placement, and request clear-floor variants only for lessons that need them. |
 
 ---
@@ -470,3 +469,38 @@ entries and share the same role-before-topic category resolver used by the studi
 review page, and portable portal. The two repaired backgrounds appear in the
 portal's Backgrounds category. The portal total after v6 is 403 unique assets; v6
 adds 29 unique IDs and one explicit washcloth exclusion.
+
+---
+
+## 13. Current Prop & Animal Style (detailed cartoon)
+
+This is the visual specification for all new animal, food, and object props. It describes the style actually in the library as of 2026-10-04 — not the retired flat icon style, which must not be used as a reference.
+
+### Style anchors
+
+`assets/stickers/prop_cow.png`, `prop_pig.png`, `prop_sheep.png`, `prop_goat.png`, `prop_duckling.png` (animals); `prop_apple.png`, `prop_banana.png`, `prop_broccoli.png` (food). Cite these files by name in every generation request for this category.
+
+### What the style looks like
+
+- **Complete anatomy**: fully drawn subjects — legs, hooves/paws, ears, tails, all present. Nothing omitted or abstracted away.
+- **Outlines**: bold dark outlines (dark brown/charcoal), uniform weight around the whole figure.
+- **Finish**: soft-shaded, not flat. Matte base colors with gentle cel-shading — a subtle darker tone on the shadow side and soft lighter modeling. No hard gradients, no glossy 3D highlights, no plastic sheen.
+- **Eyes**: big, expressive dark eyes with white catchlight sparkles.
+- **Face**: gentle friendly smile; soft pink blush cheeks.
+- **Detail**: species and object features fully drawn — cow spots, horns and udder; pig snout and curly tail; sheep wool clusters; duckling feather tufts; fruit stems, leaves and seeds.
+- **Exterior**: transparent RGBA background. No baked ground shadow, no white die-cut border, no scenery.
+- **Export size**: roughly 1000–1254 px on the long edge.
+
+### Style routing for future generation
+
+Every generation request must name the section matching its subject. Do not blend styles across categories:
+
+| Subject | Style section | Anchor files to cite |
+|---|---|---|
+| Human characters and poses | §2 Character Canon | The named `assets/sprites/<id>.png` identity file |
+| Animals, food, and object props | §13 (this section) | `prop_cow.png`, `prop_pig.png`, `prop_sheep.png` |
+| Letter/number phonics | §3 + §9 glyph spec | `block_a.png`, `block_0.png` |
+| Word/vocabulary badges | §3 pill spec | An existing `badge_*.png` |
+| Backgrounds | §1 watercolor spec | `bg_kitchen.png`, `bg_park.png` |
+
+An animal is never rendered in the §2 human-character finish, a prop is never rendered as a phonics glyph, and a background never carries the prop outline treatment. When in doubt, match the anchors side-by-side before generating.

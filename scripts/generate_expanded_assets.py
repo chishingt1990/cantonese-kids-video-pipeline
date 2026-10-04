@@ -135,59 +135,9 @@ def generate_all_props():
             draw.ellipse([cx + wx - 25, cy + 45, cx + wx + 25, cy + 95], fill=(245, 158, 11), outline=(255, 255, 255), width=4)
     save_prop(draw_die_cut_prop(None, 0, 0, draw_train), "prop_train.png")
 
-    # 5. Duckling
-    def draw_duck(draw, cx, cy, s):
-        draw.ellipse([cx - 110, cy - 60, cx + 90, cy + 90], fill=(255, 255, 255))
-        draw.ellipse([cx - 100, cy - 50, cx + 80, cy + 80], fill=(250, 204, 21), outline=(217, 119, 6), width=6) # Body
-        draw.ellipse([cx + 10, cy - 110, cx + 100, cy - 30], fill=(250, 204, 21), outline=(217, 119, 6), width=6) # Head
-        draw.polygon([(cx + 85, cy - 75), (cx + 140, cy - 65), (cx + 85, cy - 55)], fill=(249, 115, 22), outline=(194, 65, 12), width=4) # Orange Beak
-        draw.ellipse([cx + 60, cy - 85, cx + 75, cy - 70], fill=(30, 41, 59)) # Eye
-    save_prop(draw_die_cut_prop(None, 0, 0, draw_duck), "prop_duckling.png")
+    # 5. (Retired 2026-10-04: flat minimal animal icons removed; animals now follow STYLE_GUIDE.md §13 detailed cartoon style. See prop_cow.png etc.)
 
-    # 6. Kitty Cat
-    def draw_cat(draw, cx, cy, s):
-        draw.ellipse([cx - 100, cy - 80, cx + 100, cy + 90], fill=(255, 255, 255))
-        draw.ellipse([cx - 90, cy - 70, cx + 90, cy + 80], fill=(251, 146, 60), outline=(194, 65, 12), width=6) # Head
-        # Ears
-        draw.polygon([(cx - 75, cy - 60), (cx - 55, cy - 120), (cx - 20, cy - 65)], fill=(251, 146, 60), outline=(194, 65, 12), width=5)
-        draw.polygon([(cx + 20, cy - 65), (cx + 55, cy - 120), (cx + 75, cy - 60)], fill=(251, 146, 60), outline=(194, 65, 12), width=5)
-        # Inner ear pink
-        draw.polygon([(cx - 65, cy - 65), (cx - 55, cy - 105), (cx - 30, cy - 70)], fill=(254, 205, 211))
-        draw.polygon([(cx + 30, cy - 70), (cx + 55, cy - 105), (cx + 65, cy - 65)], fill=(254, 205, 211))
-        # Eyes & Nose
-        draw.ellipse([cx - 45, cy - 20, cx - 25, cy], fill=(30, 41, 59))
-        draw.ellipse([cx + 25, cy - 20, cx + 45, cy], fill=(30, 41, 59))
-        draw.polygon([(cx - 10, cy + 5), (cx + 10, cy + 5), (cx, cy + 18)], fill=(244, 63, 94))
-    save_prop(draw_die_cut_prop(None, 0, 0, draw_cat), "prop_kitty_cat.png")
-
-    # 7. Bunny Rabbit
-    def draw_bunny(draw, cx, cy, s):
-        draw.ellipse([cx - 90, cy - 60, cx + 90, cy + 85], fill=(255, 255, 255), outline=(203, 213, 225), width=6)
-        # Tall ears
-        draw.rounded_rectangle([cx - 65, cy - 135, cx - 20, cy - 40], radius=20, fill=(255, 255, 255), outline=(203, 213, 225), width=5)
-        draw.rounded_rectangle([cx + 20, cy - 135, cx + 65, cy - 40], radius=20, fill=(255, 255, 255), outline=(203, 213, 225), width=5)
-        draw.rounded_rectangle([cx - 55, cy - 125, cx - 30, cy - 50], radius=12, fill=(254, 205, 211))
-        draw.rounded_rectangle([cx + 30, cy - 125, cx + 55, cy - 50], radius=12, fill=(254, 205, 211))
-        # Eyes & Pink Nose
-        draw.ellipse([cx - 40, cy - 10, cx - 22, cy + 8], fill=(30, 41, 59))
-        draw.ellipse([cx + 22, cy - 10, cx + 40, cy + 8], fill=(30, 41, 59))
-        draw.ellipse([cx - 10, cy + 10, cx + 10, cy + 25], fill=(244, 63, 94))
-    save_prop(draw_die_cut_prop(None, 0, 0, draw_bunny), "prop_bunny.png")
-
-    # 8. Green Frog
-    def draw_frog(draw, cx, cy, s):
-        draw.ellipse([cx - 100, cy - 60, cx + 100, cy + 80], fill=(255, 255, 255))
-        draw.ellipse([cx - 90, cy - 50, cx + 90, cy + 70], fill=(74, 222, 128), outline=(22, 101, 52), width=6)
-        # Big bubbly eyes
-        draw.ellipse([cx - 75, cy - 95, cx - 15, cy - 35], fill=(74, 222, 128), outline=(22, 101, 52), width=5)
-        draw.ellipse([cx + 15, cy - 95, cx + 75, cy - 35], fill=(74, 222, 128), outline=(22, 101, 52), width=5)
-        draw.ellipse([cx - 55, cy - 80, cx - 30, cy - 55], fill=(30, 41, 59))
-        draw.ellipse([cx + 30, cy - 80, cx + 55, cy - 55], fill=(30, 41, 59))
-        # Big happy smile
-        draw.arc([cx - 55, cy - 10, cx + 55, cy + 45], 0, 180, fill=(22, 101, 52), width=5)
-    save_prop(draw_die_cut_prop(None, 0, 0, draw_frog), "prop_frog.png")
-
-    # 9. Rainbow
+    # 6. Rainbow
     def draw_rainbow(draw, cx, cy, s):
         colors = [(239, 68, 68), (249, 115, 22), (250, 204, 21), (34, 197, 94), (59, 130, 246), (168, 85, 247)]
         for idx, col in enumerate(colors):
@@ -198,7 +148,7 @@ def generate_all_props():
         draw.ellipse([cx + 60, cy + 10, cx + 140, cy + 70], fill=(255, 255, 255), outline=(203, 213, 225), width=4)
     save_prop(draw_die_cut_prop(None, 0, 0, draw_rainbow), "prop_rainbow.png")
 
-    # 10. Smiling Sun
+    # 7. Smiling Sun
     def draw_sun(draw, cx, cy, s):
         draw.ellipse([cx - 95, cy - 95, cx + 95, cy + 95], fill=(255, 255, 255))
         # Rays
@@ -213,7 +163,7 @@ def generate_all_props():
         draw.arc([cx - 30, cy - 5, cx + 30, cy + 40], 0, 180, fill=(180, 83, 9), width=5)
     save_prop(draw_die_cut_prop(None, 0, 0, draw_sun), "prop_sun_smiling.png")
 
-    # 11. Dim Sum Har Gow (Crystal Shrimp Dumpling)
+    # 8. Dim Sum Har Gow (Crystal Shrimp Dumpling)
     def draw_har_gow(draw, cx, cy, s):
         draw.ellipse([cx - 100, cy - 70, cx + 100, cy + 70], fill=(255, 255, 255))
         # Translucent dumpling with pink shrimp inside
@@ -224,7 +174,7 @@ def generate_all_props():
             draw.line([(cx + px, cy - 55), (cx + px, cy - 25)], fill=(244, 114, 182), width=3)
     save_prop(draw_die_cut_prop(None, 0, 0, draw_har_gow), "prop_har_gow.png")
 
-    # 12. Dim Sum Siu Mai
+    # 9. Dim Sum Siu Mai
     def draw_siu_mai(draw, cx, cy, s):
         draw.rounded_rectangle([cx - 80, cy - 75, cx + 80, cy + 75], radius=24, fill=(255, 255, 255))
         # Yellow wonton wrapper
@@ -234,7 +184,7 @@ def generate_all_props():
         draw.ellipse([cx - 12, cy - 35, cx + 12, cy - 12], fill=(239, 68, 68)) # Crab roe
     save_prop(draw_die_cut_prop(None, 0, 0, draw_siu_mai), "prop_siu_mai.png")
 
-    # 13. Egg Tart
+    # 10. Egg Tart
     def draw_egg_tart(draw, cx, cy, s):
         draw.ellipse([cx - 95, cy - 65, cx + 95, cy + 65], fill=(255, 255, 255))
         # Golden flaky crust
@@ -244,7 +194,7 @@ def generate_all_props():
         draw.chord([cx - 40, cy - 30, cx + 20, cy + 10], 180, 270, fill=(255, 255, 255, 120)) # Gloss highlight
     save_prop(draw_die_cut_prop(None, 0, 0, draw_egg_tart), "prop_egg_tart.png")
 
-    # 14. Watermelon Slice
+    # 11. Watermelon Slice
     def draw_watermelon(draw, cx, cy, s):
         draw.chord([cx - 100, cy - 80, cx + 100, cy + 80], 0, 180, fill=(255, 255, 255))
         draw.chord([cx - 90, cy - 70, cx + 90, cy + 70], 0, 180, fill=(34, 197, 94), outline=(22, 101, 52), width=5) # Green rind
@@ -254,7 +204,7 @@ def generate_all_props():
             draw.ellipse([cx + sx - 4, cy + sy - 6, cx + sx + 4, cy + sy + 6], fill=(30, 41, 59))
     save_prop(draw_die_cut_prop(None, 0, 0, draw_watermelon), "prop_watermelon_slice.png")
 
-    # 15. Strawberry
+    # 12. Strawberry
     def draw_strawberry(draw, cx, cy, s):
         draw.ellipse([cx - 80, cy - 70, cx + 80, cy + 90], fill=(255, 255, 255))
         draw.ellipse([cx - 70, cy - 60, cx + 70, cy + 80], fill=(239, 68, 68), outline=(185, 28, 28), width=6)
@@ -265,7 +215,7 @@ def generate_all_props():
             draw.ellipse([cx + sx - 3, cy + sy - 3, cx + sx + 3, cy + sy + 3], fill=(254, 240, 138))
     save_prop(draw_die_cut_prop(None, 0, 0, draw_strawberry), "prop_strawberry.png")
 
-    # 16. Baby Milk Bottle
+    # 13. Baby Milk Bottle
     def draw_bottle(draw, cx, cy, s):
         draw.rounded_rectangle([cx - 60, cy - 100, cx + 60, cy + 100], radius=24, fill=(255, 255, 255))
         draw.rounded_rectangle([cx - 50, cy - 50, cx + 50, cy + 90], radius=18, fill=(240, 249, 255), outline=(186, 230, 253), width=5) # Glass/plastic bottle
@@ -274,7 +224,7 @@ def generate_all_props():
         draw.rounded_rectangle([cx - 20, cy - 100, cx + 20, cy - 70], radius=12, fill=(254, 240, 138), outline=(234, 179, 8), width=3) # Silicone teat
     save_prop(draw_die_cut_prop(None, 0, 0, draw_bottle), "prop_milk_bottle.png")
 
-    # 17. Cookies
+    # 14. Cookies
     def draw_cookie(draw, cx, cy, s):
         draw.ellipse([cx - 85, cy - 85, cx + 85, cy + 85], fill=(255, 255, 255))
         draw.ellipse([cx - 75, cy - 75, cx + 75, cy + 75], fill=(217, 119, 6), outline=(180, 83, 9), width=5)
@@ -282,7 +232,7 @@ def generate_all_props():
             draw.ellipse([cx + sx - 8, cy + sy - 8, cx + sx + 8, cy + sy + 8], fill=(69, 26, 3))
     save_prop(draw_die_cut_prop(None, 0, 0, draw_cookie), "prop_cookie.png")
 
-    # 18. Balloons (Yellow, Blue, Green)
+    # 15. Balloons (Yellow, Blue, Green)
     def make_balloon(col, outline_col, fn):
         def draw_b(draw, cx, cy, s):
             draw.ellipse([cx - 75, cy - 105, cx + 75, cy + 55], fill=(255, 255, 255))
@@ -295,7 +245,7 @@ def generate_all_props():
     make_balloon((59, 130, 246), (29, 78, 216), "prop_balloon_blue.png")
     make_balloon((34, 197, 94), (22, 101, 52), "prop_balloon_green.png")
 
-    # 19. Gift Box
+    # 16. Gift Box
     def draw_gift(draw, cx, cy, s):
         draw.rounded_rectangle([cx - 85, cy - 75, cx + 85, cy + 85], radius=24, fill=(255, 255, 255))
         draw.rounded_rectangle([cx - 75, cy - 65, cx + 75, cy + 75], radius=18, fill=(168, 85, 247), outline=(126, 34, 206), width=5)
@@ -307,7 +257,7 @@ def generate_all_props():
         draw.ellipse([cx + 5, cy - 95, cx + 45, cy - 65], fill=(250, 204, 21), outline=(202, 138, 4), width=3)
     save_prop(draw_die_cut_prop(None, 0, 0, draw_gift), "prop_gift_box.png")
 
-    # 20. Party Hat
+    # 17. Party Hat
     def draw_party_hat(draw, cx, cy, s):
         draw.polygon([(cx, cy - 110), (cx - 75, cy + 75), (cx + 75, cy + 75)], fill=(255, 255, 255))
         draw.polygon([(cx, cy - 100), (cx - 65, cy + 65), (cx + 65, cy + 65)], fill=(244, 63, 94), outline=(190, 18, 60), width=5)
