@@ -10,7 +10,10 @@ PRESET_BACKGROUNDS = [
     "living_room", "nursery", "kitchen", "park", "beach",
     "playroom", "reading_nook", "dining", "bathroom", "mountains",
     "playground", "farm_field", "duck_pond", "backyard_garden",
-    "art_room", "supermarket"
+    "art_room", "supermarket",
+    # Vehicle scenes (Oct 2026): sensible homes for vehicle stickers.
+    "sky", "fire_station", "neighborhood", "city_road",
+    "whiteboard_room", "construction",
 ]
 
 CHARACTER_POSES = {
@@ -49,7 +52,8 @@ STAGE COORDINATE RULES:
   - grandparents_paternal: default, drinking_tea
   - grandparents_maternal: default, waving
   - auntie_cousins: default, waving
-- Choose background_id from: living_room, nursery, kitchen, park, beach, playroom, reading_nook, dining, bathroom, mountains, playground, farm_field, duck_pond, backyard_garden, art_room, supermarket.
+- Choose background_id from: living_room, nursery, kitchen, park, beach, playroom, reading_nook, dining, bathroom, mountains, playground, farm_field, duck_pond, backyard_garden, art_room, supermarket, sky, fire_station, neighborhood, city_road, whiteboard_room, construction.
+  (Vehicle scenes: sky for airplanes, fire_station for fire trucks, neighborhood for garbage trucks, city_road for cars/buses/motorbikes, construction for excavators, whiteboard_room as an all-purpose teaching backdrop.)
 
 Return ONLY a valid JSON object matching this schema:
 {

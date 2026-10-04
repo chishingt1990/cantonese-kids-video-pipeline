@@ -232,7 +232,7 @@
         <div>
           <span class="px-3 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Step 3: Voice</span>
           <h2 class="text-2xl font-extrabold text-stone-900 mt-1">Dad Reads the Story</h2>
-          <p class="text-stone-500 text-xs">Your voice reads the whole script in one take — one voice request for the entire video.</p>
+          <p class="text-stone-500 text-xs">Record your voice reading the story — one take or several. Cleanup is automatic, no buttons needed.</p>
         </div>
         <button onclick="guardLeaveVoiceStep()" class="px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md shadow-amber-200 flex items-center gap-1.5 transition">
           Next: Staging ➔
@@ -241,19 +241,33 @@
 
       <div class="bg-white rounded-3xl p-6 border border-emerald-200 shadow-sm space-y-5">
         <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl bg-emerald-100 flex items-center justify-center text-xl">👨</div>
+          <div class="w-11 h-11 rounded-2xl bg-emerald-100 flex items-center justify-center text-xl">🎤</div>
           <div>
-            <h3 class="font-extrabold text-stone-800 text-sm">Reading voice</h3>
-            <p id="voice-step-voice-name" class="text-[11px] text-stone-500">Checking your saved voice…</p>
+            <h3 class="font-extrabold text-stone-800 text-sm">Your voice</h3>
+            <p class="text-[11px] text-stone-500">Record here or upload a phone recording — background noise is removed automatically.</p>
           </div>
         </div>
 
-        <div>
-          <span class="text-[11px] font-bold text-stone-500 uppercase tracking-wider">How should Dad sound?</span>
-          <div id="voice-style-chips" class="flex flex-wrap gap-2 mt-2">
-            <button onclick="setVoiceStyle('calm')" data-style="calm" class="voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition">😌 Calm</button>
-            <button onclick="setVoiceStyle('warm')" data-style="warm" class="voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition">☀️ Warm &amp; playful</button>
-            <button onclick="setVoiceStyle('excited')" data-style="excited" class="voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition">🎉 Excited</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-3">
+            <h4 class="font-extrabold text-xs text-stone-800">🎤 Record takes</h4>
+            <p class="text-[11px] text-stone-500">Read a chunk, stop, repeat. Takes are joined into one smooth narration.</p>
+            <button id="btn-take-record" onclick="toggleTakeRecording()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-2 transition">
+              <span>●</span> Start take
+            </button>
+            <div id="narration-takes" class="space-y-2"></div>
+            <button id="btn-takes-finalize" onclick="finalizeTakes()" class="hidden w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-sm transition">
+              ✅ Done — join my takes
+            </button>
+          </div>
+          <div class="bg-amber-50/60 border border-amber-100 rounded-2xl p-4 space-y-3">
+            <h4 class="font-extrabold text-xs text-stone-800">⬆️ Upload a recording</h4>
+            <p class="text-[11px] text-stone-500">Already recorded on your phone? Upload the audio file here.</p>
+            <button onclick="document.getElementById('narration-upload-input').click()" class="w-full py-3 rounded-xl bg-white border-2 border-dashed border-amber-300 hover:border-amber-500 text-amber-700 font-extrabold text-xs transition">
+              Choose audio file
+            </button>
+            <input id="narration-upload-input" type="file" accept="audio/*" class="hidden" onchange="uploadNarrationRecording(this)">
+            <p class="text-[10px] text-stone-400">Works with voice memos, WhatsApp audio, MP3, M4A, WAV…</p>
           </div>
         </div>
 
@@ -262,11 +276,12 @@
           <button onclick="setStep(2)" class="text-[11px] font-bold text-emerald-700 underline">Edit the script</button>
         </div>
 
-        <div>
-          <button id="btn-voice-narrate" onclick="narrateStory()" class="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-sm shadow-md shadow-emerald-200 flex items-center justify-center gap-2 transition">
-            <span>🎙️</span> Narrate My Story
+        <div id="narration-transcript-box" class="hidden space-y-2">
+          <h4 class="font-extrabold text-xs text-stone-800">📝 What you said <span class="font-medium text-stone-400">— fix anything misheard</span></h4>
+          <textarea id="narration-transcript" rows="4" class="w-full px-4 py-3 rounded-2xl border border-stone-200 text-sm font-medium text-stone-800 focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
+          <button id="btn-transcript-align" onclick="saveTranscriptAndAlign()" class="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs shadow-sm transition">
+            📍 Save &amp; line up the scenes
           </button>
-          <p class="text-[11px] text-stone-400 mt-2 text-center">Uses 1 voice request. If you change the script afterwards, narrating again uses another request.</p>
         </div>
 
         <p id="narration-status" class="text-[11px] text-stone-500 font-bold"></p>
@@ -597,7 +612,7 @@
             <span>✨</span> Google Gemini API Key
           </div>
           <input id="setting-gemini-key" type="password" placeholder="AIzaSy..." class="w-full px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-400 font-mono text-xs">
-          <p class="text-[10px] text-stone-400">This one key powers the story helper and Dad's voice. You don't need anything else.</p>
+          <p class="text-[10px] text-stone-400">This one key powers the story helper. Your voice is recorded by you — no key needed.</p>
         </div>
 
         <!-- OPENAI (hidden: not needed for this studio) -->
