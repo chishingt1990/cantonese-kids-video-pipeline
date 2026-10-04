@@ -348,6 +348,18 @@ STICKER_CATALOG = [
         "icon": "frog"
     },
     {
+        "id": "prop_chicken",
+        "type": "icon",
+        "label": "雞 (Chicken)",
+        "icon": "chicken"
+    },
+    {
+        "id": "prop_horse",
+        "type": "icon",
+        "label": "馬 (Horse)",
+        "icon": "horse"
+    },
+    {
         "id": "prop_rainbow",
         "type": "icon",
         "label": "彩虹 (Pastel Rainbow)",

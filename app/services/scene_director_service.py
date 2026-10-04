@@ -21,6 +21,8 @@ PRESET_BACKGROUNDS = [
     # Vehicle scenes (Oct 2026): sensible homes for vehicle stickers.
     "sky", "fire_station", "neighborhood", "city_road",
     "whiteboard_room", "construction",
+    # Farm song scene (Oct 2026): red barn barnyard.
+    "farm_barn",
 ]
 
 CHARACTER_POSES = {
