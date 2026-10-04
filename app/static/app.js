@@ -2052,113 +2052,6 @@ let mediaRecorder;
 let audioChunks = [];
 
 // Parent voice cloning (Gemini voice replication) state
-let parentVoiceState = { available: false, voices: [], selectedVoiceId: null };
-
-function updateSampleFileName(input) {
-  const label = document.getElementById('sample-file-name');
-  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Voice Sample (10–30s)';
-}
-
-function updateConsentFileName(input) {
-  const label = document.getElementById('consent-file-name');
-  if (label) label.innerText = (input.files && input.files[0]) ? input.files[0].name : 'Consent Recording';
-}
-
-async function refreshVoiceCloneStatus() {
-  const statusEl = document.getElementById('voice-clone-status');
-  const selectEl = document.getElementById('cloned-voice-select');
-  const cloneBtn = document.getElementById('btn-clone-voice');
-  const useBox = document.getElementById('use-cloned-voice');
-  if (!statusEl || !selectEl) return;
-  try {
-    const res = await fetch('/api/audio/voice-clone/status');
-    const data = await res.json();
-    parentVoiceState.available = !!data.available;
-    parentVoiceState.voices = data.voices || [];
-    selectEl.innerHTML = parentVoiceState.voices.length
-      ? parentVoiceState.voices.map(v => `<option value="${v.voice_id}">${v.name} (cloned)</option>`).join('')
-      : '<option value="">No cloned voice yet</option>';
-    if (parentVoiceState.voices.length) {
-      parentVoiceState.selectedVoiceId = parentVoiceState.voices[parentVoiceState.voices.length - 1].voice_id;
-      selectEl.value = parentVoiceState.selectedVoiceId;
-    }
-    if (!data.available) {
-      statusEl.innerText = '⚠️ Gemini API key not set — add it in Settings (or GEMINI_API_KEY in your .env) to enable cloning. The built-in Cantonese AI voices still work.';
-      statusEl.className = 'text-[11px] text-amber-600 font-bold';
-      if (cloneBtn) cloneBtn.disabled = true;
-      if (useBox) { useBox.checked = false; useBox.disabled = true; }
-    } else {
-      if (parentVoiceState.voices.length) {
-        const activeName = parentVoiceState.voices[parentVoiceState.voices.length - 1].name;
-        statusEl.innerText = `✅ Active Voice Model: ${activeName} is ready! "Use parent voice" is active for 1-click generation.`;
-        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
-        if (useBox) { useBox.checked = true; useBox.disabled = false; }
-      } else {
-        statusEl.innerText = '✅ Gemini connected — upload a 10-30s voice sample + consent clip to train a new model.';
-        statusEl.className = 'text-[11px] text-emerald-600 font-bold';
-        if (useBox) useBox.disabled = false;
-      }
-      if (cloneBtn) cloneBtn.disabled = false;
-    }
-  } catch (e) {
-    console.error(e);
-    statusEl.innerText = 'Could not reach the voice-clone service.';
-  }
-}
-
-function selectClonedVoice(voiceId) {
-  parentVoiceState.selectedVoiceId = voiceId || null;
-}
-
-async function cloneParentVoice() {
-  const btn = document.getElementById('btn-clone-voice');
-  const statusEl = document.getElementById('voice-clone-status');
-  const sampleInput = document.getElementById('sample-file-input');
-  const consentInput = document.getElementById('consent-file-input');
-  const sampleFile = sampleInput && sampleInput.files ? sampleInput.files[0] : null;
-  const consentFile = consentInput && consentInput.files ? consentInput.files[0] : null;
-  
-  if (!consentFile) {
-    statusEl.innerText = '⚠️ Please attach the consent recording saying word for word: "I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model."';
-    statusEl.className = 'text-[11px] text-amber-600 font-bold';
-    return;
-  }
-  
-  btn.innerHTML = '<span class="animate-spin">⏳</span> Training voice model…';
-  btn.disabled = true;
-  statusEl.innerText = '🧬 Submitting voice sample & consent verification to Google AI Cloud…';
-  statusEl.className = 'text-[11px] text-stone-500 font-bold';
-  try {
-    const fd = new FormData();
-    fd.append('name', 'Dad (Chishing)');
-    if (sampleFile) fd.append('audio_file', sampleFile);
-    fd.append('consent_file', consentFile);
-    const res = await fetch('/api/audio/voice-clone/create', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (res.ok && data.status === 'success') {
-      await refreshVoiceCloneStatus();
-      const useBox = document.getElementById('use-cloned-voice');
-      if (useBox && !useBox.disabled) useBox.checked = true;
-      statusEl.innerText = `🎉 Successfully cloned voice model "${data.name}"!`;
-      statusEl.className = 'text-[11px] text-emerald-600 font-bold';
-    } else {
-      statusEl.innerText = `❌ Cloning note: ${data.detail || 'Google Cloud internal acoustic verification error. Check that the sample and consent clips are clear recordings from the same person.'}`;
-      statusEl.className = 'text-[11px] text-rose-500 font-bold';
-    }
-  } catch (e) {
-    console.error(e);
-    statusEl.innerText = '❌ The voice request didn\'t go through — check your internet connection and try again.';
-    statusEl.className = 'text-[11px] text-rose-500 font-bold';
-  } finally {
-    btn.innerHTML = '<span>🧬</span> Train New Voice Model';
-    btn.disabled = !parentVoiceState.available;
-  }
-}
-
-function useClonedParentVoice() {
-  const useBox = document.getElementById('use-cloned-voice');
-  return !!(useBox && useBox.checked && parentVoiceState.selectedVoiceId && parentVoiceState.available);
-}
 
 function renderAudioStep() {
   const container = document.getElementById('audio-scenes-list');
@@ -2202,7 +2095,6 @@ function renderAudioStep() {
       </div>
     `;
   }).join('');
-  refreshVoiceCloneStatus();
   refreshNarrationScriptBox();
   renderNarrationSections();
 }
@@ -2225,11 +2117,8 @@ async function generateSingleVoiceAI(sceneIdx) {
   btn.disabled = true;
 
   try {
-    const cloned = useClonedParentVoice();
-    const url = cloned ? '/api/audio/voice-clone/synthesize' : '/api/audio/tts/scene';
-    const payload = cloned
-      ? { scene_idx: sceneIdx + 1, text: scene.cantonese, voice_id: parentVoiceState.selectedVoiceId }
-      : { scene_idx: sceneIdx + 1, text: scene.cantonese, persona: persona };
+    const url = '/api/audio/tts/scene';
+    const payload = { scene_idx: sceneIdx + 1, text: scene.cantonese, persona: persona };
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2270,11 +2159,8 @@ async function generateAllVoicesAI() {
   btn.disabled = true;
 
   try {
-    const cloned = useClonedParentVoice();
-    const url = cloned ? '/api/audio/voice-clone/synthesize-all' : '/api/audio/tts/all';
-    const payload = cloned
-      ? { scenes: currentProject.scenes, voice_id: parentVoiceState.selectedVoiceId }
-      : { scenes: currentProject.scenes, default_persona: persona };
+    const url = '/api/audio/tts/all';
+    const payload = { scenes: currentProject.scenes, default_persona: persona };
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2328,16 +2214,7 @@ function buildFullNarrationText() {
 }
 
 function refreshNarrationScriptBox() {
-  const box = document.getElementById('narration-script-text');
-  const meta = document.getElementById('narration-script-meta');
-  if (!box) return;
-  // Don't clobber while the user is editing after a generation
-  if (document.activeElement !== box) box.value = buildFullNarrationText();
-  if (meta) {
-    const chars = box.value.replace(/\s/g, '').length;
-    const estMin = (chars / 300).toFixed(1);
-    meta.innerText = `${chars} chars · ~${estMin} min of narration`;
-  }
+  // No-op: the TTS-era script textarea no longer exists.
 }
 
 function setNarrationStatus(msg, ok) {
@@ -2355,7 +2232,7 @@ function narrationReady() {
 
 function guardLeaveVoiceStep() {
   if (!narrationReady()) {
-    const ok = confirm("Your video has no voice yet — the finished video would be silent.\n\nTap OK to continue without voice, or Cancel to stay here and tap “Narrate My Story”.");
+    const ok = confirm("Your video has no voice yet — the finished video would be silent.\n\nTap OK to continue without voice, or Cancel to stay here and record your voice.");
     if (!ok) return;
   }
   setStep(4);
@@ -2363,21 +2240,10 @@ function guardLeaveVoiceStep() {
 
 function guardStartRender() {
   if (!narrationReady()) {
-    const ok = confirm("⚠️ Your video has no voice yet — it will render silent.\n\nTap OK to render anyway, or Cancel to go back to Step 3 and tap “Narrate My Story”.");
+    const ok = confirm("⚠️ Your video has no voice yet — it will render silent.\n\nTap OK to render anyway, or Cancel to go back to Step 3 and record your voice.");
     if (!ok) { setStep(3); return; }
   }
   startRender();
-}
-
-function friendlyVoiceError(detail) {
-  const d = String(detail || '');
-  if (/timeout|timed out/i.test(d)) {
-    return "❌ The voice service took too long to answer — check your internet connection and try again. If it keeps happening, try a shorter script.";
-  }
-  if (/api key|not configured|unauthorized|401|403|invalid key/i.test(d)) {
-    return "❌ Your Gemini key is missing or not working — add it under “🔑 Your Gemini Key” in the sidebar, then try again.";
-  }
-  return "❌ Something went wrong making Dad's voice — try again. If it keeps failing, tell Muse exactly what you saw here.";
 }
 
 function renderNarrationSections() {
@@ -2388,51 +2254,6 @@ function renderNarrationSections() {
   wrap.innerHTML = narr.sections.map(s =>
     `<span class="px-2 py-1 bg-emerald-50 border border-emerald-200 rounded-lg text-[10px] font-bold text-emerald-700">Scene ${s.scene_number}: ${s.start.toFixed(1)}s → ${s.end.toFixed(1)}s</span>`
   ).join('') + (narr.method ? `<span class="px-2 py-1 bg-stone-100 rounded-lg text-[10px] font-bold text-stone-500">aligned via ${narr.method}</span>` : '');
-}
-
-async function generateFullNarration() {
-  const btn = document.getElementById('btn-narration-generate');
-  const voiceId = parentVoiceState.selectedVoiceId;
-  if (!parentVoiceState.available || !voiceId) {
-    setNarrationStatus('⚠️ Pick a cloned parent voice above first (or set your Gemini key in Settings).', false);
-    return;
-  }
-  const fullText = (document.getElementById('narration-script-text').value || '').trim() || buildFullNarrationText();
-  if (!fullText) {
-    setNarrationStatus('⚠️ There is no script text to narrate yet — write the script in Step 2 first.', false);
-    return;
-  }
-  btn.innerHTML = '<span class="animate-spin">⏳</span> Narrating full script… (1 request)';
-  btn.disabled = true;
-  setNarrationStatus('🎙️ Sending the whole script in ONE voice request — this can take a minute for a 2–3 min narration…');
-  try {
-    const res = await fetch('/api/narration/synthesize', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ project_id: narrationProjectId(), voice_id: voiceId, full_text: fullText })
-    });
-    const data = await res.json();
-    if (res.ok && data.status === 'success') {
-      currentProject.narration = Object.assign(currentProject.narration || {}, {
-        audio_path: data.path,
-        duration: data.duration,
-        voice_id: data.voice_id,
-        full_text: fullText
-      });
-      const player = document.getElementById('narration-audio-player');
-      if (player) { player.src = data.audio_url; player.play().catch(() => {}); }
-      setNarrationStatus(`✅ Narration ready: ${data.duration.toFixed(1)}s from a single request. Now aligning scenes…`, true);
-      await alignNarrationToScenes();
-    } else {
-      setNarrationStatus(friendlyVoiceError(data.detail), false);
-    }
-  } catch (e) {
-    console.error(e);
-    setNarrationStatus(friendlyVoiceError(''), false);
-  } finally {
-    btn.innerHTML = '<span>🎙️</span> Generate Full Narration (1 request)';
-    btn.disabled = false;
-  }
 }
 
 async function alignNarrationToScenes() {
@@ -2527,63 +2348,27 @@ async function toggleRecord(sceneIdx) {
   }
 }
 
-// ---- Step 3: Voice (simplified) ----
-// One saved voice, one button. Extra voices / training live in a future voice studio.
-const VOICE_STYLES = {
-  calm: 'calm and gentle dad speaking softly and slowly to his toddlers',
-  warm: 'warm and gentle dad speaking Cantonese to his toddlers, natural and playful',
-  excited: 'excited and energetic dad storyteller, animated and cheerful for young children'
-};
-let currentVoiceStyle = 'warm';
-let simpleVoiceId = null;
-let simpleVoiceName = '';
-
-function setVoiceStyle(key) {
-  currentVoiceStyle = VOICE_STYLES[key] ? key : 'warm';
-  document.querySelectorAll('.voice-style-chip').forEach(chip => {
-    const active = chip.dataset.style === currentVoiceStyle;
-    chip.className = 'voice-style-chip px-4 py-2 rounded-full border text-xs font-bold transition ' +
-      (active ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm' : 'bg-white text-stone-600 border-stone-200 hover:border-emerald-300');
-  });
-  if (currentProject.narration) currentProject.narration.style_key = currentVoiceStyle;
-}
+// ---- Step 3: Voice (record-your-voice) ----
+// The parent records the narration — in the browser or by uploading a phone
+// recording. Every recording is auto-cleaned (denoise + level) on the way in.
+// No cloned voices, no TTS: Dad reads every video himself.
+let takeRecorder = null;
+let takeChunks = [];
+let takeRecording = false;
 
 function renderVoiceStep() {
-  setVoiceStyle(currentProject.narration && currentProject.narration.style_key ? currentProject.narration.style_key : currentVoiceStyle);
-  refreshSimpleVoiceStatus();
   updateVoiceScriptMeta();
-  updateNarrateButton();
+  renderTakesList();
   renderNarrationSections();
   const narr = currentProject.narration;
   const player = document.getElementById('narration-audio-player');
   if (player && narr && narr.audio_url) player.src = narr.audio_url;
-}
-
-async function refreshSimpleVoiceStatus() {
-  const label = document.getElementById('voice-step-voice-name');
-  try {
-    const res = await fetch('/api/audio/voice-clone/status');
-    const data = await res.json();
-    const voices = data.voices || [];
-    if (data.available && voices.length) {
-      // Prefer the working Dad voice; never let a diagnostic voice replace it.
-      const v = voices.find(x => x.voice_id === 'voice_6k5rt0208uou') || voices[voices.length - 1];
-      simpleVoiceId = v.voice_id;
-      simpleVoiceName = v.name || 'My Voice';
-      if (label) label.innerText = `✅ ${simpleVoiceName} — your saved voice will read the story.`;
-    } else if (data.available) {
-      simpleVoiceId = null;
-      if (label) label.innerText = '⚠️ No saved voice found yet — ask Muse to set up your voice, then come back here.';
-    } else {
-      simpleVoiceId = null;
-      if (label) label.innerText = '⚠️ Voice service not connected — add your Gemini key in Settings to enable narration.';
-    }
-  } catch (e) {
-    console.error(e);
-    simpleVoiceId = null;
-    if (label) label.innerText = '⚠️ Could not reach the voice service — try again in a moment.';
+  const tbox = document.getElementById('narration-transcript-box');
+  const tarea = document.getElementById('narration-transcript');
+  if (tbox && tarea && narr && narr.transcript) {
+    tarea.value = narr.transcript;
+    tbox.classList.remove('hidden');
   }
-  updateNarrateButton();
 }
 
 function updateVoiceScriptMeta() {
@@ -2595,81 +2380,193 @@ function updateVoiceScriptMeta() {
     return;
   }
   const chars = (currentProject.scenes || []).reduce((a, s) => a + (s.cantonese || '').length, 0);
-  const estMin = (chars / 160).toFixed(1);
-  meta.innerText = `${n} scenes · ~${estMin} min of narration · Dad reads every scene`;
+  const estMin = (chars / 300).toFixed(1);
+  meta.innerText = `${n} scenes · ~${estMin} min of reading · Dad reads every scene`;
 }
 
 function narrationIsStale() {
+  // True when the script changed after the narration was recorded.
   const narr = currentProject.narration;
-  if (!narr || !narr.full_text) return false;
-  return narr.full_text !== buildFullNarrationText() || narr.style_key !== currentVoiceStyle;
+  if (!narr || !narr.script_snapshot) return false;
+  return narr.script_snapshot !== buildFullNarrationText();
 }
 
-function updateNarrateButton() {
-  const btn = document.getElementById('btn-voice-narrate');
-  if (!btn || btn.disabled) return;
-  const narr = currentProject.narration;
-  if (narr && narr.audio_url && !narrationIsStale()) {
-    btn.innerHTML = '<span>✅</span> Narration Ready — Listen Above';
-  } else if (narr && narr.audio_url) {
-    btn.innerHTML = '<span>🔁</span> Narrate Again (script or style changed)';
-  } else {
-    btn.innerHTML = '<span>🎙️</span> Narrate My Story';
-  }
-}
-
-async function narrateStory() {
-  const btn = document.getElementById('btn-voice-narrate');
-  if (!simpleVoiceId) {
-    setNarrationStatus('⚠️ No saved voice found yet — ask Muse to set up your voice first.', false);
+async function toggleTakeRecording() {
+  const btn = document.getElementById('btn-take-record');
+  if (takeRecording && takeRecorder) {
+    takeRecorder.stop();
     return;
   }
-  const fullText = buildFullNarrationText();
-  if (!fullText) {
-    setNarrationStatus('⚠️ There is no script to narrate yet — write the story in Step 2 first.', false);
-    return;
-  }
-  btn.innerHTML = '<span class="animate-spin">⏳</span> Dad is reading your story… (1 voice request)';
-  btn.disabled = true;
-  setNarrationStatus('🎙️ Sending the whole script in ONE voice request — this can take a minute for a 2–3 min story…');
   try {
-    const res = await fetch('/api/narration/synthesize', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        project_id: narrationProjectId(),
-        voice_id: simpleVoiceId,
-        full_text: fullText,
-        style: VOICE_STYLES[currentVoiceStyle]
-      })
-    });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    takeChunks = [];
+    takeRecorder = new MediaRecorder(stream);
+    takeRecorder.ondataavailable = e => { if (e.data.size) takeChunks.push(e.data); };
+    takeRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      takeRecording = false;
+      btn.innerHTML = '<span>●</span> Start take';
+      btn.classList.remove('bg-rose-500', 'hover:bg-rose-600', 'text-white');
+      btn.classList.add('bg-emerald-500', 'hover:bg-emerald-600', 'text-white');
+      const blob = new Blob(takeChunks, { type: takeRecorder.mimeType || 'audio/webm' });
+      await uploadTakeBlob(blob);
+    };
+    takeRecorder.start();
+    takeRecording = true;
+    btn.innerHTML = '<span class="animate-pulse">⏹</span> Stop take';
+    btn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+    btn.classList.add('bg-rose-500', 'hover:bg-rose-600');
+    setNarrationStatus('🎤 Recording… read a chunk, then stop. It will be cleaned automatically.', null);
+  } catch (e) {
+    console.error(e);
+    setNarrationStatus('❌ Could not access the microphone — check the browser permission and try again.', false);
+  }
+}
+
+async function uploadTakeBlob(blob) {
+  const fd = new FormData();
+  fd.append('project_id', narrationProjectId());
+  fd.append('audio_file', blob, 'take.webm');
+  setNarrationStatus('✨ Cleaning your take (removing background noise)…', null);
+  try {
+    const res = await fetch('/api/narration/take', { method: 'POST', body: fd });
     const data = await res.json();
     if (res.ok && data.status === 'success') {
-      currentProject.narration = Object.assign(currentProject.narration || {}, {
-        audio_path: data.path,
-        audio_url: data.audio_url,
-        duration: data.duration,
-        voice_id: data.voice_id,
-        voice_name: simpleVoiceName,
-        full_text: fullText,
-        style_key: currentVoiceStyle,
-        outOfSync: false
-      });
-      if (typeof markProjectDirty === 'function') markProjectDirty();
-      const player = document.getElementById('narration-audio-player');
-      if (player) { player.src = data.audio_url; player.play().catch(() => {}); }
-      setNarrationStatus(`✅ Narration ready: ${data.duration.toFixed(1)}s from a single request. Now marking where each scene starts…`, true);
-      await alignNarrationToScenes();
+      setNarrationStatus(`✅ Take ${data.take_index} saved and cleaned. Record another or tap “Done — join my takes”.`, true);
+      renderTakesList();
     } else {
-      setNarrationStatus(friendlyVoiceError(data.detail), false);
+      setNarrationStatus(`❌ Couldn't save that take — ${(data.detail || 'try again')}.`, false);
     }
   } catch (e) {
     console.error(e);
-    setNarrationStatus(friendlyVoiceError(''), false);
-  } finally {
-    btn.disabled = false;
-    updateNarrateButton();
+    setNarrationStatus('❌ Could not reach the studio — check your connection and try again.', false);
   }
+}
+
+async function uploadNarrationRecording(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('project_id', narrationProjectId());
+  fd.append('audio_file', file);
+  setNarrationStatus('✨ Cleaning your recording (removing background noise)…', null);
+  try {
+    const res = await fetch('/api/narration/upload', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (res.ok && data.status === 'success') {
+      onNarrationReady(data);
+      setNarrationStatus(`✅ Recording cleaned — ${data.duration.toFixed(1)}s. Now listening back to write down what you said…`, true);
+      await transcribeNarration();
+    } else {
+      setNarrationStatus(`❌ Couldn't use that file — ${(data.detail || 'try a different audio file')}.`, false);
+    }
+  } catch (e) {
+    console.error(e);
+    setNarrationStatus('❌ Could not reach the studio — check your connection and try again.', false);
+  } finally {
+    input.value = '';
+  }
+}
+
+async function renderTakesList() {
+  const wrap = document.getElementById('narration-takes');
+  const finBtn = document.getElementById('btn-takes-finalize');
+  if (!wrap) return;
+  try {
+    const res = await fetch(`/api/narration/takes/${encodeURIComponent(narrationProjectId())}`);
+    const data = await res.json();
+    const takes = data.takes || [];
+    wrap.innerHTML = takes.length ? takes.map(t => `
+      <div class="flex items-center justify-between bg-white rounded-xl px-3 py-2 border border-emerald-100">
+        <span class="text-[11px] font-bold text-stone-600">Take ${t.index} · ${t.duration.toFixed(1)}s</span>
+        <button onclick="deleteTake(${t.index})" class="text-[11px] font-bold text-rose-500 hover:text-rose-700">Delete</button>
+      </div>`).join('')
+      : '<p class="text-[11px] text-stone-400">No takes yet.</p>';
+    if (finBtn) finBtn.classList.toggle('hidden', takes.length === 0);
+  } catch (e) { console.error(e); }
+}
+
+async function deleteTake(idx) {
+  try {
+    await fetch(`/api/narration/take/${encodeURIComponent(narrationProjectId())}/${idx}`, { method: 'DELETE' });
+    renderTakesList();
+  } catch (e) { console.error(e); }
+}
+
+async function finalizeTakes() {
+  setNarrationStatus('🔗 Joining your takes into one smooth narration…', null);
+  try {
+    const res = await fetch('/api/narration/takes/finalize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_id: narrationProjectId() })
+    });
+    const data = await res.json();
+    if (res.ok && data.status === 'success') {
+      onNarrationReady(data);
+      setNarrationStatus(`✅ ${data.takes_joined} takes joined smoothly (${data.duration.toFixed(1)}s). Now listening back to write down what you said…`, true);
+      await transcribeNarration();
+    } else {
+      setNarrationStatus(`❌ Couldn't join the takes — ${(data.detail || 'try again')}.`, false);
+    }
+  } catch (e) {
+    console.error(e);
+    setNarrationStatus('❌ Could not reach the studio — check your connection and try again.', false);
+  }
+}
+
+function onNarrationReady(data) {
+  currentProject.narration = Object.assign(currentProject.narration || {}, {
+    audio_path: data.path,
+    audio_url: data.audio_url,
+    duration: data.duration,
+    recorded: true,
+    script_snapshot: buildFullNarrationText(),
+    transcript: null,
+    sections: null,
+    words: null
+  });
+  if (typeof markProjectDirty === 'function') markProjectDirty();
+  const player = document.getElementById('narration-audio-player');
+  if (player) { player.src = data.audio_url; player.play().catch(() => {}); }
+  const tbox = document.getElementById('narration-transcript-box');
+  if (tbox) tbox.classList.add('hidden');
+  renderNarrationSections();
+}
+
+async function transcribeNarration() {
+  setNarrationStatus('👂 Listening back to write down exactly what you said… (a minute or so)', null);
+  try {
+    const res = await fetch('/api/narration/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_id: narrationProjectId() })
+    });
+    const data = await res.json();
+    if (res.ok && data.status === 'success') {
+      currentProject.narration.transcript = data.text;
+      currentProject.narration.words = data.words;
+      if (typeof markProjectDirty === 'function') markProjectDirty();
+      const tarea = document.getElementById('narration-transcript');
+      const tbox = document.getElementById('narration-transcript-box');
+      if (tarea && tbox) { tarea.value = data.text; tbox.classList.remove('hidden'); }
+      setNarrationStatus('✅ Wrote down what you said — fix anything I misheard, then tap “Save & line up the scenes”.', true);
+    } else {
+      setNarrationStatus(`❌ Couldn't transcribe — ${(data.detail || 'try again')}. Scenes will use estimated timings.`, false);
+    }
+  } catch (e) {
+    console.error(e);
+    setNarrationStatus('❌ Transcription had a hiccup — scenes will use estimated timings.', false);
+  }
+}
+
+async function saveTranscriptAndAlign() {
+  const tarea = document.getElementById('narration-transcript');
+  if (tarea) {
+    currentProject.narration.transcript = tarea.value;
+    if (typeof markProjectDirty === 'function') markProjectDirty();
+  }
+  await alignNarrationToScenes();
 }
 
 // Step 5: Render & Preview

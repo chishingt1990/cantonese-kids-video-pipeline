@@ -121,10 +121,21 @@ def _build_scene_caption_timeline(scene: dict, project_root: str, font) -> list:
 
 
 def _cue_from_words(buf: list, sec_start: float, font, sec_dur: float) -> dict:
-    """One karaoke cue from a run of timestamped words (times vs section start)."""
+    """One karaoke cue from a run of timestamped words (times vs section start).
+
+    Carries per-character end times so the highlight follows the real voice
+    character-by-character instead of a steady estimate.
+    """
     chars = []
+    char_ends = []
     for w in buf:
-        chars.extend(list(w["w"]))
+        w_chars = list(w["w"])
+        span = max(0.01, w["end"] - w["start"])
+        for k, ch in enumerate(w_chars):
+            chars.append(ch)
+            char_ends.append(
+                max(0.0, min(w["start"] + span * (k + 1) / len(w_chars) - sec_start, sec_dur))
+            )
     start = max(0.0, buf[0]["start"] - sec_start)
     end = max(start + 0.2, min(buf[-1]["end"] - sec_start, sec_dur))
     try:
@@ -135,6 +146,7 @@ def _cue_from_words(buf: list, sec_start: float, font, sec_dur: float) -> dict:
         "start": start,
         "end": end,
         "chars": chars,
+        "char_ends": char_ends,
         "widths": widths,
         "total_w": sum(widths),
     }
@@ -552,10 +564,17 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
                         )
                         if fade > 0.05:
                             n_chars = len(active["chars"])
-                            progress = (scene_elapsed - active["start"]) / max(
-                                0.001, active["end"] - active["start"]
-                            )
-                            lit_count = progress * n_chars
+                            cue_elapsed = scene_elapsed - active["start"]
+                            char_ends = active.get("char_ends")
+                            if char_ends and len(char_ends) == n_chars:
+                                # True per-character timing from the real voice.
+                                lit_count = sum(1 for e in char_ends if e <= cue_elapsed)
+                            else:
+                                # Proportional fallback for estimated cues.
+                                progress = cue_elapsed / max(
+                                    0.001, active["end"] - active["start"]
+                                )
+                                lit_count = progress * n_chars
 
                             k_draw = ImageDraw.Draw(frame, "RGBA")
                             cy = 748  # sits above the subtitle pill

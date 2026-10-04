@@ -17,7 +17,10 @@ PRESET_BACKGROUNDS = [
     "living_room", "nursery", "kitchen", "park", "beach",
     "playroom", "reading_nook", "dining", "bathroom", "mountains",
     "playground", "farm_field", "duck_pond", "backyard_garden",
-    "art_room", "supermarket"
+    "art_room", "supermarket",
+    # Vehicle scenes (Oct 2026): sensible homes for vehicle stickers.
+    "sky", "fire_station", "neighborhood", "city_road",
+    "whiteboard_room", "construction",
 ]
 
 CHARACTER_POSES = {
@@ -109,7 +112,8 @@ STAGE COORDINATE RULES:
   - grandparents_paternal: default, drinking_tea
   - grandparents_maternal: default, waving
   - auntie_cousins: default, waving
-- Choose background_id from: living_room, nursery, kitchen, park, beach, playroom, reading_nook, dining, bathroom, mountains, playground, farm_field, duck_pond, backyard_garden, art_room, supermarket.
+- Choose background_id from: living_room, nursery, kitchen, park, beach, playroom, reading_nook, dining, bathroom, mountains, playground, farm_field, duck_pond, backyard_garden, art_room, supermarket, sky, fire_station, neighborhood, city_road, whiteboard_room, construction.
+  (Vehicle scenes: sky for airplanes, fire_station for fire trucks, neighborhood for garbage trucks, city_road for cars/buses/motorbikes, construction for excavators, whiteboard_room as an all-purpose teaching backdrop.)
 - New twin action layouts: jumping uses y_percent 74.074 (airborne); dancing and brushing_teeth use 81.481. Use scale 1.0 and preserve reference hair direction (flip=false) unless the scene explicitly requires otherwise. Do not show dancing/jumping while brushing teeth. Prefer bathroom for toothbrushing and playroom for indoor dance.
 - Prefer the approved word badges with their exact labels:
   badge_routine_brush_teeth: 刷牙 / BRUSH TEETH; badge_routine_wash_hands: 洗手 / WASH HANDS;
