@@ -19,8 +19,8 @@
   <!-- LEFT SIDEBAR PANE -->
   <!-- ======================================================== -->
   <aside class="w-72 bg-white border-r border-amber-100 flex flex-col justify-between shrink-0 h-screen sticky top-0 shadow-sm z-20">
-    <!-- TOP SECTION -->
-    <div class="p-5 space-y-5">
+    <!-- TOP SECTION (scrolls on short windows so the bottom panel stays reachable) -->
+    <div class="p-5 space-y-5 flex-1 min-h-0 overflow-y-auto">
       <!-- APP LOGO -->
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-rose-400 flex items-center justify-center text-xl shadow-sm shadow-amber-200">
@@ -478,8 +478,7 @@
               </div>
               <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">1-Tap to Add</span>
             </div>
-            <p class="text-[11px] text-stone-400">Click any storybook sticker, prop, shape or phonics glyph to place it into the scene:</p>
-            <div id="storybook-sticker-filters" class="flex flex-wrap gap-1.5 text-[10px] font-bold"></div>
+            <p class="text-[11px] text-stone-400">Click any 3D sticker or phonics block to place it into the scene:</p>
             <div id="storybook-stickers-palette" class="grid grid-cols-3 gap-2 max-h-[220px] overflow-y-auto pr-1">
               <!-- Loaded dynamically from /api/scene-director/stickers/catalog -->
             </div>
@@ -491,12 +490,6 @@
               <h4 class="font-extrabold text-xs text-stone-800 uppercase tracking-wider">Family Member Palette</h4>
               <span class="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">👆 Drag to Scene</span>
             </div>
-            <!-- Simplified top-level buckets (Levi · Luca · Mom · Dad ·
-                 Paternal grandparents · Maternal grandparents · Auntie &
-                 cousins · Doggy). Composite "shared" sprites appear in each
-                 participant's bucket but click/drag still sends the original
-                 composite ID to the renderer. -->
-            <div id="family-bucket-chips" class="flex flex-wrap gap-1.5" aria-label="Family buckets"></div>
             <p class="text-[11px] text-stone-400">Drag any family member directly onto the 16:9 canvas to place them anywhere:</p>
             <div id="draggable-family-roster" class="grid grid-cols-2 gap-2 max-h-[240px] overflow-y-auto pr-1">
               <!-- Draggable roster items -->
@@ -670,12 +663,8 @@
       <div class="space-y-3">
         <div>
           <label class="block text-[11px] font-bold text-stone-600 mb-1 uppercase tracking-wider">1. Select Character</label>
-          <!-- Highlevel family-bucket row mirroring the Family Member Palette
-               so the outfit studio also opens with 8 chips instead of a long
-               scroller of every runtime ID. -->
-          <div id="outfit-bucket-chips" class="flex flex-wrap gap-1.5 mb-2" aria-label="Family buckets"></div>
           <div class="grid grid-cols-4 sm:grid-cols-8 gap-2 overflow-x-auto pb-1" id="outfit-char-picker">
-            <!-- Dynamically populated from allCharacters filtered by activeOutfitBucket -->
+            <!-- Dynamically populated from allCharacters -->
           </div>
           <input type="hidden" id="modal-outfit-char" value="levi">
         </div>
