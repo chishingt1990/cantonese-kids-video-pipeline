@@ -19,8 +19,8 @@ def call_gemini(prompt: str, system_instruction: str = "", model: str = "") -> s
     models_to_try = [primary_model] + [m for m in fallback_models if m != primary_model]
     
     from google import genai
-    # 30-second timeout prevents the request from hanging the application indefinitely
-    client = genai.Client(api_key=api_key, http_options={"timeout": 30.0})
+    # Long timeout: an 18-22 scene JSON script can take over a minute to stream back
+    client = genai.Client(api_key=api_key, http_options={"timeout": 120.0})
     
     last_error = None
     for try_model in models_to_try:
@@ -308,7 +308,122 @@ def get_grounded_topic_ideas(topic: str, age_group: str) -> list:
             }
         ]
 
-    # 4. Default dynamic synthesis strictly matching user's custom topic
+    # 4. Vehicles / Cars (the twins' current obsession)
+    if any(k in t for k in ["car", "cars", "vehicle", "truck", "fire truck", "ambulance",
+                            "digger", "excavator", "police car", "bus", "train",
+                            "車", "汽車", "消防車", "救護車", "警車", "挖土機", "巴士"]):
+        return [
+            {
+                "id": "idea_car_1",
+                "title_cantonese": "消防車出動！紅色英雄嚟啦",
+                "title_english": "Fire Truck to the Rescue! The Red Hero Arrives",
+                "description": "Levi and Luca hear a wee-oo wee-oo! Dad shows them the big red fire truck — its long ladder, loud siren, and how it sprays water to help people.",
+                "target_vocab": [
+                    {"chinese": "消防車", "english": "Fire truck"},
+                    {"chinese": "紅色", "english": "Red"},
+                    {"chinese": "救火", "english": "Put out fires"}
+                ],
+                "moral_lesson": "Helpers like firefighters keep everyone safe — we can say thank you to helpers.",
+                "scenes_preview": [
+                    "A wee-oo wee-oo siren sounds in the distance",
+                    "The big red fire truck rolls in with its tall ladder",
+                    "Dad and the boys count the truck's six big wheels",
+                    "Whoosh! Water sprays from the hose to put out the pretend fire"
+                ]
+            },
+            {
+                "id": "idea_car_2",
+                "title_cantonese": "挖土機大力士！黃色巨人開工",
+                "title_english": "Excavator Power! The Yellow Giant at Work",
+                "description": "A giant yellow excavator swings its big arm — dig, scoop, dump! Levi and Luca learn what each part does and copy the digging motions.",
+                "target_vocab": [
+                    {"chinese": "挖土機", "english": "Excavator"},
+                    {"chinese": "黃色", "english": "Yellow"},
+                    {"chinese": "挖泥", "english": "Dig dirt"}
+                ],
+                "moral_lesson": "Big machines help builders build our homes and roads.",
+                "scenes_preview": [
+                    "The yellow excavator rumbles onto the building site",
+                    "Its long arm scoops up a mountain of dirt",
+                    "Dad shows the tracks that help it roll over bumps",
+                    "Levi and Luca pretend their arms are digger arms — dig dig dig!"
+                ]
+            },
+            {
+                "id": "idea_car_3",
+                "title_cantonese": "救護車快啲嚟！白色天使",
+                "title_english": "Hurry, Ambulance! The White Angel",
+                "description": "The white ambulance with its red stripe rushes past — wee-oo! Dad explains how it hurries sick people to the hospital, and the boys practice the siren sound.",
+                "target_vocab": [
+                    {"chinese": "救護車", "english": "Ambulance"},
+                    {"chinese": "白色", "english": "White"},
+                    {"chinese": "醫院", "english": "Hospital"}
+                ],
+                "moral_lesson": "When someone is hurt, helpers rush to take care of them.",
+                "scenes_preview": [
+                    "Wee-oo wee-oo! The white ambulance speeds down the road",
+                    "Dad points out the red stripe and flashing lights",
+                    "Inside: the stretcher bed that carries patients safely",
+                    "The boys wave as the ambulance hurries to the hospital"
+                ]
+            },
+            {
+                "id": "idea_car_4",
+                "title_cantonese": "警車巡邏！藍色守護者",
+                "title_english": "Police Car on Patrol! The Blue Guardian",
+                "description": "The blue-and-white police car cruises the neighborhood keeping streets safe. Levi and Luca learn its flashing lights, learn to stop and look, and say hello to the officer.",
+                "target_vocab": [
+                    {"chinese": "警車", "english": "Police car"},
+                    {"chinese": "藍色", "english": "Blue"},
+                    {"chinese": "保護", "english": "Protect"}
+                ],
+                "moral_lesson": "Police officers protect our neighborhood and help lost people find their way.",
+                "scenes_preview": [
+                    "The police car rolls slowly down the street, lights flashing",
+                    "Dad teaches: red light stop, green light go!",
+                    "The friendly officer waves to Levi and Luca",
+                    "Everyone practices looking left and right before crossing"
+                ]
+            },
+            {
+                "id": "idea_car_5",
+                "title_cantonese": "垃圾車收垃圾！綠色大力士",
+                "title_english": "Garbage Truck Pickup! The Green Strongman",
+                "description": "The big green garbage truck lifts the bins high — up, tip, rumble! The boys learn what it collects, its colors, and why keeping streets clean matters.",
+                "target_vocab": [
+                    {"chinese": "垃圾車", "english": "Garbage truck"},
+                    {"chinese": "綠色", "english": "Green"},
+                    {"chinese": "倒垃圾", "english": "Empty the bins"}
+                ],
+                "moral_lesson": "Keeping our streets clean is teamwork — everyone can tidy up.",
+                "scenes_preview": [
+                    "Rumble rumble! The green garbage truck arrives in the morning",
+                    "Its big arm grabs the bin and lifts it way up high",
+                    "Crash! The trash tumbles into the truck",
+                    "Levi and Luca help Dad sort recycling at home"
+                ]
+            },
+            {
+                "id": "idea_car_6",
+                "title_cantonese": "賽車快快快！彩色跑車比賽",
+                "title_english": "Race Cars Go Vroom! The Colorful Car Race",
+                "description": "Vroom vroom! Red, blue, and yellow race cars zoom around the track — fast and slow, big and small. The boys rev their engines and cheer for their favorite color.",
+                "target_vocab": [
+                    {"chinese": "賽車", "english": "Race car"},
+                    {"chinese": "快", "english": "Fast"},
+                    {"chinese": "慢", "english": "Slow"}
+                ],
+                "moral_lesson": "Racing is fun, but the best part is playing together — win or lose.",
+                "scenes_preview": [
+                    "Three colorful race cars line up at the starting line",
+                    "Ready, set, GO! Vroom vroom vroom!",
+                    "The red car zooms fast, the blue car putt-putts slow",
+                    "Everyone gets a trophy sticker for finishing the race"
+                ]
+            }
+        ]
+
+    # 5. Default dynamic synthesis strictly matching user's custom topic
     clean_topic = topic.strip() if topic else "快樂成長"
     return [
         {
@@ -481,107 +596,188 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
     v1 = vocab[0]["chinese"] if len(vocab) > 0 else "開心"
     v2 = vocab[1]["chinese"] if len(vocab) > 1 else "多謝"
     v3 = vocab[2]["chinese"] if len(vocab) > 2 else "一齊玩"
+    v1_en = vocab[0]["english"] if len(vocab) > 0 else "happy"
+    v2_en = vocab[1]["english"] if len(vocab) > 1 else "thank you"
+    v3_en = vocab[2]["english"] if len(vocab) > 2 else "play together"
 
-    scenes = [
-        {
-            "scene_number": 1,
-            "title": "Introduction & Warm Greeting",
+    # Vehicle-flavored arc for car-obsessed toddlers; generic arc otherwise.
+    is_vehicle = any(k in combined_text for k in [
+        "car", "cars", "vehicle", "truck", "fire truck", "ambulance",
+        "digger", "excavator", "police", "bus", "train",
+        "車", "汽車", "消防車", "救護車", "警車", "挖土機", "巴士"])
+    chorus = "隆隆隆，車車嚟啦！隆隆隆，真係好得意！" if is_vehicle else f"{v1}，{v1}，真開心！"
+    chorus2 = "隆隆隆，車車修好啦！隆隆隆，我哋真係叻！" if is_vehicle else f"{v1}，{v1}，我哋學識啦！"
+
+    # 18-scene story arc with rotating beat types:
+    # ACT 1 hook → ACT 2 journey (sound/action/count/pretend/question/discover) →
+    # ACT 3 gentle problem → ACT 4 solve & celebrate → ACT 5 goodbye.
+    # Dad is on screen in every scene. No two adjacent beats share a type.
+    if is_vehicle:
+        beats = [
+            ("Hook: A Sound Appears",
+             "依嗚依嗚——！咦，咩聲嚟㗎？係咪有車車嚟緊呀？",
+             "Wee-oo wee-oo — hey, what's that sound? Is a vehicle coming?", v1,
+             [("dad", "pointing", "left"), ("levi", "running", "right")]),
+            ("Discover: Today's Play",
+             f"睇下！今日爸爸同兩個寶寶一齊玩：{title_cn}！好多架車車等緊我哋！",
+             f"Look! Today Dad and the two babies explore {title_en}! So many vehicles are waiting for us!", v1,
+             [("dad", "waving", "left"), ("luca", "waving", "right")]),
+            ("Question: Guess First",
+             f"你估下，第一架出現嘅會係咩車呢？係唔係{v1}呢？",
+             f"Guess — what will the first vehicle be? Is it the {v1_en}?", v1,
+             [("dad", "pointing", "left"), ("luca", "thinking", "right")]),
+            ("Sound Play: Engine Roar",
+             "一齊學車車把聲：隆隆隆！哥哥大大聲，細佬細細聲，預備——隆隆隆！",
+             "Let's copy the engine sound: vroom vroom! Levi nice and loud, Luca nice and soft — ready — vroom vroom!", v1,
+             [("dad", "teaching", "left"), ("levi", "cheering", "right")]),
+            ("Action: Steering Wheels",
+             "伸出小手扮軚盤，左轉，右轉，我哋一齊揸車啦！",
+             "Hold up your little hands like steering wheels — turn left, turn right, let's all drive!", v2,
+             [("dad", "default", "left"), ("luca", "playing_car", "right")]),
+            ("Count: How Many Wheels",
+             "數下有幾多個轆：一、二、三、四！四個轆，數啱啦！",
+             "Count the wheels: one, two, three, four! Four wheels — you counted right!", v2,
+             [("dad", "pointing", "left"), ("levi", "pointing", "right")]),
+            ("Chorus",
+             chorus,
+             "Vroom vroom, here come the cars! Vroom vroom, so much fun!", v3,
+             [("dad", "clapping", "left"), ("levi", "cheering", "right")]),
+            ("Pretend: We Are Drivers",
+             "我哋扮司機叔叔，叭叭！借過借過，唔該！",
+             "Let's pretend we're drivers — beep beep! Coming through, excuse me!", v3,
+             [("dad", "sitting", "left"), ("luca", "playing_car", "right")]),
+            ("Question: Which One",
+             f"邊架車係{v2}呀？哥哥最大聲，快啲話畀爸爸知！",
+             f"Which vehicle is the {v2_en}? Levi, shout it out and tell Dad!", v2,
+             [("dad", "kneeling", "left"), ("levi", "pointing", "right")]),
+            ("Discover: Something New",
+             "嘩！又嚟多架！睇下佢個樣，估下佢係做咩㗎？",
+             "Wow! Another one! Look at what it looks like — guess what it does?", v3,
+             [("dad", "default", "left"), ("luca", "thinking", "right")]),
+            ("Challenge: It Won't Move",
+             "哎呀！架車唔郁啦！係咪壞咗呀？唔緊要，唔使驚！",
+             "Oh no! The car won't move! Is it broken? It's okay, don't be scared!", v2,
+             [("dad", "kneeling", "left"), ("luca", "sad", "right")]),
+            ("Comfort: Dad's Hug",
+             "唔好唔開心，爸爸抱抱！我哋一齊睇下咩事，好冇？",
+             "Don't be sad — Daddy hugs you! Let's look at what's wrong together, okay?", v2,
+             [("dad", "comforting_hug", "left"), ("luca", "default", "right")]),
+            ("Try Again: Found It",
+             "原來係粒石仔卡住咗！拎開佢，慢慢推——郁啦郁啦！",
+             "A little pebble was stuck! Move it away, push slowly — it's moving!", v3,
+             [("dad", "teaching", "left"), ("levi", "clapping", "right")]),
+            ("Celebrate: We Did It",
+             "得咗啦！車車識郁啦！叻仔叻仔，拍拍手！",
+             "We did it! The car moves again! Clever boys, clap clap!", v3,
+             [("dad", "clapping", "left"), ("levi", "cheering", "right")]),
+            ("Chorus With A Twist",
+             chorus2,
+             "Vroom vroom, the car is fixed! Vroom vroom, we are so clever!", v1,
+             [("dad", "waving", "left"), ("luca", "waving", "right")]),
+            ("Gag: Doggy Driver",
+             "哈哈！狗狗跳上車頂，汪汪汪！狗狗都想揸車呀！",
+             "Haha! Doggy jumped on the roof — woof woof woof! Doggy wants to drive too!", v1,
+             [("dad", "default", "left"), ("dog", "dancing_paw", "right")]),
+            ("Action: The Big Race",
+             "最後嚟場賽車！預備——起步！隆隆隆，衝呀！",
+             "One last big race! Ready — go! Vroom vroom, zoom!", v2,
+             [("dad", "waving", "left"), ("levi", "running", "right")]),
+            ("Goodbye Wave",
+             f"今日我哋識咗{v1}、{v2}、{v3}！揮手講拜拜，下次再玩{title_cn}！",
+             f"Today we learned {v1_en}, {v2_en}, {v3_en}! Wave goodbye — let's play {title_en} again!", "拜拜",
+             [("dad", "waving", "left"), ("levi", "waving", "right")]),
+        ]
+    else:
+        beats = [
+            ("Hook: A Surprise",
+             "叮噹！咦，係咩嚟㗎？爸爸發現咗啲好得意嘅嘢！",
+             "Ding dong! Hey, what's that? Dad found something really fun!", v1,
+             [("dad", "pointing", "left"), ("levi", "running", "right")]),
+            ("Discover: Today's Play",
+             f"今日爸爸同兩個寶寶一齊玩：{title_cn}！",
+             f"Today Dad and the two babies explore {title_en}!", v1,
+             [("dad", "waving", "left"), ("luca", "waving", "right")]),
+            ("Question: Guess First",
+             "你估下，我哋會發現咩好玩嘅嘢呢？",
+             "Guess — what fun thing will we discover?", v1,
+             [("dad", "default", "left"), ("luca", "thinking", "right")]),
+            ("Sound Play: Say It Together",
+             f"跟住爸爸一齊讀：{v1}！大大聲一次，細細聲一次！",
+             f"Say it with Dad: {v1_en}! Once nice and loud, once nice and soft!", v1,
+             [("dad", "teaching", "left"), ("levi", "cheering", "right")]),
+            ("Action: Wiggle Time",
+             "郁動下小手小腳，跳跳跳，真係好開心！",
+             "Wiggle your little hands and feet — jump jump jump, so happy!", v2,
+             [("dad", "clapping", "left"), ("luca", "default", "right")]),
+            ("Count: How Many",
+             "一齊數：一、二、三！有三樣嘢呀！",
+             "Let's count: one, two, three! Three things!", v2,
+             [("dad", "pointing", "left"), ("levi", "pointing", "right")]),
+            ("Chorus",
+             chorus,
+             f"{v1_en}, {v1_en}, so happy!", v3,
+             [("dad", "clapping", "left"), ("levi", "cheering", "right")]),
+            ("Pretend: Let's Imagine",
+             f"我哋扮下{v2}，一齊嚟玩啦，好冇？",
+             f"Let's pretend to be {v2_en} — come play, okay?", v3,
+             [("dad", "sitting", "left"), ("luca", "holding_toy", "right")]),
+            ("Question: Which One",
+             f"邊個係{v1}呀？哥哥話畀爸爸知！",
+             f"Which one is the {v1_en}? Levi, tell Dad!", v2,
+             [("dad", "kneeling", "left"), ("levi", "pointing", "right")]),
+            ("Discover: Something New",
+             f"嘩！睇下呢個！原來{title_cn}仲有咁多嘢玩㗎！",
+             f"Wow! Look at this! {title_en} has so much more to play with!", v3,
+             [("dad", "default", "left"), ("luca", "default", "right")]),
+            ("Challenge: A Tricky Bit",
+             "哎呀，有啲難喎！唔緊要，慢慢嚟，唔使驚！",
+             "Oh, this is a bit tricky! No worries — take it slow, don't be scared!", v2,
+             [("dad", "kneeling", "left"), ("luca", "sad", "right")]),
+            ("Comfort: Dad's Hug",
+             "唔好唔開心，爸爸抱抱！深呼吸，我哋再試過！",
+             "Don't be sad — Daddy hugs you! Deep breath, let's try again!", v2,
+             [("dad", "comforting_hug", "left"), ("luca", "waving", "right")]),
+            ("Try Again: Slowly",
+             "好啦，一步一步嚟，你得㗎！試多次啦！",
+             "Okay — step by step, you can do it! Try once more!", v3,
+             [("dad", "teaching", "left"), ("levi", "clapping", "right")]),
+            ("Celebrate: We Did It",
+             f"得咗啦！叻仔叻仔！拍拍手！我哋識得{title_cn}啦！",
+             f"We did it! Clever boys! Clap clap! We know {title_en} now!", v3,
+             [("dad", "clapping", "left"), ("levi", "cheering", "right")]),
+            ("Chorus With A Twist",
+             chorus2,
+             f"{v1_en}, {v1_en}, we learned it!", v1,
+             [("dad", "waving", "left"), ("luca", "waving", "right")]),
+            ("Gag: Doggy Joins",
+             "哈哈！狗狗碌過嚟，汪汪叫！佢都想一齊玩呀！",
+             "Haha! Doggy rolls over — woof woof! He wants to play too!", v1,
+             [("dad", "default", "left"), ("dog", "dancing_paw", "right")]),
+            ("Action: Dance Finale",
+             "最後一齊跳個舞，左搖右擺，真係好開心！",
+             "One last dance together — sway left, sway right, so happy!", v2,
+             [("dad", "waving", "left"), ("levi", "running", "right")]),
+            ("Goodbye Wave",
+             f"今日我哋學咗{v1}、{v2}、{v3}！揮手講拜拜，下次再玩{title_cn}！",
+             f"Today we learned {v1_en}, {v2_en}, {v3_en}! Wave goodbye — let's play {title_en} again!", "拜拜",
+             [("dad", "waving", "left"), ("levi", "waving", "right")]),
+        ]
+
+    scenes = []
+    for i, (beat_title, cantonese, english, vocab_hl, chars) in enumerate(beats, start=1):
+        scenes.append({
+            "scene_number": i,
+            "title": beat_title,
             "background": primary_bg,
+            "characters": [
+                {"name": n, "pose": pose, "position": pos} for (n, pose, pos) in chars
+            ],
             "speaker": "Dad",
-            "characters": [
-                {"name": "dad", "pose": "waving", "position": "left"},
-                {"name": "levi", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"早晨呀兩個BB！今日爸爸同你哋一齊睇下：{title_cn}！",
-            "english": f"Good morning sweet babies! Today Dad will explore: {title_en} with you!",
-            "vocab_highlight": v1,
-            "duration_sec": 7
-        },
-        {
-            "scene_number": 2,
-            "title": "Discovering Something New",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "levi", "pose": "pointing", "position": "left"},
-                {"name": "luca", "pose": "default", "position": "right"}
-            ],
-            "cantonese": f"Levi 哥哥細心睇下，真係好特別喎！{v1}呀！",
-            "english": f"Levi brother looks closely, this is so special! It's {v1}!",
-            "vocab_highlight": v1,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 3,
-            "title": "The Story Event & Gentle Emotions",
-            "background": primary_bg,
-            "speaker": "Mom",
-            "characters": [
-                {"name": "mom", "pose": "kneeling_hug", "position": "left"},
-                {"name": "luca", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"哎呀，唔緊要㗎！細佬唔好唔開心，媽媽喺度抱抱你。",
-            "english": "Oh, it's alright! Little brother don't feel sad, Mommy is right here to give you a warm hug.",
-            "vocab_highlight": v2,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 4,
-            "title": "Kindness & Brotherly Comfort",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "levi", "pose": "arms_out_hug", "position": "left"},
-                {"name": "luca", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"哥哥抱住細佬，拍拍背脊！我哋學識咗{v2}，真係好乖呀！",
-            "english": f"Big brother hugs little brother and pats his back! We learned {v2}, such sweet boys!",
-            "vocab_highlight": v2,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 5,
-            "title": "Joyful Action & Puppy Play",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "dog", "pose": "running", "position": "left"},
-                {"name": "luca", "pose": "clapping", "position": "right"}
-            ],
-            "cantonese": f"睇下！狗狗都跑過嚟一齊搖尾巴，笑瞇瞇好開心！",
-            "english": "Look! Doggy is bouncing over wagging his tail happily, beaming with joy!",
-            "vocab_highlight": v3,
-            "duration_sec": 7
-        },
-        {
-            "scene_number": 6,
-            "title": "Shared Celebration & Practicing Words",
-            "background": primary_bg,
-            "speaker": "Mom",
-            "characters": [
-                {"name": "mom", "pose": "holding_fruit", "position": "left"},
-                {"name": "levi", "pose": "running", "position": "right"}
-            ],
-            "cantonese": f"大家都笑得好甜呀！我哋一齊講多次：{v3}！",
-            "english": f"Everyone has sweet smiles! Let's say it together one more time: {v3}!",
-            "vocab_highlight": v3,
-            "duration_sec": 8
-        },
-        {
-            "scene_number": 7,
-            "title": "Family Hug & Moral Recap",
-            "background": primary_bg,
-            "speaker": "Dad",
-            "characters": [
-                {"name": "dad", "pose": "kneeling", "position": "left"},
-                {"name": "levi", "pose": "waving", "position": "right"}
-            ],
-            "cantonese": f"今日我哋學到：{lesson}！揮手講拜拜，多謝大家！",
-            "english": f"Today we learned: {lesson}! Wave goodbye, thank you everyone!",
-            "vocab_highlight": "多謝",
-            "duration_sec": 8
-        }
-    ]
+            "cantonese": cantonese,
+            "english": english,
+            "vocab_highlight": vocab_hl,
+            "duration_sec": 9
+        })
 
     return {
         "title_cantonese": title_cn,
@@ -591,7 +787,7 @@ def _generate_dynamic_fallback_script(idea: dict, characters: list) -> dict:
         "scenes": scenes
     }
 
-def generate_full_script(idea: dict, characters: list) -> dict:
+def generate_full_script(idea: dict, characters: list, topic: str = "", age_group: str = "") -> dict:
     system_prompt = (
         "You are an award-winning preschool scriptwriter creating gentle, dual-language Cantonese educational episodes. "
         "Every line must feature authentic conversational Cantonese parentese in Traditional Chinese characters (粵語口語: 唔, 喺, 嘅, 啦, 呀, 哋) "
@@ -603,8 +799,11 @@ def generate_full_script(idea: dict, characters: list) -> dict:
     lesson = idea.get('moral_lesson', '')
     vocab = idea.get('target_vocab', [])
     previews = idea.get('scenes_preview', [])
+    topic = (topic or '').strip() or title_en or title_cn
 
-    user_prompt = f"""Create an engaging 7-scene preschool episode script based directly on this idea:
+    user_prompt = f"""Create a LONG-FORM preschool episode script of 18 to 22 scenes, based directly on this idea:
+CHOSEN TOPIC (the parent picked this — every single scene must teach or play with it): {topic}
+CHILD AGE: {age_group}
 Title: {title_cn} ({title_en})
 Story Concept & Arc: {desc}
 Moral Lesson: {lesson}
@@ -613,26 +812,43 @@ Scenes Preview Guide: {json.dumps(previews, ensure_ascii=False)}
 Available characters: {', '.join(characters)}
 
 CRITICAL MANDATORY RULES:
-1. STRICT THEME COHERENCE: The entire 7-scene script MUST strictly follow the story concept described above.
-   - For example, if the story is about a balloon floating away and sadness, the scenes must show the balloon floating away, comforting the sad child, and resolving happily with family support.
-2. EXACTLY 7 SCENES: Produce exactly 7 sequential scenes (Numbered 1 to 7) providing full 1-2 minute video content:
-   - Scene 1: Introduction, morning greeting & discovering the subject
-   - Scene 2: Closer observation & 1st target vocab word
-   - Scene 3: The inciting event / emotional challenge (e.g. lost object, sadness, sharing dilemma)
-   - Scene 4: Parent / sibling comfort, guidance & 2nd target vocab word
-   - Scene 5: Gentle resolution & active brotherly play / puppy interaction
-   - Scene 6: Celebration, clapping & 3rd target vocab word
-   - Scene 7: Warm group hug, takeaway moral lesson & waving goodbye
-3. Presets for background: living_room, nursery, kitchen, playroom, beach, park, mountains, dining, bathroom, reading_nook, playground, farm_field, duck_pond, backyard_garden.
-4. Available character poses:
-   - levi: default, waving, sleeping, eating, stretching, arms_out_hug, pointing, running
-   - luca: default, waving, sleeping, eating, clapping, holding_toy
-   - dad: default, kneeling, waving, drinking, sitting
-   - mom: default, kneeling_hug, holding_fruit
-   - dog: default, running, playing_ball, eating_banana
-   - grandparents_paternal: default, drinking_tea
-   - grandparents_maternal: default, waving
-   - auntie_cousins: default, waving
+1. STRICT THEME COHERENCE: EVERY scene MUST be about the chosen topic "{topic}".
+   - Each scene must mention, show, or teach the topic. If a scene does not, rewrite it until it does.
+   - Do NOT drift into generic family stories. The topic is the star of every scene.
+2. LENGTH & STORY ARC: Produce 18 to 22 sequential scenes, about 8-10 seconds of speech each, for a total of roughly 2.5 to 3.5 minutes.
+   Tell ONE continuous mini-adventure in 5 acts — NEVER 18 disconnected drills:
+   - ACT 1, scenes 1-3, THE HOOK: a surprising sound, question, or discovery pulls the kids in. End scene 3 on a question.
+   - ACT 2, scenes 4-10, THE JOURNEY: Dad and the twins go somewhere / meet things connected to the topic. Each encounter teaches vocabulary from a DIFFERENT angle (see rule 3).
+   - ACT 3, scenes 11-13, A GENTLE PROBLEM: something small goes wrong (a wheel gets stuck, we can't find the blue car...). Dad comforts; nobody is scared.
+   - ACT 4, scenes 14-17, SOLVING & PLAY: the twins help fix it, then the silliest, most joyful play of the episode.
+   - ACT 5, scenes 18-22, GOODBYE: a quick fun review of the words learned, the moral, wave goodbye.
+   - Spread the target vocabulary across the episode; repeat each key word in at least 2 different scenes.
+3. SCENE-TYPE ROTATION (this is what keeps it interesting): cycle through these beat types and NEVER put two scenes of the same type back-to-back:
+   HOOK / QUESTION (Dad asks, pause for the kid to answer) / SOUND-PLAY (copy the sound together) / ACTION (do a motion together) /
+   COUNT (count things out loud) / PRETEND (let's pretend we are...) / DISCOVER (something new appears) / GAG (a small silly surprise) /
+   CHORUS (the repeating chant, rule 4) / CHALLENGE (a tiny problem) / COMFORT (Dad reassures) / TRY-AGAIN (slowly, together) /
+   CELEBRATE (cheer!) / REVIEW (say the words we learned) / GOODBYE (wave, wave, moral).
+   - Vary sentence shapes too: questions, exclamations, whispers, chants. NEVER repeat the same sentence pattern more than twice in a row.
+   - BORING — never write like this: "爸爸指住紅色車話：呢個係紅色。哥哥指住藍色車話：呢個係藍色。細佬指住黃色車話：呢個係黃色。"
+   - GOOD — write like this: "咦！後面有咩聲？依嗚依嗚——係消防車！紅色嘅消防車嚟救火啦！哥哥，你聽唔聽到呀？"
+4. CHORUS: invent ONE short, catchy 1-line chant about the topic (e.g. for vehicles: "隆隆隆，車車嚟啦！") and repeat it every 4-5 scenes with a small twist. Toddlers love a predictable refrain.
+5. THE TWINS HAVE PERSONALITIES: 哥哥 (Levi) is bold — he shouts answers first and loves loud sounds. 細佬 (Luca) is careful — he watches first, then tries slowly, and Dad praises his trying. Dad reacts to each boy differently; never give them identical copy-paste lines.
+6. CLIFFHANGER TRANSITIONS: end most scenes on a tiny question or sound that the NEXT scene answers ("咦，呢個轆點解唔郁嘅？" → next scene reveals a pebble stuck in it).
+7. DAD IS THE NARRATOR: The speaker of EVERY scene is "Dad" (爸爸). Dad is on screen talking to Levi and Luca in every scene.
+   Cantonese lines say 爸爸, never 媽媽.
+8. CLEAN LANGUAGE SPLIT — this is critical, the parent explicitly asked for it:
+   - The "cantonese" field must contain ONLY Traditional Chinese characters and Chinese punctuation (，。！？；：、…—). ZERO Latin letters, ZERO English words, ZERO Arabic numerals.
+   - No English names in Cantonese lines: write 哥哥 for Levi and 細佬 for Luca. No "Daddy" (use 爸爸), no "BB" (use 寶寶), no "high five" (use 擊掌), no English interjections.
+   - Sound effects must also be Chinese characters: siren = 依嗚依嗚, engine = 隆隆隆, horn = 叭叭, dog = 汪汪.
+   - The "english" field carries the full English translation (names Levi/Luca welcome there).
+   - Titles may keep topic letters (e.g. "ABC字母歌") since the letters ARE the lesson.
+9. Presets for background: living_room, nursery, kitchen, playroom, beach, park, mountains, dining, bathroom, reading_nook, playground, farm_field, duck_pond, backyard_garden.
+10. Available character poses (use ONLY these exact pose names):
+   - levi: default, waving, clapping, cheering, pointing, running, sleeping, eating, stretching, arms_out_hug, playing_blocks, playing_car, holding_book, thinking, sad
+   - luca: default, waving, clapping, cheering, pointing, running, sleeping, eating, crying, sad, holding_toy, holding_book, playing_blocks, playing_car, thinking, arms_out_hug
+   - dad: default, waving, clapping, kneeling, sitting, pointing, teaching, drinking, comforting_hug
+   - mom: default, waving, clapping, kneeling_hug, holding_fruit, holding_bowl, teaching
+   - dog: default, running, playing_ball, eating_banana, dancing_paw, curled_sleeping, sitting_attentive
 
 Return ONLY valid JSON matching this schema:
 {{
@@ -653,11 +869,12 @@ Return ONLY valid JSON matching this schema:
       "cantonese": "早晨呀！",
       "english": "Good morning!",
       "vocab_highlight": "早晨",
-      "duration_sec": 8
+      "duration_sec": 9
     }}
   ]
 }}
 """
+    fallback_reason = ""
     try:
         raw = generate_ai_text(user_prompt, system_prompt)
         cleaned = raw.strip()
@@ -668,12 +885,16 @@ Return ONLY valid JSON matching this schema:
         if cleaned.endswith("```"):
             cleaned = cleaned[:-3]
         parsed = json.loads(cleaned.strip())
-        if isinstance(parsed, dict) and "scenes" in parsed and len(parsed["scenes"]) >= 5:
+        if isinstance(parsed, dict) and "scenes" in parsed and len(parsed["scenes"]) >= 14:
             # Ensure moral_lesson & vocab_words exist
             parsed.setdefault("moral_lesson", lesson)
             parsed.setdefault("vocab_words", vocab)
+            parsed["meta"] = {"offline": False}
             return parsed
     except Exception as e:
-        print(f"AI Script Generation notice ({e}), synthesizing rich grounded 7-scene script...")
-    
-    return _generate_dynamic_fallback_script(idea, characters)
+        print(f"AI Script Generation notice ({e}), synthesizing rich grounded 18-scene script...")
+        fallback_reason = str(e)[:200]
+
+    fb = _generate_dynamic_fallback_script(idea, characters)
+    fb["meta"] = {"offline": True, "reason": fallback_reason}
+    return fb

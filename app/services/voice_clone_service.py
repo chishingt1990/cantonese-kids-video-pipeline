@@ -327,12 +327,26 @@ async def generate_cloned_tts(
         "response_format": {"type": "audio"},
         "generation_config": {"speech_config": [{"voice": voice_id}]},
     }
-    resp = requests.post(
-        GEMINI_INTERACTIONS_URL,
-        headers=_headers(api_key),
-        json=payload,
-        timeout=120,
-    )
+    # A full 2-4 minute narration can take several minutes to render server-side;
+    # wait up to 5 minutes and retry once on timeout before giving up.
+    last_err = None
+    for attempt in range(2):
+        try:
+            resp = requests.post(
+                GEMINI_INTERACTIONS_URL,
+                headers=_headers(api_key),
+                json=payload,
+                timeout=300,
+            )
+            break
+        except requests.exceptions.Timeout as e:
+            last_err = e
+            print(f"Gemini TTS timed out (attempt {attempt + 1}/2), retrying...")
+    else:
+        raise RuntimeError(
+            f"Gemini TTS timed out twice after 5 minutes each: {last_err}. "
+            "The narration text may be very long — try a shorter script."
+        )
     if resp.status_code != 200:
         raise RuntimeError(
             f"Gemini TTS failed ({resp.status_code}): {resp.text[:300]}"

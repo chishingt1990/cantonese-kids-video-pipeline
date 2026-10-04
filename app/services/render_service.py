@@ -4,7 +4,7 @@ import subprocess
 import threading
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
-from app.services.audio_service import mix_scene_audio, get_audio_duration
+from app.services.audio_service import mix_scene_audio, mix_narration_with_bgm, get_audio_duration
 from app.services.sticker_service import get_or_render_sticker
 from app.services import family_catalog
 
@@ -119,44 +119,134 @@ def _build_scene_caption_timeline(scene: dict, project_root: str, font) -> list:
         t += line_dur
     return timeline
 
+
+def _cue_from_words(buf: list, sec_start: float, font, sec_dur: float) -> dict:
+    """One karaoke cue from a run of timestamped words (times vs section start)."""
+    chars = []
+    for w in buf:
+        chars.extend(list(w["w"]))
+    start = max(0.0, buf[0]["start"] - sec_start)
+    end = max(start + 0.2, min(buf[-1]["end"] - sec_start, sec_dur))
+    try:
+        widths = [font.getlength(ch) for ch in chars]
+    except Exception:
+        widths = [font.size * 0.9] * len(chars)
+    return {
+        "start": start,
+        "end": end,
+        "chars": chars,
+        "widths": widths,
+        "total_w": sum(widths),
+    }
+
+
+def _build_narration_caption_cues(words: list, sec_start: float,
+                                  sec_end: float, font,
+                                  max_chars: int = 10) -> list:
+    """Karaoke cues from TRUE word timestamps.
+
+    Returns cues in the same shape as _build_scene_caption_timeline, with
+    times relative to the section start so the frame loop needs no changes.
+    """
+    seg = [w for w in (words or [])
+           if w["end"] > sec_start and w["start"] < sec_end]
+    if not seg:
+        return []
+    sec_dur = max(0.5, sec_end - sec_start)
+    cues, buf, buf_len = [], [], 0
+    for w in seg:
+        wlen = len(w["w"])
+        if buf and buf_len + wlen > max_chars:
+            cues.append(_cue_from_words(buf, sec_start, font, sec_dur))
+            buf, buf_len = [], 0
+        buf.append(w)
+        buf_len += wlen
+    if buf:
+        cues.append(_cue_from_words(buf, sec_start, font, sec_dur))
+    return cues
+
 def render_project_video(project_data: dict, job_id: str, output_path: str):
     JOBS[job_id] = {"status": "rendering", "progress": 0, "error": None}
     
     try:
         scenes = project_data.get("scenes", [])
-        total_duration = sum(s.get("duration_sec", 6) for s in scenes)
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+        # --- Narration-first mode -------------------------------------------
+        # When project_data["narration"] carries {audio_path, duration,
+        # sections: [{scene_number, start, end}], words: [...]}, every scene is
+        # shown during its aligned window of the SINGLE narration track instead
+        # of per-scene clips. The classic path below is untouched.
+        narration = project_data.get("narration") or {}
+        narr_sections = narration.get("sections") or []
+        narr_audio = narration.get("audio_path")
+        narration_mode = bool(
+            narr_audio and narr_sections and os.path.exists(narr_audio)
+        )
+        scene_by_num = {s.get("scene_number", i + 1): s
+                        for i, s in enumerate(scenes)}
+        narr_words = narration.get("words") or []
+
         fps = 30
         width, height = 1920, 1080
+        if narration_mode:
+            total_duration = float(
+                narration.get("duration") or get_audio_duration(narr_audio)
+            )
+            timeline = []
+            for sec in narr_sections:
+                scene = scene_by_num.get(sec.get("scene_number"))
+                if scene is None:
+                    continue
+                seg_frames = max(
+                    1, int((float(sec["end"]) - float(sec["start"])) * fps)
+                )
+                timeline.append((scene, seg_frames))
+        else:
+            total_duration = sum(s.get("duration_sec", 6) for s in scenes)
+            timeline = [
+                (s, int(float(s.get("duration_sec", 6)) * fps))
+                for s in scenes
+            ]
         total_frames = int(total_duration * fps)
-        
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        
-        # 1. Dynamically gather scene voice recordings and mix master audio with ukulele BGM
-        voice_paths = []
-        durations = []
-        for idx, s in enumerate(scenes):
-            s_num = s.get("scene_number", idx + 1)
-            dur = float(s.get("duration_sec", 6))
-            durations.append(dur)
-            
-            # Resolve exact audio filename from audio_url if present
-            clip_name = None
-            if s.get("audio_url"):
-                raw_url = s["audio_url"].split("?")[0]
-                clip_name = os.path.basename(raw_url)
-            if not clip_name:
-                clip_name = f"scene_{s_num:02d}_voice.wav"
-            v_clip = os.path.join(project_root, "assets", "outputs", "audio_clips", clip_name)
-            if not os.path.exists(v_clip):
-                v_clip = os.path.join(project_root, "assets", "outputs", "audio_clips", f"scene_{s_num:02d}_voice.wav")
-            voice_paths.append(v_clip if os.path.exists(v_clip) else None)
-            
-        audio_path = os.path.join(project_root, "assets", "outputs", f"episode_{job_id}_master.wav")
-        try:
-            mix_scene_audio(voice_paths, durations, audio_path)
-        except Exception as e:
-            print(f"Warning: dynamic audio mixing failed, falling back to static audio: {e}")
-            audio_path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
+
+        # 1. Audio track: single narration file in narration mode, otherwise
+        #    mix the per-scene voice clips as before.
+        if narration_mode:
+            # Auto BGM: the one-take narration gets the same soft ukulele music
+            # bed as the classic flow, with auto-ducking under Dad's voice.
+            bgm_mix_path = os.path.join(project_root, "assets", "outputs", f"episode_{job_id}_master.wav")
+            try:
+                audio_path = mix_narration_with_bgm(narr_audio, bgm_mix_path)
+            except Exception as e:
+                print(f"Warning: narration BGM mix failed, using raw narration: {e}")
+                audio_path = narr_audio
+        else:
+            voice_paths = []
+            durations = []
+            for idx, s in enumerate(scenes):
+                s_num = s.get("scene_number", idx + 1)
+                dur = float(s.get("duration_sec", 6))
+                durations.append(dur)
+
+                # Resolve exact audio filename from audio_url if present
+                clip_name = None
+                if s.get("audio_url"):
+                    raw_url = s["audio_url"].split("?")[0]
+                    clip_name = os.path.basename(raw_url)
+                if not clip_name:
+                    clip_name = f"scene_{s_num:02d}_voice.wav"
+                v_clip = os.path.join(project_root, "assets", "outputs", "audio_clips", clip_name)
+                if not os.path.exists(v_clip):
+                    v_clip = os.path.join(project_root, "assets", "outputs", "audio_clips", f"scene_{s_num:02d}_voice.wav")
+                voice_paths.append(v_clip if os.path.exists(v_clip) else None)
+
+            audio_path = os.path.join(project_root, "assets", "outputs", f"episode_{job_id}_master.wav")
+            try:
+                mix_scene_audio(voice_paths, durations, audio_path)
+            except Exception as e:
+                print(f"Warning: dynamic audio mixing failed, falling back to static audio: {e}")
+                audio_path = os.path.join(project_root, "assets", "outputs", "episode_01_master_audio.wav")
         
         # 2. Setup FFmpeg pipe
         ffmpeg_cmd = [
@@ -200,10 +290,20 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
         singalong_enabled = caption_opts.get("enabled", True)
         caption_timelines = []
         if singalong_enabled:
-            for _scene in scenes:
-                caption_timelines.append(
-                    _build_scene_caption_timeline(_scene, project_root, font_karaoke)
-                )
+            if narration_mode:
+                # True word timings: cues are relative to each section start.
+                for sec in narr_sections:
+                    caption_timelines.append(
+                        _build_narration_caption_cues(
+                            narr_words, float(sec["start"]),
+                            float(sec["end"]), font_karaoke
+                        )
+                    )
+            else:
+                for _scene in scenes:
+                    caption_timelines.append(
+                        _build_scene_caption_timeline(_scene, project_root, font_karaoke)
+                    )
         
         frame_idx = 0
         
@@ -247,20 +347,17 @@ def render_project_video(project_data: dict, job_id: str, output_path: str):
             sprite_cache[key] = im
             return im
             
-        for s_idx, scene in enumerate(scenes):
+        for s_idx, (scene, scene_frames) in enumerate(timeline):
             bg_name = scene.get("background", "living_room")
             bg_base = load_bg(bg_name)
-            
+
             chars = scene.get("characters", [])
             cantonese = scene.get("cantonese", "")
             jyutping = scene.get("jyutping", "")
             english = scene.get("english", "")
             vocab = scene.get("vocab_highlight", "")
             speaker = (scene.get("speaker") or "").lower()
-            
-            scene_duration = scene.get("duration_sec", 6)
-            scene_frames = int(scene_duration * fps)
-            
+
             # Speaker bias for Ken Burns subtle camera pan
             speaker_bias_x = 0.0
             if "dad" in speaker or any(c.get("name") == "dad" and c.get("x_percent", 50) < 40 for c in chars):

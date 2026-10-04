@@ -11,6 +11,56 @@ def get_audio_duration(file_path: str) -> float:
     except Exception:
         return 0.0
 
+def mix_narration_with_bgm(narration_path: str, output_path: str):
+    """Mixes a single-take narration WAV with soft ukulele BGM and auto-ducking.
+
+    Used by the narration-first render path: no UI, the music bed is automatic.
+    """
+    sr = 44100
+    with wave.open(narration_path, "rb") as wf:
+        n = wf.getnframes()
+        raw = wf.readframes(n)
+        narr = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
+    total_samples = len(narr)
+    total_duration = total_samples / sr
+
+    # 1. Soft acoustic ukulele BGM (C - G - Am - F), same feel as the classic mix
+    t = np.linspace(0, total_duration, total_samples, endpoint=False)
+    chords = [
+        [261.63, 329.63, 392.00],  # C
+        [196.00, 246.94, 293.66],  # G
+        [220.00, 261.63, 329.63],  # Am
+        [174.61, 220.00, 261.63]   # F
+    ]
+    bgm = np.zeros(total_samples, dtype=np.float32)
+    chord_len = int(2.0 * sr)
+    for i in range(0, total_samples, chord_len):
+        c = chords[(i // chord_len) % len(chords)]
+        sub_len = min(chord_len, total_samples - i)
+        sub_t = t[i:i+sub_len] - t[i]
+        for note in c:
+            bgm[i:i+sub_len] += 0.04 * np.sin(2 * np.pi * note * sub_t) * np.exp(-1.5 * (sub_t % 0.5))
+
+    # 2. Duck the BGM wherever Dad is speaking (envelope of the narration itself)
+    from scipy.ndimage import uniform_filter1d
+    env = uniform_filter1d(np.abs(narr), size=int(0.4 * sr))
+    duck_mask = np.where(env > 0.02, 0.25, 1.0).astype(np.float32)
+    duck_smooth = uniform_filter1d(duck_mask, size=int(0.5 * sr))
+
+    final_mix = narr + (bgm * duck_smooth)
+    peak = np.max(np.abs(final_mix))
+    if peak > 0.95:
+        final_mix = final_mix / peak * 0.95
+
+    out_int16 = (final_mix * 32767.0).astype(np.int16)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with wave.open(output_path, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sr)
+        wf.writeframes(out_int16.tobytes())
+    return output_path
+
 def mix_scene_audio(voice_paths: list, durations: list, output_master_path: str):
     """Mixes scene audio with background ukulele and auto-ducking."""
     sr = 44100
