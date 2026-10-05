@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube, narration
+from app.routers import settings, ideas, scripts, characters, audio, render, scene_director, projects, youtube, narration, lesson
 
 app = FastAPI(title="Kids Video Studio", version="1.0.0")
 
@@ -26,17 +26,10 @@ app.include_router(scene_director.router)
 app.include_router(projects.router)
 app.include_router(youtube.router)
 app.include_router(narration.router)
+app.include_router(lesson.router)
 
 static_path = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=static_path), name="static")
-asset_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
-app.mount("/assets/sprites", StaticFiles(directory=os.path.join(asset_root, "sprites")), name="sprite-assets")
-app.mount("/assets/stickers", StaticFiles(directory=os.path.join(asset_root, "stickers")), name="sticker-assets")
-
-
-@app.get("/asset-library")
-def read_asset_library():
-    return FileResponse(os.path.join(os.path.dirname(os.path.dirname(__file__)), "generated-asset-portal.html"))
 
 @app.get("/")
 def read_root():
