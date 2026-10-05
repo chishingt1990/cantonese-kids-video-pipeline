@@ -103,6 +103,11 @@ class LessonRenderer:
 
     def _sticker(self, src):
         p = src if os.path.isabs(src) else os.path.join(self.sticker_dir, src)
+        if not os.path.exists(p):
+            # Fall back to sprites directory (family characters)
+            p2 = os.path.join(self.sprite_dir, os.path.basename(src))
+            if os.path.exists(p2):
+                p = p2
         return self._load(p)
 
     def _badge(self, src):
@@ -138,7 +143,9 @@ class LessonRenderer:
     def _caption_words(self, li):
         if li in self._cap_cache:
             return self._cap_cache[li]
-        _ls, _le, ws = self.caption_lines[li]
+        cap = self.caption_lines[li]
+        ws = cap["words"] if isinstance(cap, dict) else cap[2]
+        _ls = cap["start"] if isinstance(cap, dict) else cap[0]
         if not ws:
             self._cap_cache[li] = []
             return []
