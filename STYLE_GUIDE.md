@@ -95,6 +95,10 @@ Preserve the family labels: Levi (哥哥), Luca (細佬), Dad (爸爸), Mom (媽
 
 Levi red `#dc2626`, Luca yellow `#facc15`, navy `#1e3a8a`, and charcoal `#1c1917` / `#292524` are nominal palette cues. Source images include shading and compression, so use side-by-side visual matching rather than treating these hex values as exact skin/clothing samples. Default shirts have their own red/yellow collars, not the white collars in some legacy SVGs.
 
+### Animal Characters
+
+Animal characters (cow, pig, sheep, chicken, dog, etc.) follow the §2 Character Canon — bold dark outlines, solid saturated matte colors with subtle 2-tone cel-shading, expressive dark anime-style eyes with sparkle highlights, rosy blush cheeks, fully drawn bodies. Generation background: plain pure white (removed in post), never baked scenery.
+
 ### Export, Scale and Grounding
 
 - There is no fixed sprite canvas enforced by the renderer. Generate at useful source resolution (suggested working canvas **1024x1536**, or a wider canvas when the action needs it), then crop/pad as above. Do not upscale a tiny image merely to pass pixel-count checks.
